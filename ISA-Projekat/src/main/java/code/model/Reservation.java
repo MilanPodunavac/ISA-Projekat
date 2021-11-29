@@ -4,9 +4,11 @@ import javax.persistence.*;
 import java.util.*;
 
 @Entity
-public class Reservation {
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+public abstract class Reservation {
    @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @SequenceGenerator(name = "reservationSeqGen", sequenceName = "reservationSeq", initialValue = 1, allocationSize = 1)
+   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "reservationSeqGen")
    protected Integer id;
    @Column
    protected Date startDate;
