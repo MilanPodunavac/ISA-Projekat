@@ -1,8 +1,17 @@
 package code.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.*;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Review {
    @Id
@@ -21,51 +30,4 @@ public class Review {
    @JoinColumn(name = "saleEntity_id")
    private SaleEntity saleEntity;
 
-   public Integer getId() {
-      return id;
-   }
-
-   public void setId(Integer id) {
-      this.id = id;
-   }
-
-   public int getGrade() {
-      return grade;
-   }
-
-   public void setGrade(int grade) {
-      this.grade = grade;
-   }
-
-   public String getDescription() {
-      return description;
-   }
-
-   public void setDescription(String description) {
-      this.description = description;
-   }
-
-   public boolean isApproved() {
-      return approved;
-   }
-
-   public void setApproved(boolean approved) {
-      this.approved = approved;
-   }
-
-   public Client getClient() {
-      return client;
-   }
-
-   public void setClient(Client client) {
-      this.client = client;
-   }
-
-   public SaleEntity getSaleEntity() {
-      return saleEntity;
-   }
-
-   public void setSaleEntity(SaleEntity saleEntity) {
-      this.saleEntity = saleEntity;
-   }
 }

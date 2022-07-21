@@ -1,8 +1,17 @@
 package code.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.*;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Cottage extends SaleEntity {
    @Column
@@ -15,35 +24,4 @@ public class Cottage extends SaleEntity {
    @OneToMany(mappedBy = "cottage", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    private List<CottageReservation> cottageReservation;
 
-   public int getRoomNumber() {
-      return roomNumber;
-   }
-
-   public void setRoomNumber(int roomNumber) {
-      this.roomNumber = roomNumber;
-   }
-
-   public int getBedNumber() {
-      return bedNumber;
-   }
-
-   public void setBedNumber(int bedNumber) {
-      this.bedNumber = bedNumber;
-   }
-
-   public CottageOwner getCottageOwner() {
-      return cottageOwner;
-   }
-
-   public void setCottageOwner(CottageOwner cottageOwner) {
-      this.cottageOwner = cottageOwner;
-   }
-
-   public List<CottageReservation> getCottageReservation() {
-      return cottageReservation;
-   }
-
-   public void setCottageReservation(List<CottageReservation> cottageReservation) {
-      this.cottageReservation = cottageReservation;
-   }
 }

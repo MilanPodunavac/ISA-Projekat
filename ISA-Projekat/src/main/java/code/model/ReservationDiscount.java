@@ -1,8 +1,17 @@
 package code.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.*;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class ReservationDiscount {
    @Id
@@ -14,19 +23,4 @@ public class ReservationDiscount {
    @Column
    private Date expiringDate;
 
-   public double getDiscount() {
-      return discount;
-   }
-
-   public void setDiscount(double discount) {
-      this.discount = discount;
-   }
-
-   public Date getExpiringDate() {
-      return expiringDate;
-   }
-
-   public void setExpiringDate(Date expiringDate) {
-      this.expiringDate = expiringDate;
-   }
 }

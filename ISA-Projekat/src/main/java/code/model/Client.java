@@ -1,8 +1,17 @@
 package code.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.*;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Client extends User {
    @Column
@@ -17,44 +26,4 @@ public class Client extends User {
    private List<SaleEntity> saleEntity;
    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    private List<Review> review;
-
-   public int getPenaltyPoints() {
-      return penaltyPoints;
-   }
-
-   public void setPenaltyPoints(int penaltyPoints) {
-      this.penaltyPoints = penaltyPoints;
-   }
-
-   public boolean isBanned() {
-      return banned;
-   }
-
-   public void setBanned(boolean banned) {
-      this.banned = banned;
-   }
-
-   public List<Reservation> getReservation() {
-      return reservation;
-   }
-
-   public void setReservation(List<Reservation> reservation) {
-      this.reservation = reservation;
-   }
-
-   public List<SaleEntity> getSaleEntity() {
-      return saleEntity;
-   }
-
-   public void setSaleEntity(List<SaleEntity> saleEntity) {
-      this.saleEntity = saleEntity;
-   }
-
-   public List<Review> getReview() {
-      return review;
-   }
-
-   public void setReview(List<Review> review) {
-      this.review = review;
-   }
 }

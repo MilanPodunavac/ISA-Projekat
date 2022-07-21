@@ -1,8 +1,16 @@
 package code.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.*;
-
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class SaleEntity {
@@ -23,60 +31,4 @@ public abstract class SaleEntity {
    protected List<Client> client;
    @OneToMany(mappedBy = "saleEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    protected List<Review> review;
-
-   public Integer getId() {
-      return id;
-   }
-
-   public void setId(Integer id) {
-      this.id = id;
-   }
-
-   public String getName() {
-      return name;
-   }
-
-   public void setName(String name) {
-      this.name = name;
-   }
-
-   public String getDescription() {
-      return description;
-   }
-
-   public void setDescription(String description) {
-      this.description = description;
-   }
-
-   public String getRules() {
-      return rules;
-   }
-
-   public void setRules(String rules) {
-      this.rules = rules;
-   }
-
-   public Location getLocation() {
-      return location;
-   }
-
-   public void setLocation(Location location) {
-      this.location = location;
-   }
-
-   public List<Client> getClient() {
-      return client;
-   }
-
-   public void setClient(List<Client> client) {
-      this.client = client;
-   }
-
-   public List<Review> getReview() {
-      return review;
-   }
-
-   public void setReview(List<Review> review) {
-      this.review = review;
-   }
 }

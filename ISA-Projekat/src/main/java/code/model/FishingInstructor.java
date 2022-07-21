@@ -1,8 +1,17 @@
 package code.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.*;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class FishingInstructor extends User {
    @Column
@@ -10,19 +19,4 @@ public class FishingInstructor extends User {
    @OneToMany(mappedBy = "fishingInstructor", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    private List<FishingTrip> fishingTrip;
 
-   public String getBiography() {
-      return biography;
-   }
-
-   public void setBiography(String biography) {
-      this.biography = biography;
-   }
-
-   public List<FishingTrip> getFishingTrip() {
-      return fishingTrip;
-   }
-
-   public void setFishingTrip(List<FishingTrip> fishingTrip) {
-      this.fishingTrip = fishingTrip;
-   }
 }

@@ -1,8 +1,17 @@
 package code.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.*;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Boat extends SaleEntity {
    @Column
@@ -23,57 +32,5 @@ public class Boat extends SaleEntity {
 
    private BoatOwner getBoatOwner() {
       return boatOwner;
-   }
-
-   public double getLength() {
-      return length;
-   }
-
-   public void setLength(double length) {
-      this.length = length;
-   }
-
-   public int getEngineNumber() {
-      return engineNumber;
-   }
-
-   public void setEngineNumber(int engineNumber) {
-      this.engineNumber = engineNumber;
-   }
-
-   public int getEnginePower() {
-      return enginePower;
-   }
-
-   public void setEnginePower(int enginePower) {
-      this.enginePower = enginePower;
-   }
-
-   public int getMaxSpeed() {
-      return maxSpeed;
-   }
-
-   public void setMaxSpeed(int maxSpeed) {
-      this.maxSpeed = maxSpeed;
-   }
-
-   public int getMaxPeople() {
-      return maxPeople;
-   }
-
-   public void setMaxPeople(int maxPeople) {
-      this.maxPeople = maxPeople;
-   }
-
-   public void setBoatOwner(BoatOwner boatOwner) {
-      this.boatOwner = boatOwner;
-   }
-
-   public List<BoatReservation> getBoatReservation() {
-      return boatReservation;
-   }
-
-   public void setBoatReservation(List<BoatReservation> boatReservation) {
-      this.boatReservation = boatReservation;
    }
 }

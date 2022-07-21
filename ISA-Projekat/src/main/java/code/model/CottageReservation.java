@@ -1,8 +1,17 @@
 package code.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.*;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class CottageReservation extends Reservation {
    @ElementCollection(targetClass=CottageReservationTag.class)
@@ -13,21 +22,5 @@ public class CottageReservation extends Reservation {
    @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "cottage_id")
    private Cottage cottage;
-
-   public List<CottageReservationTag> getCottageReservationTag() {
-      return cottageReservationTag;
-   }
-
-   public void setCottageReservationTag(List<CottageReservationTag> cottageReservationTag) {
-      this.cottageReservationTag = cottageReservationTag;
-   }
-
-   public Cottage getCottage() {
-      return cottage;
-   }
-
-   public void setCottage(Cottage cottage) {
-      this.cottage = cottage;
-   }
 
 }

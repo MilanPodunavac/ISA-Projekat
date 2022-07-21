@@ -1,8 +1,17 @@
 package code.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.*;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Complaint {
    @Id
@@ -21,51 +30,4 @@ public class Complaint {
    @JoinColumn(name = "saleEntity_id")
    private SaleEntity saleEntity;
 
-   public Integer getId() {
-      return id;
-   }
-
-   public void setId(Integer id) {
-      this.id = id;
-   }
-
-   public String getDescription() {
-      return description;
-   }
-
-   public void setDescription(String description) {
-      this.description = description;
-   }
-
-   public String getResponse() {
-      return response;
-   }
-
-   public void setResponse(String response) {
-      this.response = response;
-   }
-
-   public boolean isResponded() {
-      return responded;
-   }
-
-   public void setResponded(boolean responded) {
-      this.responded = responded;
-   }
-
-   public Client getClient() {
-      return client;
-   }
-
-   public void setClient(Client client) {
-      this.client = client;
-   }
-
-   public SaleEntity getSaleEntity() {
-      return saleEntity;
-   }
-
-   public void setSaleEntity(SaleEntity saleEntity) {
-      this.saleEntity = saleEntity;
-   }
 }

@@ -1,8 +1,17 @@
 package code.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.*;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class FishingInstructorReservation extends Reservation {
    @ElementCollection(targetClass=FishingInstructorReservationTag.class)
@@ -13,20 +22,4 @@ public class FishingInstructorReservation extends Reservation {
    @ManyToOne
    @JoinColumn(name = "fishingTrip_id")
    private FishingTrip fishingTrip;
-
-   public List<FishingInstructorReservationTag> getFishingInstructorReservationTag() {
-      return fishingInstructorReservationTag;
-   }
-
-   public void setFishingInstructorReservationTag(List<FishingInstructorReservationTag> fishingInstructorReservationTag) {
-      this.fishingInstructorReservationTag = fishingInstructorReservationTag;
-   }
-
-   public FishingTrip getFishingTrip() {
-      return fishingTrip;
-   }
-
-   public void setFishingTrip(FishingTrip fishingTrip) {
-      this.fishingTrip = fishingTrip;
-   }
 }

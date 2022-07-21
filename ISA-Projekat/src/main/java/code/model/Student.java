@@ -1,5 +1,10 @@
 package code.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -12,7 +17,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Student {
     @Id
@@ -22,30 +30,6 @@ public class Student {
     @Column(name = "firstName", nullable = false)
     private String firstName;
 
-    public Student() {
-        super();
-    }
-
-    public Student(Integer id, String firstName) {
-        this.id = id;
-        this.firstName = firstName;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
     @Override
     public boolean equals(Object o) {
         if (this == o) {

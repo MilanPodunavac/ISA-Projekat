@@ -1,8 +1,17 @@
 package code.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.*;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class BoatReservation extends Reservation {
    @ElementCollection(targetClass=BoatReservationTag.class)
@@ -13,20 +22,4 @@ public class BoatReservation extends Reservation {
    @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "boat_id")
    private Boat boat;
-
-   public List<BoatReservationTag> getBoatReservationTag() {
-      return boatReservationTag;
-   }
-
-   public void setBoatReservationTag(List<BoatReservationTag> boatReservationTag) {
-      this.boatReservationTag = boatReservationTag;
-   }
-
-   public Boat getBoat() {
-      return boat;
-   }
-
-   public void setBoat(Boat boat) {
-      this.boat = boat;
-   }
 }
