@@ -25,7 +25,7 @@ module.exports = function (config) {
       suppressAll: true // removes the duplicated traces
     },
     coverageReporter: {
-      dir: require('path').join(__dirname, './coverage/ISA-Front'),
+      dir: require('path').join(__dirname, './coverage/mdb-angular-ui-kit-free'),
       subdir: '.',
       reporters: [
         { type: 'html' },
