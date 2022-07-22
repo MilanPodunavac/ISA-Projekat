@@ -15,6 +15,8 @@ import java.util.*;
 @Entity
 public class FishingInstructor extends User {
    @Column
+   private String reasonForRegistration;
+   @Column
    private String biography;
    @OneToMany(mappedBy = "fishingInstructor", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    private List<FishingTrip> fishingTrip;
