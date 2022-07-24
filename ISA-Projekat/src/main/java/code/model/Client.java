@@ -19,11 +19,11 @@ public class Client extends User {
    @Column
    private boolean banned;
    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-   private List<Reservation> reservation;
-   @ManyToMany
+   private Set<Reservation> reservation;
+   @ManyToMany(fetch = FetchType.EAGER)
    @JoinTable(name = "client_saleEntity", joinColumns = @JoinColumn(name = "client_id", referencedColumnName = "id"),
            inverseJoinColumns = @JoinColumn(name = "saleEntity_id", referencedColumnName = "id"))
-   private List<SaleEntity> saleEntity;
+   private Set<SaleEntity> saleEntity;
    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-   private List<Review> review;
+   private Set<Review> review;
 }

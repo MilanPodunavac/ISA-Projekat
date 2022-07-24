@@ -27,8 +27,8 @@ public abstract class SaleEntity {
    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    @JoinColumn(name="location_id")
    protected Location location;
-   @ManyToMany(mappedBy = "saleEntity")
-   protected List<Client> client;
+   @ManyToMany(mappedBy = "saleEntity", fetch = FetchType.EAGER)
+   protected Set<Client> client;
    @OneToMany(mappedBy = "saleEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-   protected List<Review> review;
+   protected Set<Review> review;
 }

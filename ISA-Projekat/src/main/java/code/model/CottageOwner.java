@@ -17,5 +17,5 @@ public class CottageOwner extends User {
    @Column
    private String reasonForRegistration;
    @OneToMany(mappedBy = "cottageOwner", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-   private List<Cottage> cottage;
+   private Set<Cottage> cottage;
 }

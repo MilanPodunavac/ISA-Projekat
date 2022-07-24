@@ -18,7 +18,7 @@ public class BoatReservation extends Reservation {
    @Enumerated(EnumType.ORDINAL)
    @CollectionTable(name="boatReservation_tags")
    @Column(name="tags")
-   private List<BoatReservationTag> boatReservationTag;
+   private Set<BoatReservationTag> boatReservationTag;
    @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "boat_id")
    private Boat boat;

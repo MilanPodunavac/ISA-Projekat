@@ -19,6 +19,6 @@ public class FishingInstructor extends User {
    @Column
    private String biography;
    @OneToMany(mappedBy = "fishingInstructor", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-   private List<FishingTrip> fishingTrip;
+   private Set<FishingTrip> fishingTrip;
 
 }

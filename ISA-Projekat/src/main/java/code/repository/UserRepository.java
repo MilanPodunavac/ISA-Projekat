@@ -1,5 +1,6 @@
 package code.repository;
 
+import code.model.Admin;
 import code.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 

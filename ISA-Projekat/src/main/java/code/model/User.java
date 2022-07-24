@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Proxy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -32,29 +33,21 @@ public abstract class User implements UserDetails {
    @Column
    protected String password;
    @Column
-   protected Date dateOfBirth;
-   @Column
    protected String phoneNumber;
    @Column
    private boolean enabled;
    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    @JoinColumn(name="location_id")
    protected Location location;
-   @Enumerated(EnumType.ORDINAL)
-   protected Gender gender;
    @ManyToMany(fetch = FetchType.EAGER)
    @JoinTable(name = "user_role",
            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-   private List<Role> roles;
+   private Set<Role> roles;
 
    @Override
    public boolean isEnabled() {
       return enabled;
-   }
-
-   public void setEnabled(boolean enabled) {
-      this.enabled = enabled;
    }
 
    @Override

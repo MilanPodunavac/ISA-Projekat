@@ -18,8 +18,8 @@ public class FishingInstructorReservation extends Reservation {
    @Enumerated(EnumType.ORDINAL)
    @CollectionTable(name="fishingInstructorReservation_tags")
    @Column(name="tags")
-   private List<FishingInstructorReservationTag> fishingInstructorReservationTag;
-   @ManyToOne
+   private Set<FishingInstructorReservationTag> fishingInstructorReservationTag;
+   @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "fishingTrip_id")
    private FishingTrip fishingTrip;
 }
