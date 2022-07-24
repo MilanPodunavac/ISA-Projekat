@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ClientServiceImpl implements ClientService {
-    private ClientRepository clientRepository;
-    private PasswordEncoder passwordEncoder;
-    private RoleService roleService;
+    private final ClientRepository clientRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final RoleService roleService;
 
     @Autowired
     public ClientServiceImpl(ClientRepository clientRepository, PasswordEncoder passwordEncoder, RoleService roleService) {

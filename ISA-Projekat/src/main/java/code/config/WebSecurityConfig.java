@@ -22,9 +22,9 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    private TokenUtils tokenUtils;
-    private CustomUserDetailsService customUserDetailsService;
-    private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+    private final TokenUtils tokenUtils;
+    private final CustomUserDetailsService customUserDetailsService;
+    private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
     @Autowired
     public WebSecurityConfig(TokenUtils tokenUtils, CustomUserDetailsService customUserDetailsService, RestAuthenticationEntryPoint restAuthenticationEntryPoint) {

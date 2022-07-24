@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/user")
 @CrossOrigin(origins = "http://localhost:4200")
 public class UserController extends BaseController {
-    private TokenUtils tokenUtils;
-    private AuthenticationManager authenticationManager;
+    private final TokenUtils tokenUtils;
+    private final AuthenticationManager authenticationManager;
 
     @Autowired
     public UserController(ModelMapper mapper, TokenUtils tokenUtils, AuthenticationManager authenticationManager) {

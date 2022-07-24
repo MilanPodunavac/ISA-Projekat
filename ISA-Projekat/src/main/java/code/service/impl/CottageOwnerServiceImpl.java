@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CottageOwnerServiceImpl implements CottageOwnerService {
-    private CottageOwnerRepository cottageOwnerRepository;
-    private PasswordEncoder passwordEncoder;
-    private RoleService roleService;
+    private final CottageOwnerRepository cottageOwnerRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final RoleService roleService;
 
     @Autowired
     public CottageOwnerServiceImpl(CottageOwnerRepository cottageOwnerRepository, PasswordEncoder passwordEncoder, RoleService roleService) {

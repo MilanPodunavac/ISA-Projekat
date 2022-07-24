@@ -13,9 +13,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AdminServiceImpl implements AdminService {
-    private AdminRepository adminRepository;
-    private PasswordEncoder passwordEncoder;
-    private RoleService roleService;
+    private final AdminRepository adminRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final RoleService roleService;
 
     @Autowired
     public AdminServiceImpl(AdminRepository adminRepository, PasswordEncoder passwordEncoder, RoleService roleService) {
