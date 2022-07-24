@@ -60,8 +60,8 @@ public class BoatOwnerServiceImpl implements BoatOwnerService {
         bo.setEnabled(false);
         bo.setReasonForRegistration(registrationRequest.getReasonForRegistration());
 
-        Set<Role> roles = new HashSet<>(roleService.findByName("ROLE_BOAT_OWNER"));
-        bo.setRoles(roles);
+        Role role = roleService.findByName("ROLE_BOAT_OWNER");
+        bo.setRole(role);
 
         return this.boatOwnerRepository.save(bo);
     }

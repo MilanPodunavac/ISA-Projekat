@@ -36,14 +36,12 @@ public abstract class User implements UserDetails {
    protected String phoneNumber;
    @Column
    private boolean enabled;
-   @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+   @OneToOne(fetch = FetchType.EAGER)
    @JoinColumn(name="location_id")
    protected Location location;
-   @ManyToMany(fetch = FetchType.EAGER)
-   @JoinTable(name = "user_role",
-           joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-           inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-   private Set<Role> roles;
+   @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+   @JoinColumn(name="role_id")
+   private Role role;
 
    @Override
    public boolean isEnabled() {
@@ -58,7 +56,9 @@ public abstract class User implements UserDetails {
    @JsonIgnore
    @Override
    public Collection<? extends GrantedAuthority> getAuthorities() {
-      return this.roles;
+      Set<Role> roles = new HashSet<>();
+      roles.add(this.role);
+      return roles;
    }
 
    @JsonIgnore

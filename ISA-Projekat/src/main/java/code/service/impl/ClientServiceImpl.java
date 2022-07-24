@@ -63,8 +63,8 @@ public class ClientServiceImpl implements ClientService {
         c.setPenaltyPoints(0);
         c.setBanned(false);
 
-        Set<Role> roles = new HashSet<>(roleService.findByName("ROLE_CLIENT"));
-        c.setRoles(roles);
+        Role role = roleService.findByName("ROLE_CLIENT");
+        c.setRole(role);
 
         return this.clientRepository.save(c);
     }

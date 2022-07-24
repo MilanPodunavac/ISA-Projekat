@@ -64,8 +64,8 @@ public class FishingInstructorServiceImpl implements FishingInstructorService {
         fi.setReasonForRegistration(registrationRequest.getReasonForRegistration());
         fi.setBiography(registrationRequest.getBiography());
 
-        Set<Role> roles = new HashSet<>(roleService.findByName("ROLE_FISHING_INSTRUCTOR"));
-        fi.setRoles(roles);
+        Role role = roleService.findByName("ROLE_FISHING_INSTRUCTOR");
+        fi.setRole(role);
 
         return this.fishingInstructorRepository.save(fi);
     }

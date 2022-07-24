@@ -7,5 +7,5 @@ import java.util.Set;
 
 public interface RoleService {
     Role findById(Integer id);
-    List<Role> findByName(String name);
+    Role findByName(String name);
 }

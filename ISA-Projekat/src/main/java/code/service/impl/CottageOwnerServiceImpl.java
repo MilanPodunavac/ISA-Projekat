@@ -60,8 +60,8 @@ public class CottageOwnerServiceImpl implements CottageOwnerService {
         co.setEnabled(false);
         co.setReasonForRegistration(registrationRequest.getReasonForRegistration());
 
-        Set<Role> roles = new HashSet<>(roleService.findByName("ROLE_COTTAGE_OWNER"));
-        co.setRoles(roles);
+        Role role = roleService.findByName("ROLE_COTTAGE_OWNER");
+        co.setRole(role);
 
         return this.cottageOwnerRepository.save(co);
     }

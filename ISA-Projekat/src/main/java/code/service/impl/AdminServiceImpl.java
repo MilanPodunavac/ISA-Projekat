@@ -60,8 +60,8 @@ public class AdminServiceImpl implements AdminService {
         a.setEnabled(false);
         a.setMainAdmin(false);
 
-        Set<Role> roles = new HashSet<>(roleService.findByName("ROLE_ADMIN"));
-        a.setRoles(roles);
+        Role role = roleService.findByName("ROLE_ADMIN");
+        a.setRole(role);
 
         return this.adminRepository.save(a);
     }
