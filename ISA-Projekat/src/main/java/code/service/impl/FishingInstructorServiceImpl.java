@@ -1,7 +1,6 @@
 package code.service.impl;
 
 import code.dto.RegistrationRequest;
-import code.model.CottageOwner;
 import code.model.FishingInstructor;
 import code.model.Location;
 import code.model.Role;
@@ -9,15 +8,8 @@ import code.repository.FishingInstructorRepository;
 import code.service.FishingInstructorService;
 import code.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Service
 public class FishingInstructorServiceImpl implements FishingInstructorService {
@@ -30,19 +22,6 @@ public class FishingInstructorServiceImpl implements FishingInstructorService {
 
     @Autowired
     private RoleService roleService;
-
-    @Override
-    public FishingInstructor findByEmail(String email) throws UsernameNotFoundException {
-        return fishingInstructorRepository.findByEmail(email);
-    }
-
-    public FishingInstructor findById(Integer id) {
-        return fishingInstructorRepository.findById(id).orElseGet(null);
-    }
-
-    public List<FishingInstructor> findAll() {
-        return fishingInstructorRepository.findAll();
-    }
 
     @Override
     public FishingInstructor save(RegistrationRequest registrationRequest) {

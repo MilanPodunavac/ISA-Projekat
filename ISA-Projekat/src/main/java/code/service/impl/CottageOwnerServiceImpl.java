@@ -6,15 +6,8 @@ import code.repository.CottageOwnerRepository;
 import code.service.CottageOwnerService;
 import code.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Service
 public class CottageOwnerServiceImpl implements CottageOwnerService {
@@ -27,19 +20,6 @@ public class CottageOwnerServiceImpl implements CottageOwnerService {
 
     @Autowired
     private RoleService roleService;
-
-    @Override
-    public CottageOwner findByEmail(String email) throws UsernameNotFoundException {
-        return cottageOwnerRepository.findByEmail(email);
-    }
-
-    public CottageOwner findById(Integer id) {
-        return cottageOwnerRepository.findById(id).orElseGet(null);
-    }
-
-    public List<CottageOwner> findAll() {
-        return cottageOwnerRepository.findAll();
-    }
 
     @Override
     public CottageOwner save(RegistrationRequest registrationRequest) {

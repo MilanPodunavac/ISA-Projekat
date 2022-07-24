@@ -4,10 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Proxy;
 
 import javax.persistence.*;
-import java.util.*;
 @Getter
 @Setter
 @AllArgsConstructor

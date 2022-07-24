@@ -8,13 +8,8 @@ import code.repository.AdminRepository;
 import code.service.AdminService;
 import code.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -27,19 +22,6 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private RoleService roleService;
-
-    @Override
-    public Admin findByEmail(String email) throws UsernameNotFoundException {
-        return adminRepository.findByEmail(email);
-    }
-
-    public Admin findById(Integer id) {
-        return adminRepository.findById(id).orElseGet(null);
-    }
-
-    public List<Admin> findAll() {
-        return adminRepository.findAll();
-    }
 
     @Override
     public Admin save(RegistrationRequest registrationRequest) {

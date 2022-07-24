@@ -6,15 +6,8 @@ import code.repository.BoatOwnerRepository;
 import code.service.BoatOwnerService;
 import code.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Service
 public class BoatOwnerServiceImpl implements BoatOwnerService {
@@ -27,19 +20,6 @@ public class BoatOwnerServiceImpl implements BoatOwnerService {
 
     @Autowired
     private RoleService roleService;
-
-    @Override
-    public BoatOwner findByEmail(String email) throws UsernameNotFoundException {
-        return boatOwnerRepository.findByEmail(email);
-    }
-
-    public BoatOwner findById(Integer id) {
-        return boatOwnerRepository.findById(id).orElseGet(null);
-    }
-
-    public List<BoatOwner> findAll() {
-        return boatOwnerRepository.findAll();
-    }
 
     @Override
     public BoatOwner save(RegistrationRequest registrationRequest) {
