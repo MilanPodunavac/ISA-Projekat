@@ -13,15 +13,16 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AdminServiceImpl implements AdminService {
-
-    @Autowired
     private AdminRepository adminRepository;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
+    private RoleService roleService;
 
     @Autowired
-    private RoleService roleService;
+    public AdminServiceImpl(AdminRepository adminRepository, PasswordEncoder passwordEncoder, RoleService roleService) {
+        this.adminRepository = adminRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.roleService = roleService;
+    }
 
     @Override
     public Admin save(RegistrationRequest registrationRequest) {

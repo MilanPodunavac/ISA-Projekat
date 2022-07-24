@@ -22,16 +22,21 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+    private TokenUtils tokenUtils;
+    private CustomUserDetailsService customUserDetailsService;
+    private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+
+    @Autowired
+    public WebSecurityConfig(TokenUtils tokenUtils, CustomUserDetailsService customUserDetailsService, RestAuthenticationEntryPoint restAuthenticationEntryPoint) {
+        this.tokenUtils = tokenUtils;
+        this.customUserDetailsService = customUserDetailsService;
+        this.restAuthenticationEntryPoint = restAuthenticationEntryPoint;
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-    @Autowired
-    private CustomUserDetailsService customUserDetailsService;
-
-    @Autowired
-    private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
     @Bean
     @Override
@@ -44,9 +49,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(customUserDetailsService)
                 .passwordEncoder(new BCryptPasswordEncoder());
     }
-
-    @Autowired
-    private TokenUtils tokenUtils;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

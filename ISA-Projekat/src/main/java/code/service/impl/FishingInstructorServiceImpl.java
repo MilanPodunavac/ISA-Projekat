@@ -13,15 +13,16 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class FishingInstructorServiceImpl implements FishingInstructorService {
-
-    @Autowired
     private FishingInstructorRepository fishingInstructorRepository;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
+    private RoleService roleService;
 
     @Autowired
-    private RoleService roleService;
+    public FishingInstructorServiceImpl(FishingInstructorRepository fishingInstructorRepository, PasswordEncoder passwordEncoder, RoleService roleService) {
+        this.fishingInstructorRepository = fishingInstructorRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.roleService = roleService;
+    }
 
     @Override
     public FishingInstructor save(RegistrationRequest registrationRequest) {

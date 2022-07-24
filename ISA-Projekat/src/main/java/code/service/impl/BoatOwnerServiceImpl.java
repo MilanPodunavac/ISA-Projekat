@@ -11,15 +11,16 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class BoatOwnerServiceImpl implements BoatOwnerService {
-
-    @Autowired
     private BoatOwnerRepository boatOwnerRepository;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
+    private RoleService roleService;
 
     @Autowired
-    private RoleService roleService;
+    public BoatOwnerServiceImpl(BoatOwnerRepository boatOwnerRepository, PasswordEncoder passwordEncoder, RoleService roleService) {
+        this.boatOwnerRepository = boatOwnerRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.roleService = roleService;
+    }
 
     @Override
     public BoatOwner save(RegistrationRequest registrationRequest) {
