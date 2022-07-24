@@ -36,7 +36,7 @@ public abstract class Reservation {
    protected Client client;
    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    @JoinColumn(name = "reservationDiscount_id")
-   protected Collection<ReservationDiscount> reservationDiscount;
+   protected Set<ReservationDiscount> reservationDiscount;
    @Enumerated(EnumType.ORDINAL)
    protected ReservationStatus reservationStatus;
 

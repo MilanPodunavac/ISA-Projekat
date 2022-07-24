@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.*;
 @Getter
 @Setter
 @AllArgsConstructor
@@ -22,8 +21,6 @@ public class Location {
    private double latitude;
    @Column
    private String streetName;
-   @Column
-   private String streetNumber;
    @Column
    private String cityName;
    @Column

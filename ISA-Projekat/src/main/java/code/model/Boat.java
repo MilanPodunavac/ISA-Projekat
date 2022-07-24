@@ -28,9 +28,5 @@ public class Boat extends SaleEntity {
    @JoinColumn(name = "user_id")
    private BoatOwner boatOwner;
    @OneToMany(mappedBy = "boat", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-   private List<BoatReservation> boatReservation;
-
-   private BoatOwner getBoatOwner() {
-      return boatOwner;
-   }
+   private Set<BoatReservation> boatReservation;
 }

@@ -24,12 +24,17 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterProviderComponent } from './components/register-provider/register-provider.component';
 import { AppRoutingModule } from './app-routing.module';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { TokenInterceptor } from './interceptor/token-interceptor';
+import { MaterialModule } from './angular-material/material.module';
+import { FormsModule } from '@angular/forms';
+import { UserService } from './service/user.service';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    RegisterProviderComponent
+    RegisterProviderComponent,
   ],
   imports: [
     BrowserModule,
@@ -50,8 +55,18 @@ import { AppRoutingModule } from './app-routing.module';
     MdbTooltipModule,
     MdbValidationModule,
     AppRoutingModule,
+    MaterialModule,
+    FormsModule,
+    HttpClientModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    },
+    UserService,
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

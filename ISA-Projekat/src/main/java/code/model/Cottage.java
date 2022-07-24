@@ -22,6 +22,6 @@ public class Cottage extends SaleEntity {
    @JoinColumn(name = "cottageOwner_id")
    private CottageOwner cottageOwner;
    @OneToMany(mappedBy = "cottage", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-   private List<CottageReservation> cottageReservation;
+   private Set<CottageReservation> cottageReservation;
 
 }

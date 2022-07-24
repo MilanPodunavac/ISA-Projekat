@@ -7,16 +7,16 @@
 						<h3 class="mb-3">Sign in</h3>
 
 						<mdb-form-control class="mb-3">
-							<input mdbInput type="text" id="formEmail" class="form-control" />
+							<input mdbInput name="inputEmail" [(ngModel)]="inputEmail" type="text" id="formEmail" class="form-control" />
 							<label mdbLabel class="form-label" for="formEmail">Email</label>
 						</mdb-form-control>
 
 						<mdb-form-control class="mb-4">
-							<input mdbInput type="password" id="formPassword" class="form-control" />
+							<input mdbInput name="inputPassword" [(ngModel)]="inputPassword" type="password" id="formPassword" class="form-control" />
 							<label mdbLabel class="form-label" for="formPassword">Password</label>
 						</mdb-form-control>
 
-						<button class="btn btn-primary btn-lg btn-block w-50 offset-3">Login</button>
+						<button (click)="login()" class="btn btn-primary btn-lg btn-block w-50 offset-3">Login</button>
           			</div>
         		</div>
       		</div>

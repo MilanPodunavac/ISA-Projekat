@@ -16,10 +16,10 @@ import java.util.*;
 public class FishingTrip extends SaleEntity {
    @Column
    private int maxPeople;
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "fishingInstructor_id")
    private FishingInstructor fishingInstructor;
    @OneToMany(mappedBy = "fishingTrip", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-   private List<FishingInstructorReservation> fishingInstructorReservation;
+   private Set<FishingInstructorReservation> fishingInstructorReservation;
 
 }
