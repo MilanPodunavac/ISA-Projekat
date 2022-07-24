@@ -24,27 +24,17 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterProviderComponent } from './components/register-provider/register-provider.component';
 import { AppRoutingModule } from './app-routing.module';
-import { HomeComponent } from './components/home/home.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TokenInterceptor } from './interceptor/token-interceptor';
-import { FooService } from './service/foo.service';
-import { AuthService } from './service/auth.service';
-import { ApiService } from './service/api.service';
-import { UserService } from './service/user.service';
-import { ConfigService } from './service/config.service';
-import { CardComponent } from './components/card/card.component';
 import { MaterialModule } from './angular-material/material.module';
 import { FormsModule } from '@angular/forms';
-import { HeaderComponent } from './components/header/header.component';
+import { UserService } from './service/user.service';
 
 @NgModule({
   declarations: [
     AppComponent,
-    CardComponent,
     LoginComponent,
     RegisterProviderComponent,
-    HomeComponent, 
-    HeaderComponent,
   ],
   imports: [
     BrowserModule,
@@ -75,11 +65,7 @@ import { HeaderComponent } from './components/header/header.component';
       useClass: TokenInterceptor,
       multi: true
     },
-    FooService,
-    AuthService,
-    ApiService,
     UserService,
-    ConfigService,
   ],
   bootstrap: [AppComponent]
 })

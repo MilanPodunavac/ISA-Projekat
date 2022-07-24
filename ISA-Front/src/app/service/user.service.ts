@@ -1,31 +1,27 @@
-import {Injectable} from '@angular/core';
-import {ApiService} from './api.service';
-import {ConfigService} from './config.service';
-import {map} from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { LoginUser } from '../model/login-user';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
+  private loginUrl: string;
 
-  currentUser;
-
-  constructor(
-    private apiService: ApiService,
-    private config: ConfigService
-  ) {
+  constructor(private http: HttpClient) {
+    this.loginUrl = 'http://localhost:8080/ISA/user/login';
   }
 
-  getMyInfo() {
-    return this.apiService.get(this.config.whoami_url)
-      .pipe(map(user => {
-        this.currentUser = user;
-        return user;
-      }));
+  public login(user: LoginUser): Observable<any> {
+    return this.http.post<any>(this.loginUrl, user);
   }
 
-  getAll() {
-    return this.apiService.get(this.config.users_url);
+  tokenIsPresent() {
+    return localStorage.getItem('jwt') != undefined && localStorage.getItem('jwt') != null;
   }
 
+  getToken() {
+    return localStorage.getItem('jwt');
+  }
 }

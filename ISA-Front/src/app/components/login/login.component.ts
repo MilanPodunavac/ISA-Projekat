@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoginUser } from 'src/app/model/login-user';
-import { AuthService } from 'src/app/service/auth.service';
+import { UserService } from 'src/app/service/user.service';
 
 @Component({
   selector: 'app-login',
@@ -12,7 +12,7 @@ export class LoginComponent implements OnInit {
   inputEmail: string = "";
   inputPassword: string = "";
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(private userService: UserService, private router: Router) { }
 
   ngOnInit(): void {
   }
@@ -22,9 +22,10 @@ export class LoginComponent implements OnInit {
     loginUser.email = this.inputEmail;
     loginUser.password = this.inputPassword;
 
-    this.authService.login(loginUser)
+    this.userService.login(loginUser)
       .subscribe(data => {
-        this.router.navigate(['/']);
+        localStorage.clear();
+        localStorage.setItem("jwt", data.accessToken)
       });
   }
 }
