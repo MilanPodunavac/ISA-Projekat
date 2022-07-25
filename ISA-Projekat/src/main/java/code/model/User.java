@@ -20,7 +20,7 @@ import javax.persistence.*;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class User implements UserDetails {
    @Id
-   @SequenceGenerator(name = "userSeqGen", sequenceName = "userSeq", initialValue = 1, allocationSize = 1)
+   @SequenceGenerator(name = "userSeqGen", sequenceName = "userSeq", initialValue = 2, allocationSize = 1)
    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userSeqGen")
    protected Integer id;
    @Column
@@ -35,10 +35,10 @@ public abstract class User implements UserDetails {
    protected String phoneNumber;
    @Column
    private boolean enabled;
-   @OneToOne(fetch = FetchType.EAGER)
+   @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    @JoinColumn(name="location_id")
    protected Location location;
-   @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+   @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
    @JoinColumn(name="role_id")
    private Role role;
 

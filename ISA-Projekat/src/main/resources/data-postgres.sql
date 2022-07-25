@@ -1,3 +1,5 @@
+-- svi korisnici imaju lozinku 123
+
 INSERT INTO ROLE (name) VALUES ('ROLE_ADMIN');
 INSERT INTO ROLE (name) VALUES ('ROLE_CLIENT');
 INSERT INTO ROLE (name) VALUES ('ROLE_COTTAGE_OWNER');
