@@ -4,5 +4,5 @@ import code.dto.RegistrationRequest;
 import code.model.BoatOwner;
 
 public interface BoatOwnerService {
-    BoatOwner save(RegistrationRequest registrationRequest);
+    BoatOwner save(BoatOwner boatOwner);
 }

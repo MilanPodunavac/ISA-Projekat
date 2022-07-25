@@ -23,28 +23,18 @@ public class CottageOwnerServiceImpl implements CottageOwnerService {
     }
 
     @Override
-    public CottageOwner save(RegistrationRequest registrationRequest) {
-        CottageOwner co = new CottageOwner();
+    public CottageOwner save(CottageOwner cottageOwner) {
         Location l = new Location();
-        co.setEmail(registrationRequest.getEmail());
-        co.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
-
-        co.setFirstName(registrationRequest.getFirstName());
-        co.setLastName(registrationRequest.getLastName());
-        co.setPhoneNumber(registrationRequest.getPhoneNumber());
-        l.setStreetName(registrationRequest.getAddress());
-        l.setCityName(registrationRequest.getCity());
-        l.setCountryName(registrationRequest.getCountry());
+        cottageOwner.setPassword(passwordEncoder.encode(cottageOwner.getPassword()));
         l.setLatitude(0);
         l.setLongitude(0);
-        co.setLocation(l);
-        co.setEnabled(false);
-        co.setReasonForRegistration(registrationRequest.getReasonForRegistration());
+        cottageOwner.setLocation(l);
+        cottageOwner.setEnabled(false);
 
         Role role = roleService.findByName("ROLE_COTTAGE_OWNER");
-        co.setRole(role);
+        cottageOwner.setRole(role);
 
-        return this.cottageOwnerRepository.save(co);
+        return this.cottageOwnerRepository.save(cottageOwner);
     }
 
 }

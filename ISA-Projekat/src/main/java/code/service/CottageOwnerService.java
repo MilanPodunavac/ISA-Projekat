@@ -4,5 +4,5 @@ import code.dto.RegistrationRequest;
 import code.model.CottageOwner;
 
 public interface CottageOwnerService {
-    CottageOwner save(RegistrationRequest registrationRequest);
+    CottageOwner save(CottageOwner cottageOwner);
 }

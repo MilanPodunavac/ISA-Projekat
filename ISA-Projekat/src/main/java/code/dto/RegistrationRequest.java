@@ -1,5 +1,6 @@
 package code.dto;
 
+import code.dto.enums.UserTypeDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,4 +21,5 @@ public class RegistrationRequest {
     private String country;
     private String reasonForRegistration;
     private String biography;
+    private UserTypeDto userType;
 }

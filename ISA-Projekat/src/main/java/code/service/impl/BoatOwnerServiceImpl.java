@@ -23,28 +23,18 @@ public class BoatOwnerServiceImpl implements BoatOwnerService {
     }
 
     @Override
-    public BoatOwner save(RegistrationRequest registrationRequest) {
-        BoatOwner bo = new BoatOwner();
+    public BoatOwner save(BoatOwner boatOwner) {
         Location l = new Location();
-        bo.setEmail(registrationRequest.getEmail());
-        bo.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
-
-        bo.setFirstName(registrationRequest.getFirstName());
-        bo.setLastName(registrationRequest.getLastName());
-        bo.setPhoneNumber(registrationRequest.getPhoneNumber());
-        l.setStreetName(registrationRequest.getAddress());
-        l.setCityName(registrationRequest.getCity());
-        l.setCountryName(registrationRequest.getCountry());
+        boatOwner.setPassword(passwordEncoder.encode(boatOwner.getPassword()));
         l.setLatitude(0);
         l.setLongitude(0);
-        bo.setLocation(l);
-        bo.setEnabled(false);
-        bo.setReasonForRegistration(registrationRequest.getReasonForRegistration());
+        boatOwner.setLocation(l);
+        boatOwner.setEnabled(false);
 
         Role role = roleService.findByName("ROLE_BOAT_OWNER");
-        bo.setRole(role);
+        boatOwner.setRole(role);
 
-        return this.boatOwnerRepository.save(bo);
+        return this.boatOwnerRepository.save(boatOwner);
     }
 
 }
