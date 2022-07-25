@@ -9,10 +9,12 @@ import code.service.CottageOwnerService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/registration")
@@ -29,12 +31,20 @@ public class RegistrationController extends BaseController {
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> RegisterUser(RegistrationRequest dto){
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<String> RegisterUser(@Valid @RequestBody RegistrationRequest dto, BindingResult result){
+        if(result.hasErrors()){
+            return formatErrorResponse(result);
+        }
         switch(dto.getUserType()){
             case BoatOwner:
                 _boatOwnerService.save(_mapper.map(dto, BoatOwner.class));
+                break;
             case CottageOwner:
                 _cottageOwnerService.save(_mapper.map(dto, CottageOwner.class));
+                break;
+            default:
+
         }
         return ResponseEntity.ok("Registration request has been sent to admin to approve!");
     }

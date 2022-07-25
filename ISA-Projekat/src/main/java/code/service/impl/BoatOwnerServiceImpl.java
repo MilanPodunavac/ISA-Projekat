@@ -24,11 +24,7 @@ public class BoatOwnerServiceImpl implements BoatOwnerService {
 
     @Override
     public BoatOwner save(BoatOwner boatOwner) {
-        Location l = new Location();
         boatOwner.setPassword(passwordEncoder.encode(boatOwner.getPassword()));
-        l.setLatitude(0);
-        l.setLongitude(0);
-        boatOwner.setLocation(l);
         boatOwner.setEnabled(false);
 
         Role role = roleService.findByName("ROLE_BOAT_OWNER");

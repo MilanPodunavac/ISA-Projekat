@@ -38,6 +38,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/swagger-ui/**",
             "/user/login",
             "/fishing-instructor/register",
+            "/api/registration",
             "/swagger-ui"
     };
 
