@@ -1,6 +1,6 @@
 package code.service.impl;
 
-import code.dto.RegistrationRequest;
+import code.dto.ProviderRegistrationRequest;
 import code.model.Admin;
 import code.model.Location;
 import code.model.Role;
@@ -13,40 +13,39 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AdminServiceImpl implements AdminService {
-    private final AdminRepository adminRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final RoleService roleService;
+    private final AdminRepository _adminRepository;
+    private final PasswordEncoder _passwordEncoder;
+    private final RoleService _roleService;
 
-    @Autowired
     public AdminServiceImpl(AdminRepository adminRepository, PasswordEncoder passwordEncoder, RoleService roleService) {
-        this.adminRepository = adminRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.roleService = roleService;
+        this._adminRepository = adminRepository;
+        this._passwordEncoder = passwordEncoder;
+        this._roleService = roleService;
     }
 
     @Override
-    public Admin save(RegistrationRequest registrationRequest) {
+    public void save(ProviderRegistrationRequest providerRegistrationRequest) {
         Admin a = new Admin();
         Location l = new Location();
-        a.setEmail(registrationRequest.getEmail());
-        a.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
+        a.setEmail(providerRegistrationRequest.getEmail());
+        a.setPassword(_passwordEncoder.encode(providerRegistrationRequest.getPassword()));
 
-        a.setFirstName(registrationRequest.getFirstName());
-        a.setLastName(registrationRequest.getLastName());
-        a.setPhoneNumber(registrationRequest.getPhoneNumber());
-        l.setStreetName(registrationRequest.getAddress());
-        l.setCityName(registrationRequest.getCity());
-        l.setCountryName(registrationRequest.getCountry());
+        a.setFirstName(providerRegistrationRequest.getFirstName());
+        a.setLastName(providerRegistrationRequest.getLastName());
+        a.setPhoneNumber(providerRegistrationRequest.getPhoneNumber());
+        l.setStreetName(providerRegistrationRequest.getAddress());
+        l.setCityName(providerRegistrationRequest.getCity());
+        l.setCountryName(providerRegistrationRequest.getCountry());
         l.setLatitude(0);
         l.setLongitude(0);
         a.setLocation(l);
         a.setEnabled(false);
         a.setMainAdmin(false);
 
-        Role role = roleService.findByName("ROLE_ADMIN");
+        Role role = _roleService.findByName("ROLE_ADMIN");
         a.setRole(role);
 
-        return this.adminRepository.save(a);
+        this._adminRepository.save(a);
     }
 
 }

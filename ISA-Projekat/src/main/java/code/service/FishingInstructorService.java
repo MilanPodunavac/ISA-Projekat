@@ -1,8 +1,8 @@
 package code.service;
 
-import code.dto.RegistrationRequest;
+import code.dto.ProviderRegistrationRequest;
 import code.model.FishingInstructor;
 
 public interface FishingInstructorService {
-    boolean save(RegistrationRequest registrationRequest);
+    void save(FishingInstructor fishingInstructor);
 }

@@ -20,7 +20,7 @@ import javax.persistence.*;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class User implements UserDetails {
    @Id
-   @SequenceGenerator(name = "userSeqGen", sequenceName = "userSeq", initialValue = 2, allocationSize = 1)
+   @SequenceGenerator(name = "userSeqGen", sequenceName = "userSeq", initialValue = 6, allocationSize = 1)
    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userSeqGen")
    protected Integer id;
    @Column

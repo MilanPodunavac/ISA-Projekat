@@ -1,6 +1,6 @@
 package code.service.impl;
 
-import code.dto.RegistrationRequest;
+import code.dto.ProviderRegistrationRequest;
 import code.model.*;
 import code.repository.ClientRepository;
 import code.service.ClientService;
@@ -23,18 +23,18 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Client save(RegistrationRequest registrationRequest) {
+    public Client save(ProviderRegistrationRequest providerRegistrationRequest) {
         Client c = new Client();
         Location l = new Location();
-        c.setEmail(registrationRequest.getEmail());
-        c.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
+        c.setEmail(providerRegistrationRequest.getEmail());
+        c.setPassword(passwordEncoder.encode(providerRegistrationRequest.getPassword()));
 
-        c.setFirstName(registrationRequest.getFirstName());
-        c.setLastName(registrationRequest.getLastName());
-        c.setPhoneNumber(registrationRequest.getPhoneNumber());
-        l.setStreetName(registrationRequest.getAddress());
-        l.setCityName(registrationRequest.getCity());
-        l.setCountryName(registrationRequest.getCountry());
+        c.setFirstName(providerRegistrationRequest.getFirstName());
+        c.setLastName(providerRegistrationRequest.getLastName());
+        c.setPhoneNumber(providerRegistrationRequest.getPhoneNumber());
+        l.setStreetName(providerRegistrationRequest.getAddress());
+        l.setCityName(providerRegistrationRequest.getCity());
+        l.setCountryName(providerRegistrationRequest.getCountry());
         l.setLatitude(0);
         l.setLongitude(0);
         c.setLocation(l);

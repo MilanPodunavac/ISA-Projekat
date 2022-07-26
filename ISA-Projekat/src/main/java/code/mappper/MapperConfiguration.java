@@ -1,14 +1,12 @@
 package code.mappper;
 
-import code.dto.RegistrationRequest;
+import code.dto.ProviderRegistrationRequest;
 import code.model.*;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.modelmapper.TypeMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.Locale;
 
 @Configuration
 public class MapperConfiguration {
@@ -39,20 +37,20 @@ public class MapperConfiguration {
         modelMapper.addMappings(boatOwnerRegistrationPropertyMap);
         modelMapper.addMappings(fishingInstructorRegistrationPropertyMap);
         modelMapper.addMappings(cottageOwnerRegistrationPropertyMap);*/
-        PropertyMap<RegistrationRequest, User> userRegistrationPropertyMap = new PropertyMap<RegistrationRequest, User>(){
+        PropertyMap<ProviderRegistrationRequest, User> userRegistrationPropertyMap = new PropertyMap<ProviderRegistrationRequest, User>(){
             protected void configure(){
                 map().getLocation().setCityName(source.getCity());
                 map().getLocation().setCountryName(source.getCountry());
                 map().getLocation().setStreetName(source.getAddress());
             }
         };
-        TypeMap<RegistrationRequest, User> userRegMap = modelMapper.createTypeMap(RegistrationRequest.class, User.class);
+        TypeMap<ProviderRegistrationRequest, User> userRegMap = modelMapper.createTypeMap(ProviderRegistrationRequest.class, User.class);
         userRegMap.addMappings(userRegistrationPropertyMap);
-        modelMapper.createTypeMap(RegistrationRequest.class, BoatOwner.class).includeBase(RegistrationRequest.class, User.class);
-        modelMapper.createTypeMap(RegistrationRequest.class, CottageOwner.class).includeBase(RegistrationRequest.class, User.class);
-        modelMapper.createTypeMap(RegistrationRequest.class, FishingInstructor.class).includeBase(RegistrationRequest.class, User.class);
-        modelMapper.createTypeMap(RegistrationRequest.class, Client.class).includeBase(RegistrationRequest.class, User.class);
-        modelMapper.createTypeMap(RegistrationRequest.class, Admin.class).includeBase(RegistrationRequest.class, User.class);
+        modelMapper.createTypeMap(ProviderRegistrationRequest.class, BoatOwner.class).includeBase(ProviderRegistrationRequest.class, User.class);
+        modelMapper.createTypeMap(ProviderRegistrationRequest.class, CottageOwner.class).includeBase(ProviderRegistrationRequest.class, User.class);
+        modelMapper.createTypeMap(ProviderRegistrationRequest.class, FishingInstructor.class).includeBase(ProviderRegistrationRequest.class, User.class);
+        modelMapper.createTypeMap(ProviderRegistrationRequest.class, Client.class).includeBase(ProviderRegistrationRequest.class, User.class);
+        modelMapper.createTypeMap(ProviderRegistrationRequest.class, Admin.class).includeBase(ProviderRegistrationRequest.class, User.class);
         return modelMapper;
     }
 }

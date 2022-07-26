@@ -1,6 +1,5 @@
 package code.service.impl;
 
-import code.dto.RegistrationRequest;
 import code.model.*;
 import code.repository.CottageOwnerRepository;
 import code.service.CottageOwnerService;
@@ -24,11 +23,7 @@ public class CottageOwnerServiceImpl implements CottageOwnerService {
 
     @Override
     public CottageOwner save(CottageOwner cottageOwner) {
-        Location l = new Location();
         cottageOwner.setPassword(passwordEncoder.encode(cottageOwner.getPassword()));
-        l.setLatitude(0);
-        l.setLongitude(0);
-        cottageOwner.setLocation(l);
         cottageOwner.setEnabled(false);
 
         Role role = roleService.findByName("ROLE_COTTAGE_OWNER");

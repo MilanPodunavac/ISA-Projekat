@@ -6,11 +6,11 @@ import { LoginUser } from '../model/login-user';
 @Injectable({
   providedIn: 'root'
 })
-export class UserService {
+export class AuthService {
   private loginUrl: string;
 
   constructor(private http: HttpClient) {
-    this.loginUrl = 'http://localhost:8080/ISA/user/login';
+    this.loginUrl = 'http://localhost:8080/ISA/auth/login';
   }
 
   public login(user: LoginUser): Observable<any> {

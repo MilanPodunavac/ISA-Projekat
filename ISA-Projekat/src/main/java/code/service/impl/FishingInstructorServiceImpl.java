@@ -1,8 +1,6 @@
 package code.service.impl;
 
-import code.dto.RegistrationRequest;
 import code.model.FishingInstructor;
-import code.model.Location;
 import code.model.Role;
 import code.repository.FishingInstructorRepository;
 import code.repository.UserRepository;
@@ -14,48 +12,27 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class FishingInstructorServiceImpl implements FishingInstructorService {
-    private final FishingInstructorRepository fishingInstructorRepository;
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final RoleService roleService;
+    private final FishingInstructorRepository _fishingInstructorRepository;
+    private final UserRepository _userRepository;
+    private final PasswordEncoder _passwordEncoder;
+    private final RoleService _roleService;
 
-    @Autowired
     public FishingInstructorServiceImpl(UserRepository userRepository, FishingInstructorRepository fishingInstructorRepository, PasswordEncoder passwordEncoder, RoleService roleService) {
-        this.userRepository = userRepository;
-        this.fishingInstructorRepository = fishingInstructorRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.roleService = roleService;
+        this._userRepository = userRepository;
+        this._fishingInstructorRepository = fishingInstructorRepository;
+        this._passwordEncoder = passwordEncoder;
+        this._roleService = roleService;
     }
 
     @Override
-    public boolean save(RegistrationRequest registrationRequest) {
-        if (userRepository.findByEmail(registrationRequest.getEmail()) != null) {
-            return false;
-        }
+    public void save(FishingInstructor fishingInstructor) {
+        fishingInstructor.setPassword(_passwordEncoder.encode(fishingInstructor.getPassword()));
+        fishingInstructor.setEnabled(false);
 
-        FishingInstructor fi = new FishingInstructor();
-        Location l = new Location();
-        fi.setEmail(registrationRequest.getEmail());
-        fi.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
+        Role role = _roleService.findByName("ROLE_FISHING_INSTRUCTOR");
+        fishingInstructor.setRole(role);
 
-        fi.setFirstName(registrationRequest.getFirstName());
-        fi.setLastName(registrationRequest.getLastName());
-        fi.setPhoneNumber(registrationRequest.getPhoneNumber());
-        l.setStreetName(registrationRequest.getAddress());
-        l.setCityName(registrationRequest.getCity());
-        l.setCountryName(registrationRequest.getCountry());
-        l.setLatitude(0);
-        l.setLongitude(0);
-        fi.setLocation(l);
-        fi.setEnabled(false);
-        fi.setReasonForRegistration(registrationRequest.getReasonForRegistration());
-        fi.setBiography(registrationRequest.getBiography());
-
-        Role role = roleService.findByName("ROLE_FISHING_INSTRUCTOR");
-        fi.setRole(role);
-
-        fishingInstructorRepository.save(fi);
-        return true;
+        _fishingInstructorRepository.save(fishingInstructor);
     }
 
 }

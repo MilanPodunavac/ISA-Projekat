@@ -36,7 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/webjars/**",
             "/v3/api-docs/**",
             "/swagger-ui/**",
-            "/user/login",
+            "/auth/login",
             "/fishing-instructor/register",
             "/api/registration",
             "/swagger-ui"

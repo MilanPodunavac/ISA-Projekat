@@ -1,8 +1,8 @@
 package code.service;
 
-import code.dto.RegistrationRequest;
+import code.dto.ProviderRegistrationRequest;
 import code.model.Admin;
 
 public interface AdminService {
-    Admin save(RegistrationRequest registrationRequest);
+    void save(ProviderRegistrationRequest providerRegistrationRequest);
 }

@@ -1,8 +1,7 @@
 package code.dto.enums;
 
-public enum UserTypeDto {
+public enum ProviderTypeDto {
     BoatOwner,
     FishingInstructor,
-    CottageOwner,
-    Client
+    CottageOwner
 }

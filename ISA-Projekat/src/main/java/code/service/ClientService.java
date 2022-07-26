@@ -1,8 +1,8 @@
 package code.service;
 
-import code.dto.RegistrationRequest;
+import code.dto.ProviderRegistrationRequest;
 import code.model.Client;
 
 public interface ClientService {
-    Client save(RegistrationRequest registrationRequest);
+    Client save(ProviderRegistrationRequest providerRegistrationRequest);
 }

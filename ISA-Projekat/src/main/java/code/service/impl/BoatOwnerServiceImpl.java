@@ -1,6 +1,5 @@
 package code.service.impl;
 
-import code.dto.RegistrationRequest;
 import code.model.*;
 import code.repository.BoatOwnerRepository;
 import code.service.BoatOwnerService;

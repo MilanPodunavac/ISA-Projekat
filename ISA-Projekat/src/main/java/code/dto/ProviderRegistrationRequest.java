@@ -1,33 +1,30 @@
 package code.dto;
 
-import code.dto.enums.UserTypeDto;
+import code.dto.enums.ProviderTypeDto;
+import code.utils.EnumValidator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegistrationRequest {
+public class ProviderRegistrationRequest {
     @NotBlank(message = "First name is required")
     private String firstName;
     @NotBlank(message = "Last name is required")
     private String lastName;
     @NotBlank(message = "Email is required")
-    @Email(message = "Enter valid password")
+    @Email(message = "Enter valid email")
     private String email;
     @NotBlank(message = "Password is required")
     @Size(min = 3, message = "Password too short")
     private String password;
-    @NotBlank(message = "Adress is required")
+    @NotBlank(message = "Address is required")
     private String address;
     @NotBlank(message ="Phone number is required")
     @Size(min = 6, max = 12, message = "Enter valid phone number")
@@ -40,5 +37,6 @@ public class RegistrationRequest {
     private String reasonForRegistration;
     @NotBlank(message = "Biography is required")
     private String biography;
-    private UserTypeDto userType;
+    @EnumValidator(targetClassType = ProviderTypeDto.class, message = "Type of provider is required")
+    private String providerType;
 }
