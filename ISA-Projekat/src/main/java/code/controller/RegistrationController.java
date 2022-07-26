@@ -5,6 +5,7 @@ import code.dto.ProviderRegistrationRequest;
 import code.model.BoatOwner;
 import code.model.CottageOwner;
 import code.model.FishingInstructor;
+import code.model.User;
 import code.service.BoatOwnerService;
 import code.service.CottageOwnerService;
 import code.service.FishingInstructorService;
@@ -13,10 +14,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/registration")
@@ -35,7 +38,7 @@ public class RegistrationController extends BaseController {
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> RegisterUser(@Valid @RequestBody ProviderRegistrationRequest dto, BindingResult result){
+    public ResponseEntity<String> registerUser(@Valid @RequestBody ProviderRegistrationRequest dto, BindingResult result){
         if(result.hasErrors()){
             return formatErrorResponse(result);
         }
@@ -58,5 +61,25 @@ public class RegistrationController extends BaseController {
 
         }
         return ResponseEntity.ok("Registration request has been sent to admin to approve!");
+    }
+
+    @GetMapping(value = "/requests", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<User>> getRegistrationRequests(){
+        return ResponseEntity.ok(_userService.getUnverifiedProviders());
+    }
+
+    @PutMapping(value = "/accept-request/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> acceptRegistrationRequest(@PathVariable String email){
+        _userService.acceptRegistrationRequest(email);
+        return ResponseEntity.ok("Registration request accepted!");
+    }
+
+    @DeleteMapping(value = "/decline-request/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> declineRegistrationRequest(@PathVariable String email, @RequestBody String declineReason){
+        _userService.declineRegistrationRequest(email, declineReason);
+        return ResponseEntity.ok("Registration request declined: " + declineReason);
     }
 }
