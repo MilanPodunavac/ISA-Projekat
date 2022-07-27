@@ -1,12 +1,6 @@
 package code.service.impl;
 
-import code.model.BoatOwner;
-import code.model.CottageOwner;
-import code.model.FishingInstructor;
 import code.model.User;
-import code.repository.BoatOwnerRepository;
-import code.repository.CottageOwnerRepository;
-import code.repository.FishingInstructorRepository;
 import code.repository.UserRepository;
 import code.service.UserService;
 import org.springframework.mail.SimpleMailMessage;
@@ -14,23 +8,33 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository _userRepository;
-    private final CottageOwnerRepository _cottageOwnerRepository;
-    private final BoatOwnerRepository _boatOwnerRepository;
-    private final FishingInstructorRepository _fishingInstructorRepository;
     private final JavaMailSender _mailSender;
 
-    public UserServiceImpl(UserRepository userRepository, CottageOwnerRepository cottageOwnerRepository, BoatOwnerRepository boatOwnerRepository, FishingInstructorRepository fishingInstructorRepository, JavaMailSender mailSender) {
+    public UserServiceImpl(UserRepository userRepository, JavaMailSender mailSender) {
         this._userRepository = userRepository;
-        this._cottageOwnerRepository = cottageOwnerRepository;
-        this._boatOwnerRepository = boatOwnerRepository;
-        this._fishingInstructorRepository = fishingInstructorRepository;
         this._mailSender = mailSender;
+    }
+
+    @Override
+    public User findById(Integer id) {
+        return _userRepository.findById(id).orElseGet(null);
+    }
+
+    @Override
+    public boolean isUserEnabled(Integer id) {
+        User user = findById(id);
+        return user.isEnabled();
+    }
+
+    @Override
+    public boolean userExists(Integer id) {
+        Optional<User> user = _userRepository.findById(id);
+        return user.isPresent();
     }
 
     @Override
@@ -43,55 +47,33 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getUnverifiedProviders() {
-        List<User> cottageOwnersAndBoatOwners = Stream.concat(_cottageOwnerRepository.findByEnabled(false).stream(), _boatOwnerRepository.findByEnabled(false).stream())
-                .collect(Collectors.toList());
-        List<User> unverifiedProviders = Stream.concat(cottageOwnersAndBoatOwners.stream(), _fishingInstructorRepository.findByEnabled(false).stream())
-                .collect(Collectors.toList());
-        return unverifiedProviders;
+        return _userRepository.findByEnabled(false);
     }
 
     @Override
-    public void acceptRegistrationRequest(String email) {
+    public void acceptRegistrationRequest(Integer id) {
+        User user = findById(id);
+        user.setEnabled(true);
+        _userRepository.save(user);
+
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("marko76589@gmail.com");
-        message.setTo(email);
+        message.setTo(user.getEmail());
         message.setSubject("Registration request");
         message.setText("Registration request accepted!");
         _mailSender.send(message);
-
-        if (_cottageOwnerRepository.findByEmail(email) != null) {
-            CottageOwner cottageOwner = _cottageOwnerRepository.findByEmail(email);
-            cottageOwner.setEnabled(true);
-            _cottageOwnerRepository.save(cottageOwner);
-        } else if (_boatOwnerRepository.findByEmail(email) != null) {
-            BoatOwner boatOwner = _boatOwnerRepository.findByEmail(email);
-            boatOwner.setEnabled(true);
-            _boatOwnerRepository.save(boatOwner);
-        } else {
-            FishingInstructor fishingInstructor = _fishingInstructorRepository.findByEmail(email);
-            fishingInstructor.setEnabled(true);
-            _fishingInstructorRepository.save(fishingInstructor);
-        }
     }
 
     @Override
-    public void declineRegistrationRequest(String email, String declineReason) {
+    public void declineRegistrationRequest(Integer id, String declineReason) {
+        User user = findById(id);
+        _userRepository.delete(user);
+
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("marko76589@gmail.com");
-        message.setTo(email);
+        message.setTo(user.getEmail());
         message.setSubject("Registration request");
         message.setText("Registration request declined: " + declineReason);
         _mailSender.send(message);
-
-        if (_cottageOwnerRepository.findByEmail(email) != null) {
-            CottageOwner cottageOwner = _cottageOwnerRepository.findByEmail(email);
-            _cottageOwnerRepository.delete(cottageOwner);
-        } else if (_boatOwnerRepository.findByEmail(email) != null) {
-            BoatOwner boatOwner = _boatOwnerRepository.findByEmail(email);
-            _boatOwnerRepository.delete(boatOwner);
-        } else {
-            FishingInstructor fishingInstructor = _fishingInstructorRepository.findByEmail(email);
-            _fishingInstructorRepository.delete(fishingInstructor);
-        }
     }
 }

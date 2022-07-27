@@ -37,7 +37,7 @@ public class RegistrationController extends BaseController {
         this._fishingInstructorService = fishingInstructorService;
     }
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> registerUser(@Valid @RequestBody ProviderRegistrationRequest dto, BindingResult result){
         if(result.hasErrors()){
             return formatErrorResponse(result);
@@ -69,17 +69,29 @@ public class RegistrationController extends BaseController {
         return ResponseEntity.ok(_userService.getUnverifiedProviders());
     }
 
-    @PutMapping(value = "/accept-request/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping("/accept-request/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> acceptRegistrationRequest(@PathVariable String email){
-        _userService.acceptRegistrationRequest(email);
+    public ResponseEntity<String> acceptRegistrationRequest(@PathVariable Integer id){
+        if(!_userService.userExists(id)) {
+            return new ResponseEntity<>("User not found!", HttpStatus.NOT_FOUND);
+        }
+
+        _userService.acceptRegistrationRequest(id);
         return ResponseEntity.ok("Registration request accepted!");
     }
 
-    @DeleteMapping(value = "/decline-request/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping("/decline-request/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> declineRegistrationRequest(@PathVariable String email, @RequestBody String declineReason){
-        _userService.declineRegistrationRequest(email, declineReason);
+    public ResponseEntity<String> declineRegistrationRequest(@PathVariable Integer id, @RequestBody String declineReason){
+        if(!_userService.userExists(id)) {
+            return new ResponseEntity<>("User not found!", HttpStatus.NOT_FOUND);
+        }
+
+        if(_userService.isUserEnabled(id)) {
+            return new ResponseEntity<>("User account is already activated!", HttpStatus.CONFLICT);
+        }
+
+        _userService.declineRegistrationRequest(id, declineReason);
         return ResponseEntity.ok("Registration request declined: " + declineReason);
     }
 }
