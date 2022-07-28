@@ -1,7 +1,8 @@
 package code.service;
 
+import code.exceptions.registration.EmailTakenException;
 import code.model.BoatOwner;
 
 public interface BoatOwnerService {
-    BoatOwner save(BoatOwner boatOwner);
+    void save(BoatOwner boatOwner) throws EmailTakenException;
 }

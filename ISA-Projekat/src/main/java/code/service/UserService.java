@@ -1,15 +1,16 @@
 package code.service;
 
+import code.exceptions.registration.EmailTakenException;
+import code.exceptions.registration.UserAccountActivatedException;
+import code.exceptions.registration.UserNotFoundException;
 import code.model.User;
 
 import java.util.List;
 
 public interface UserService {
     User findById(Integer id);
-    boolean isUserEnabled(Integer id);
-    boolean userExists(Integer id);
-    boolean userExists(String email);
+    void throwExceptionIfEmailExists(String email) throws EmailTakenException;
     List<User> getUnverifiedProviders();
-    void acceptRegistrationRequest(Integer id);
-    void declineRegistrationRequest(Integer id, String declineReason);
+    void acceptRegistrationRequest(Integer id) throws UserNotFoundException, UserAccountActivatedException;
+    void declineRegistrationRequest(Integer id, String declineReason) throws UserNotFoundException, UserAccountActivatedException;
 }

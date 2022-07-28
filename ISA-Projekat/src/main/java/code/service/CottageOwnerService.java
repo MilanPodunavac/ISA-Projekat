@@ -1,7 +1,8 @@
 package code.service;
 
+import code.exceptions.registration.EmailTakenException;
 import code.model.CottageOwner;
 
 public interface CottageOwnerService {
-    CottageOwner save(CottageOwner cottageOwner);
+    void save(CottageOwner cottageOwner) throws EmailTakenException;
 }

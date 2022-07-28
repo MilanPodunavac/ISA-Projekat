@@ -2,6 +2,9 @@ package code.controller;
 
 import code.controller.base.BaseController;
 import code.dto.ProviderRegistrationRequest;
+import code.exceptions.registration.EmailTakenException;
+import code.exceptions.registration.UserAccountActivatedException;
+import code.exceptions.registration.UserNotFoundException;
 import code.model.BoatOwner;
 import code.model.CottageOwner;
 import code.model.FishingInstructor;
@@ -43,24 +46,23 @@ public class RegistrationController extends BaseController {
             return formatErrorResponse(result);
         }
 
-        if(_userService.userExists(dto.getEmail())) {
-            return new ResponseEntity<>("User with entered email already exists!", HttpStatus.CONFLICT);
+        try {
+            switch (dto.getProviderType()) {
+                case "BoatOwner":
+                    _boatOwnerService.save(_mapper.map(dto, BoatOwner.class));
+                    break;
+                case "CottageOwner":
+                    _cottageOwnerService.save(_mapper.map(dto, CottageOwner.class));
+                    break;
+                case "FishingInstructor":
+                    _fishingInstructorService.save(_mapper.map(dto, FishingInstructor.class));
+                    break;
+                default:
+            }
+            return ResponseEntity.ok("Registration request has been sent to admin to approve!");
+        } catch (EmailTakenException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
-
-        switch(dto.getProviderType()){
-            case "BoatOwner":
-                _boatOwnerService.save(_mapper.map(dto, BoatOwner.class));
-                break;
-            case "CottageOwner":
-                _cottageOwnerService.save(_mapper.map(dto, CottageOwner.class));
-                break;
-            case "FishingInstructor":
-                _fishingInstructorService.save(_mapper.map(dto, FishingInstructor.class));
-                break;
-            default:
-
-        }
-        return ResponseEntity.ok("Registration request has been sent to admin to approve!");
     }
 
     @GetMapping(value = "/requests", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -72,26 +74,26 @@ public class RegistrationController extends BaseController {
     @PutMapping("/accept-request/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> acceptRegistrationRequest(@PathVariable Integer id){
-        if(!_userService.userExists(id)) {
-            return new ResponseEntity<>("User not found!", HttpStatus.NOT_FOUND);
+        try {
+            _userService.acceptRegistrationRequest(id);
+            return ResponseEntity.ok("Registration request accepted!");
+        } catch (UserNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (UserAccountActivatedException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
-
-        _userService.acceptRegistrationRequest(id);
-        return ResponseEntity.ok("Registration request accepted!");
     }
 
     @DeleteMapping("/decline-request/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> declineRegistrationRequest(@PathVariable Integer id, @RequestBody String declineReason){
-        if(!_userService.userExists(id)) {
-            return new ResponseEntity<>("User not found!", HttpStatus.NOT_FOUND);
+        try {
+            _userService.declineRegistrationRequest(id, declineReason);
+            return ResponseEntity.ok("Registration request declined: " + declineReason);
+        } catch (UserNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (UserAccountActivatedException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
-
-        if(_userService.isUserEnabled(id)) {
-            return new ResponseEntity<>("User account is already activated!", HttpStatus.CONFLICT);
-        }
-
-        _userService.declineRegistrationRequest(id, declineReason);
-        return ResponseEntity.ok("Registration request declined: " + declineReason);
     }
 }
