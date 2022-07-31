@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -24,4 +25,6 @@ public class AvailabilityPeriod {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "saleEntity_id")
     private SaleEntity saleEntity;
+    @OneToMany(mappedBy = "availabilityPeriod", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<Reservation> reservations;
 }

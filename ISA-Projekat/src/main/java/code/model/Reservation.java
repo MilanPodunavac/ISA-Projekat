@@ -1,5 +1,6 @@
 package code.model;
 
+import code.model.wrappers.DateRange;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,10 +20,8 @@ public abstract class Reservation {
    @SequenceGenerator(name = "reservationSeqGen", sequenceName = "reservationSeq", initialValue = 1, allocationSize = 1)
    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "reservationSeqGen")
    protected Integer id;
-   @Column
-   protected Date startDate;
-   @Column
-   protected Date endDate;
+   @Embedded
+   protected DateRange dateRange;
    @Column
    protected int maxPeople;
    @Column
@@ -39,5 +38,8 @@ public abstract class Reservation {
    protected Set<ReservationDiscount> reservationDiscount;
    @Enumerated(EnumType.ORDINAL)
    protected ReservationStatus reservationStatus;
+   @ManyToOne(fetch = FetchType.EAGER)
+   @JoinColumn(name = "availabilityPeriod_id")
+   protected AvailabilityPeriod availabilityPeriod;
 
 }

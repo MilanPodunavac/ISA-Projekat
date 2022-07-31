@@ -34,4 +34,10 @@ public abstract class SaleEntity {
    protected Set<Review> review;
    @OneToMany(mappedBy = "saleEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    protected Set<AvailabilityPeriod> availabilityPeriods;
+
+   public boolean addAvailabilityPeriod (AvailabilityPeriod period){
+      period.setSaleEntity(this);
+      availabilityPeriods.add(period);
+      return true;
+   }
 }
