@@ -1,5 +1,6 @@
 package code.model;
 
+import code.model.wrappers.DateRange;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,4 +32,6 @@ public abstract class SaleEntity {
    protected Set<Client> client;
    @OneToMany(mappedBy = "saleEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    protected Set<Review> review;
+   @OneToMany(mappedBy = "saleEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+   protected Set<AvailabilityPeriod> availabilityPeriods;
 }
