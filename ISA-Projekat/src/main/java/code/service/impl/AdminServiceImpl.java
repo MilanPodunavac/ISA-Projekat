@@ -9,6 +9,7 @@ import code.service.AdminService;
 import code.service.RoleService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -47,4 +48,16 @@ public class AdminServiceImpl implements AdminService {
         this._adminRepository.save(a);
     }
 
+    @Transactional
+    @Override
+    public Admin changePersonalData(Admin admin) {
+        Admin adminFromDatabase = _adminRepository.getById(admin.getId());
+        adminFromDatabase.setFirstName(admin.getFirstName());
+        adminFromDatabase.setLastName(admin.getLastName());
+        adminFromDatabase.setPhoneNumber(admin.getPhoneNumber());
+        adminFromDatabase.getLocation().setCountryName(admin.getLocation().getCountryName());
+        adminFromDatabase.getLocation().setCityName(admin.getLocation().getCityName());
+        adminFromDatabase.getLocation().setStreetName(admin.getLocation().getStreetName());
+        return _adminRepository.save(adminFromDatabase);
+    }
 }

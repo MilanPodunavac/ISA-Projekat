@@ -15,6 +15,7 @@ public class RegistrationConstants {
     public static final String NEW_BIOGRAPHY = "ja sam milica";
     public static final String NEW_PROVIDER_TYPE = "FishingInstructor";
     public static final String DB_ROLE_NAME = "ROLE_FISHING_INSTRUCTOR";
+    public static final String DB_ROLE_NAME_ADMIN = "ROLE_ADMIN";
     public static final Integer DB_ROLE_ID = 1;
     public static final Integer DB_USER_ID_ACCEPT = 2;
     public static final Integer DB_USER_ID_DECLINE = 3;

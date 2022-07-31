@@ -1,5 +1,6 @@
 package code.mappper;
 
+import code.dto.PersonalData;
 import code.dto.ProviderRegistrationRequest;
 import code.model.*;
 import org.modelmapper.ModelMapper;
@@ -63,6 +64,16 @@ public class MapperConfiguration {
         modelMapper.createTypeMap(BoatOwner.class, ProviderRegistrationRequest.class).includeBase(User.class, ProviderRegistrationRequest.class);
         modelMapper.createTypeMap(CottageOwner.class, ProviderRegistrationRequest.class).includeBase(User.class, ProviderRegistrationRequest.class);
         modelMapper.createTypeMap(FishingInstructor.class, ProviderRegistrationRequest.class).includeBase(User.class, ProviderRegistrationRequest.class);
+
+        PropertyMap<PersonalData, Admin> personalDataAdminPropertyMap = new PropertyMap<PersonalData, Admin>(){
+            protected void configure(){
+                map().getLocation().setStreetName(source.getAddress());
+                map().getLocation().setCityName(source.getCity());
+                map().getLocation().setCountryName(source.getCountry());
+            }
+        };
+        TypeMap<PersonalData, Admin> personalDataAdminTypeMap = modelMapper.createTypeMap(PersonalData.class, Admin.class);
+        personalDataAdminTypeMap.addMappings(personalDataAdminPropertyMap);
 
         return modelMapper;
     }
