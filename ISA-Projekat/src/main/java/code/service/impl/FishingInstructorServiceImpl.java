@@ -25,18 +25,18 @@ public class FishingInstructorServiceImpl implements FishingInstructorService {
     }
 
     @Override
-    public void save(FishingInstructor fishingInstructor) throws EmailTakenException {
+    public FishingInstructor save(FishingInstructor fishingInstructor) throws EmailTakenException {
         _userService.throwExceptionIfEmailExists(fishingInstructor.getEmail());
-        saveRegistrationRequest(fishingInstructor);
+        return saveRegistrationRequest(fishingInstructor);
     }
 
-    private void saveRegistrationRequest(FishingInstructor fishingInstructor) {
+    private FishingInstructor saveRegistrationRequest(FishingInstructor fishingInstructor) {
             fishingInstructor.setPassword(_passwordEncoder.encode(fishingInstructor.getPassword()));
             fishingInstructor.setEnabled(false);
 
             Role role = _roleService.findByName("ROLE_FISHING_INSTRUCTOR");
             fishingInstructor.setRole(role);
 
-            _fishingInstructorRepository.save(fishingInstructor);
+            return _fishingInstructorRepository.save(fishingInstructor);
     }
 }

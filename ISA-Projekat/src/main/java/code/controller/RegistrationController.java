@@ -8,7 +8,6 @@ import code.exceptions.registration.UserNotFoundException;
 import code.model.BoatOwner;
 import code.model.CottageOwner;
 import code.model.FishingInstructor;
-import code.model.User;
 import code.service.BoatOwnerService;
 import code.service.CottageOwnerService;
 import code.service.FishingInstructorService;
@@ -23,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/registration")
@@ -67,8 +67,10 @@ public class RegistrationController extends BaseController {
 
     @GetMapping(value = "/requests", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<User>> getRegistrationRequests(){
-        return ResponseEntity.ok(_userService.getUnverifiedProviders());
+    public ResponseEntity<List<ProviderRegistrationRequest>> getRegistrationRequests(){
+        return ResponseEntity.ok(_userService.getUnverifiedProviders().stream()
+                .map(entity -> _mapper.map(entity, ProviderRegistrationRequest.class))
+                .collect(Collectors.toList()));
     }
 
     @PutMapping("/accept-request/{id}")

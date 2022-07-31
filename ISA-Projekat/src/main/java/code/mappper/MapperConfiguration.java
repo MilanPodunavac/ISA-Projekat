@@ -49,8 +49,21 @@ public class MapperConfiguration {
         modelMapper.createTypeMap(ProviderRegistrationRequest.class, BoatOwner.class).includeBase(ProviderRegistrationRequest.class, User.class);
         modelMapper.createTypeMap(ProviderRegistrationRequest.class, CottageOwner.class).includeBase(ProviderRegistrationRequest.class, User.class);
         modelMapper.createTypeMap(ProviderRegistrationRequest.class, FishingInstructor.class).includeBase(ProviderRegistrationRequest.class, User.class);
-        modelMapper.createTypeMap(ProviderRegistrationRequest.class, Client.class).includeBase(ProviderRegistrationRequest.class, User.class);
-        modelMapper.createTypeMap(ProviderRegistrationRequest.class, Admin.class).includeBase(ProviderRegistrationRequest.class, User.class);
+
+        PropertyMap<User, ProviderRegistrationRequest> providerRetrievalPropertyMap = new PropertyMap<User, ProviderRegistrationRequest>(){
+            protected void configure(){
+                map().setAddress(source.getLocation().getStreetName());
+                map().setCity(source.getLocation().getCityName());
+                map().setCountry(source.getLocation().getCountryName());
+                map().setProviderType(source.getRole().getName());
+            }
+        };
+        TypeMap<User, ProviderRegistrationRequest> providerRetrievalMap = modelMapper.createTypeMap(User.class, ProviderRegistrationRequest.class);
+        providerRetrievalMap.addMappings(providerRetrievalPropertyMap);
+        modelMapper.createTypeMap(BoatOwner.class, ProviderRegistrationRequest.class).includeBase(User.class, ProviderRegistrationRequest.class);
+        modelMapper.createTypeMap(CottageOwner.class, ProviderRegistrationRequest.class).includeBase(User.class, ProviderRegistrationRequest.class);
+        modelMapper.createTypeMap(FishingInstructor.class, ProviderRegistrationRequest.class).includeBase(User.class, ProviderRegistrationRequest.class);
+
         return modelMapper;
     }
 }

@@ -60,9 +60,7 @@ public class UserServiceImpl implements UserService {
     private User enableUserAccount(Integer id) {
         User user = findById(id);
         user.setEnabled(true);
-        _userRepository.save(user);
-
-        return user;
+        return _userRepository.save(user);
     }
 
     private void sendAcceptRegistrationRequestEmail(String email) {
@@ -94,7 +92,6 @@ public class UserServiceImpl implements UserService {
     private User deleteRegistrationRequest(Integer id) {
         User user = findById(id);
         _userRepository.delete(user);
-
         return user;
     }
 
