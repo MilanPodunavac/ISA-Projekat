@@ -4,8 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.util.*;
 
 @Getter
@@ -18,6 +21,7 @@ public class CottageReservation extends Reservation {
    @Enumerated(EnumType.ORDINAL)
    @CollectionTable(name="cottageReservation_tags")
    @Column(name="tags")
+   @Fetch(value = FetchMode.JOIN)
    private Set<CottageReservationTag> cottageReservationTag;
    @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "cottage_id")
