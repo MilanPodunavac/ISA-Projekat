@@ -40,4 +40,12 @@ public abstract class SaleEntity {
       availabilityPeriods.add(period);
       return true;
    }
+
+   public boolean addReservation (Reservation reservation){
+      for (AvailabilityPeriod period: availabilityPeriods) {
+         if(period.addReservation(reservation) == true) return true;
+      }
+      return false;
+   }
+
 }

@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.parameters.P;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -27,4 +28,19 @@ public class AvailabilityPeriod {
     private SaleEntity saleEntity;
     @OneToMany(mappedBy = "availabilityPeriod", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Reservation> reservations;
+
+    public boolean isAvailable(DateRange range){
+        if(!this.range.includes(range)) return false;
+        for (Reservation reservation: reservations) {
+            if(reservation.getDateRange().overlapsWith(range)) return false;
+        }
+        return true;
+    }
+    public boolean addReservation(Reservation reservation){
+        if(isAvailable(reservation.getDateRange())){
+            reservations.add(reservation);
+            return true;
+        }
+        return false;
+    }
 }
