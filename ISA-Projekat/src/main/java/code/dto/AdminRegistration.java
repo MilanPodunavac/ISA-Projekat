@@ -1,19 +1,19 @@
 package code.dto;
 
-import code.dto.enums.ProviderTypeDto;
-import code.utils.EnumValidator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProviderRegistrationRequest {
+public class AdminRegistration {
     @NotBlank(message = "First name is required")
     private String firstName;
     @NotBlank(message = "Last name is required")
@@ -33,9 +33,4 @@ public class ProviderRegistrationRequest {
     private String city;
     @NotBlank(message = "Country is required")
     private String country;
-    @NotBlank(message = "Reason for registration is required")
-    private String reasonForRegistration;
-    private String biography;
-    @EnumValidator(targetClassType = ProviderTypeDto.class, message = "Type of provider is required")
-    private String providerType;
 }

@@ -18,5 +18,5 @@ public class RegistrationConstants {
     public static final Integer DB_ROLE_ID = 1;
     public static final Integer DB_USER_ID_ACCEPT = 2;
     public static final Integer DB_USER_ID_DECLINE = 3;
-    public static final String EXISTING_EMAIL = "marko@gmail.com";
+    public static final String DECLINE_REASON = "ne može";
 }

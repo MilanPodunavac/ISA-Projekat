@@ -1,6 +1,7 @@
 package code.controller;
 
 import code.controller.base.BaseController;
+import code.dto.ProviderDTO;
 import code.dto.ProviderRegistrationRequest;
 import code.exceptions.registration.EmailTakenException;
 import code.exceptions.registration.UserAccountActivatedException;
@@ -67,9 +68,9 @@ public class RegistrationController extends BaseController {
 
     @GetMapping(value = "/requests", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<ProviderRegistrationRequest>> getRegistrationRequests(){
+    public ResponseEntity<List<ProviderDTO>> getRegistrationRequests(){
         return ResponseEntity.ok(_userService.getUnverifiedProviders().stream()
-                .map(entity -> _mapper.map(entity, ProviderRegistrationRequest.class))
+                .map(entity -> _mapper.map(entity, ProviderDTO.class))
                 .collect(Collectors.toList()));
     }
 
