@@ -15,6 +15,8 @@ public class AdminConstants {
     public static final Integer DB_ROLE_ID = 1;
     public static final String NEW_FIRST_NAME = "Dragan";
     public static final String NEW_LAST_NAME = "Draganić";
+    public static final String NEW_EMAIL = "dragan@gmail.com";
+    public static final String NEW_PASSWORD = "123";
     public static final String NEW_CITY = "Beograd";
     public static final String NEW_COUNTRY = "Srbija";
     public static final String NEW_ADDRESS = "Lazina";

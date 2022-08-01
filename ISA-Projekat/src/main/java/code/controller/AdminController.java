@@ -1,7 +1,12 @@
 package code.controller;
 
 import code.controller.base.BaseController;
+import code.dto.AdminRegistration;
 import code.dto.PersonalData;
+import code.exceptions.admin.ModifyAnotherUserPersonalDataException;
+import code.exceptions.admin.NonMainAdminRegisterOtherAdminException;
+import code.exceptions.registration.EmailTakenException;
+import code.exceptions.registration.UserNotFoundException;
 import code.model.Admin;
 import code.model.User;
 import code.service.*;
@@ -21,26 +26,45 @@ import javax.validation.Valid;
 @RequestMapping("/api/admin")
 public class AdminController extends BaseController {
     private final AdminService _adminService;
+    private final UserService _userService;
 
-    public AdminController(AdminService adminService, ModelMapper mapper) {
+    public AdminController(AdminService adminService, UserService userService, ModelMapper mapper) {
         super(mapper);
         this._adminService = adminService;
+        this._userService = userService;
     }
 
     @PutMapping(value = "/changePersonalData", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> changePersonalData(@Valid @RequestBody PersonalData dto, BindingResult result){
+    public ResponseEntity<String> changePersonalData(@Valid @RequestBody PersonalData dto, BindingResult result) throws UserNotFoundException, ModifyAnotherUserPersonalDataException {
         if(result.hasErrors()){
             return formatErrorResponse(result);
         }
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) auth.getPrincipal();
-        if (user.getId() != dto.getId()) {
-            return new ResponseEntity<>("You can't modify another admin personal data!", HttpStatus.UNAUTHORIZED);
+        try {
+            _adminService.changePersonalData(_mapper.map(dto, Admin.class));
+            return ResponseEntity.ok("Personal data changed!");
+        } catch (UserNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (ModifyAnotherUserPersonalDataException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> register(@Valid @RequestBody AdminRegistration dto, BindingResult result){
+        if(result.hasErrors()){
+            return formatErrorResponse(result);
         }
 
-        _adminService.changePersonalData(_mapper.map(dto, Admin.class));
-        return ResponseEntity.ok("Personal data changed!");
+        try {
+            _adminService.save(_mapper.map(dto, Admin.class));
+            return ResponseEntity.ok("New admin registered!");
+        } catch (NonMainAdminRegisterOtherAdminException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (EmailTakenException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
     }
 }

@@ -1,14 +1,22 @@
 package code.service.impl;
 
+import code.exceptions.admin.ModifyAnotherUserPersonalDataException;
+import code.exceptions.admin.NonMainAdminRegisterOtherAdminException;
 import code.exceptions.registration.EmailTakenException;
 import code.exceptions.registration.UserAccountActivatedException;
 import code.exceptions.registration.UserNotFoundException;
+import code.model.Admin;
 import code.model.User;
 import code.repository.UserRepository;
 import code.service.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.ModelAndViewDefiningException;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,6 +50,22 @@ public class UserServiceImpl implements UserService {
     public void throwExceptionIfEmailExists(String email) throws EmailTakenException {
         if (_userRepository.findByEmail(email) != null) {
             throw new EmailTakenException("User with entered email already exists!");
+        }
+    }
+
+    @Override
+    public void throwExceptionIfModifyAnotherUserPersonalData(Integer id) throws ModifyAnotherUserPersonalDataException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+        if (user.getId() != id) {
+            throw new ModifyAnotherUserPersonalDataException("You can't modify another user personal data!");
+        }
+    }
+
+    @Override
+    public void throwExceptionIfUserDontExist(Integer id) throws UserNotFoundException {
+        if(!userExists(id)) {
+            throw new UserNotFoundException("User not found!");
         }
     }
 

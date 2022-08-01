@@ -14,7 +14,6 @@ import javax.validation.constraints.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProviderRegistrationRequest {
-    private Integer id;
     @NotBlank(message = "First name is required")
     private String firstName;
     @NotBlank(message = "Last name is required")

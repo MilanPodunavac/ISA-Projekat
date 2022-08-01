@@ -1,5 +1,9 @@
 package code.service;
 
+import code.exceptions.admin.ModifyAnotherUserPersonalDataException;
+import code.exceptions.admin.NonMainAdminRegisterOtherAdminException;
+import code.exceptions.registration.EmailTakenException;
+import code.exceptions.registration.UserNotFoundException;
 import code.model.Admin;
 import code.model.Location;
 import code.model.Role;
@@ -10,6 +14,9 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -30,16 +37,16 @@ public class AdminServiceTest {
     @Mock
     private RoleService roleServiceMock;
 
+    @Mock
+    private UserService userServiceMock;
+
     @InjectMocks
     private AdminServiceImpl adminService;
 
     @Test
-    public void changePersonalData() {
-        Admin adminFromDatabase = new Admin();
-        setAdminFromDatabaseFields(adminFromDatabase);
-
-        Admin admin = new Admin();
-        setNewPersonalData(admin);
+    public void changePersonalData() throws UserNotFoundException, ModifyAnotherUserPersonalDataException {
+        Admin adminFromDatabase = setAdminFromDatabaseFields();
+        Admin admin = setNewPersonalData();
 
         when(adminRepositoryMock.getById(admin.getId())).thenReturn(adminFromDatabase);
         when(adminRepositoryMock.save(adminFromDatabase)).thenReturn(adminFromDatabase);
@@ -59,7 +66,69 @@ public class AdminServiceTest {
         verifyNoMoreInteractions(adminRepositoryMock);
     }
 
-    private void setAdminFromDatabaseFields(Admin admin) {
+    @Test
+    public void register() throws NonMainAdminRegisterOtherAdminException, EmailTakenException {
+        Admin loggedInAdmin = setAdminFromDatabaseFields();
+        loggedInAdmin.setMainAdmin(true);
+        Admin admin = setAdminRegistrationData();
+
+        Authentication authentication = mock(Authentication.class);
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+        when(authentication.getPrincipal()).thenReturn(loggedInAdmin);
+        when(userServiceMock.findById(loggedInAdmin.getId())).thenReturn(loggedInAdmin);
+        when(passwordEncoder.encode(NEW_PASSWORD)).thenReturn(DB_PASSWORD_ENCODED);
+        when(roleServiceMock.findByName(DB_ROLE_NAME)).thenReturn(new Role(DB_ROLE_ID, DB_ROLE_NAME));
+        when(adminRepositoryMock.save(admin)).thenReturn(admin);
+
+        Admin dbAdmin = adminService.save(admin);
+
+        assertThat(dbAdmin).isNotNull();
+        assertThat(dbAdmin.getFirstName()).isEqualTo(NEW_FIRST_NAME);
+        assertThat(dbAdmin.getLastName()).isEqualTo(NEW_LAST_NAME);
+        assertThat(dbAdmin.getEmail()).isEqualTo(NEW_EMAIL);
+        assertThat(dbAdmin.getPhoneNumber()).isEqualTo(NEW_PHONE_NUMBER);
+        assertThat(dbAdmin.getLocation().getCityName()).isEqualTo(NEW_CITY);
+        assertThat(dbAdmin.getLocation().getCountryName()).isEqualTo(NEW_COUNTRY);
+        assertThat(dbAdmin.getLocation().getStreetName()).isEqualTo(NEW_ADDRESS);
+        assertThat(dbAdmin.getRole().getName()).isEqualTo("ROLE_ADMIN");
+        assertThat(dbAdmin.isEnabled()).isEqualTo(false);
+        assertThat(dbAdmin.isMainAdmin()).isEqualTo(false);
+        assertThat(dbAdmin.getPassword()).isEqualTo(DB_PASSWORD_ENCODED);
+
+        verify(userServiceMock, times(1)).findById(loggedInAdmin.getId());
+        verify(userServiceMock, times(1)).throwExceptionIfEmailExists(admin.getEmail());
+        verify(adminRepositoryMock, times(1)).save(admin);
+        verify(passwordEncoder, times(1)).encode(NEW_PASSWORD);
+        verify(roleServiceMock, times(1)).findByName(DB_ROLE_NAME);
+        verifyNoMoreInteractions(userServiceMock);
+        verifyNoMoreInteractions(adminRepositoryMock);
+        verifyNoMoreInteractions(passwordEncoder);
+        verifyNoMoreInteractions(roleServiceMock);
+    }
+
+    @Test(expected = NonMainAdminRegisterOtherAdminException.class)
+    public void registerWithNonMainAdminLoggedIn() throws NonMainAdminRegisterOtherAdminException, EmailTakenException {
+        Admin loggedInAdmin = setAdminFromDatabaseFields();
+        loggedInAdmin.setMainAdmin(false);
+        Admin admin = setAdminRegistrationData();
+
+        Authentication authentication = mock(Authentication.class);
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+        when(authentication.getPrincipal()).thenReturn(loggedInAdmin);
+        when(userServiceMock.findById(loggedInAdmin.getId())).thenReturn(loggedInAdmin);
+
+        adminService.save(admin);
+
+        verify(userServiceMock, times(1)).findById(loggedInAdmin.getId());
+        verifyNoMoreInteractions(userServiceMock);
+    }
+
+    private Admin setAdminFromDatabaseFields() {
+        Admin admin = new Admin();
         admin.setId(DB_USER_ID);
         admin.setFirstName(DB_FIRST_NAME);
         admin.setLastName(DB_LAST_NAME);
@@ -77,9 +146,11 @@ public class AdminServiceTest {
         r.setId(DB_ROLE_ID);
         r.setName(DB_ROLE_NAME);
         admin.setRole(r);
+        return admin;
     }
 
-    private void setNewPersonalData(Admin admin) {
+    private Admin setNewPersonalData() {
+        Admin admin = new Admin();
         admin.setId(DB_USER_ID);
         admin.setFirstName(NEW_FIRST_NAME);
         admin.setLastName(NEW_LAST_NAME);
@@ -89,5 +160,21 @@ public class AdminServiceTest {
         l.setCityName(NEW_CITY);
         l.setStreetName(NEW_ADDRESS);
         admin.setLocation(l);
+        return admin;
+    }
+
+    private Admin setAdminRegistrationData() {
+        Admin admin = new Admin();
+        admin.setFirstName(NEW_FIRST_NAME);
+        admin.setLastName(NEW_LAST_NAME);
+        admin.setPhoneNumber(NEW_PHONE_NUMBER);
+        admin.setEmail(NEW_EMAIL);
+        admin.setPassword(NEW_PASSWORD);
+        Location l = new Location();
+        l.setCountryName(NEW_COUNTRY);
+        l.setCityName(NEW_CITY);
+        l.setStreetName(NEW_ADDRESS);
+        admin.setLocation(l);
+        return admin;
     }
 }

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -12,12 +13,17 @@ import javax.validation.constraints.Size;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PersonalData {
-    private Integer id;
+public class AdminRegistration {
     @NotBlank(message = "First name is required")
     private String firstName;
     @NotBlank(message = "Last name is required")
     private String lastName;
+    @NotBlank(message = "Email is required")
+    @Email(message = "Enter valid email")
+    private String email;
+    @NotBlank(message = "Password is required")
+    @Size(min = 3, message = "Password too short")
+    private String password;
     @NotBlank(message = "Address is required")
     private String address;
     @NotBlank(message ="Phone number is required")
@@ -27,5 +33,4 @@ public class PersonalData {
     private String city;
     @NotBlank(message = "Country is required")
     private String country;
-    private String biography;
 }

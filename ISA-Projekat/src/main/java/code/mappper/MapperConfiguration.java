@@ -1,6 +1,8 @@
 package code.mappper;
 
+import code.dto.AdminRegistration;
 import code.dto.PersonalData;
+import code.dto.ProviderDTO;
 import code.dto.ProviderRegistrationRequest;
 import code.model.*;
 import org.modelmapper.ModelMapper;
@@ -51,7 +53,7 @@ public class MapperConfiguration {
         modelMapper.createTypeMap(ProviderRegistrationRequest.class, CottageOwner.class).includeBase(ProviderRegistrationRequest.class, User.class);
         modelMapper.createTypeMap(ProviderRegistrationRequest.class, FishingInstructor.class).includeBase(ProviderRegistrationRequest.class, User.class);
 
-        PropertyMap<User, ProviderRegistrationRequest> providerRetrievalPropertyMap = new PropertyMap<User, ProviderRegistrationRequest>(){
+        PropertyMap<User, ProviderDTO> userProviderDTOPropertyMap = new PropertyMap<User, ProviderDTO>(){
             protected void configure(){
                 map().setAddress(source.getLocation().getStreetName());
                 map().setCity(source.getLocation().getCityName());
@@ -59,11 +61,11 @@ public class MapperConfiguration {
                 map().setProviderType(source.getRole().getName());
             }
         };
-        TypeMap<User, ProviderRegistrationRequest> providerRetrievalMap = modelMapper.createTypeMap(User.class, ProviderRegistrationRequest.class);
-        providerRetrievalMap.addMappings(providerRetrievalPropertyMap);
-        modelMapper.createTypeMap(BoatOwner.class, ProviderRegistrationRequest.class).includeBase(User.class, ProviderRegistrationRequest.class);
-        modelMapper.createTypeMap(CottageOwner.class, ProviderRegistrationRequest.class).includeBase(User.class, ProviderRegistrationRequest.class);
-        modelMapper.createTypeMap(FishingInstructor.class, ProviderRegistrationRequest.class).includeBase(User.class, ProviderRegistrationRequest.class);
+        TypeMap<User, ProviderDTO> userProviderDTOTypeMap = modelMapper.createTypeMap(User.class, ProviderDTO.class);
+        userProviderDTOTypeMap.addMappings(userProviderDTOPropertyMap);
+        modelMapper.createTypeMap(BoatOwner.class, ProviderDTO.class).includeBase(User.class, ProviderDTO.class);
+        modelMapper.createTypeMap(CottageOwner.class, ProviderDTO.class).includeBase(User.class, ProviderDTO.class);
+        modelMapper.createTypeMap(FishingInstructor.class, ProviderDTO.class).includeBase(User.class, ProviderDTO.class);
 
         PropertyMap<PersonalData, Admin> personalDataAdminPropertyMap = new PropertyMap<PersonalData, Admin>(){
             protected void configure(){
@@ -74,6 +76,16 @@ public class MapperConfiguration {
         };
         TypeMap<PersonalData, Admin> personalDataAdminTypeMap = modelMapper.createTypeMap(PersonalData.class, Admin.class);
         personalDataAdminTypeMap.addMappings(personalDataAdminPropertyMap);
+
+        PropertyMap<AdminRegistration, Admin> adminRegistrationAdminPropertyMap = new PropertyMap<AdminRegistration, Admin>(){
+            protected void configure(){
+                map().getLocation().setStreetName(source.getAddress());
+                map().getLocation().setCityName(source.getCity());
+                map().getLocation().setCountryName(source.getCountry());
+            }
+        };
+        TypeMap<AdminRegistration, Admin> adminRegistrationAdminTypeMap = modelMapper.createTypeMap(AdminRegistration.class, Admin.class);
+        adminRegistrationAdminTypeMap.addMappings(adminRegistrationAdminPropertyMap);
 
         return modelMapper;
     }

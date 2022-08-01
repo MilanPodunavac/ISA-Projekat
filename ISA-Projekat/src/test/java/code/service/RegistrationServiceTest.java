@@ -20,7 +20,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.mail.MessagingException;
 import java.util.Optional;
 
 import static code.constants.RegistrationConstants.*;
@@ -56,8 +55,7 @@ public class RegistrationServiceTest {
 
     @Test
     public void saveRegistrationRequest() throws EmailTakenException {
-        FishingInstructor fishingInstructor = new FishingInstructor();
-        setFishingInstructorSaveRegistrationRequest(fishingInstructor);
+        FishingInstructor fishingInstructor = setFishingInstructorSaveRegistrationRequest();
         fishingInstructor.setEmail(NEW_EMAIL);
 
         when(fishingInstructorRepositoryMock.save(fishingInstructor)).thenReturn(fishingInstructor);
@@ -80,34 +78,17 @@ public class RegistrationServiceTest {
         assertThat(dbFishingInstructor.isEnabled()).isEqualTo(false);
         assertThat(dbFishingInstructor.getPassword()).isEqualTo(NEW_PASSWORD_ENCODED);
 
-        verify(userServiceMock, times(1)).throwExceptionIfEmailExists(fishingInstructor.getEmail());
         verify(fishingInstructorRepositoryMock, times(1)).save(fishingInstructor);
         verify(passwordEncoder, times(1)).encode(NEW_PASSWORD);
         verify(roleServiceMock, times(1)).findByName(DB_ROLE_NAME);
-        verifyNoMoreInteractions(userServiceMock);
         verifyNoMoreInteractions(fishingInstructorRepositoryMock);
         verifyNoMoreInteractions(passwordEncoder);
         verifyNoMoreInteractions(roleServiceMock);
     }
 
-    @Test(expected = EmailTakenException.class)
-    public void saveRegistrationRequestWithExistingEmail() throws EmailTakenException {
-        FishingInstructor fishingInstructor = new FishingInstructor();
-        setFishingInstructorSaveRegistrationRequest(fishingInstructor);
-        fishingInstructor.setEmail(EXISTING_EMAIL);
-
-        doThrow(EmailTakenException.class).when(userServiceMock).throwExceptionIfEmailExists(fishingInstructor.getEmail());
-
-        fishingInstructorService.save(fishingInstructor);
-
-        verify(userServiceMock, times(1)).throwExceptionIfEmailExists(fishingInstructor.getEmail());
-        verifyNoMoreInteractions(userServiceMock);
-    }
-
     @Test
-    public void acceptRegistrationRequest() throws UserNotFoundException, UserAccountActivatedException, MessagingException {
-        FishingInstructor fishingInstructor = new FishingInstructor();
-        setFishingInstructorAcceptRegistrationRequest(fishingInstructor);
+    public void acceptRegistrationRequest() throws UserNotFoundException, UserAccountActivatedException {
+        FishingInstructor fishingInstructor = setFishingInstructorAcceptOrDeleteRegistrationRequest();
         fishingInstructor.setEnabled(false);
 
         when(userRepositoryMock.findById(NEW_USER_ID)).thenReturn(Optional.of(fishingInstructor));
@@ -137,8 +118,7 @@ public class RegistrationServiceTest {
 
     @Test(expected = UserAccountActivatedException.class)
     public void acceptRegistrationRequestForActivatedUser() throws UserNotFoundException, UserAccountActivatedException {
-        FishingInstructor fishingInstructor = new FishingInstructor();
-        setFishingInstructorAcceptRegistrationRequest(fishingInstructor);
+        FishingInstructor fishingInstructor = setFishingInstructorAcceptOrDeleteRegistrationRequest();
         fishingInstructor.setEnabled(true);
 
         when(userRepositoryMock.findById(NEW_USER_ID)).thenReturn(Optional.of(fishingInstructor));
@@ -149,7 +129,50 @@ public class RegistrationServiceTest {
         verifyNoMoreInteractions(userRepositoryMock);
     }
 
-    private void setFishingInstructorSaveRegistrationRequest(FishingInstructor fishingInstructor) {
+    @Test
+    public void declineRegistrationRequest() throws UserNotFoundException, UserAccountActivatedException {
+        FishingInstructor fishingInstructor = setFishingInstructorAcceptOrDeleteRegistrationRequest();
+        fishingInstructor.setEnabled(false);
+
+        when(userRepositoryMock.findById(NEW_USER_ID)).thenReturn(Optional.of(fishingInstructor));
+
+        userService.declineRegistrationRequest(NEW_USER_ID, DECLINE_REASON);
+        User user = userService.findById(NEW_USER_ID);
+
+        assertThat(user).isNotNull();
+        assertThat(user.getId()).isEqualTo(NEW_USER_ID);
+        assertThat(user.isEnabled()).isEqualTo(false);
+
+        verify(userRepositoryMock, times(4)).findById(NEW_USER_ID);
+        verify(userRepositoryMock, times(1)).delete(fishingInstructor);
+        verifyNoMoreInteractions(userRepositoryMock);
+    }
+
+    @Test(expected = UserNotFoundException.class)
+    public void declineRegistrationRequestForUserNotFound() throws UserNotFoundException, UserAccountActivatedException {
+        when(userRepositoryMock.findById(NEW_USER_ID)).thenReturn(Optional.empty());
+
+        userService.declineRegistrationRequest(NEW_USER_ID, DECLINE_REASON);
+
+        verify(userRepositoryMock, times(1)).findById(NEW_USER_ID);
+        verifyNoMoreInteractions(userRepositoryMock);
+    }
+
+    @Test(expected = UserAccountActivatedException.class)
+    public void declineRegistrationRequestForActivatedUser() throws UserNotFoundException, UserAccountActivatedException {
+        FishingInstructor fishingInstructor = setFishingInstructorAcceptOrDeleteRegistrationRequest();
+        fishingInstructor.setEnabled(true);
+
+        when(userRepositoryMock.findById(NEW_USER_ID)).thenReturn(Optional.of(fishingInstructor));
+
+        userService.declineRegistrationRequest(NEW_USER_ID, DECLINE_REASON);
+
+        verify(userRepositoryMock, times(2)).findById(NEW_USER_ID);
+        verifyNoMoreInteractions(userRepositoryMock);
+    }
+
+    private FishingInstructor setFishingInstructorSaveRegistrationRequest() {
+        FishingInstructor fishingInstructor = new FishingInstructor();
         fishingInstructor.setFirstName(NEW_FIRST_NAME);
         fishingInstructor.setLastName(NEW_LAST_NAME);
         fishingInstructor.setBiography(NEW_BIOGRAPHY);
@@ -161,13 +184,15 @@ public class RegistrationServiceTest {
         l.setCityName(NEW_CITY);
         l.setStreetName(NEW_ADDRESS);
         fishingInstructor.setLocation(l);
+        return fishingInstructor;
     }
 
-    private void setFishingInstructorAcceptRegistrationRequest(FishingInstructor fishingInstructor) {
-        setFishingInstructorSaveRegistrationRequest(fishingInstructor);
+    private FishingInstructor setFishingInstructorAcceptOrDeleteRegistrationRequest() {
+        FishingInstructor fishingInstructor = setFishingInstructorSaveRegistrationRequest();
         fishingInstructor.setId(NEW_USER_ID);
         fishingInstructor.setEmail(NEW_EMAIL);
         fishingInstructor.setPassword(NEW_PASSWORD_ENCODED);
         fishingInstructor.setRole(new Role(DB_ROLE_ID, DB_ROLE_NAME));
+        return fishingInstructor;
     }
 }
