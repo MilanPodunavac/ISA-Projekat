@@ -1,22 +1,18 @@
 package code.service.impl;
 
-import code.exceptions.admin.ModifyAnotherUserPersonalDataException;
-import code.exceptions.admin.NonMainAdminRegisterOtherAdminException;
+import code.exceptions.admin.ModifyAnotherUserDataException;
 import code.exceptions.registration.EmailTakenException;
+import code.exceptions.registration.NotProviderException;
 import code.exceptions.registration.UserAccountActivatedException;
 import code.exceptions.registration.UserNotFoundException;
-import code.model.Admin;
 import code.model.User;
 import code.repository.UserRepository;
 import code.service.UserService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.ModelAndViewDefiningException;
 
 import java.util.List;
 import java.util.Optional;
@@ -54,11 +50,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void throwExceptionIfModifyAnotherUserPersonalData(Integer id) throws ModifyAnotherUserPersonalDataException {
+    public void throwExceptionIfModifyAnotherUserData(Integer id) throws ModifyAnotherUserDataException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
         if (user.getId() != id) {
-            throw new ModifyAnotherUserPersonalDataException("You can't modify another user personal data!");
+            throw new ModifyAnotherUserDataException("You can't modify another user data!");
         }
     }
 
@@ -75,8 +71,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void acceptRegistrationRequest(Integer id) throws UserNotFoundException, UserAccountActivatedException {
+    public void acceptRegistrationRequest(Integer id) throws UserNotFoundException, UserAccountActivatedException, NotProviderException {
         throwExceptionIfUserEnabledOrUserDontExist(id);
+        throwExceptionIfNotProvider(id);
         User user = enableUserAccount(id);
         sendAcceptRegistrationRequestEmail(user.getEmail());
     }
@@ -97,8 +94,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void declineRegistrationRequest(Integer id, String declineReason) throws UserNotFoundException, UserAccountActivatedException {
+    public void declineRegistrationRequest(Integer id, String declineReason) throws UserNotFoundException, UserAccountActivatedException, NotProviderException {
         throwExceptionIfUserEnabledOrUserDontExist(id);
+        throwExceptionIfNotProvider(id);
         User user = deleteRegistrationRequest(id);
         sendDeclineRegistrationRequestEmail(user.getEmail(), declineReason);
     }
@@ -110,6 +108,13 @@ public class UserServiceImpl implements UserService {
 
         if(isUserEnabled(id)) {
             throw new UserAccountActivatedException("User account is already activated!");
+        }
+    }
+
+    private void throwExceptionIfNotProvider(Integer id) throws NotProviderException {
+        User user = findById(id);
+        if (!user.getRole().getName().equals("ROLE_COTTAGE_OWNER") && !user.getRole().getName().equals("ROLE_BOAT_OWNER") && !user.getRole().getName().equals("ROLE_FISHING_INSTRUCTOR")) {
+            throw new NotProviderException("User isn't a provider!");
         }
     }
 

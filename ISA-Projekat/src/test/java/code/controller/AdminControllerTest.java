@@ -1,6 +1,7 @@
 package code.controller;
 
 import code.dto.AdminRegistration;
+import code.dto.PasswordDTO;
 import code.dto.PersonalData;
 import code.utils.TestUtil;
 import org.junit.Before;
@@ -72,5 +73,16 @@ public class AdminControllerTest {
 
         String json = TestUtil.json(ar);
         this.mockMvc.perform(post(URL_PREFIX + "/register").contentType(contentType).content(json)).andExpect(status().isOk());
+    }
+
+    @WithUserDetails("jana@gmail.com")
+    @Test
+    public void changePassword() throws Exception {
+        PasswordDTO passwordDTO = new PasswordDTO();
+        passwordDTO.setId(PASSWORD_DTO_ID);
+        passwordDTO.setPassword(PASSWORD_DTO_PASSWORD);
+
+        String json = TestUtil.json(passwordDTO);
+        this.mockMvc.perform(put(URL_PREFIX + "/changePassword").contentType(contentType).content(json)).andExpect(status().isOk());
     }
 }
