@@ -1,8 +1,8 @@
 package code.controller;
 
 import code.controller.base.BaseController;
-import code.dto.LoginRequest;
-import code.dto.UserTokenState;
+import code.dto.auth.LoginRequest;
+import code.dto.auth.UserTokenState;
 import code.model.User;
 import code.utils.TokenUtils;
 import org.modelmapper.ModelMapper;

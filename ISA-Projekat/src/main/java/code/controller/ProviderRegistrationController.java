@@ -1,12 +1,13 @@
 package code.controller;
 
 import code.controller.base.BaseController;
-import code.dto.ProviderDTO;
-import code.dto.ProviderRegistrationRequest;
-import code.exceptions.registration.EmailTakenException;
-import code.exceptions.registration.NotProviderException;
-import code.exceptions.registration.UserAccountActivatedException;
-import code.exceptions.registration.UserNotFoundException;
+import code.dto.provider_registration.DeclineRegistrationRequestDTO;
+import code.dto.provider_registration.ProviderDTO;
+import code.dto.provider_registration.ProviderRegistrationRequest;
+import code.exceptions.provider_registration.EmailTakenException;
+import code.exceptions.provider_registration.NotProviderException;
+import code.exceptions.provider_registration.UserAccountActivatedException;
+import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.BoatOwner;
 import code.model.CottageOwner;
 import code.model.FishingInstructor;
@@ -28,13 +29,13 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/registration")
-public class RegistrationController extends BaseController {
+public class ProviderRegistrationController extends BaseController {
     private final UserService _userService;
     private final CottageOwnerService _cottageOwnerService;
     private final BoatOwnerService _boatOwnerService;
     private final FishingInstructorService _fishingInstructorService;
 
-    public RegistrationController(UserService userService, CottageOwnerService cottageOwnerService, BoatOwnerService boatOwnerService, FishingInstructorService fishingInstructorService, ModelMapper mapper) {
+    public ProviderRegistrationController(UserService userService, CottageOwnerService cottageOwnerService, BoatOwnerService boatOwnerService, FishingInstructorService fishingInstructorService, ModelMapper mapper) {
         super(mapper);
         this._userService = userService;
         this._cottageOwnerService = cottageOwnerService;
@@ -90,12 +91,16 @@ public class RegistrationController extends BaseController {
         }
     }
 
-    @DeleteMapping("/decline-request/{id}")
+    @DeleteMapping(value = "/decline-request/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> declineRegistrationRequest(@PathVariable Integer id, @RequestBody String declineReason){
+    public ResponseEntity<String> declineRegistrationRequest(@PathVariable Integer id, @Valid @RequestBody DeclineRegistrationRequestDTO declineReason, BindingResult result){
+        if(result.hasErrors()){
+            return formatErrorResponse(result);
+        }
+
         try {
-            _userService.declineRegistrationRequest(id, declineReason);
-            return ResponseEntity.ok("Registration request declined: " + declineReason);
+            _userService.declineRegistrationRequest(id, declineReason.getDeclineReason());
+            return ResponseEntity.ok("Registration request declined: " + declineReason.getDeclineReason());
         } catch (UserNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (UserAccountActivatedException e) {

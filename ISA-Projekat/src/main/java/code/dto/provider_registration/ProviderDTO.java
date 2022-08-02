@@ -1,15 +1,9 @@
-package code.dto;
+package code.dto.provider_registration;
 
-import code.dto.enums.ProviderTypeDto;
-import code.utils.EnumValidator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 @Getter
 @Setter

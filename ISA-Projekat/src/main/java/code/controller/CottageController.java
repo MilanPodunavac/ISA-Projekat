@@ -1,26 +1,17 @@
 package code.controller;
 
 import code.controller.base.BaseController;
-import code.dto.ProviderRegistrationRequest;
-import code.exceptions.registration.EmailTakenException;
 import code.model.*;
 import code.model.wrappers.DateRange;
 import code.repository.CottageOwnerRepository;
 import code.repository.CottageRepository;
 import code.repository.UserRepository;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
-import javax.validation.Valid;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/cottage")

@@ -1,4 +1,4 @@
-package code.exceptions.registration;
+package code.exceptions.provider_registration;
 
 public class UserNotFoundException extends Exception {
     public UserNotFoundException(String message) {

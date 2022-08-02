@@ -1,6 +1,6 @@
 package code.service.impl;
 
-import code.exceptions.registration.EmailTakenException;
+import code.exceptions.provider_registration.EmailTakenException;
 import code.model.FishingInstructor;
 import code.model.Role;
 import code.repository.FishingInstructorRepository;

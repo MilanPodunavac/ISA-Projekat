@@ -1,6 +1,7 @@
 package code.controller;
 
-import code.dto.ProviderRegistrationRequest;
+import code.dto.provider_registration.DeclineRegistrationRequestDTO;
+import code.dto.provider_registration.ProviderRegistrationRequest;
 import code.utils.TestUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class RegistrationControllerTest {
+public class ProviderRegistrationControllerTest {
     private static final String URL_PREFIX = "/api/registration";
 
     private MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
@@ -67,7 +68,10 @@ public class RegistrationControllerTest {
     @WithMockUser(roles="ADMIN")
     @Test
     public void declineRegistrationRequest() throws Exception {
-        String declineReason = "ne može";
-        this.mockMvc.perform(delete(URL_PREFIX + "/decline-request/" + DB_USER_ID_DECLINE).content(declineReason)).andExpect(status().isOk());
+        DeclineRegistrationRequestDTO declineRegistrationRequestDTO = new DeclineRegistrationRequestDTO();
+        declineRegistrationRequestDTO.setDeclineReason("ne može");
+
+        String json = TestUtil.json(declineRegistrationRequestDTO);
+        this.mockMvc.perform(delete(URL_PREFIX + "/decline-request/" + DB_USER_ID_DECLINE).contentType(contentType).content(json)).andExpect(status().isOk());
     }
 }

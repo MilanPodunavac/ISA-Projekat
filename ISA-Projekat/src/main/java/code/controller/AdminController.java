@@ -1,15 +1,15 @@
 package code.controller;
 
 import code.controller.base.BaseController;
-import code.dto.AdminRegistration;
-import code.dto.PasswordDTO;
-import code.dto.PersonalData;
+import code.dto.admin.AdminRegistration;
+import code.dto.admin.PasswordDTO;
+import code.dto.admin.PersonalData;
 import code.exceptions.admin.ChangedPasswordException;
 import code.exceptions.admin.ModifyAnotherUserDataException;
 import code.exceptions.admin.NonMainAdminRegisterOtherAdminException;
 import code.exceptions.admin.NotChangedPasswordException;
-import code.exceptions.registration.EmailTakenException;
-import code.exceptions.registration.UserNotFoundException;
+import code.exceptions.provider_registration.EmailTakenException;
+import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.Admin;
 import code.service.*;
 import org.modelmapper.ModelMapper;

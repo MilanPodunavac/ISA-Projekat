@@ -1,9 +1,9 @@
 package code.mappper;
 
-import code.dto.AdminRegistration;
-import code.dto.PersonalData;
-import code.dto.ProviderDTO;
-import code.dto.ProviderRegistrationRequest;
+import code.dto.admin.AdminRegistration;
+import code.dto.admin.PersonalData;
+import code.dto.provider_registration.ProviderDTO;
+import code.dto.provider_registration.ProviderRegistrationRequest;
 import code.model.*;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;

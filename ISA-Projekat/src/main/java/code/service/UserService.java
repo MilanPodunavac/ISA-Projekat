@@ -1,10 +1,10 @@
 package code.service;
 
 import code.exceptions.admin.ModifyAnotherUserDataException;
-import code.exceptions.registration.EmailTakenException;
-import code.exceptions.registration.NotProviderException;
-import code.exceptions.registration.UserAccountActivatedException;
-import code.exceptions.registration.UserNotFoundException;
+import code.exceptions.provider_registration.EmailTakenException;
+import code.exceptions.provider_registration.NotProviderException;
+import code.exceptions.provider_registration.UserAccountActivatedException;
+import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.User;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package code.service.impl;
 
-import code.exceptions.registration.EmailTakenException;
+import code.exceptions.provider_registration.EmailTakenException;
 import code.model.*;
 import code.repository.CottageOwnerRepository;
 import code.service.CottageOwnerService;

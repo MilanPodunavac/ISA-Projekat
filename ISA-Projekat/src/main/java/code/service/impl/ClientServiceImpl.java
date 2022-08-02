@@ -1,6 +1,6 @@
 package code.service.impl;
 
-import code.dto.ProviderRegistrationRequest;
+import code.dto.provider_registration.ProviderRegistrationRequest;
 import code.model.*;
 import code.repository.ClientRepository;
 import code.service.ClientService;

@@ -1,4 +1,4 @@
-package code.dto;
+package code.dto.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

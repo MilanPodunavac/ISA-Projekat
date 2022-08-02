@@ -1,8 +1,8 @@
 package code.controller;
 
-import code.dto.AdminRegistration;
-import code.dto.PasswordDTO;
-import code.dto.PersonalData;
+import code.dto.admin.AdminRegistration;
+import code.dto.admin.PasswordDTO;
+import code.dto.admin.PersonalData;
 import code.utils.TestUtil;
 import org.junit.Before;
 import org.junit.Test;
