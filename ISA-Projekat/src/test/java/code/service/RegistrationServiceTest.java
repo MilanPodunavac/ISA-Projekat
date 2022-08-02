@@ -1,6 +1,7 @@
 package code.service;
 
 import code.exceptions.registration.EmailTakenException;
+import code.exceptions.registration.NotProviderException;
 import code.exceptions.registration.UserAccountActivatedException;
 import code.exceptions.registration.UserNotFoundException;
 import code.model.FishingInstructor;
@@ -87,7 +88,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void acceptRegistrationRequest() throws UserNotFoundException, UserAccountActivatedException {
+    public void acceptRegistrationRequest() throws UserNotFoundException, UserAccountActivatedException, NotProviderException {
         FishingInstructor fishingInstructor = setFishingInstructorAcceptOrDeleteRegistrationRequest();
         fishingInstructor.setEnabled(false);
 
@@ -101,13 +102,13 @@ public class RegistrationServiceTest {
         assertThat(user.getId()).isEqualTo(NEW_USER_ID);
         assertThat(user.isEnabled()).isEqualTo(true);
 
-        verify(userRepositoryMock, times(4)).findById(NEW_USER_ID);
+        verify(userRepositoryMock, times(5)).findById(NEW_USER_ID);
         verify(userRepositoryMock, times(1)).save(fishingInstructor);
         verifyNoMoreInteractions(userRepositoryMock);
     }
 
     @Test(expected = UserNotFoundException.class)
-    public void acceptRegistrationRequestForUserNotFound() throws UserNotFoundException, UserAccountActivatedException {
+    public void acceptRegistrationRequestForUserNotFound() throws UserNotFoundException, UserAccountActivatedException, NotProviderException {
         when(userRepositoryMock.findById(NEW_USER_ID)).thenReturn(Optional.empty());
 
         userService.acceptRegistrationRequest(NEW_USER_ID);
@@ -117,7 +118,7 @@ public class RegistrationServiceTest {
     }
 
     @Test(expected = UserAccountActivatedException.class)
-    public void acceptRegistrationRequestForActivatedUser() throws UserNotFoundException, UserAccountActivatedException {
+    public void acceptRegistrationRequestForActivatedUser() throws UserNotFoundException, UserAccountActivatedException, NotProviderException {
         FishingInstructor fishingInstructor = setFishingInstructorAcceptOrDeleteRegistrationRequest();
         fishingInstructor.setEnabled(true);
 
@@ -130,7 +131,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    public void declineRegistrationRequest() throws UserNotFoundException, UserAccountActivatedException {
+    public void declineRegistrationRequest() throws UserNotFoundException, UserAccountActivatedException, NotProviderException {
         FishingInstructor fishingInstructor = setFishingInstructorAcceptOrDeleteRegistrationRequest();
         fishingInstructor.setEnabled(false);
 
@@ -143,13 +144,13 @@ public class RegistrationServiceTest {
         assertThat(user.getId()).isEqualTo(NEW_USER_ID);
         assertThat(user.isEnabled()).isEqualTo(false);
 
-        verify(userRepositoryMock, times(4)).findById(NEW_USER_ID);
+        verify(userRepositoryMock, times(5)).findById(NEW_USER_ID);
         verify(userRepositoryMock, times(1)).delete(fishingInstructor);
         verifyNoMoreInteractions(userRepositoryMock);
     }
 
     @Test(expected = UserNotFoundException.class)
-    public void declineRegistrationRequestForUserNotFound() throws UserNotFoundException, UserAccountActivatedException {
+    public void declineRegistrationRequestForUserNotFound() throws UserNotFoundException, UserAccountActivatedException, NotProviderException {
         when(userRepositoryMock.findById(NEW_USER_ID)).thenReturn(Optional.empty());
 
         userService.declineRegistrationRequest(NEW_USER_ID, DECLINE_REASON);
@@ -159,7 +160,7 @@ public class RegistrationServiceTest {
     }
 
     @Test(expected = UserAccountActivatedException.class)
-    public void declineRegistrationRequestForActivatedUser() throws UserNotFoundException, UserAccountActivatedException {
+    public void declineRegistrationRequestForActivatedUser() throws UserNotFoundException, UserAccountActivatedException, NotProviderException {
         FishingInstructor fishingInstructor = setFishingInstructorAcceptOrDeleteRegistrationRequest();
         fishingInstructor.setEnabled(true);
 

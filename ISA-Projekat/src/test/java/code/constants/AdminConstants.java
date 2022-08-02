@@ -21,4 +21,6 @@ public class AdminConstants {
     public static final String NEW_COUNTRY = "Srbija";
     public static final String NEW_ADDRESS = "Lazina";
     public static final String NEW_PHONE_NUMBER = "555444333";
+    public static final Integer PASSWORD_DTO_ID = 6;
+    public static final String PASSWORD_DTO_PASSWORD = "321";
 }

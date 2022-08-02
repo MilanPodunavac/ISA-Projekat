@@ -16,5 +16,7 @@ import javax.persistence.Entity;
 public class Admin extends User {
    @Column
    private boolean mainAdmin;
+   @Column
+   private boolean passwordChanged;
    private static double systemCharge;
 }

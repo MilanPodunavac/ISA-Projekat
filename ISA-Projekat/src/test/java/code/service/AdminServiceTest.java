@@ -1,7 +1,8 @@
 package code.service;
 
-import code.exceptions.admin.ModifyAnotherUserPersonalDataException;
+import code.exceptions.admin.ModifyAnotherUserDataException;
 import code.exceptions.admin.NonMainAdminRegisterOtherAdminException;
+import code.exceptions.admin.NotChangedPasswordException;
 import code.exceptions.registration.EmailTakenException;
 import code.exceptions.registration.UserNotFoundException;
 import code.model.Admin;
@@ -44,10 +45,16 @@ public class AdminServiceTest {
     private AdminServiceImpl adminService;
 
     @Test
-    public void changePersonalData() throws UserNotFoundException, ModifyAnotherUserPersonalDataException {
+    public void changePersonalData() throws UserNotFoundException, ModifyAnotherUserDataException, NotChangedPasswordException {
         Admin adminFromDatabase = setAdminFromDatabaseFields();
         Admin admin = setNewPersonalData();
 
+        Authentication authentication = mock(Authentication.class);
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+        when(authentication.getPrincipal()).thenReturn(adminFromDatabase);
+        when(userServiceMock.findById(adminFromDatabase.getId())).thenReturn(adminFromDatabase);
         when(adminRepositoryMock.getById(admin.getId())).thenReturn(adminFromDatabase);
         when(adminRepositoryMock.save(adminFromDatabase)).thenReturn(adminFromDatabase);
 
@@ -61,8 +68,12 @@ public class AdminServiceTest {
         assertThat(changedAdmin.getLocation().getCountryName()).isEqualTo(NEW_COUNTRY);
         assertThat(changedAdmin.getLocation().getStreetName()).isEqualTo(NEW_ADDRESS);
 
+        verify(userServiceMock, times(1)).findById(adminFromDatabase.getId());
+        verify(userServiceMock, times(1)).throwExceptionIfUserDontExist(admin.getId());
+        verify(userServiceMock, times(1)).throwExceptionIfModifyAnotherUserData(admin.getId());
         verify(adminRepositoryMock, times(1)).getById(admin.getId());
         verify(adminRepositoryMock, times(1)).save(adminFromDatabase);
+        verifyNoMoreInteractions(userServiceMock);
         verifyNoMoreInteractions(adminRepositoryMock);
     }
 
@@ -93,8 +104,9 @@ public class AdminServiceTest {
         assertThat(dbAdmin.getLocation().getCountryName()).isEqualTo(NEW_COUNTRY);
         assertThat(dbAdmin.getLocation().getStreetName()).isEqualTo(NEW_ADDRESS);
         assertThat(dbAdmin.getRole().getName()).isEqualTo("ROLE_ADMIN");
-        assertThat(dbAdmin.isEnabled()).isEqualTo(false);
+        assertThat(dbAdmin.isEnabled()).isEqualTo(true);
         assertThat(dbAdmin.isMainAdmin()).isEqualTo(false);
+        assertThat(dbAdmin.isPasswordChanged()).isEqualTo(false);
         assertThat(dbAdmin.getPassword()).isEqualTo(DB_PASSWORD_ENCODED);
 
         verify(userServiceMock, times(1)).findById(loggedInAdmin.getId());
@@ -136,6 +148,8 @@ public class AdminServiceTest {
         admin.setPassword(DB_PASSWORD_ENCODED);
         admin.setEmail(DB_EMAIL);
         admin.setEnabled(true);
+        admin.setPasswordChanged(true);
+        admin.setMainAdmin(true);
         Location l = new Location();
         l.setId(DB_LOCATION_ID);
         l.setCountryName(DB_COUNTRY);

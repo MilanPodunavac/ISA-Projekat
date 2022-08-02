@@ -2,21 +2,21 @@ package code.controller;
 
 import code.controller.base.BaseController;
 import code.dto.AdminRegistration;
+import code.dto.PasswordDTO;
 import code.dto.PersonalData;
-import code.exceptions.admin.ModifyAnotherUserPersonalDataException;
+import code.exceptions.admin.ChangedPasswordException;
+import code.exceptions.admin.ModifyAnotherUserDataException;
 import code.exceptions.admin.NonMainAdminRegisterOtherAdminException;
+import code.exceptions.admin.NotChangedPasswordException;
 import code.exceptions.registration.EmailTakenException;
 import code.exceptions.registration.UserNotFoundException;
 import code.model.Admin;
-import code.model.User;
 import code.service.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,7 +36,7 @@ public class AdminController extends BaseController {
 
     @PutMapping(value = "/changePersonalData", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> changePersonalData(@Valid @RequestBody PersonalData dto, BindingResult result) throws UserNotFoundException, ModifyAnotherUserPersonalDataException {
+    public ResponseEntity<String> changePersonalData(@Valid @RequestBody PersonalData dto, BindingResult result) throws UserNotFoundException, ModifyAnotherUserDataException {
         if(result.hasErrors()){
             return formatErrorResponse(result);
         }
@@ -46,7 +46,7 @@ public class AdminController extends BaseController {
             return ResponseEntity.ok("Personal data changed!");
         } catch (UserNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (ModifyAnotherUserPersonalDataException e) {
+        } catch (ModifyAnotherUserDataException | NotChangedPasswordException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
     }
@@ -65,6 +65,23 @@ public class AdminController extends BaseController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         } catch (EmailTakenException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
+    }
+
+    @PutMapping(value = "/changePassword", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> changePassword(@Valid @RequestBody PasswordDTO dto, BindingResult result) {
+        if(result.hasErrors()){
+            return formatErrorResponse(result);
+        }
+
+        try {
+            _adminService.changePassword(_mapper.map(dto, Admin.class));
+            return ResponseEntity.ok("Password changed!");
+        } catch (UserNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (ModifyAnotherUserDataException | ChangedPasswordException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
     }
 }

@@ -4,6 +4,7 @@ import code.controller.base.BaseController;
 import code.dto.ProviderDTO;
 import code.dto.ProviderRegistrationRequest;
 import code.exceptions.registration.EmailTakenException;
+import code.exceptions.registration.NotProviderException;
 import code.exceptions.registration.UserAccountActivatedException;
 import code.exceptions.registration.UserNotFoundException;
 import code.model.BoatOwner;
@@ -84,6 +85,8 @@ public class RegistrationController extends BaseController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (UserAccountActivatedException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        } catch (NotProviderException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -97,6 +100,8 @@ public class RegistrationController extends BaseController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (UserAccountActivatedException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        } catch (NotProviderException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
     }
 }
