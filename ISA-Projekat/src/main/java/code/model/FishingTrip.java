@@ -20,6 +20,6 @@ public class FishingTrip extends SaleEntity {
    @JoinColumn(name = "fishingInstructor_id")
    private FishingInstructor fishingInstructor;
    @OneToMany(mappedBy = "fishingTrip", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-   private Set<FishingInstructorReservation> fishingInstructorReservation;
+   private Set<FishingTripReservation> fishingTripReservation;
 
 }

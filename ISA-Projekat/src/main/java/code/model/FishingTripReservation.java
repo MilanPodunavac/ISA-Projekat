@@ -13,12 +13,12 @@ import java.util.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class FishingInstructorReservation extends Reservation {
-   @ElementCollection(targetClass=FishingInstructorReservationTag.class)
+public class FishingTripReservation extends Reservation {
+   @ElementCollection(targetClass= FishingTripReservationTag.class)
    @Enumerated(EnumType.ORDINAL)
-   @CollectionTable(name="fishingInstructorReservation_tags")
+   @CollectionTable(name="fishingTripReservation_tags")
    @Column(name="tags")
-   private Set<FishingInstructorReservationTag> fishingInstructorReservationTag;
+   private Set<FishingTripReservationTag> fishingTripReservationTag;
    @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "fishingTrip_id")
    private FishingTrip fishingTrip;
