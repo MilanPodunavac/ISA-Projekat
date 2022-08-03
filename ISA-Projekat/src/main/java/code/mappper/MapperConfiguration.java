@@ -2,6 +2,7 @@ package code.mappper;
 
 import code.dto.admin.AdminRegistration;
 import code.dto.admin.PersonalData;
+import code.dto.entities.NewCottageDto;
 import code.dto.provider_registration.ProviderDTO;
 import code.dto.provider_registration.ProviderRegistrationRequest;
 import code.model.*;
@@ -86,6 +87,20 @@ public class MapperConfiguration {
         };
         TypeMap<AdminRegistration, Admin> adminRegistrationAdminTypeMap = modelMapper.createTypeMap(AdminRegistration.class, Admin.class);
         adminRegistrationAdminTypeMap.addMappings(adminRegistrationAdminPropertyMap);
+
+        //NewCottageDto
+
+        PropertyMap<NewCottageDto, Cottage> newCottageDtoToCottagePropertyMap = new PropertyMap<NewCottageDto, Cottage>(){
+            protected void configure(){
+                map().getLocation().setStreetName(source.getStreetName());
+                map().getLocation().setCityName(source.getCityName());
+                map().getLocation().setCountryName(source.getCountryName());
+                map().getLocation().setLatitude(source.getLatitude());
+                map().getLocation().setLongitude(source.getLongitude());
+            }
+        };
+        TypeMap<NewCottageDto, Cottage> newCottageDtoToCottage = modelMapper.createTypeMap(NewCottageDto.class, Cottage.class);
+        newCottageDtoToCottage.addMappings(newCottageDtoToCottagePropertyMap);
 
         return modelMapper;
     }

@@ -12,6 +12,7 @@ import code.exceptions.provider_registration.EmailTakenException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.Admin;
 import code.service.*;
+import code.utils.TokenUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,8 +29,8 @@ public class AdminController extends BaseController {
     private final AdminService _adminService;
     private final UserService _userService;
 
-    public AdminController(AdminService adminService, UserService userService, ModelMapper mapper) {
-        super(mapper);
+    public AdminController(AdminService adminService, UserService userService, ModelMapper mapper, TokenUtils tokenUtils) {
+        super(mapper, tokenUtils);
         this._adminService = adminService;
         this._userService = userService;
     }

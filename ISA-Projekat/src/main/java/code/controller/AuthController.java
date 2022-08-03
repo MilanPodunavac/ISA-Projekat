@@ -17,12 +17,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/auth")
 public class AuthController extends BaseController {
-    private final TokenUtils _tokenUtils;
     private final AuthenticationManager _authenticationManager;
 
     public AuthController(ModelMapper mapper, TokenUtils tokenUtils, AuthenticationManager authenticationManager) {
-        super(mapper);
-        this._tokenUtils = tokenUtils;
+        super(mapper, tokenUtils);
         this._authenticationManager = authenticationManager;
     }
 

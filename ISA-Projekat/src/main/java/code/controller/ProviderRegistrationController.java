@@ -15,6 +15,7 @@ import code.service.BoatOwnerService;
 import code.service.CottageOwnerService;
 import code.service.FishingInstructorService;
 import code.service.UserService;
+import code.utils.TokenUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -35,8 +36,8 @@ public class ProviderRegistrationController extends BaseController {
     private final BoatOwnerService _boatOwnerService;
     private final FishingInstructorService _fishingInstructorService;
 
-    public ProviderRegistrationController(UserService userService, CottageOwnerService cottageOwnerService, BoatOwnerService boatOwnerService, FishingInstructorService fishingInstructorService, ModelMapper mapper) {
-        super(mapper);
+    public ProviderRegistrationController(UserService userService, CottageOwnerService cottageOwnerService, BoatOwnerService boatOwnerService, FishingInstructorService fishingInstructorService, ModelMapper mapper, TokenUtils tokenUtils) {
+        super(mapper, tokenUtils);
         this._userService = userService;
         this._cottageOwnerService = cottageOwnerService;
         this._boatOwnerService = boatOwnerService;
