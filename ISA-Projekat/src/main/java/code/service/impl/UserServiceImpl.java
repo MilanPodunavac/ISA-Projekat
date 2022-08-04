@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,14 +61,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void throwExceptionIfUserDontExist(Integer id) throws UserNotFoundException {
-        if(!userExists(id)) {
+        if (!userExists(id)) {
             throw new UserNotFoundException("User not found!");
         }
     }
 
     @Override
     public List<User> getUnverifiedProviders() {
-        return _userRepository.findByEnabled(false);
+        List<User> users =  _userRepository.findByEnabled(false);
+        List<User> unverifiedProviders = new ArrayList<>();
+        for (User user : users) {
+            if (user.getRole().getName().equals("ROLE_COTTAGE_OWNER") || user.getRole().getName().equals("ROLE_BOAT_OWNER") || user.getRole().getName().equals("ROLE_FISHING_INSTRUCTOR")) {
+                unverifiedProviders.add(user);
+            }
+        }
+
+        return unverifiedProviders;
     }
 
     @Override
@@ -102,11 +111,11 @@ public class UserServiceImpl implements UserService {
     }
 
     private void throwExceptionIfUserEnabledOrUserDontExist(Integer id) throws UserNotFoundException, UserAccountActivatedException {
-        if(!userExists(id)) {
+        if (!userExists(id)) {
             throw new UserNotFoundException("User not found!");
         }
 
-        if(isUserEnabled(id)) {
+        if (isUserEnabled(id)) {
             throw new UserAccountActivatedException("User account is already activated!");
         }
     }

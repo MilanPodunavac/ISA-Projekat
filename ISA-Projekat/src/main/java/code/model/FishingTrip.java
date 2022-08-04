@@ -13,13 +13,22 @@ import java.util.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class FishingTrip extends SaleEntity {
+public class FishingTrip {
+   @Id
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   private Integer id;
    @Column
-   private int maxPeople;
+   private String name;
+   @Column
+   private String description;
+   @Column
+   private String rules;
+   @Column
+   private Integer maxPeople;
+   @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+   @JoinColumn(name="location_id")
+   private Location location;
    @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "fishingInstructor_id")
    private FishingInstructor fishingInstructor;
-   @OneToMany(mappedBy = "fishingTrip", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-   private Set<FishingTripReservation> fishingTripReservation;
-
 }
