@@ -12,6 +12,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,9 +24,12 @@ public class UserServiceImpl implements UserService {
     private final UserRepository _userRepository;
     private final JavaMailSender _mailSender;
 
-    public UserServiceImpl(UserRepository userRepository, JavaMailSender mailSender) {
+    private final PasswordEncoder _passwordEncoder;
+
+    public UserServiceImpl(UserRepository userRepository, JavaMailSender mailSender, PasswordEncoder encoder) {
         this._userRepository = userRepository;
         this._mailSender = mailSender;
+        _passwordEncoder = encoder;
     }
 
     @Override
@@ -140,5 +144,24 @@ public class UserServiceImpl implements UserService {
         message.setSubject("Registration request");
         message.setText("Registration request declined: " + declineReason);
         _mailSender.send(message);
+    }
+
+    @Override
+    public void updatePersonalInformation(User user) throws UserNotFoundException {
+        User userFromRepo = _userRepository.findByEmail(user.getEmail());
+        if(userFromRepo == null) throw new UserNotFoundException("User with email " + user.getEmail() + "does not exist!");
+        userFromRepo.setLocation(user.getLocation());
+        userFromRepo.setFirstName(user.getFirstName());
+        userFromRepo.setLastName(user.getLastName());
+        userFromRepo.setPhoneNumber(user.getPhoneNumber());
+        _userRepository.save(userFromRepo);
+    }
+
+    @Override
+    public void changePassword(String newPassword, String email) throws UserNotFoundException {
+        User userFromRepo = _userRepository.findByEmail(email);
+        if(userFromRepo == null) throw new UserNotFoundException("User with email " + email + "does not exist!");
+        userFromRepo.setPassword(_passwordEncoder.encode(newPassword));
+        _userRepository.save(userFromRepo);
     }
 }

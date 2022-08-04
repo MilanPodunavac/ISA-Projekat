@@ -13,10 +13,10 @@ public class TestUtil {
 
         return mapper.writeValueAsString(object);
     }
-    public static <T> T json(String string, Class<T> objectclass) throws JsonProcessingException {
+    public static <T> T json(String string, Class<T> objectClass) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
-        return mapper.readValue(string, objectclass);
+        return mapper.readValue(string, objectClass);
     }
 }

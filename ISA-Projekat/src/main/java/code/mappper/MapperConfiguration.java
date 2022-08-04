@@ -5,6 +5,7 @@ import code.dto.admin.PersonalData;
 import code.dto.entities.NewCottageDto;
 import code.dto.provider_registration.ProviderDTO;
 import code.dto.provider_registration.ProviderRegistrationRequest;
+import code.dto.user.UpdateUserPersonalInfoDto;
 import code.model.*;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
@@ -101,6 +102,20 @@ public class MapperConfiguration {
         };
         TypeMap<NewCottageDto, Cottage> newCottageDtoToCottage = modelMapper.createTypeMap(NewCottageDto.class, Cottage.class);
         newCottageDtoToCottage.addMappings(newCottageDtoToCottagePropertyMap);
+
+        //UpdateUserPersonalInfoDto
+
+        PropertyMap<UpdateUserPersonalInfoDto, CottageOwner> updateUserPersonalInfoDtoMap = new PropertyMap<UpdateUserPersonalInfoDto, CottageOwner>(){
+            protected void configure(){
+                map().getLocation().setStreetName(source.getStreetName());
+                map().getLocation().setCityName(source.getCityName());
+                map().getLocation().setCountryName(source.getCountryName());
+                map().getLocation().setLatitude(source.getLatitude());
+                map().getLocation().setLongitude(source.getLongitude());
+            }
+        };
+        TypeMap<UpdateUserPersonalInfoDto, CottageOwner> updateUserPersonalInfoToUserMap = modelMapper.createTypeMap(UpdateUserPersonalInfoDto.class, CottageOwner.class);
+        updateUserPersonalInfoToUserMap.addMappings(updateUserPersonalInfoDtoMap);
 
         return modelMapper;
     }

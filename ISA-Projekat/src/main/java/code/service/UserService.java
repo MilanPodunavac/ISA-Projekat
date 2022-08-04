@@ -17,4 +17,6 @@ public interface UserService {
     List<User> getUnverifiedProviders();
     void acceptRegistrationRequest(Integer id) throws UserNotFoundException, UserAccountActivatedException, NotProviderException;
     void declineRegistrationRequest(Integer id, String declineReason) throws UserNotFoundException, UserAccountActivatedException, NotProviderException;
+    void updatePersonalInformation(User user) throws UserNotFoundException;
+    void changePassword(String newPassword, String email) throws UserNotFoundException;
 }
