@@ -44,7 +44,7 @@ public class CottageControllerTest extends BaseControllerTest {
 
     @WithUserDetails("ralo@gmail.com")
     @Test
-    public void addNewCottage() throws Exception {
+    public void addNewCottageShouldReturnOk() throws Exception {
         String auth = logIn(mockMvc, new LoginRequest("ralo@gmail.com", "123"));
 
         NewCottageDto dto = new NewCottageDto();
@@ -60,5 +60,43 @@ public class CottageControllerTest extends BaseControllerTest {
         String json = TestUtil.json(dto);
         ResultActions result = this.mockMvc.perform(post(URL_PREFIX).header("Authorization", auth).contentType(contentType).content(json));
         result.andExpect(status().isOk());
+    }
+
+    @WithUserDetails("ralo@gmail.com")
+    @Test
+    public void addNewCottageShouldReturnBadRequest() throws Exception {
+        String auth = logIn(mockMvc, new LoginRequest("ralo@gmail.com", "123"));
+
+        NewCottageDto dto = new NewCottageDto();
+        dto.setBedNumber(0);//invalid
+        dto.setCityName("string");
+        dto.setCountryName("string");
+        dto.setDescription("string");
+        dto.setName("string");
+        dto.setStreetName("string");
+        dto.setRules("string");
+        dto.setRoomNumber(0);//invalid
+
+        String json = TestUtil.json(dto);
+        ResultActions result = this.mockMvc.perform(post(URL_PREFIX).header("Authorization", auth).contentType(contentType).content(json));
+        result.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void addNewCottageShouldReturnUnauthorized() throws Exception {
+        String auth = logIn(mockMvc, new LoginRequest("ralo@gmail.com", "123"));
+
+        NewCottageDto dto = new NewCottageDto();
+        dto.setBedNumber(1);
+        dto.setCityName("string");
+        dto.setCountryName("string");
+        dto.setDescription("string");
+        dto.setName("string");
+        dto.setStreetName("string");
+        dto.setRules("string");
+        dto.setRoomNumber(1);
+        String json = TestUtil.json(dto);
+        ResultActions result = this.mockMvc.perform(post(URL_PREFIX).contentType(contentType).content(json));
+        result.andExpect(status().isUnauthorized());
     }
 }
