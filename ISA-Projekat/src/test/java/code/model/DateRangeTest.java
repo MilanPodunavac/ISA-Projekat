@@ -105,4 +105,10 @@ public class DateRangeTest {
     public void overlapsDateRange(DateRangeComparisonData data){
         Assert.assertEquals(data.overlapsShouldBe, data.range1.overlapsWith(data.range2));
     }
+
+    @Test
+    public void getDaysTestShouldReturnTwo(){
+        DateRange dateRange = new DateRange(new GregorianCalendar(2022, Calendar.MAY, 1).getTime(), new GregorianCalendar(2022, Calendar.MAY, 3).getTime());
+        Assert.assertEquals(2, dateRange.getDays());
+    }
 }

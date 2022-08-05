@@ -2,11 +2,14 @@ package code.mappper;
 
 import code.dto.admin.AdminRegistration;
 import code.dto.admin.PersonalData;
+import code.dto.entities.NewAvailabilityPeriodDto;
 import code.dto.entities.NewCottageDto;
+import code.dto.entities.NewCottageReservationDto;
 import code.dto.provider_registration.ProviderDTO;
 import code.dto.provider_registration.ProviderRegistrationRequest;
 import code.dto.user.UpdateUserPersonalInfoDto;
 import code.model.*;
+import code.model.wrappers.DateRange;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.modelmapper.TypeMap;
@@ -114,9 +117,29 @@ public class MapperConfiguration {
                 map().getLocation().setLongitude(source.getLongitude());
             }
         };
-        TypeMap<UpdateUserPersonalInfoDto, CottageOwner> updateUserPersonalInfoToUserMap = modelMapper.createTypeMap(UpdateUserPersonalInfoDto.class, CottageOwner.class);
-        updateUserPersonalInfoToUserMap.addMappings(updateUserPersonalInfoDtoMap);
+        //TypeMap<UpdateUserPersonalInfoDto, CottageOwner> updateUserPersonalInfoToUserMap = modelMapper.createTypeMap(UpdateUserPersonalInfoDto.class, CottageOwner.class);
+        //updateUserPersonalInfoToUserMap.addMappings(updateUserPersonalInfoDtoMap);
 
+        //NewAvailabilityPeriodDto
+        /*PropertyMap<NewAvailabilityPeriodDto, AvailabilityPeriod> newAvailabilityPeriodPropMap = new PropertyMap<NewAvailabilityPeriodDto, AvailabilityPeriod>(){
+            protected void configure(){
+                map().setRange(new DateRange(source.getStartDate(), source.getEndDate()));
+                //skip(destination.getSaleEntity());
+                //skip(destination.getReservations());
+            }
+        };*/
+        //TypeMap<NewAvailabilityPeriodDto, AvailabilityPeriod> newAvailabilityPeriodTypeMap = modelMapper.createTypeMap(NewAvailabilityPeriodDto.class, AvailabilityPeriod.class);
+        //newAvailabilityPeriodTypeMap.addMappings(newAvailabilityPeriodPropMap);
+        //newAvailabilityPeriodTypeMap.
+
+        //NewCottageReservation
+
+        PropertyMap<NewCottageReservationDto, CottageReservation> newCottageReservationMap = new PropertyMap<NewCottageReservationDto, CottageReservation>(){
+            protected void configure(){
+
+            }
+        };
+        TypeMap<NewCottageReservationDto, CottageReservation> newCottageReservationTypeMap = modelMapper.createTypeMap(NewCottageReservationDto.class, CottageReservation.class);
         return modelMapper;
     }
 }

@@ -56,6 +56,7 @@ public class CottageControllerTest extends BaseControllerTest {
         dto.setStreetName("string");
         dto.setRules("string");
         dto.setRoomNumber(1);
+        dto.setPricePerDay(100);
 
         String json = TestUtil.json(dto);
         ResultActions result = this.mockMvc.perform(post(URL_PREFIX).header("Authorization", auth).contentType(contentType).content(json));

@@ -31,4 +31,6 @@ public class NewCottageDto {
     private int roomNumber;
     @Min(value = 1, message = "Bed number must be greater than 0")
     private int bedNumber;
+    @Min(value = 1, message = "Price per day must be greater than 0")
+    private int pricePerDay;
 }

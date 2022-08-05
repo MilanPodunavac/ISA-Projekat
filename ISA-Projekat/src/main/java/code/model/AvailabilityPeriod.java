@@ -18,7 +18,7 @@ import java.util.Set;
 @Entity
 public class AvailabilityPeriod {
     @Id
-    @SequenceGenerator(name = "availabilityPeriodSeqGen", sequenceName = "availabilityPeriodSeq", initialValue = 1, allocationSize = 1)
+    @SequenceGenerator(name = "availabilityPeriodSeqGen", sequenceName = "availabilityPeriodSeq", initialValue = 50, allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "availabilityPeriodSeqGen")
     private int id;
     @Embedded
@@ -32,12 +32,14 @@ public class AvailabilityPeriod {
     public boolean isAvailable(DateRange range){
         if(!this.range.includes(range)) return false;
         for (Reservation reservation: reservations) {
-            if(reservation.getDateRange().overlapsWith(range)) return false;
+            if(reservation.getDateRange().overlapsWith(range) && reservation.getReservationStatus() != ReservationStatus.cancelled) return false;
         }
         return true;
     }
     public boolean addReservation(Reservation reservation){
         if(isAvailable(reservation.getDateRange())){
+            reservation.setAvailabilityPeriod(this);
+            reservation.setReservationStatus(ReservationStatus.reserved);
             reservations.add(reservation);
             return true;
         }

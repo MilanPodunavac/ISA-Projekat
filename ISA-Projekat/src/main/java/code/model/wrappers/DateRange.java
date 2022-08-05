@@ -1,12 +1,12 @@
 package code.model.wrappers;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.tomcat.jni.Time;
 
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 @Getter
 @Setter
@@ -40,5 +40,8 @@ public class DateRange {
     public boolean isInPast()
     {
         return endDate.getTime() < Time.now();
+    }
+    public int getDays(){
+        return (int)TimeUnit.DAYS.convert(endDate.getTime() - startDate.getTime(), TimeUnit.MILLISECONDS);
     }
 }

@@ -1,5 +1,7 @@
 package code.model;
 
+import code.exceptions.entities.AvailabilityPeriodBadRangeException;
+import code.exceptions.entities.InvalidReservationException;
 import code.model.wrappers.DateRange;
 import lombok.AllArgsConstructor;
 import org.junit.Assert;
@@ -35,32 +37,80 @@ public class SaleEntityTest {
     }
 
     @DataPoint
-    public static AddReservationTestData data1 = getAddReservationTestData1();
+    public static AddReservationTestData data1;
+
+    static {
+        try {
+            data1 = getAddReservationTestData1();
+        } catch (AvailabilityPeriodBadRangeException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @DataPoint
-    public static AddReservationTestData data2 = getAddReservationTestData2();
+    public static AddReservationTestData data2;
+
+    static {
+        try {
+            data2 = getAddReservationTestData2();
+        } catch (AvailabilityPeriodBadRangeException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @DataPoint
-    public static AddReservationTestData data3 = getAddReservationTestData3();
+    public static AddReservationTestData data3;
+
+    static {
+        try {
+            data3 = getAddReservationTestData3();
+        } catch (AvailabilityPeriodBadRangeException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @DataPoint
-    public static AddReservationTestData data4 = getAddReservationTestData4();
+    public static AddReservationTestData data4;
+
+    static {
+        try {
+            data4 = getAddReservationTestData4();
+        } catch (AvailabilityPeriodBadRangeException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @DataPoint
-    public static AddReservationTestData data5 = getAddReservationTestData5();
+    public static AddReservationTestData data5;
+
+    static {
+        try {
+            data5 = getAddReservationTestData5();
+        } catch (AvailabilityPeriodBadRangeException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @DataPoint
-    public static AddReservationTestData data6 = getAddReservationTestData6();
+    public static AddReservationTestData data6;
+
+    static {
+        try {
+            data6 = getAddReservationTestData6();
+        } catch (AvailabilityPeriodBadRangeException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Theory
-    public void AddReservationTest(AddReservationTestData data){
+    public void AddReservationTest(AddReservationTestData data) throws InvalidReservationException {
         boolean assertion = data.cottage.addReservation(data.newReservation);
         Assert.assertEquals(data.shouldBe, assertion);
         boolean addAgain = data.cottage.addReservation(data.newReservation);
         Assert.assertEquals(false, addAgain);
     }
 
-    private static AddReservationTestData getAddReservationTestData1(){
+    private static AddReservationTestData getAddReservationTestData1() throws AvailabilityPeriodBadRangeException {
         Cottage cottage = new Cottage();
         cottage.setAvailabilityPeriods(new HashSet<>());
         AvailabilityPeriod period1 = getAvailabilityPeriod1();
@@ -74,7 +124,7 @@ public class SaleEntityTest {
         return new AddReservationTestData(cottage, newReservation, true);
     }
 
-    private static AddReservationTestData getAddReservationTestData2(){
+    private static AddReservationTestData getAddReservationTestData2() throws AvailabilityPeriodBadRangeException {
         Cottage cottage = new Cottage();
         cottage.setAvailabilityPeriods(new HashSet<>());
         AvailabilityPeriod period1 = getAvailabilityPeriod1();
@@ -88,7 +138,7 @@ public class SaleEntityTest {
         return new AddReservationTestData(cottage, newReservation, true);
     }
 
-    private static AddReservationTestData getAddReservationTestData3(){
+    private static AddReservationTestData getAddReservationTestData3() throws AvailabilityPeriodBadRangeException {
         Cottage cottage = new Cottage();
         cottage.setAvailabilityPeriods(new HashSet<>());
         AvailabilityPeriod period1 = getAvailabilityPeriod1();
@@ -102,7 +152,7 @@ public class SaleEntityTest {
         return new AddReservationTestData(cottage, newReservation, false);
     }
 
-    private static AddReservationTestData getAddReservationTestData4(){
+    private static AddReservationTestData getAddReservationTestData4() throws AvailabilityPeriodBadRangeException {
         Cottage cottage = new Cottage();
         cottage.setAvailabilityPeriods(new HashSet<>());
         AvailabilityPeriod period1 = getAvailabilityPeriod1();
@@ -116,7 +166,7 @@ public class SaleEntityTest {
         return new AddReservationTestData(cottage, newReservation, false);
     }
 
-    private static AddReservationTestData getAddReservationTestData5(){
+    private static AddReservationTestData getAddReservationTestData5() throws AvailabilityPeriodBadRangeException {
         Cottage cottage = new Cottage();
         cottage.setAvailabilityPeriods(new HashSet<>());
         AvailabilityPeriod period1 = getAvailabilityPeriod1();
@@ -130,7 +180,7 @@ public class SaleEntityTest {
         return new AddReservationTestData(cottage, newReservation, false);
     }
 
-    private static AddReservationTestData getAddReservationTestData6(){
+    private static AddReservationTestData getAddReservationTestData6() throws AvailabilityPeriodBadRangeException {
         Cottage cottage = new Cottage();
         cottage.setAvailabilityPeriods(new HashSet<>());
         AvailabilityPeriod period1 = getAvailabilityPeriod1();
@@ -160,14 +210,14 @@ public class SaleEntityTest {
 
     private static AvailabilityPeriod getAvailabilityPeriod2(){
         AvailabilityPeriod period = new AvailabilityPeriod();
-        period.setRange(new DateRange(new GregorianCalendar(2022, Calendar.MAY, 1).getTime(), new GregorianCalendar(2022, Calendar.MAY, 30).getTime()));
+        period.setRange(new DateRange(new GregorianCalendar(2022, Calendar.JUNE, 1).getTime(), new GregorianCalendar(2022, Calendar.JUNE, 30).getTime()));
         period.setReservations(new HashSet<Reservation>());
         CottageReservation res1 = new CottageReservation();
-        res1.setDateRange(new DateRange(new GregorianCalendar(2022, Calendar.MAY, 1).getTime(), new GregorianCalendar(2022, Calendar.MAY, 2).getTime()));
+        res1.setDateRange(new DateRange(new GregorianCalendar(2022, Calendar.JUNE, 1).getTime(), new GregorianCalendar(2022, Calendar.JUNE, 2).getTime()));
         CottageReservation res2 = new CottageReservation();
-        res2.setDateRange(new DateRange(new GregorianCalendar(2022, Calendar.MAY, 2).getTime(), new GregorianCalendar(2022, Calendar.MAY, 5).getTime()));
+        res2.setDateRange(new DateRange(new GregorianCalendar(2022, Calendar.JUNE, 2).getTime(), new GregorianCalendar(2022, Calendar.JUNE, 5).getTime()));
         CottageReservation res3 = new CottageReservation();
-        res3.setDateRange(new DateRange(new GregorianCalendar(2022, Calendar.MAY, 7).getTime(), new GregorianCalendar(2022, Calendar.MAY, 16).getTime()));
+        res3.setDateRange(new DateRange(new GregorianCalendar(2022, Calendar.JUNE, 7).getTime(), new GregorianCalendar(2022, Calendar.JUNE, 16).getTime()));
         period.getReservations().add(res1);
         period.getReservations().add(res2);
         period.getReservations().add(res3);

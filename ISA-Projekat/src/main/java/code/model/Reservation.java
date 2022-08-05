@@ -17,13 +17,13 @@ import java.util.*;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class Reservation {
    @Id
-   @SequenceGenerator(name = "reservationSeqGen", sequenceName = "reservationSeq", initialValue = 1, allocationSize = 1)
+   @SequenceGenerator(name = "reservationSeqGen", sequenceName = "reservationSeq", initialValue = 100, allocationSize = 1)
    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "reservationSeqGen")
    protected Integer id;
    @Embedded
    protected DateRange dateRange;
    @Column
-   protected int maxPeople;
+   protected int numberOfPeople;
    @Column
    protected double price;
    @Column
