@@ -24,11 +24,26 @@ public class FishingTrip {
    @Column
    private String rules;
    @Column
+   private String equipment;
+   @Column
    private Integer maxPeople;
+   @Column
+   private Integer costPerDay;
+   @Column
+   private Integer percentageInstructorKeepsIfReservationCancelled;
    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    @JoinColumn(name="location_id")
    private Location location;
    @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "fishingInstructor_id")
    private FishingInstructor fishingInstructor;
+   @OneToMany(mappedBy = "fishingTrip", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+   private Set<FishingTripPicture> pictures;
+   @OneToMany(mappedBy = "fishingTrip", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+   private Set<FishingTripQuickReservation> fishingTripQuickReservations;
+   @ElementCollection(targetClass= FishingTripReservationTag.class)
+   @Enumerated(EnumType.ORDINAL)
+   @CollectionTable(name="fishingTrip_tags")
+   @Column(name="tags")
+   private Set<FishingTripReservationTag> fishingTripReservationTags;
 }
