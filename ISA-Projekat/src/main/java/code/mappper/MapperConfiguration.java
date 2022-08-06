@@ -5,6 +5,8 @@ import code.dto.admin.PersonalData;
 import code.dto.entities.NewAvailabilityPeriodDto;
 import code.dto.entities.NewCottageDto;
 import code.dto.entities.NewCottageReservationDto;
+import code.dto.fishing_trip.EditFishingTrip;
+import code.dto.fishing_trip.NewFishingTrip;
 import code.dto.provider_registration.ProviderDTO;
 import code.dto.provider_registration.ProviderRegistrationRequest;
 import code.dto.user.UpdateUserPersonalInfoDto;
@@ -45,6 +47,9 @@ public class MapperConfiguration {
         modelMapper.addMappings(boatOwnerRegistrationPropertyMap);
         modelMapper.addMappings(fishingInstructorRegistrationPropertyMap);
         modelMapper.addMappings(cottageOwnerRegistrationPropertyMap);*/
+
+        // add provider
+
         PropertyMap<ProviderRegistrationRequest, User> userRegistrationPropertyMap = new PropertyMap<ProviderRegistrationRequest, User>(){
             protected void configure(){
                 map().getLocation().setCityName(source.getCity());
@@ -57,6 +62,8 @@ public class MapperConfiguration {
         modelMapper.createTypeMap(ProviderRegistrationRequest.class, BoatOwner.class).includeBase(ProviderRegistrationRequest.class, User.class);
         modelMapper.createTypeMap(ProviderRegistrationRequest.class, CottageOwner.class).includeBase(ProviderRegistrationRequest.class, User.class);
         modelMapper.createTypeMap(ProviderRegistrationRequest.class, FishingInstructor.class).includeBase(ProviderRegistrationRequest.class, User.class);
+
+        // get providers
 
         PropertyMap<User, ProviderDTO> userProviderDTOPropertyMap = new PropertyMap<User, ProviderDTO>(){
             protected void configure(){
@@ -72,6 +79,8 @@ public class MapperConfiguration {
         modelMapper.createTypeMap(CottageOwner.class, ProviderDTO.class).includeBase(User.class, ProviderDTO.class);
         modelMapper.createTypeMap(FishingInstructor.class, ProviderDTO.class).includeBase(User.class, ProviderDTO.class);
 
+        // change admin personal data
+
         PropertyMap<PersonalData, Admin> personalDataAdminPropertyMap = new PropertyMap<PersonalData, Admin>(){
             protected void configure(){
                 map().getLocation().setStreetName(source.getAddress());
@@ -81,6 +90,8 @@ public class MapperConfiguration {
         };
         TypeMap<PersonalData, Admin> personalDataAdminTypeMap = modelMapper.createTypeMap(PersonalData.class, Admin.class);
         personalDataAdminTypeMap.addMappings(personalDataAdminPropertyMap);
+
+        // add admin
 
         PropertyMap<AdminRegistration, Admin> adminRegistrationAdminPropertyMap = new PropertyMap<AdminRegistration, Admin>(){
             protected void configure(){
@@ -140,6 +151,31 @@ public class MapperConfiguration {
             }
         };
         TypeMap<NewCottageReservationDto, CottageReservation> newCottageReservationTypeMap = modelMapper.createTypeMap(NewCottageReservationDto.class, CottageReservation.class);
+
+        // add fishing trip
+
+        PropertyMap<NewFishingTrip, FishingTrip> newFishingTripFishingTripPropertyMap = new PropertyMap<NewFishingTrip, FishingTrip>(){
+            protected void configure(){
+                map().getLocation().setStreetName(source.getAddress());
+                map().getLocation().setCityName(source.getCity());
+                map().getLocation().setCountryName(source.getCountry());
+            }
+        };
+        TypeMap<NewFishingTrip, FishingTrip> newFishingTripFishingTripTypeMap = modelMapper.createTypeMap(NewFishingTrip.class, FishingTrip.class);
+        newFishingTripFishingTripTypeMap.addMappings(newFishingTripFishingTripPropertyMap);
+
+        // edit fishing trip
+
+        PropertyMap<EditFishingTrip, FishingTrip> editFishingTripFishingTripPropertyMap = new PropertyMap<EditFishingTrip, FishingTrip>(){
+            protected void configure(){
+                map().getLocation().setStreetName(source.getAddress());
+                map().getLocation().setCityName(source.getCity());
+                map().getLocation().setCountryName(source.getCountry());
+            }
+        };
+        TypeMap<EditFishingTrip, FishingTrip> editFishingTripFishingTripTypeMap = modelMapper.createTypeMap(EditFishingTrip.class, FishingTrip.class);
+        editFishingTripFishingTripTypeMap.addMappings(editFishingTripFishingTripPropertyMap);
+
         return modelMapper;
     }
 }

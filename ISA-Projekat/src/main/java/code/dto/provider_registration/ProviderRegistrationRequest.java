@@ -1,7 +1,7 @@
 package code.dto.provider_registration;
 
 import code.dto.provider_registration.enums.ProviderTypeDto;
-import code.utils.EnumValidator;
+import code.validation.ProviderTypeDtoValidator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,6 +36,6 @@ public class ProviderRegistrationRequest {
     @NotBlank(message = "Reason for registration is required")
     private String reasonForRegistration;
     private String biography;
-    @EnumValidator(targetClassType = ProviderTypeDto.class, message = "Type of provider is required")
+    @ProviderTypeDtoValidator(targetClassType = ProviderTypeDto.class, message = "Type of provider is required")
     private String providerType;
 }
