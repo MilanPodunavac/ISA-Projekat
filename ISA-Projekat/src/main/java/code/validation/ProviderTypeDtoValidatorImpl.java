@@ -1,11 +1,11 @@
-package code.utils;
+package code.validation;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EnumValidatorImpl implements ConstraintValidator<EnumValidator, String> {
+public class ProviderTypeDtoValidatorImpl implements ConstraintValidator<ProviderTypeDtoValidator, String> {
     List<String> valueList = null;
 
     @Override
@@ -14,7 +14,7 @@ public class EnumValidatorImpl implements ConstraintValidator<EnumValidator, Str
     }
 
     @Override
-    public void initialize(EnumValidator constraintAnnotation) {
+    public void initialize(ProviderTypeDtoValidator constraintAnnotation) {
         valueList = new ArrayList<>();
         Class<? extends Enum<?>> enumClass = constraintAnnotation.targetClassType();
 

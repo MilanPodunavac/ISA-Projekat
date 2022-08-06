@@ -20,5 +20,6 @@ public class FishingInstructor extends User {
    private String biography;
    @OneToMany(mappedBy = "fishingInstructor", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    private Set<FishingTrip> fishingTrip;
-
+   @OneToMany(mappedBy = "fishingInstructor", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+   private Set<FishingInstructorAvailablePeriod> fishingInstructorAvailablePeriods;
 }

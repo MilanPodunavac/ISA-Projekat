@@ -1,4 +1,4 @@
-package code.utils;
+package code.validation;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -9,8 +9,8 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = EnumValidatorImpl.class)
-public @interface EnumValidator {
+@Constraint(validatedBy = ProviderTypeDtoValidatorImpl.class)
+public @interface ProviderTypeDtoValidator {
     String message() default "Value is not valid!";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
