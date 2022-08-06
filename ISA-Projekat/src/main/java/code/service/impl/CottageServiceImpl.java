@@ -6,6 +6,7 @@ import code.model.*;
 import code.repository.CottageRepository;
 import code.repository.UserRepository;
 import code.service.CottageService;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
@@ -57,8 +58,14 @@ public class CottageServiceImpl implements CottageService {
         Cottage cottage = optionalCottage.get();
         if(cottage.getCottageOwner().getId() != owner.getId())throw new EntityNotOwnedException("Cottage not owned by given user");
         reservation.setClient(client);
-        if(cottage.addReservation(reservation) == false)throw new EntityNotAvailableException("Cottage is not available at the given time");
+        if(!cottage.addReservation(reservation))throw new EntityNotAvailableException("Cottage is not available at the given time");
         _cottageRepository.save(cottage);
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("marko76589@gmail.com");
+        message.setTo(client.getEmail());
+        message.setSubject("Cottage reserved");
+        message.setText("Cottage " + cottage.getName() + " has been successfully reserved" );
+        _mailSender.send(message);
     }
 
 }

@@ -26,16 +26,18 @@ public class DateRange {
         }
     }
     public boolean includesEqual(Date date){
-        return (startDate.before(date) || startDate.equals(date)) && (endDate.after(date) || endDate.equals(date));
+        //return (startDate.before(date) || startDate.equals(date)) && (endDate.after(date) || endDate.equals(date));
+        return startDate.getTime() <= date.getTime() && endDate.getTime() >= date.getTime();
     }
     public boolean includes(Date date){
-        return startDate.before(date) && endDate.after(date);
+        //return startDate.before(date) && endDate.after(date);
+        return startDate.getTime() < date.getTime() && endDate.getTime() > date.getTime();
     }
     public boolean includes(DateRange dateRange) {
         return includesEqual(dateRange.startDate) && includesEqual(dateRange.endDate);
     }
     public boolean overlapsWith(DateRange dateRange){
-        return dateRange.includes(startDate) || includes(dateRange.startDate) || startDate.equals(dateRange.startDate);
+        return dateRange.includes(startDate) || includes(dateRange.startDate) || startDate.getTime() == dateRange.startDate.getTime(); //startDate.equals(dateRange.startDate);
     }
     public boolean isInPast()
     {

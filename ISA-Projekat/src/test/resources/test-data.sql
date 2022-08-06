@@ -14,6 +14,7 @@ INSERT INTO LOCATION (city_name, country_name, street_name, longitude, latitude)
 INSERT INTO LOCATION (city_name, country_name, street_name, longitude, latitude) VALUES ('Veternik', 'Srbija', 'Vojvode Stepe 14', 0, 0);
 INSERT INTO LOCATION (city_name, country_name, street_name, longitude, latitude) VALUES ('Veternik', 'Srbija', 'Vojvode Stepe 15', 0, 0);
 INSERT INTO LOCATION (city_name, country_name, street_name, longitude, latitude) VALUES ('Veternik', 'Srbija', 'Vojvode Stepe 16', 0, 0);
+INSERT INTO LOCATION (city_name, country_name, street_name, longitude, latitude) VALUES ('Veternik', 'Srbija', 'Vojvode Stepe 17', 0, 0);
 
 INSERT INTO FISHING_INSTRUCTOR (id, email, password, enabled, first_name, last_name, phone_number, reason_for_registration, biography, location_id, role_id) VALUES (1, 'marko@gmail.com', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', true, 'Marko', 'Marković', '123456789', 'dobar razlog', 'ja sam marko', 1, 1);
 INSERT INTO FISHING_INSTRUCTOR (id, email, password, enabled, first_name, last_name, phone_number, reason_for_registration, biography, location_id, role_id) VALUES (2, 'milan@gmail.com', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', false, 'Milan', 'Milanović', '987654321', 'dobar razlog', 'ja sam milan', 2, 1);
@@ -24,3 +25,8 @@ INSERT INTO ADMIN (id, email, password, enabled, first_name, last_name, phone_nu
 INSERT INTO COTTAGE_OWNER (id, email, password, enabled, first_name, last_name, phone_number, reason_for_registration, location_id, role_id) VALUES (7, 'ralo@gmail.com', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', true, 'Aco', 'Acić', '222333444', 'dobar', 7, 2);
 INSERT INTO COTTAGE_OWNER (id, email, password, enabled, first_name, last_name, phone_number, reason_for_registration, location_id, role_id) VALUES (8, 'ralo1@gmail.com', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', true, 'Aco', 'Acić', '222333444', 'dobar', 8, 2);
 INSERT INTO CLIENT (id, email, password, enabled, first_name, last_name, phone_number, banned, penalty_points, location_id, role_id) VALUES (9, 'klijent@gmail.com', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', true, 'Klijent', 'Klijentic', '111111111', false, 0, 9, 2);
+
+INSERT INTO COTTAGE (id, description, name, rules, location_id, bed_number, room_number, cottage_owner_id, price_per_day) VALUES (1, 'cottage', 'cottage', 'rules', 10, 2, 2, 7, 100);
+
+INSERT INTO AVAILABILITY_PERIOD (id, end_date, start_date, sale_entity_id) VALUES(1, '2022-05-30 00:00:00 +4:00', '2022-05-1 00:00:00 +4:00', 1);
+INSERT INTO AVAILABILITY_PERIOD (id, end_date, start_date, sale_entity_id) VALUES(2, '2022-06-30 00:00:00 +4:00', '2022-06-1 00:00:00 +4:00', 1);
