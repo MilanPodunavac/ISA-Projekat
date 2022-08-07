@@ -22,7 +22,6 @@ import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Optional;
 
-import static code.constants.AdminConstants.NEW_FIRST_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -43,7 +42,7 @@ public class CottageServiceTest {
     private CottageServiceImpl _cottageService;
 
     @Test
-    public void addAvailabilityPeriodSuccess() throws AvailabilityPeriodBadRangeException, UserNotFoundException, EntityNotFoundException, EntityNotOwnedException, UnauthorizedAccessException {
+    public void addAvailabilityPeriodSuccess() throws AvailabilityPeriodBadRangeException, EntityNotFoundException, EntityNotOwnedException, UnauthorizedAccessException {
         //ARRANGE
         CottageOwner cottageOwner = getMockCottageOwner();
         Cottage cottage = getMockCottage(cottageOwner);
@@ -62,7 +61,7 @@ public class CottageServiceTest {
     }
 
     @Test(expected = UnauthorizedAccessException.class)
-    public void addAvailabilityPeriodOwnerNotFound() throws AvailabilityPeriodBadRangeException, UserNotFoundException, EntityNotFoundException, EntityNotOwnedException, UnauthorizedAccessException {
+    public void addAvailabilityPeriodOwnerNotFound() throws AvailabilityPeriodBadRangeException, EntityNotFoundException, EntityNotOwnedException, UnauthorizedAccessException {
         //ARRANGE
         CottageOwner cottageOwner = getMockCottageOwner();
         Cottage cottage = getMockCottage(cottageOwner);
@@ -78,7 +77,7 @@ public class CottageServiceTest {
     }
 
     @Test(expected = EntityNotFoundException.class)
-    public void addAvailabilityPeriodCottageNotFound() throws AvailabilityPeriodBadRangeException, UserNotFoundException, EntityNotFoundException, EntityNotOwnedException, UnauthorizedAccessException {
+    public void addAvailabilityPeriodCottageNotFound() throws AvailabilityPeriodBadRangeException, EntityNotFoundException, EntityNotOwnedException, UnauthorizedAccessException {
         //ARRANGE
         CottageOwner cottageOwner = getMockCottageOwner();
         Cottage cottage = getMockCottage(cottageOwner);

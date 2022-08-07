@@ -42,7 +42,7 @@ public class CottageServiceImpl implements CottageService {
     }
 
     @Override
-    public void addAvailabilityPeriod(int cottageId, AvailabilityPeriod period, String email) throws AvailabilityPeriodBadRangeException, UserNotFoundException, EntityNotFoundException, EntityNotOwnedException, UnauthorizedAccessException {
+    public void addAvailabilityPeriod(int cottageId, AvailabilityPeriod period, String email) throws AvailabilityPeriodBadRangeException, EntityNotFoundException, EntityNotOwnedException, UnauthorizedAccessException {
         CottageOwner owner;
         try{
             owner = (CottageOwner) _userRepository.findByEmail(email);
