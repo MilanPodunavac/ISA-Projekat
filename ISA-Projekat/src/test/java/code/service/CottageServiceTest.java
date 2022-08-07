@@ -1,6 +1,7 @@
 package code.service;
 
 import code.exceptions.entities.*;
+import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.*;
 import code.model.wrappers.DateRange;
@@ -42,7 +43,7 @@ public class CottageServiceTest {
     private CottageServiceImpl _cottageService;
 
     @Test
-    public void addAvailabilityPeriodSuccess() throws AvailabilityPeriodBadRangeException, UserNotFoundException, EntityNotFoundException, EntityNotOwnedException {
+    public void addAvailabilityPeriodSuccess() throws AvailabilityPeriodBadRangeException, UserNotFoundException, EntityNotFoundException, EntityNotOwnedException, UnauthorizedAccessException {
         //ARRANGE
         CottageOwner cottageOwner = getMockCottageOwner();
         Cottage cottage = getMockCottage(cottageOwner);
@@ -60,8 +61,8 @@ public class CottageServiceTest {
         verify(_cottageRepository, times(1)).findById(cottage.getId());
     }
 
-    @Test(expected = UserNotFoundException.class)
-    public void addAvailabilityPeriodOwnerNotFound() throws AvailabilityPeriodBadRangeException, UserNotFoundException, EntityNotFoundException, EntityNotOwnedException {
+    @Test(expected = UnauthorizedAccessException.class)
+    public void addAvailabilityPeriodOwnerNotFound() throws AvailabilityPeriodBadRangeException, UserNotFoundException, EntityNotFoundException, EntityNotOwnedException, UnauthorizedAccessException {
         //ARRANGE
         CottageOwner cottageOwner = getMockCottageOwner();
         Cottage cottage = getMockCottage(cottageOwner);
@@ -77,7 +78,7 @@ public class CottageServiceTest {
     }
 
     @Test(expected = EntityNotFoundException.class)
-    public void addAvailabilityPeriodCottageNotFound() throws AvailabilityPeriodBadRangeException, UserNotFoundException, EntityNotFoundException, EntityNotOwnedException {
+    public void addAvailabilityPeriodCottageNotFound() throws AvailabilityPeriodBadRangeException, UserNotFoundException, EntityNotFoundException, EntityNotOwnedException, UnauthorizedAccessException {
         //ARRANGE
         CottageOwner cottageOwner = getMockCottageOwner();
         Cottage cottage = getMockCottage(cottageOwner);
@@ -93,7 +94,7 @@ public class CottageServiceTest {
     }
 
     @Test
-    public void addReservationSuccess() throws AvailabilityPeriodBadRangeException, UserNotFoundException, EntityNotAvailableException, InvalidReservationException, EntityNotFoundException, EntityNotOwnedException {
+    public void addReservationSuccess() throws AvailabilityPeriodBadRangeException, UserNotFoundException, EntityNotAvailableException, InvalidReservationException, EntityNotFoundException, EntityNotOwnedException, UnauthorizedAccessException {
         //ARRANGE
         CottageOwner cottageOwner = getMockCottageOwner();
         Cottage cottage = getMockCottage(cottageOwner);
@@ -103,7 +104,9 @@ public class CottageServiceTest {
         when(_cottageRepository.findById(cottage.getId())).thenReturn(Optional.of(cottage));
         when(_cottageRepository.save(cottage)).thenReturn(cottage);
         CottageReservation reservation = new CottageReservation();
+        reservation.setCottageReservationTag(new HashSet<>());
         reservation.setNumberOfPeople(2);
+        reservation.setCottageReservationTag(new HashSet<>());
         reservation.setDateRange(new DateRange(new GregorianCalendar(2022, Calendar.MAY, 5).getTime(), new GregorianCalendar(2022, Calendar.MAY, 7).getTime()));
         //ACT
         _cottageService.addReservation(client.getEmail(), cottage.getId(), reservation, cottageOwner.getEmail());
@@ -118,7 +121,7 @@ public class CottageServiceTest {
     }
 
     @Test(expected = InvalidReservationException.class)
-    public void addReservationNotEnoughBeds() throws AvailabilityPeriodBadRangeException, UserNotFoundException, EntityNotAvailableException, InvalidReservationException, EntityNotFoundException, EntityNotOwnedException {
+    public void addReservationNotEnoughBeds() throws AvailabilityPeriodBadRangeException, UserNotFoundException, EntityNotAvailableException, InvalidReservationException, EntityNotFoundException, EntityNotOwnedException, UnauthorizedAccessException {
         //ARRANGE
         CottageOwner cottageOwner = getMockCottageOwner();
         Cottage cottage = getMockCottage(cottageOwner);
@@ -128,6 +131,7 @@ public class CottageServiceTest {
         when(_cottageRepository.findById(cottage.getId())).thenReturn(Optional.of(cottage));
         when(_cottageRepository.save(cottage)).thenReturn(cottage);
         CottageReservation reservation = new CottageReservation();
+        reservation.setCottageReservationTag(new HashSet<>());
         reservation.setNumberOfPeople(7);
         reservation.setDateRange(new DateRange(new GregorianCalendar(2022, Calendar.MAY, 5).getTime(), new GregorianCalendar(2022, Calendar.MAY, 7).getTime()));
         //ACT
@@ -137,7 +141,7 @@ public class CottageServiceTest {
     }
 
     @Test(expected = EntityNotAvailableException.class)
-    public void addReservationNotAvailable() throws AvailabilityPeriodBadRangeException, UserNotFoundException, EntityNotAvailableException, InvalidReservationException, EntityNotFoundException, EntityNotOwnedException {
+    public void addReservationNotAvailable() throws AvailabilityPeriodBadRangeException, UserNotFoundException, EntityNotAvailableException, InvalidReservationException, EntityNotFoundException, EntityNotOwnedException, UnauthorizedAccessException {
         //ARRANGE
         CottageOwner cottageOwner = getMockCottageOwner();
         Cottage cottage = getMockCottage(cottageOwner);
@@ -147,8 +151,33 @@ public class CottageServiceTest {
         when(_cottageRepository.findById(cottage.getId())).thenReturn(Optional.of(cottage));
         when(_cottageRepository.save(cottage)).thenReturn(cottage);
         CottageReservation reservation = new CottageReservation();
+        reservation.setCottageReservationTag(new HashSet<>());
         reservation.setNumberOfPeople(2);
+        reservation.setCottageReservationTag(new HashSet<>());
         reservation.setDateRange(new DateRange(new GregorianCalendar(2022, Calendar.JUNE, 5).getTime(), new GregorianCalendar(2022, Calendar.JUNE, 7).getTime()));
+        //ACT
+        _cottageService.addReservation(client.getEmail(), cottage.getId(), reservation, cottageOwner.getEmail());
+        //ASSERT
+        //Exception expected
+    }
+
+    @Test(expected = InvalidReservationException.class)
+    public void addReservationNoAdditionalService() throws AvailabilityPeriodBadRangeException, UserNotFoundException, EntityNotAvailableException, InvalidReservationException, EntityNotFoundException, EntityNotOwnedException, UnauthorizedAccessException {
+        //ARRANGE
+        CottageOwner cottageOwner = getMockCottageOwner();
+        Cottage cottage = getMockCottage(cottageOwner);
+        cottage.getAdditionalServices().add(CottageReservationTag.childFriendly);
+        Client client = getMockClient();
+        when(_userRepository.findByEmail(cottageOwner.getEmail())).thenReturn(cottageOwner);
+        when(_userRepository.findByEmail(client.getEmail())).thenReturn(client);
+        when(_cottageRepository.findById(cottage.getId())).thenReturn(Optional.of(cottage));
+        when(_cottageRepository.save(cottage)).thenReturn(cottage);
+        CottageReservation reservation = new CottageReservation();
+        reservation.setCottageReservationTag(new HashSet<>());
+        reservation.setNumberOfPeople(2);
+        reservation.setCottageReservationTag(new HashSet<>());
+        reservation.getCottageReservationTag().add(CottageReservationTag.wiFi);
+        reservation.setDateRange(new DateRange(new GregorianCalendar(2022, Calendar.MAY, 5).getTime(), new GregorianCalendar(2022, Calendar.MAY, 7).getTime()));
         //ACT
         _cottageService.addReservation(client.getEmail(), cottage.getId(), reservation, cottageOwner.getEmail());
         //ASSERT
@@ -173,6 +202,7 @@ public class CottageServiceTest {
         cottage.setRoomNumber(2);
         cottage.setPricePerDay(100);
         cottage.setCottageOwner(cottageOwner);
+        cottage.setAdditionalServices(new HashSet<>());
         return cottage;
     }
 

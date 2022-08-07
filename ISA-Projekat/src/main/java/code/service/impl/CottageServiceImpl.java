@@ -1,6 +1,7 @@
 package code.service.impl;
 
 import code.exceptions.entities.*;
+import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.*;
 import code.repository.CottageRepository;
@@ -28,17 +29,27 @@ public class CottageServiceImpl implements CottageService {
     }
 
     @Override
-    public void addCottage(String email, Cottage cottage) throws UserNotFoundException {
-        CottageOwner owner = (CottageOwner) _userRepository.findByEmail(email);
+    public void addCottage(String email, Cottage cottage) throws UserNotFoundException, UnauthorizedAccessException {
+        CottageOwner owner;
+        try{
+            owner = (CottageOwner) _userRepository.findByEmail(email);
+        }catch(ClassCastException ex){
+            throw new UnauthorizedAccessException("User is not a cottage owner");
+        }
         if(owner == null) throw new UserNotFoundException("Cottage owner not found");
         owner.addCottage(cottage);
         _cottageRepository.save(cottage);
     }
 
     @Override
-    public void addAvailabilityPeriod(int cottageId, AvailabilityPeriod period, String email) throws AvailabilityPeriodBadRangeException, UserNotFoundException, EntityNotFoundException, EntityNotOwnedException {
-        CottageOwner owner = (CottageOwner) _userRepository.findByEmail(email);
-        if(owner == null)throw new UserNotFoundException("Cottage owner not found");
+    public void addAvailabilityPeriod(int cottageId, AvailabilityPeriod period, String email) throws AvailabilityPeriodBadRangeException, UserNotFoundException, EntityNotFoundException, EntityNotOwnedException, UnauthorizedAccessException {
+        CottageOwner owner;
+        try{
+            owner = (CottageOwner) _userRepository.findByEmail(email);
+        }catch(ClassCastException ex){
+            throw new UnauthorizedAccessException("User is not a cottage owner");
+        }
+        if(owner == null)throw new UnauthorizedAccessException("Cottage owner not found");
         Optional<Cottage> optionalCottage = _cottageRepository.findById(cottageId);
         if(!optionalCottage.isPresent())throw new EntityNotFoundException("Cottage not found");
         Cottage cottage = optionalCottage.get();
@@ -48,10 +59,20 @@ public class CottageServiceImpl implements CottageService {
     }
 
     @Override
-    public void addReservation(String clientEmail, int cottageId, CottageReservation reservation, String email) throws EntityNotFoundException, UserNotFoundException, InvalidReservationException, EntityNotOwnedException, EntityNotAvailableException {
-        CottageOwner owner = (CottageOwner) _userRepository.findByEmail(email);
-        if(owner == null)throw new UserNotFoundException("Cottage owner not found");
-        Client client = (Client) _userRepository.findByEmail(clientEmail);
+    public void addReservation(String clientEmail, int cottageId, CottageReservation reservation, String email) throws EntityNotFoundException, UserNotFoundException, InvalidReservationException, EntityNotOwnedException, EntityNotAvailableException, UnauthorizedAccessException {
+        CottageOwner owner;
+        try{
+             owner = (CottageOwner) _userRepository.findByEmail(email);
+        }catch(ClassCastException ex){
+            throw new UnauthorizedAccessException("User is not a cottage owner");
+        }
+        if(owner == null)throw new UnauthorizedAccessException("Cottage owner not found");
+        Client client;
+        try{
+            client = (Client) _userRepository.findByEmail(clientEmail);
+        }catch(ClassCastException ex){
+            throw new UserNotFoundException("User is not a client");
+        }
         if(client == null)throw new UserNotFoundException("Client not found");
         Optional<Cottage> optionalCottage = _cottageRepository.findById(cottageId);
         if(!optionalCottage.isPresent())throw new EntityNotFoundException("Cottage not found");

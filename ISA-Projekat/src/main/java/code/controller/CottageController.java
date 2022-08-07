@@ -8,6 +8,7 @@ import code.exceptions.entities.AvailabilityPeriodBadRangeException;
 import code.exceptions.entities.EntityNotAvailableException;
 import code.exceptions.entities.EntityNotFoundException;
 import code.exceptions.entities.EntityNotOwnedException;
+import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.*;
 import code.model.wrappers.DateRange;
@@ -27,7 +28,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/api/cottage")
@@ -56,7 +56,7 @@ public class CottageController extends BaseController {
             Cottage cottage = _mapper.map(dto, Cottage.class);
             _cottageService.addCottage(email, cottage);
         }catch(Exception ex){
-            if(ex instanceof UserNotFoundException)return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Cottage owner not found");
+            if(ex instanceof UserNotFoundException || ex instanceof UnauthorizedAccessException)return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Cottage owner not found");
             return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
         }
         return ResponseEntity.ok("Cottage added successfully");
@@ -74,7 +74,7 @@ public class CottageController extends BaseController {
             period.setRange(new DateRange(dto.getStartDate(), dto.getEndDate()));
             _cottageService.addAvailabilityPeriod(dto.getSaleEntityId(), period, email);
         }catch(Exception ex){
-            if(ex instanceof UserNotFoundException || ex instanceof EntityNotOwnedException)return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+            if(ex instanceof UnauthorizedAccessException || ex instanceof EntityNotOwnedException)return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
             if(ex instanceof EntityNotFoundException)return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
             if(ex instanceof AvailabilityPeriodBadRangeException)return ResponseEntity.badRequest().body(ex.getMessage());
             return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
@@ -99,7 +99,7 @@ public class CottageController extends BaseController {
             reservation.setDateRange(new DateRange(dto.getStartDate(), endDate));
             _cottageService.addReservation(dto.getClientEmail(), dto.getCottageId(), reservation, email);
         }catch(Exception ex){
-            if(ex instanceof EntityNotOwnedException)return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+            if(ex instanceof EntityNotOwnedException || ex instanceof UnauthorizedAccessException)return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
             if(ex instanceof EntityNotFoundException || ex instanceof UserNotFoundException)return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
             if(ex instanceof EntityNotAvailableException)return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
             return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");

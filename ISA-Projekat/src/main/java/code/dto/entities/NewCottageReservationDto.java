@@ -1,5 +1,6 @@
 package code.dto.entities;
 
+import code.model.CottageReservationTag;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,8 +9,8 @@ import lombok.Setter;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -26,4 +27,5 @@ public class NewCottageReservationDto {
     public Date startDate;
     @Min(value = 1, message = "Number of days must be greater than 0")
     public int numberOfDays;
+    public List<CottageReservationTag> cottageReservationTag;
 }

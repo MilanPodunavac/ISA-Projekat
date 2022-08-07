@@ -1,5 +1,6 @@
 package code.dto.entities;
 
+import code.model.CottageReservationTag;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 @Getter
 @Setter
@@ -33,4 +35,5 @@ public class NewCottageDto {
     private int bedNumber;
     @Min(value = 1, message = "Price per day must be greater than 0")
     private int pricePerDay;
+    private List<CottageReservationTag> additionalServices;
 }

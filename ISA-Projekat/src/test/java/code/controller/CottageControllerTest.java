@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -134,7 +135,7 @@ public class CottageControllerTest extends BaseControllerTest {
     }
 
     @Test
-    public void addNewAvailabilityPeriodNotLogged() throws Exception {
+    public void addNewAvailabilityPeriodNotLoggedIn() throws Exception {
         String auth = logIn(mockMvc, new LoginRequest("ralo@gmail.com", "123"));
 
         NewAvailabilityPeriodDto dto = new NewAvailabilityPeriodDto();
@@ -171,6 +172,7 @@ public class CottageControllerTest extends BaseControllerTest {
         dto.setClientEmail("klijent@gmail.com");
         dto.setStartDate(new GregorianCalendar(2022, Calendar.JUNE, 1).getTime());
         dto.setNumberOfDays(2);
+        dto.setCottageReservationTag(new ArrayList<>());
         String json = TestUtil.json(dto);
         ResultActions result = this.mockMvc.perform(post(URL_PREFIX + "/reservation").header("Authorization", auth).contentType(contentType).content(json));
         result.andExpect(status().isOk());
@@ -187,6 +189,7 @@ public class CottageControllerTest extends BaseControllerTest {
         dto.setClientEmail("klt@gmail.com");
         dto.setStartDate(new GregorianCalendar(2022, Calendar.JUNE, 1).getTime());
         dto.setNumberOfDays(2);
+        dto.setCottageReservationTag(new ArrayList<>());
         String json = TestUtil.json(dto);
         ResultActions result = this.mockMvc.perform(post(URL_PREFIX + "/reservation").header("Authorization", auth).contentType(contentType).content(json));
         result.andExpect(status().isNotFound());
@@ -203,6 +206,8 @@ public class CottageControllerTest extends BaseControllerTest {
         dto.setClientEmail("klijent@gmail.com");
         dto.setStartDate(new GregorianCalendar(2022, Calendar.AUGUST, 1).getTime());
         dto.setNumberOfDays(2);
+        dto.setCottageReservationTag(new ArrayList<>());
+        dto.setCottageReservationTag(new ArrayList<>());
         String json = TestUtil.json(dto);
         ResultActions result = this.mockMvc.perform(post(URL_PREFIX + "/reservation").header("Authorization", auth).contentType(contentType).content(json));
         result.andExpect(status().isBadRequest());
