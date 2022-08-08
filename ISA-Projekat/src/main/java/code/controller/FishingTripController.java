@@ -3,11 +3,8 @@ package code.controller;
 import code.controller.base.BaseController;
 import code.dto.fishing_trip.EditFishingTrip;
 import code.dto.fishing_trip.NewFishingTrip;
-import code.exceptions.admin.ModifyAnotherUserDataException;
-import code.exceptions.admin.NotChangedPasswordException;
 import code.exceptions.fishing_trip.EditAnotherInstructorFishingTripException;
 import code.exceptions.fishing_trip.FishingTripNotFoundException;
-import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.FishingTrip;
 import code.service.*;
 import code.utils.TokenUtils;
@@ -18,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -57,6 +55,21 @@ public class FishingTripController extends BaseController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (EditAnotherInstructorFishingTripException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @PutMapping(value = "/{id}/editPictures")
+    @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
+    public ResponseEntity<String> editPictures(@PathVariable Integer id, @RequestParam(name="pictures", required=false) MultipartFile[] pictures) {
+        try {
+            _fishingTripService.editPictures(id, pictures);
+            return ResponseEntity.ok("Fishing trip pictures edited!");
+        } catch (FishingTripNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (EditAnotherInstructorFishingTripException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (IOException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
         }
     }
 }

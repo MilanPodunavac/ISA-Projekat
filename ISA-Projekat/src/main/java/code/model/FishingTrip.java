@@ -37,7 +37,7 @@ public class FishingTrip {
    @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "fishingInstructor_id")
    private FishingInstructor fishingInstructor;
-   @OneToMany(mappedBy = "fishingTrip", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+   @OneToMany(mappedBy = "fishingTrip", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
    private Set<FishingTripPicture> pictures;
    @OneToMany(mappedBy = "fishingTrip", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    private Set<FishingTripQuickReservation> fishingTripQuickReservations;
