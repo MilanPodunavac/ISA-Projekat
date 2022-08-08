@@ -10,4 +10,5 @@ import java.io.IOException;
 public interface FishingTripService {
     FishingTrip save(FishingTrip fishingTrip);
     FishingTrip edit(FishingTrip fishingTrip) throws FishingTripNotFoundException, EditAnotherInstructorFishingTripException;
+    void editPictures(Integer id, MultipartFile[] pictures) throws FishingTripNotFoundException, EditAnotherInstructorFishingTripException, IOException;
 }
