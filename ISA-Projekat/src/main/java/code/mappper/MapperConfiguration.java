@@ -5,6 +5,7 @@ import code.dto.admin.PersonalData;
 import code.dto.entities.NewAvailabilityPeriodDto;
 import code.dto.entities.NewCottageDto;
 import code.dto.entities.NewCottageReservationDto;
+import code.dto.fishing_instructor.AddAvailablePeriod;
 import code.dto.fishing_trip.EditFishingTrip;
 import code.dto.fishing_trip.NewFishingTrip;
 import code.dto.provider_registration.ProviderDTO;
@@ -175,6 +176,15 @@ public class MapperConfiguration {
         };
         TypeMap<EditFishingTrip, FishingTrip> editFishingTripFishingTripTypeMap = modelMapper.createTypeMap(EditFishingTrip.class, FishingTrip.class);
         editFishingTripFishingTripTypeMap.addMappings(editFishingTripFishingTripPropertyMap);
+
+        PropertyMap<AddAvailablePeriod, FishingInstructorAvailablePeriod> addAvailablePeriodFishingInstructorAvailablePeriodPropertyMap = new PropertyMap<AddAvailablePeriod, FishingInstructorAvailablePeriod>(){
+            protected void configure(){
+                map().setAvailableFrom(source.getAvailableFrom());
+                map().setAvailableTo(source.getAvailableTo());
+            }
+        };
+        TypeMap<AddAvailablePeriod, FishingInstructorAvailablePeriod> addAvailablePeriodFishingInstructorAvailablePeriodTypeMap = modelMapper.createTypeMap(AddAvailablePeriod.class, FishingInstructorAvailablePeriod.class);
+        addAvailablePeriodFishingInstructorAvailablePeriodTypeMap.addMappings(addAvailablePeriodFishingInstructorAvailablePeriodPropertyMap);
 
         return modelMapper;
     }
