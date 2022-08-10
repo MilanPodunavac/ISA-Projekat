@@ -46,7 +46,6 @@ public class AdminControllerTest {
     @Test
     public void changePersonalData() throws Exception {
         PersonalData pd = new PersonalData();
-        pd.setId(DB_USER_ID);
         pd.setFirstName(NEW_FIRST_NAME);
         pd.setLastName(NEW_LAST_NAME);
         pd.setPhoneNumber(NEW_PHONE_NUMBER);
@@ -79,7 +78,6 @@ public class AdminControllerTest {
     @Test
     public void changePassword() throws Exception {
         PasswordDTO passwordDTO = new PasswordDTO();
-        passwordDTO.setId(PASSWORD_DTO_ID);
         passwordDTO.setPassword(PASSWORD_DTO_PASSWORD);
 
         String json = TestUtil.json(passwordDTO);

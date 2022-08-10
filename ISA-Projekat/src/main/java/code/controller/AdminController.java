@@ -4,10 +4,7 @@ import code.controller.base.BaseController;
 import code.dto.admin.AdminRegistration;
 import code.dto.admin.PasswordDTO;
 import code.dto.admin.PersonalData;
-import code.exceptions.admin.ChangedPasswordException;
-import code.exceptions.admin.ModifyAnotherUserDataException;
-import code.exceptions.admin.NonMainAdminRegisterOtherAdminException;
-import code.exceptions.admin.NotChangedPasswordException;
+import code.exceptions.admin.*;
 import code.exceptions.provider_registration.EmailTakenException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.Admin;
@@ -45,9 +42,7 @@ public class AdminController extends BaseController {
         try {
             _adminService.changePersonalData(_mapper.map(dto, Admin.class));
             return ResponseEntity.ok("Personal data changed!");
-        } catch (UserNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (ModifyAnotherUserDataException | NotChangedPasswordException e) {
+        } catch (NotChangedPasswordException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
     }
@@ -79,9 +74,7 @@ public class AdminController extends BaseController {
         try {
             _adminService.changePassword(_mapper.map(dto, Admin.class));
             return ResponseEntity.ok("Password changed!");
-        } catch (UserNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (ModifyAnotherUserDataException | ChangedPasswordException e) {
+        } catch (ChangedPasswordException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
     }

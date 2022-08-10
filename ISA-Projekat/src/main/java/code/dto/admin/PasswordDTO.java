@@ -15,9 +15,6 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PasswordDTO {
-    @NotNull(message = "Id is required")
-    @Min(value = 1, message = "Id must be at least 1")
-    private Integer id;
     @NotBlank(message = "Password is required")
     @Size(min = 3, message = "Password too short")
     private String password;

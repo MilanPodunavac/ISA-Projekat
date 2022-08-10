@@ -15,9 +15,6 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PersonalData {
-    @NotNull(message = "Id is required")
-    @Min(value = 1, message = "Id must be at least 1")
-    private Integer id;
     @NotBlank(message = "First name is required")
     private String firstName;
     @NotBlank(message = "Last name is required")

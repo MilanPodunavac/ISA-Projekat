@@ -1,10 +1,8 @@
 package code.service;
 
-import code.exceptions.admin.ModifyAnotherUserDataException;
 import code.exceptions.admin.NonMainAdminRegisterOtherAdminException;
 import code.exceptions.admin.NotChangedPasswordException;
 import code.exceptions.provider_registration.EmailTakenException;
-import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.Admin;
 import code.model.Location;
 import code.model.Role;
@@ -45,7 +43,7 @@ public class AdminServiceTest {
     private AdminServiceImpl adminService;
 
     @Test
-    public void changePersonalData() throws UserNotFoundException, ModifyAnotherUserDataException, NotChangedPasswordException {
+    public void changePersonalData() throws NotChangedPasswordException {
         Admin adminFromDatabase = setAdminFromDatabaseFields();
         Admin admin = setNewPersonalData();
 
@@ -55,7 +53,6 @@ public class AdminServiceTest {
         SecurityContextHolder.setContext(securityContext);
         when(authentication.getPrincipal()).thenReturn(adminFromDatabase);
         when(userServiceMock.findById(adminFromDatabase.getId())).thenReturn(adminFromDatabase);
-        when(adminRepositoryMock.getById(admin.getId())).thenReturn(adminFromDatabase);
         when(adminRepositoryMock.save(adminFromDatabase)).thenReturn(adminFromDatabase);
 
         Admin changedAdmin = adminService.changePersonalData(admin);
@@ -69,9 +66,6 @@ public class AdminServiceTest {
         assertThat(changedAdmin.getLocation().getStreetName()).isEqualTo(NEW_ADDRESS);
 
         verify(userServiceMock, times(1)).findById(adminFromDatabase.getId());
-        verify(userServiceMock, times(1)).throwExceptionIfUserDontExist(admin.getId());
-        verify(userServiceMock, times(1)).throwExceptionIfModifyAnotherUserData(admin.getId());
-        verify(adminRepositoryMock, times(1)).getById(admin.getId());
         verify(adminRepositoryMock, times(1)).save(adminFromDatabase);
         verifyNoMoreInteractions(userServiceMock);
         verifyNoMoreInteractions(adminRepositoryMock);

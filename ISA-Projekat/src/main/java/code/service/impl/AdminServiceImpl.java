@@ -1,14 +1,8 @@
 package code.service.impl;
 
-import code.exceptions.admin.ChangedPasswordException;
-import code.exceptions.admin.ModifyAnotherUserDataException;
-import code.exceptions.admin.NonMainAdminRegisterOtherAdminException;
-import code.exceptions.admin.NotChangedPasswordException;
+import code.exceptions.admin.*;
 import code.exceptions.provider_registration.EmailTakenException;
-import code.exceptions.provider_registration.UserNotFoundException;
-import code.model.Admin;
-import code.model.Role;
-import code.model.User;
+import code.model.*;
 import code.repository.AdminRepository;
 import code.service.AdminService;
 import code.service.RoleService;
@@ -63,55 +57,51 @@ public class AdminServiceImpl implements AdminService {
 
     @Transactional
     @Override
-    public Admin changePersonalData(Admin admin) throws UserNotFoundException, ModifyAnotherUserDataException, NotChangedPasswordException {
-        _userService.throwExceptionIfUserDontExist(admin.getId());
-        _userService.throwExceptionIfModifyAnotherUserData(admin.getId());
-        throwExceptionIfAdminDidntChangePassword();
-        return changePersonalDataFields(admin);
+    public Admin changePersonalData(Admin admin) throws NotChangedPasswordException {
+        Admin loggedInAdmin = getLoggedInAdmin();
+        throwExceptionIfAdminDidntChangePassword(loggedInAdmin);
+        return changePersonalDataFields(loggedInAdmin, admin);
     }
 
-    private void throwExceptionIfAdminDidntChangePassword() throws NotChangedPasswordException {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) auth.getPrincipal();
-        Admin admin = (Admin) _userService.findById(user.getId());
+    private void throwExceptionIfAdminDidntChangePassword(Admin admin) throws NotChangedPasswordException {
         if (!admin.isPasswordChanged()) {
             throw new NotChangedPasswordException("Password not changed!");
         }
     }
 
-    private Admin changePersonalDataFields(Admin admin) {
-        Admin adminFromDatabase = _adminRepository.getById(admin.getId());
-        adminFromDatabase.setFirstName(admin.getFirstName());
-        adminFromDatabase.setLastName(admin.getLastName());
-        adminFromDatabase.setPhoneNumber(admin.getPhoneNumber());
-        adminFromDatabase.getLocation().setCountryName(admin.getLocation().getCountryName());
-        adminFromDatabase.getLocation().setCityName(admin.getLocation().getCityName());
-        adminFromDatabase.getLocation().setStreetName(admin.getLocation().getStreetName());
-        return _adminRepository.save(adminFromDatabase);
+    private Admin getLoggedInAdmin() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+        return (Admin) _userService.findById(user.getId());
+    }
+
+    private Admin changePersonalDataFields(Admin loggedInAdmin, Admin admin) {
+        loggedInAdmin.setFirstName(admin.getFirstName());
+        loggedInAdmin.setLastName(admin.getLastName());
+        loggedInAdmin.setPhoneNumber(admin.getPhoneNumber());
+        loggedInAdmin.getLocation().setCountryName(admin.getLocation().getCountryName());
+        loggedInAdmin.getLocation().setCityName(admin.getLocation().getCityName());
+        loggedInAdmin.getLocation().setStreetName(admin.getLocation().getStreetName());
+        return _adminRepository.save(loggedInAdmin);
     }
 
     @Transactional
     @Override
-    public void changePassword(Admin admin) throws ModifyAnotherUserDataException, UserNotFoundException, ChangedPasswordException {
-        _userService.throwExceptionIfUserDontExist(admin.getId());
-        _userService.throwExceptionIfModifyAnotherUserData(admin.getId());
-        throwExceptionIfAdminChangedPassword();
-        changePasswordField(admin);
+    public void changePassword(Admin admin) throws ChangedPasswordException {
+        Admin loggedInAdmin = getLoggedInAdmin();
+        throwExceptionIfAdminChangedPassword(loggedInAdmin);
+        changePasswordField(loggedInAdmin, admin);
     }
 
-    private void throwExceptionIfAdminChangedPassword() throws ChangedPasswordException {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) auth.getPrincipal();
-        Admin admin = (Admin) _userService.findById(user.getId());
+    private void throwExceptionIfAdminChangedPassword(Admin admin) throws ChangedPasswordException {
         if (admin.isPasswordChanged()) {
             throw new ChangedPasswordException("Password already changed!");
         }
     }
 
-    private void changePasswordField(Admin admin) {
-        Admin adminFromDatabase = _adminRepository.getById(admin.getId());
-        adminFromDatabase.setPassword(_passwordEncoder.encode(admin.getPassword()));
-        adminFromDatabase.setPasswordChanged(true);
-        _adminRepository.save(adminFromDatabase);
+    private void changePasswordField(Admin loggedInAdmin, Admin admin) {
+        loggedInAdmin.setPassword(_passwordEncoder.encode(admin.getPassword()));
+        loggedInAdmin.setPasswordChanged(true);
+        _adminRepository.save(loggedInAdmin);
     }
 }
