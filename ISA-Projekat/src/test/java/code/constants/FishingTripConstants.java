@@ -1,5 +1,6 @@
 package code.constants;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,4 +18,9 @@ public class FishingTripConstants {
     public static final String NEW_ADDRESS = "Vojvode Stepe";
     public static final String NEW_CITY = "Beograd";
     public static final Set<String> NEW_FISHING_TRIP_RESERVATION_TAGS = new HashSet<>(Arrays.asList("lesson", "adventure"));
+    public static final Integer DB_FISHING_TRIP_ID = 1;
+    public static final LocalDate NEW_START_DATE = LocalDate.of(2023, 9, 10);
+    public static final Integer NEW_DURATION_IN_DAYS = 5;
+    public static final Integer NEW_PRICE = 200;
+    public static final LocalDate NEW_VALID_UNTIL_AND_INCLUDING_DATE = LocalDate.of(2023, 9, 8);
 }

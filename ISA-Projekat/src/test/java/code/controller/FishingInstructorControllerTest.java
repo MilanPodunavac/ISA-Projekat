@@ -1,6 +1,6 @@
 package code.controller;
 
-import code.dto.fishing_instructor.AddAvailablePeriod;
+import code.dto.fishing_instructor.NewAvailablePeriod;
 import code.utils.TestUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,7 +42,7 @@ public class FishingInstructorControllerTest {
     @WithUserDetails("marko@gmail.com")
     @Test
     public void addAvailablePeriod() throws Exception {
-        AddAvailablePeriod aap = new AddAvailablePeriod();
+        NewAvailablePeriod aap = new NewAvailablePeriod();
         aap.setAvailableFrom(NEW_AVAILABLE_PERIOD_FROM);
         aap.setAvailableTo(NEW_AVAILABLE_PERIOD_TO);
 

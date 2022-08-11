@@ -3,9 +3,12 @@ package code.controller;
 import code.controller.base.BaseController;
 import code.dto.fishing_trip.EditFishingTrip;
 import code.dto.fishing_trip.NewFishingTrip;
+import code.dto.fishing_trip.NewQuickReservation;
 import code.exceptions.fishing_trip.EditAnotherInstructorFishingTripException;
 import code.exceptions.fishing_trip.FishingTripNotFoundException;
+import code.exceptions.fishing_trip.quick_reservation.*;
 import code.model.FishingTrip;
+import code.model.FishingTripQuickReservation;
 import code.service.*;
 import code.utils.TokenUtils;
 import org.modelmapper.ModelMapper;
@@ -70,6 +73,27 @@ public class FishingTripController extends BaseController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         } catch (IOException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @PostMapping(value = "/{id}/addQuickReservation")
+    @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
+    public ResponseEntity<String> addQuickReservation(@PathVariable Integer id, @Valid @RequestBody NewQuickReservation dto, BindingResult result) {
+        if(result.hasErrors()){
+            return formatErrorResponse(result);
+        }
+
+        try {
+            _fishingTripService.addQuickReservation(id, _mapper.map(dto, FishingTripQuickReservation.class));
+            return ResponseEntity.ok("Fishing trip quick reservation added!");
+        } catch (QuickReservationStartDateInPastException | ValidUntilAndIncludingDateInPastOrAfterOrEqualToStartDateException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (AddQuickReservationToAnotherInstructorFishingTripException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (FishingTripNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (FishingTripQuickReservationMaxPeopleHigherThanFishingTripMaxPeopleException | FishingTripReservationTagsDontContainQuickReservationTagException | NoAvailablePeriodForQuickReservationException | QuickReservationOverlappingException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
     }
 }

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Set;
 
@@ -19,11 +20,11 @@ public class FishingTripQuickReservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column
-    private Date start;
+    private LocalDate start;
     @Column
     private Integer durationInDays;
     @Column
-    private Date validUntilAndIncluding;
+    private LocalDate validUntilAndIncluding;
     @Column
     private Integer maxPeople;
     @Column

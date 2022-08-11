@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -52,21 +53,21 @@ public class FishingInstructorServiceImpl implements FishingInstructorService {
 
     @Override
     public void addAvailablePeriod(FishingInstructorAvailablePeriod fishingInstructorAvailablePeriod) throws AvailablePeriodStartAfterEndDateException, AvailablePeriodOverlappingException, AddAvailablePeriodInPastException {
-        throwExceptionIfAvaiablePeriodStartAfterEndDate(fishingInstructorAvailablePeriod);
+        throwExceptionIfAvailablePeriodStartAfterEndDate(fishingInstructorAvailablePeriod);
         throwExceptionIfAddAvailablePeriodInPast(fishingInstructorAvailablePeriod);
         FishingInstructor fishingInstructor = setFishingInstructor(fishingInstructorAvailablePeriod);
         throwExceptionIfAvailablePeriodOverlapping(fishingInstructorAvailablePeriod, fishingInstructor);
         _fishingInstructorAvailablePeriodRepository.save(fishingInstructorAvailablePeriod);
     }
 
-    private void throwExceptionIfAvaiablePeriodStartAfterEndDate(FishingInstructorAvailablePeriod fishingInstructorAvailablePeriod) throws AvailablePeriodStartAfterEndDateException {
-        if (fishingInstructorAvailablePeriod.getAvailableFrom().after(fishingInstructorAvailablePeriod.getAvailableTo())) {
+    private void throwExceptionIfAvailablePeriodStartAfterEndDate(FishingInstructorAvailablePeriod fishingInstructorAvailablePeriod) throws AvailablePeriodStartAfterEndDateException {
+        if (fishingInstructorAvailablePeriod.getAvailableFrom().isAfter(fishingInstructorAvailablePeriod.getAvailableTo())) {
             throw new AvailablePeriodStartAfterEndDateException("Start date can't be after end date!");
         }
     }
 
     private void throwExceptionIfAddAvailablePeriodInPast(FishingInstructorAvailablePeriod fishingInstructorAvailablePeriod) throws AddAvailablePeriodInPastException {
-        if (fishingInstructorAvailablePeriod.getAvailableFrom().before(new Date())) {
+        if (fishingInstructorAvailablePeriod.getAvailableFrom().isBefore(LocalDate.now())) {
             throw new AddAvailablePeriodInPastException("You can't add available period in the past!");
         }
     }
@@ -82,7 +83,7 @@ public class FishingInstructorServiceImpl implements FishingInstructorService {
     private void throwExceptionIfAvailablePeriodOverlapping(FishingInstructorAvailablePeriod fishingInstructorAvailablePeriod, FishingInstructor fishingInstructor) throws AvailablePeriodOverlappingException {
         List<FishingInstructorAvailablePeriod> fishingInstructorAvailablePeriods = _fishingInstructorAvailablePeriodRepository.findByFishingInstructor(fishingInstructor.getId());
         for (FishingInstructorAvailablePeriod fiap : fishingInstructorAvailablePeriods) {
-            if (((fiap.getAvailableFrom().before(fishingInstructorAvailablePeriod.getAvailableFrom()) || fiap.getAvailableFrom().equals(fishingInstructorAvailablePeriod.getAvailableFrom())) && fiap.getAvailableTo().after(fishingInstructorAvailablePeriod.getAvailableFrom())) || ((fishingInstructorAvailablePeriod.getAvailableFrom().before(fiap.getAvailableFrom()) || fishingInstructorAvailablePeriod.getAvailableFrom().equals(fiap.getAvailableFrom())) && (fishingInstructorAvailablePeriod.getAvailableTo().after(fiap.getAvailableTo()) || (fishingInstructorAvailablePeriod.getAvailableTo().equals(fiap.getAvailableTo())))) || (fishingInstructorAvailablePeriod.getAvailableTo().after(fiap.getAvailableFrom()) && (fishingInstructorAvailablePeriod.getAvailableTo().before(fiap.getAvailableTo()) || fishingInstructorAvailablePeriod.getAvailableTo().equals(fiap.getAvailableTo())))){
+            if (((fiap.getAvailableFrom().isBefore(fishingInstructorAvailablePeriod.getAvailableFrom()) || fiap.getAvailableFrom().isEqual(fishingInstructorAvailablePeriod.getAvailableFrom())) && (fiap.getAvailableTo().isAfter(fishingInstructorAvailablePeriod.getAvailableFrom()) || fiap.getAvailableTo().isEqual(fishingInstructorAvailablePeriod.getAvailableFrom()))) || ((fishingInstructorAvailablePeriod.getAvailableFrom().isBefore(fiap.getAvailableFrom()) || fishingInstructorAvailablePeriod.getAvailableFrom().isEqual(fiap.getAvailableFrom())) && (fishingInstructorAvailablePeriod.getAvailableTo().isAfter(fiap.getAvailableTo()) || (fishingInstructorAvailablePeriod.getAvailableTo().isEqual(fiap.getAvailableTo())))) || ((fishingInstructorAvailablePeriod.getAvailableTo().isAfter(fiap.getAvailableFrom()) || fishingInstructorAvailablePeriod.getAvailableTo().isEqual(fiap.getAvailableFrom())) && (fishingInstructorAvailablePeriod.getAvailableTo().isBefore(fiap.getAvailableTo()) || fishingInstructorAvailablePeriod.getAvailableTo().isEqual(fiap.getAvailableTo())))){
                 throw new AvailablePeriodOverlappingException("Available period overlapping another!");
             }
         }

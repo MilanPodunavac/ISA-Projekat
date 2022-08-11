@@ -2,6 +2,7 @@ package code.controller;
 
 import code.dto.fishing_trip.EditFishingTrip;
 import code.dto.fishing_trip.NewFishingTrip;
+import code.dto.fishing_trip.NewQuickReservation;
 import code.utils.TestUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -80,5 +81,22 @@ public class FishingTripControllerTest {
 
         String json = TestUtil.json(eft);
         this.mockMvc.perform(put(URL_PREFIX + "/edit").contentType(contentType).content(json)).andExpect(status().isOk());
+    }
+
+    @WithUserDetails("marko@gmail.com")
+    @Test
+    public void addQuickReservation() throws Exception {
+        NewQuickReservation nqr = new NewQuickReservation();
+        nqr.setAddress(NEW_ADDRESS);
+        nqr.setCity(NEW_CITY);
+        nqr.setCountry(NEW_COUNTRY);
+        nqr.setValidUntilAndIncluding(NEW_VALID_UNTIL_AND_INCLUDING_DATE);
+        nqr.setStart(NEW_START_DATE);
+        nqr.setPrice(NEW_PRICE);
+        nqr.setDurationInDays(NEW_DURATION_IN_DAYS);
+        nqr.setMaxPeople(NEW_MAX_PEOPLE);
+
+        String json = TestUtil.json(nqr);
+        this.mockMvc.perform(post(URL_PREFIX + "/" + DB_FISHING_TRIP_ID + "/addQuickReservation").contentType(contentType).content(json)).andExpect(status().isOk());
     }
 }

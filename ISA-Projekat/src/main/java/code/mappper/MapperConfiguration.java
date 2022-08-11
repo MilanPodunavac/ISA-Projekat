@@ -2,17 +2,16 @@ package code.mappper;
 
 import code.dto.admin.AdminRegistration;
 import code.dto.admin.PersonalData;
-import code.dto.entities.NewAvailabilityPeriodDto;
 import code.dto.entities.NewCottageDto;
 import code.dto.entities.NewCottageReservationDto;
-import code.dto.fishing_instructor.AddAvailablePeriod;
+import code.dto.fishing_instructor.NewAvailablePeriod;
 import code.dto.fishing_trip.EditFishingTrip;
 import code.dto.fishing_trip.NewFishingTrip;
+import code.dto.fishing_trip.NewQuickReservation;
 import code.dto.provider_registration.ProviderDTO;
 import code.dto.provider_registration.ProviderRegistrationRequest;
 import code.dto.user.UpdateUserPersonalInfoDto;
 import code.model.*;
-import code.model.wrappers.DateRange;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.modelmapper.TypeMap;
@@ -177,14 +176,17 @@ public class MapperConfiguration {
         TypeMap<EditFishingTrip, FishingTrip> editFishingTripFishingTripTypeMap = modelMapper.createTypeMap(EditFishingTrip.class, FishingTrip.class);
         editFishingTripFishingTripTypeMap.addMappings(editFishingTripFishingTripPropertyMap);
 
-        PropertyMap<AddAvailablePeriod, FishingInstructorAvailablePeriod> addAvailablePeriodFishingInstructorAvailablePeriodPropertyMap = new PropertyMap<AddAvailablePeriod, FishingInstructorAvailablePeriod>(){
+        // add quick reservation
+
+        PropertyMap<NewQuickReservation, FishingTripQuickReservation> newQuickReservationFishingTripQuickReservationPropertyMap = new PropertyMap<NewQuickReservation, FishingTripQuickReservation>(){
             protected void configure(){
-                map().setAvailableFrom(source.getAvailableFrom());
-                map().setAvailableTo(source.getAvailableTo());
+                map().getLocation().setStreetName(source.getAddress());
+                map().getLocation().setCityName(source.getCity());
+                map().getLocation().setCountryName(source.getCountry());
             }
         };
-        TypeMap<AddAvailablePeriod, FishingInstructorAvailablePeriod> addAvailablePeriodFishingInstructorAvailablePeriodTypeMap = modelMapper.createTypeMap(AddAvailablePeriod.class, FishingInstructorAvailablePeriod.class);
-        addAvailablePeriodFishingInstructorAvailablePeriodTypeMap.addMappings(addAvailablePeriodFishingInstructorAvailablePeriodPropertyMap);
+        TypeMap<NewQuickReservation, FishingTripQuickReservation> newQuickReservationFishingTripQuickReservationTypeMap = modelMapper.createTypeMap(NewQuickReservation.class, FishingTripQuickReservation.class);
+        newQuickReservationFishingTripQuickReservationTypeMap.addMappings(newQuickReservationFishingTripQuickReservationPropertyMap);
 
         return modelMapper;
     }

@@ -1,7 +1,7 @@
 package code.controller;
 
 import code.controller.base.BaseController;
-import code.dto.fishing_instructor.AddAvailablePeriod;
+import code.dto.fishing_instructor.NewAvailablePeriod;
 import code.exceptions.fishing_instructor.AddAvailablePeriodInPastException;
 import code.exceptions.fishing_instructor.AvailablePeriodOverlappingException;
 import code.exceptions.fishing_instructor.AvailablePeriodStartAfterEndDateException;
@@ -33,7 +33,7 @@ public class FishingInstructorController extends BaseController {
 
     @PostMapping(value = "/addAvailablePeriod", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
-    public ResponseEntity<String> addAvailablePeriod(@Valid @RequestBody AddAvailablePeriod dto, BindingResult result) {
+    public ResponseEntity<String> addAvailablePeriod(@Valid @RequestBody NewAvailablePeriod dto, BindingResult result) {
         if(result.hasErrors()){
             return formatErrorResponse(result);
         }
