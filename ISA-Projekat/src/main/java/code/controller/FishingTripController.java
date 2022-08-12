@@ -5,6 +5,7 @@ import code.dto.fishing_trip.EditFishingTrip;
 import code.dto.fishing_trip.NewFishingTrip;
 import code.dto.fishing_trip.NewQuickReservation;
 import code.exceptions.fishing_trip.EditAnotherInstructorFishingTripException;
+import code.exceptions.fishing_trip.FishingTripHasQuickReservationWithClientException;
 import code.exceptions.fishing_trip.FishingTripNotFoundException;
 import code.exceptions.fishing_trip.quick_reservation.*;
 import code.model.FishingTrip;
@@ -58,6 +59,8 @@ public class FishingTripController extends BaseController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (EditAnotherInstructorFishingTripException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (FishingTripHasQuickReservationWithClientException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
     }
 
@@ -71,12 +74,29 @@ public class FishingTripController extends BaseController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (EditAnotherInstructorFishingTripException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (FishingTripHasQuickReservationWithClientException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         } catch (IOException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
         }
     }
 
-    @PostMapping(value = "/{id}/addQuickReservation")
+    @DeleteMapping(value = "/delete/{id}")
+    @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
+    public ResponseEntity<String> deleteFishingTrip(@PathVariable Integer id) {
+        try {
+            _fishingTripService.deleteFishingTrip(id);
+            return ResponseEntity.ok("Fishing trip deleted!");
+        } catch (FishingTripNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (EditAnotherInstructorFishingTripException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (FishingTripHasQuickReservationWithClientException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
+    }
+
+    @PostMapping(value = "/{id}/addQuickReservation", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
     public ResponseEntity<String> addQuickReservation(@PathVariable Integer id, @Valid @RequestBody NewQuickReservation dto, BindingResult result) {
         if(result.hasErrors()){

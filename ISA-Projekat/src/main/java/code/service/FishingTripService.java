@@ -10,8 +10,9 @@ import java.io.IOException;
 
 public interface FishingTripService {
     FishingTrip save(FishingTrip fishingTrip);
-    FishingTrip edit(FishingTrip fishingTrip) throws FishingTripNotFoundException, EditAnotherInstructorFishingTripException;
-    void editPictures(Integer id, MultipartFile[] pictures) throws FishingTripNotFoundException, EditAnotherInstructorFishingTripException, IOException;
+    FishingTrip edit(FishingTrip fishingTrip) throws FishingTripNotFoundException, EditAnotherInstructorFishingTripException, FishingTripHasQuickReservationWithClientException;
+    void editPictures(Integer id, MultipartFile[] pictures) throws FishingTripNotFoundException, EditAnotherInstructorFishingTripException, IOException, FishingTripHasQuickReservationWithClientException;
     void addQuickReservation(Integer id, FishingTripQuickReservation fishingTripQuickReservation) throws AddQuickReservationToAnotherInstructorFishingTripException, FishingTripQuickReservationMaxPeopleHigherThanFishingTripMaxPeopleException, QuickReservationStartDateInPastException, ValidUntilAndIncludingDateInPastOrAfterOrEqualToStartDateException, FishingTripReservationTagsDontContainQuickReservationTagException, NoAvailablePeriodForQuickReservationException, QuickReservationOverlappingException, FishingTripNotFoundException;
     void deleteNonValidQuickReservations(FishingTrip fishingTrip);
+    void deleteFishingTrip(Integer id) throws FishingTripNotFoundException, EditAnotherInstructorFishingTripException, FishingTripHasQuickReservationWithClientException;
 }

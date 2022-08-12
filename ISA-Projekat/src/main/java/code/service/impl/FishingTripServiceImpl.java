@@ -1,6 +1,5 @@
 package code.service.impl;
 
-import code.exceptions.fishing_instructor.AvailablePeriodOverlappingException;
 import code.exceptions.fishing_trip.*;
 import code.exceptions.fishing_trip.quick_reservation.*;
 import code.model.*;
@@ -46,9 +45,10 @@ public class FishingTripServiceImpl implements FishingTripService {
 
     @Transactional
     @Override
-    public FishingTrip edit(FishingTrip fishingTrip) throws FishingTripNotFoundException, EditAnotherInstructorFishingTripException {
+    public FishingTrip edit(FishingTrip fishingTrip) throws FishingTripNotFoundException, EditAnotherInstructorFishingTripException, FishingTripHasQuickReservationWithClientException {
         throwExceptionIfFishingTripNotFound(fishingTrip.getId());
         throwExceptionIfEditAnotherInstructorFishingTrip(fishingTrip.getId());
+        throwExceptionIfFishingTripHasQuickReservationWithClient(fishingTrip.getId());
         setInstructor(fishingTrip);
         setLocationId(fishingTrip);
         fishingTrip.setPictures(new HashSet<>(_fishingTripPictureRepository.findByFishingTrip(fishingTrip.getId())));
@@ -72,6 +72,15 @@ public class FishingTripServiceImpl implements FishingTripService {
         }
     }
 
+    private void throwExceptionIfFishingTripHasQuickReservationWithClient(Integer fishingTripId) throws FishingTripHasQuickReservationWithClientException {
+        List<FishingTripQuickReservation> fishingTripQuickReservations = _fishingTripQuickReservationRepository.findByFishingTripId(fishingTripId);
+        for (FishingTripQuickReservation fishingTripQuickReservation : fishingTripQuickReservations) {
+            if (fishingTripQuickReservation.getClient() != null) {
+                throw new FishingTripHasQuickReservationWithClientException("You can't edit fishing trip that is reserved!");
+            }
+        }
+    }
+
     private void setInstructor(FishingTrip fishingTrip) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
@@ -86,9 +95,10 @@ public class FishingTripServiceImpl implements FishingTripService {
 
     @Transactional
     @Override
-    public void editPictures(Integer id, MultipartFile[] pictures) throws FishingTripNotFoundException, EditAnotherInstructorFishingTripException, IOException {
+    public void editPictures(Integer id, MultipartFile[] pictures) throws FishingTripNotFoundException, EditAnotherInstructorFishingTripException, IOException, FishingTripHasQuickReservationWithClientException {
         throwExceptionIfFishingTripNotFound(id);
         throwExceptionIfEditAnotherInstructorFishingTrip(id);
+        throwExceptionIfFishingTripHasQuickReservationWithClient(id);
 
         String fishingTripPicturesDirectory = "fishing_trip_pictures";
         FishingTrip fishingTrip = _fishingTripRepository.getById(id);
@@ -127,6 +137,23 @@ public class FishingTripServiceImpl implements FishingTripService {
             MultipartFile picture = pictures[i++];
             FileUploadUtil.saveFile(fishingTripPicturesDirectory, fishingTripPicture.getId() + "_" + fishingTripPicture.getName(), picture);
         }
+    }
+
+    @Transactional
+    @Override
+    public void deleteFishingTrip(Integer id) throws FishingTripNotFoundException, EditAnotherInstructorFishingTripException, FishingTripHasQuickReservationWithClientException {
+        throwExceptionIfFishingTripNotFound(id);
+        throwExceptionIfEditAnotherInstructorFishingTrip(id);
+        throwExceptionIfFishingTripHasQuickReservationWithClient(id);
+        deleteFishingTripLogic(id);
+    }
+
+    private void deleteFishingTripLogic(Integer id) {
+        FishingTrip fishingTrip = _fishingTripRepository.getById(id);
+        FishingInstructor fishingInstructor = fishingTrip.getFishingInstructor();
+        fishingInstructor.getFishingTrips().remove(fishingTrip);
+        fishingTrip.setFishingInstructor(null);
+        _fishingTripRepository.delete(_fishingTripRepository.getById(id));
     }
 
     @Transactional
