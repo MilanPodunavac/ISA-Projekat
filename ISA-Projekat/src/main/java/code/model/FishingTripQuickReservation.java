@@ -7,7 +7,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.Set;
 
 @Getter
@@ -40,4 +39,7 @@ public class FishingTripQuickReservation {
     @CollectionTable(name="fishingTripQuickReservation_tags")
     @Column(name="tags")
     private Set<FishingTripReservationTag> fishingTripReservationTags;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "client_id")
+    private Client client;
 }

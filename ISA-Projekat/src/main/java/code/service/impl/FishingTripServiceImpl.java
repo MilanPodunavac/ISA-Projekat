@@ -141,6 +141,7 @@ public class FishingTripServiceImpl implements FishingTripService {
         throwExceptionIfValidUntilAndIncludingDateInPastOrAfterOrEqualToStartDate(fishingTripQuickReservation);
         throwExceptionIfFishingTripReservationTagsDontContainQuickReservationTag(fishingTripQuickReservation, fishingTrip);
         throwExceptionIfNoAvailablePeriodForQuickReservation(loggedInInstructor, fishingTripQuickReservation);
+        deleteNonValidQuickReservations(fishingTrip);
         throwExceptionIfQuickReservationOverlapping(loggedInInstructor, fishingTripQuickReservation);
         fishingTripQuickReservation.setFishingTrip(fishingTrip);
         _fishingTripQuickReservationRepository.save(fishingTripQuickReservation);
@@ -197,6 +198,18 @@ public class FishingTripServiceImpl implements FishingTripService {
 
         if (!canReserve) {
             throw new NoAvailablePeriodForQuickReservationException("You don't have available period to reserve this quick reservation!");
+        }
+    }
+
+    @Override
+    public void deleteNonValidQuickReservations(FishingTrip fishingTrip) {
+        List<FishingTripQuickReservation> fishingTripQuickReservations = _fishingTripQuickReservationRepository.findAll();
+        for (FishingTripQuickReservation fishingTripQuickReservation : fishingTripQuickReservations) {
+            if (fishingTripQuickReservation.getClient() == null && fishingTripQuickReservation.getValidUntilAndIncluding().isBefore(LocalDate.now())) {
+                fishingTrip.getFishingTripQuickReservations().remove(fishingTripQuickReservation);
+                fishingTripQuickReservation.setFishingTrip(null);
+                _fishingTripQuickReservationRepository.delete(fishingTripQuickReservation);
+            }
         }
     }
 
