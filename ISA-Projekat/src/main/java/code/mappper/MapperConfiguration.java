@@ -188,6 +188,18 @@ public class MapperConfiguration {
         TypeMap<NewQuickReservation, FishingTripQuickReservation> newQuickReservationFishingTripQuickReservationTypeMap = modelMapper.createTypeMap(NewQuickReservation.class, FishingTripQuickReservation.class);
         newQuickReservationFishingTripQuickReservationTypeMap.addMappings(newQuickReservationFishingTripQuickReservationPropertyMap);
 
+        // change fishing instructor personal data
+
+        PropertyMap<PersonalData, FishingInstructor> personalDataFishingInstructorPropertyMap = new PropertyMap<PersonalData, FishingInstructor>(){
+            protected void configure(){
+                map().getLocation().setStreetName(source.getAddress());
+                map().getLocation().setCityName(source.getCity());
+                map().getLocation().setCountryName(source.getCountry());
+            }
+        };
+        TypeMap<PersonalData, FishingInstructor> personalDataFishingInstructorTypeMap = modelMapper.createTypeMap(PersonalData.class, FishingInstructor.class);
+        personalDataFishingInstructorTypeMap.addMappings(personalDataFishingInstructorPropertyMap);
+
         return modelMapper;
     }
 }

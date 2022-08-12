@@ -28,4 +28,5 @@ public class PersonalData {
     private String city;
     @NotBlank(message = "Country is required")
     private String country;
+    private String biography;
 }

@@ -7,6 +7,6 @@ import code.model.Admin;
 
 public interface AdminService {
     Admin save(Admin admin) throws NonMainAdminRegisterOtherAdminException, EmailTakenException;
-    Admin changePersonalData(Admin admin) throws UserNotFoundException, ModifyAnotherUserDataException, NotChangedPasswordException;
+    Admin changePersonalData(Admin admin) throws NotChangedPasswordException;
     void changePassword(Admin admin) throws ChangedPasswordException;
 }

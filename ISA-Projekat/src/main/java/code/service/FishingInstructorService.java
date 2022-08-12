@@ -10,4 +10,6 @@ import code.model.FishingInstructorAvailablePeriod;
 public interface FishingInstructorService {
     FishingInstructor save(FishingInstructor fishingInstructor) throws EmailTakenException;
     void addAvailablePeriod(FishingInstructorAvailablePeriod fishingInstructorAvailablePeriod) throws AvailablePeriodStartAfterEndDateException, AvailablePeriodOverlappingException, AddAvailablePeriodInPastException;
+    void changePersonalData(FishingInstructor fishingInstructor);
+    void changePassword(FishingInstructor fishingInstructor);
 }

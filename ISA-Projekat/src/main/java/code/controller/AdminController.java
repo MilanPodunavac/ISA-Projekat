@@ -6,7 +6,6 @@ import code.dto.admin.PasswordDTO;
 import code.dto.admin.PersonalData;
 import code.exceptions.admin.*;
 import code.exceptions.provider_registration.EmailTakenException;
-import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.Admin;
 import code.service.*;
 import code.utils.TokenUtils;
@@ -24,17 +23,15 @@ import javax.validation.Valid;
 @RequestMapping("/api/admin")
 public class AdminController extends BaseController {
     private final AdminService _adminService;
-    private final UserService _userService;
 
     public AdminController(AdminService adminService, UserService userService, ModelMapper mapper, TokenUtils tokenUtils) {
         super(mapper, tokenUtils);
         this._adminService = adminService;
-        this._userService = userService;
     }
 
     @PutMapping(value = "/changePersonalData", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> changePersonalData(@Valid @RequestBody PersonalData dto, BindingResult result) throws UserNotFoundException, ModifyAnotherUserDataException {
+    public ResponseEntity<String> changePersonalData(@Valid @RequestBody PersonalData dto, BindingResult result) {
         if(result.hasErrors()){
             return formatErrorResponse(result);
         }

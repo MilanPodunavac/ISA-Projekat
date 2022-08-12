@@ -73,11 +73,15 @@ public class FishingInstructorServiceImpl implements FishingInstructorService {
     }
 
     private FishingInstructor setFishingInstructor(FishingInstructorAvailablePeriod fishingInstructorAvailablePeriod) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) auth.getPrincipal();
-        FishingInstructor fishingInstructor = (FishingInstructor) _userService.findById(user.getId());
+        FishingInstructor fishingInstructor = getLoggedInFishingInstructor();
         fishingInstructorAvailablePeriod.setFishingInstructor(fishingInstructor);
         return fishingInstructor;
+    }
+
+    private FishingInstructor getLoggedInFishingInstructor() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+        return (FishingInstructor) _userService.findById(user.getId());
     }
 
     private void throwExceptionIfAvailablePeriodOverlapping(FishingInstructorAvailablePeriod fishingInstructorAvailablePeriod, FishingInstructor fishingInstructor) throws AvailablePeriodOverlappingException {
@@ -87,5 +91,33 @@ public class FishingInstructorServiceImpl implements FishingInstructorService {
                 throw new AvailablePeriodOverlappingException("Available period overlapping another!");
             }
         }
+    }
+
+    @Override
+    public void changePersonalData(FishingInstructor fishingInstructor) {
+        FishingInstructor loggedInFishingInstructor = getLoggedInFishingInstructor();
+        changePersonalDataFields(loggedInFishingInstructor, fishingInstructor);
+    }
+
+    private void changePersonalDataFields(FishingInstructor loggedInFishingInstructor, FishingInstructor fishingInstructor) {
+        loggedInFishingInstructor.setFirstName(fishingInstructor.getFirstName());
+        loggedInFishingInstructor.setLastName(fishingInstructor.getLastName());
+        loggedInFishingInstructor.setPhoneNumber(fishingInstructor.getPhoneNumber());
+        loggedInFishingInstructor.getLocation().setCountryName(fishingInstructor.getLocation().getCountryName());
+        loggedInFishingInstructor.getLocation().setCityName(fishingInstructor.getLocation().getCityName());
+        loggedInFishingInstructor.getLocation().setStreetName(fishingInstructor.getLocation().getStreetName());
+        loggedInFishingInstructor.setBiography(fishingInstructor.getBiography());
+        _fishingInstructorRepository.save(loggedInFishingInstructor);
+    }
+
+    @Override
+    public void changePassword(FishingInstructor fishingInstructor) {
+        FishingInstructor loggedInFishingInstructor = getLoggedInFishingInstructor();
+        changePasswordField(loggedInFishingInstructor, fishingInstructor);
+    }
+
+    private void changePasswordField(FishingInstructor loggedInFishingInstructor, FishingInstructor fishingInstructor) {
+        loggedInFishingInstructor.setPassword(_passwordEncoder.encode(fishingInstructor.getPassword()));
+        _fishingInstructorRepository.save(loggedInFishingInstructor);
     }
 }
