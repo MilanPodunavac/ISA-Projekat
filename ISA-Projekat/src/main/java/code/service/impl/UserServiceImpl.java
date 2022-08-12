@@ -1,11 +1,14 @@
 package code.service.impl;
 
 import code.exceptions.admin.ModifyAnotherUserDataException;
+import code.exceptions.entities.AccountDeletionRequestDontExistException;
 import code.exceptions.provider_registration.EmailTakenException;
 import code.exceptions.provider_registration.NotProviderException;
 import code.exceptions.provider_registration.UserAccountActivatedException;
 import code.exceptions.provider_registration.UserNotFoundException;
+import code.model.AccountDeletionRequest;
 import code.model.User;
+import code.repository.AccountDeletionRequestRepository;
 import code.repository.UserRepository;
 import code.service.UserService;
 import org.springframework.mail.SimpleMailMessage;
@@ -14,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +26,13 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository _userRepository;
+    private final AccountDeletionRequestRepository _accountDeletionRequestRepository;
     private final JavaMailSender _mailSender;
-
     private final PasswordEncoder _passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, JavaMailSender mailSender, PasswordEncoder encoder) {
+    public UserServiceImpl(UserRepository userRepository, AccountDeletionRequestRepository accountDeletionRequestRepository, JavaMailSender mailSender, PasswordEncoder encoder) {
         this._userRepository = userRepository;
+        this._accountDeletionRequestRepository = accountDeletionRequestRepository;
         this._mailSender = mailSender;
         _passwordEncoder = encoder;
     }
@@ -163,5 +168,41 @@ public class UserServiceImpl implements UserService {
         if(userFromRepo == null) throw new UserNotFoundException("User with email " + email + "does not exist!");
         userFromRepo.setPassword(_passwordEncoder.encode(newPassword));
         _userRepository.save(userFromRepo);
+    }
+
+    @Override
+    public void submitAccountDeletionRequest(AccountDeletionRequest accountDeletionRequest) {
+        accountDeletionRequest.setUser(getLoggedInUser());
+        _accountDeletionRequestRepository.save(accountDeletionRequest);
+    }
+
+    private User getLoggedInUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return (User) auth.getPrincipal();
+    }
+
+    @Transactional
+    @Override
+    public void declineAccountDeletionRequest(Integer id, String responseText) throws AccountDeletionRequestDontExistException {
+        throwExceptionIfAccountDeletionRequestDontExist(id);
+        AccountDeletionRequest accountDeletionRequest = _accountDeletionRequestRepository.getById(id);
+        _accountDeletionRequestRepository.delete(accountDeletionRequest);
+        sendDeclineAccountDeletionRequestEmail(accountDeletionRequest.getUser().getEmail(), responseText);
+    }
+
+    private void throwExceptionIfAccountDeletionRequestDontExist(Integer id) throws AccountDeletionRequestDontExistException {
+        Optional<AccountDeletionRequest> accountDeletionRequest = _accountDeletionRequestRepository.findById(id);
+        if(!accountDeletionRequest.isPresent()) {
+            throw new AccountDeletionRequestDontExistException("Account deletion request don't exist!");
+        }
+    }
+
+    private void sendDeclineAccountDeletionRequestEmail(String email, String responseText) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("marko76589@gmail.com");
+        message.setTo(email);
+        message.setSubject("Account deletion request");
+        message.setText("Account deletion request declined: " + responseText);
+        _mailSender.send(message);
     }
 }

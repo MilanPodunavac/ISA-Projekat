@@ -1,9 +1,16 @@
 package code.controller;
 
 import code.controller.base.BaseController;
+import code.dto.provider_registration.DeclineRegistrationRequestDTO;
+import code.dto.user.AccountDeletionRequestDto;
+import code.dto.user.AccountDeletionResponse;
 import code.dto.user.UpdatePasswordDto;
 import code.dto.user.UpdateUserPersonalInfoDto;
+import code.exceptions.entities.AccountDeletionRequestDontExistException;
+import code.exceptions.provider_registration.NotProviderException;
+import code.exceptions.provider_registration.UserAccountActivatedException;
 import code.exceptions.provider_registration.UserNotFoundException;
+import code.model.AccountDeletionRequest;
 import code.model.Cottage;
 import code.model.CottageOwner;
 import code.model.User;
@@ -15,6 +22,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -67,5 +75,31 @@ public class UsersController extends BaseController {
             return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
         }
         return ResponseEntity.ok("asd");
+    }
+
+    @PostMapping(value = "/accountDeletionRequest", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('CLIENT','FISHING_INSTRUCTOR','COTTAGE_OWNER','BOAT_OWNER')")
+    public ResponseEntity<String> submitAccountDeletionRequest(@Valid @RequestBody AccountDeletionRequestDto dto, BindingResult result){
+        if(result.hasErrors()){
+            return formatErrorResponse(result);
+        }
+
+        _userService.submitAccountDeletionRequest(_mapper.map(dto, AccountDeletionRequest.class));
+        return ResponseEntity.ok("Account deletion request submitted!");
+    }
+
+    @DeleteMapping(value = "/declineAccountDeletionRequest/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> declineAccountDeletionRequest(@PathVariable Integer id, @Valid @RequestBody AccountDeletionResponse dto, BindingResult result){
+        if(result.hasErrors()){
+            return formatErrorResponse(result);
+        }
+
+        try {
+            _userService.declineAccountDeletionRequest(id, dto.getResponseText());
+            return ResponseEntity.ok("Account deletion request declined: " + dto.getResponseText());
+        } catch (AccountDeletionRequestDontExistException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 }
