@@ -24,4 +24,5 @@ public interface UserService {
     void changePassword(String newPassword, String email) throws UserNotFoundException;
     void submitAccountDeletionRequest(AccountDeletionRequest accountDeletionRequest);
     void declineAccountDeletionRequest(Integer id, String responseText) throws AccountDeletionRequestDontExistException;
+    void acceptAccountDeletionRequest(Integer id, String responseText) throws AccountDeletionRequestDontExistException;
 }

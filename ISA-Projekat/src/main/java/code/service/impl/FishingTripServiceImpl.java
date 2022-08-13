@@ -168,7 +168,7 @@ public class FishingTripServiceImpl implements FishingTripService {
         throwExceptionIfValidUntilAndIncludingDateInPastOrAfterOrEqualToStartDate(fishingTripQuickReservation);
         throwExceptionIfFishingTripReservationTagsDontContainQuickReservationTag(fishingTripQuickReservation, fishingTrip);
         throwExceptionIfNoAvailablePeriodForQuickReservation(loggedInInstructor, fishingTripQuickReservation);
-        deleteNonValidQuickReservations(fishingTrip);
+        deleteNonValidQuickReservations(loggedInInstructor);
         throwExceptionIfQuickReservationOverlapping(loggedInInstructor, fishingTripQuickReservation);
         fishingTripQuickReservation.setFishingTrip(fishingTrip);
         _fishingTripQuickReservationRepository.save(fishingTripQuickReservation);
@@ -229,13 +229,22 @@ public class FishingTripServiceImpl implements FishingTripService {
     }
 
     @Override
-    public void deleteNonValidQuickReservations(FishingTrip fishingTrip) {
-        List<FishingTripQuickReservation> fishingTripQuickReservations = _fishingTripQuickReservationRepository.findAll();
-        for (FishingTripQuickReservation fishingTripQuickReservation : fishingTripQuickReservations) {
-            if (fishingTripQuickReservation.getClient() == null && fishingTripQuickReservation.getValidUntilAndIncluding().isBefore(LocalDate.now())) {
-                fishingTrip.getFishingTripQuickReservations().remove(fishingTripQuickReservation);
-                fishingTripQuickReservation.setFishingTrip(null);
-                _fishingTripQuickReservationRepository.delete(fishingTripQuickReservation);
+    public void deleteNonValidQuickReservations(FishingInstructor loggedInInstructor) {
+        List<Integer> instructorFishingTripIds = _fishingTripRepository.findByFishingInstructor(loggedInInstructor.getId());
+        List<FishingTripQuickReservation> instructorQuickReservations =  _fishingTripQuickReservationRepository.findByFishingTripIdIn(instructorFishingTripIds);
+        List<FishingTrip> instructorFishingTrips = new ArrayList<>();
+
+        for (Integer id : instructorFishingTripIds) {
+            instructorFishingTrips.add(_fishingTripRepository.getById(id));
+        }
+
+        for (FishingTrip fishingTrip : instructorFishingTrips) {
+            for (FishingTripQuickReservation fishingTripQuickReservation : instructorQuickReservations) {
+                if (fishingTripQuickReservation.getFishingTrip() != null && fishingTrip.getId() == fishingTripQuickReservation.getFishingTrip().getId() && fishingTripQuickReservation.getClient() == null && fishingTripQuickReservation.getValidUntilAndIncluding().isBefore(LocalDate.now())) {
+                    fishingTrip.getFishingTripQuickReservations().remove(fishingTripQuickReservation);
+                    fishingTripQuickReservation.setFishingTrip(null);
+                    _fishingTripQuickReservationRepository.delete(fishingTripQuickReservation);
+                }
             }
         }
     }

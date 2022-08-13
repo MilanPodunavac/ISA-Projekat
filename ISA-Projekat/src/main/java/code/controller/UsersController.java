@@ -102,4 +102,19 @@ public class UsersController extends BaseController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
+
+    @DeleteMapping(value = "/acceptAccountDeletionRequest/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> acceptAccountDeletionRequest(@PathVariable Integer id, @Valid @RequestBody AccountDeletionResponse dto, BindingResult result){
+        if(result.hasErrors()){
+            return formatErrorResponse(result);
+        }
+
+        try {
+            _userService.acceptAccountDeletionRequest(id, dto.getResponseText());
+            return ResponseEntity.ok("Account deletion request accepted: " + dto.getResponseText());
+        } catch (AccountDeletionRequestDontExistException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
 }

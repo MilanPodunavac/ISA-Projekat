@@ -6,11 +6,11 @@ import code.exceptions.provider_registration.EmailTakenException;
 import code.exceptions.provider_registration.NotProviderException;
 import code.exceptions.provider_registration.UserAccountActivatedException;
 import code.exceptions.provider_registration.UserNotFoundException;
-import code.model.AccountDeletionRequest;
-import code.model.User;
-import code.repository.AccountDeletionRequestRepository;
-import code.repository.UserRepository;
+import code.model.*;
+import code.repository.*;
+import code.service.FishingInstructorService;
 import code.service.UserService;
+import code.utils.FileUploadUtil;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
@@ -26,12 +26,18 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository _userRepository;
+    private final FishingInstructorAvailablePeriodRepository _fishingInstructorAvailablePeriodRepository;
+    private final FishingTripRepository _fishingTripRepository;
+    private final FishingTripPictureRepository _fishingTripPictureRepository;
     private final AccountDeletionRequestRepository _accountDeletionRequestRepository;
     private final JavaMailSender _mailSender;
     private final PasswordEncoder _passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, AccountDeletionRequestRepository accountDeletionRequestRepository, JavaMailSender mailSender, PasswordEncoder encoder) {
+    public UserServiceImpl(UserRepository userRepository, FishingInstructorAvailablePeriodRepository fishingInstructorAvailablePeriodRepository, FishingTripRepository fishingTripRepository, FishingTripPictureRepository fishingTripPictureRepository, AccountDeletionRequestRepository accountDeletionRequestRepository, JavaMailSender mailSender, PasswordEncoder encoder) {
         this._userRepository = userRepository;
+        this._fishingInstructorAvailablePeriodRepository = fishingInstructorAvailablePeriodRepository;
+        this._fishingTripRepository = fishingTripRepository;
+        this._fishingTripPictureRepository = fishingTripPictureRepository;
         this._accountDeletionRequestRepository = accountDeletionRequestRepository;
         this._mailSender = mailSender;
         _passwordEncoder = encoder;
@@ -203,6 +209,49 @@ public class UserServiceImpl implements UserService {
         message.setTo(email);
         message.setSubject("Account deletion request");
         message.setText("Account deletion request declined: " + responseText);
+        _mailSender.send(message);
+    }
+
+    @Transactional
+    @Override
+    public void acceptAccountDeletionRequest(Integer id, String responseText) throws AccountDeletionRequestDontExistException {
+        throwExceptionIfAccountDeletionRequestDontExist(id);
+        AccountDeletionRequest accountDeletionRequest = _accountDeletionRequestRepository.getById(id);
+        _accountDeletionRequestRepository.delete(accountDeletionRequest);
+        deleteUserLogic(accountDeletionRequest);
+        sendAcceptAccountDeletionRequestEmail(accountDeletionRequest.getUser().getEmail(), responseText);
+    }
+
+    private void deleteUserLogic(AccountDeletionRequest accountDeletionRequest) {
+        if (accountDeletionRequest.getUser().getRole().getName().equals("ROLE_FISHING_INSTRUCTOR")) {
+            deleteFishingTripPictures((FishingInstructor) accountDeletionRequest.getUser());
+        } else if (accountDeletionRequest.getUser().getRole().getName().equals("ROLE_COTTAGE_OWNER")) {
+            //unlinkReferencesCottageOwner((CottageOwner) accountDeletionRequest.getUser());
+        } else if (accountDeletionRequest.getUser().getRole().getName().equals("ROLE_BOAT_OWNER")) {
+            //unlinkReferencesBoatOwner((BoatOwner) accountDeletionRequest.getUser());
+        } else if (accountDeletionRequest.getUser().getRole().getName().equals("ROLE_CLIENT")) {
+            //unlinkReferencesClient((Client) accountDeletionRequest.getUser());
+        }
+
+        _userRepository.delete(accountDeletionRequest.getUser());
+    }
+
+    private void deleteFishingTripPictures(FishingInstructor fishingInstructor) {
+        String fishingTripPicturesDirectory = "fishing_trip_pictures";
+        for (FishingTrip fishingTrip : fishingInstructor.getFishingTrips()) {
+            List<FishingTripPicture> fishingTripPictures = _fishingTripPictureRepository.findByFishingTrip(fishingTrip.getId());
+            for (FishingTripPicture fishingTripPicture : fishingTripPictures) {
+                FileUploadUtil.deleteFile(fishingTripPicturesDirectory, fishingTripPicture.getId() + "_" + fishingTripPicture.getName());
+            }
+        }
+    }
+
+    private void sendAcceptAccountDeletionRequestEmail(String email, String responseText) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("marko76589@gmail.com");
+        message.setTo(email);
+        message.setSubject("Account deletion request");
+        message.setText("Account deletion request accepted: " + responseText);
         _mailSender.send(message);
     }
 }
