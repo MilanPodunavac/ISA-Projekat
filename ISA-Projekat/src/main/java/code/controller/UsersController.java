@@ -1,20 +1,17 @@
 package code.controller;
 
 import code.controller.base.BaseController;
-import code.dto.provider_registration.DeclineRegistrationRequestDTO;
 import code.dto.user.AccountDeletionRequestDto;
 import code.dto.user.AccountDeletionResponse;
 import code.dto.user.UpdatePasswordDto;
 import code.dto.user.UpdateUserPersonalInfoDto;
+import code.exceptions.admin.NotChangedPasswordException;
 import code.exceptions.entities.AccountDeletionRequestDontExistException;
-import code.exceptions.provider_registration.NotProviderException;
-import code.exceptions.provider_registration.UserAccountActivatedException;
+import code.exceptions.entities.EntityNotDeletableException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.AccountDeletionRequest;
-import code.model.Cottage;
 import code.model.CottageOwner;
 import code.model.User;
-import code.repository.UserRepository;
 import code.service.UserService;
 import code.utils.TokenUtils;
 import org.modelmapper.ModelMapper;
@@ -84,8 +81,12 @@ public class UsersController extends BaseController {
             return formatErrorResponse(result);
         }
 
-        _userService.submitAccountDeletionRequest(_mapper.map(dto, AccountDeletionRequest.class));
-        return ResponseEntity.ok("Account deletion request submitted!");
+        try {
+            _userService.submitAccountDeletionRequest(_mapper.map(dto, AccountDeletionRequest.class));
+            return ResponseEntity.ok("Account deletion request submitted!");
+        } catch (EntityNotDeletableException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
     }
 
     @DeleteMapping(value = "/declineAccountDeletionRequest/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -100,6 +101,8 @@ public class UsersController extends BaseController {
             return ResponseEntity.ok("Account deletion request declined: " + dto.getResponseText());
         } catch (AccountDeletionRequestDontExistException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (NotChangedPasswordException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -115,6 +118,8 @@ public class UsersController extends BaseController {
             return ResponseEntity.ok("Account deletion request accepted: " + dto.getResponseText());
         } catch (AccountDeletionRequestDontExistException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (NotChangedPasswordException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
     }
 }

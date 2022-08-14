@@ -1,7 +1,10 @@
 package code.service.impl;
 
 import code.exceptions.admin.ModifyAnotherUserDataException;
+import code.exceptions.admin.NotChangedPasswordException;
 import code.exceptions.entities.AccountDeletionRequestDontExistException;
+import code.exceptions.entities.EntityNotDeletableException;
+import code.exceptions.fishing_trip.FishingTripHasQuickReservationWithClientException;
 import code.exceptions.provider_registration.EmailTakenException;
 import code.exceptions.provider_registration.NotProviderException;
 import code.exceptions.provider_registration.UserAccountActivatedException;
@@ -19,25 +22,35 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository _userRepository;
-    private final FishingInstructorAvailablePeriodRepository _fishingInstructorAvailablePeriodRepository;
-    private final FishingTripRepository _fishingTripRepository;
+    private final ClientRepository _clientRepository;
+    private final AvailabilityPeriodRepository _availabilityPeriodRepository;
+    private final CottageRepository _cottageRepository;
+    private final CottageReservationRepository _cottageReservationRepository;
     private final FishingTripPictureRepository _fishingTripPictureRepository;
+    private final FishingTripRepository _fishingTripRepository;
+    private final FishingTripQuickReservationRepository _fishingTripQuickReservationRepository;
     private final AccountDeletionRequestRepository _accountDeletionRequestRepository;
     private final JavaMailSender _mailSender;
     private final PasswordEncoder _passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, FishingInstructorAvailablePeriodRepository fishingInstructorAvailablePeriodRepository, FishingTripRepository fishingTripRepository, FishingTripPictureRepository fishingTripPictureRepository, AccountDeletionRequestRepository accountDeletionRequestRepository, JavaMailSender mailSender, PasswordEncoder encoder) {
+    public UserServiceImpl(UserRepository userRepository, ClientRepository clientRepository, AvailabilityPeriodRepository availabilityPeriodRepository, CottageRepository cottageRepository, CottageReservationRepository cottageReservationRepository, FishingTripPictureRepository fishingTripPictureRepository, FishingTripRepository fishingTripRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, AccountDeletionRequestRepository accountDeletionRequestRepository, JavaMailSender mailSender, PasswordEncoder encoder) {
         this._userRepository = userRepository;
-        this._fishingInstructorAvailablePeriodRepository = fishingInstructorAvailablePeriodRepository;
-        this._fishingTripRepository = fishingTripRepository;
+        this._clientRepository = clientRepository;
+        this._availabilityPeriodRepository = availabilityPeriodRepository;
+        this._cottageRepository = cottageRepository;
+        this._cottageReservationRepository = cottageReservationRepository;
         this._fishingTripPictureRepository = fishingTripPictureRepository;
+        this._fishingTripRepository = fishingTripRepository;
+        this._fishingTripQuickReservationRepository = fishingTripQuickReservationRepository;
         this._accountDeletionRequestRepository = accountDeletionRequestRepository;
         this._mailSender = mailSender;
         _passwordEncoder = encoder;
@@ -177,9 +190,60 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void submitAccountDeletionRequest(AccountDeletionRequest accountDeletionRequest) {
-        accountDeletionRequest.setUser(getLoggedInUser());
+    public void submitAccountDeletionRequest(AccountDeletionRequest accountDeletionRequest) throws EntityNotDeletableException {
+        User loggedInUser = getLoggedInUser();
+        checkIfUserDeletable(loggedInUser);
+        accountDeletionRequest.setUser(loggedInUser);
         _accountDeletionRequestRepository.save(accountDeletionRequest);
+    }
+
+    private void checkIfUserDeletable(User loggedInUser) throws EntityNotDeletableException {
+        if (loggedInUser.getRole().getName().equals("ROLE_FISHING_INSTRUCTOR")) {
+            checkIfFishingInstructorDeletable((FishingInstructor) loggedInUser);
+        } else if (loggedInUser.getRole().getName().equals("ROLE_COTTAGE_OWNER")) {
+            checkIfCottageOwnerDeletable((CottageOwner) loggedInUser);
+        } else if (loggedInUser.getRole().getName().equals("ROLE_BOAT_OWNER")) {
+            //checkIfBoatOwnerDeletable((BoatOwner) loggedInUser);
+        } else if (loggedInUser.getRole().getName().equals("ROLE_CLIENT")) {
+            checkIfClientDeletable((Client) loggedInUser);
+        }
+    }
+
+    private void checkIfFishingInstructorDeletable(FishingInstructor fishingInstructor) throws EntityNotDeletableException {
+        List<Integer> instructorFishingTripIds = _fishingTripRepository.findByFishingInstructor(fishingInstructor.getId());
+        List<FishingTripQuickReservation> instructorQuickReservations =  _fishingTripQuickReservationRepository.findByFishingTripIdIn(instructorFishingTripIds);
+        for (FishingTripQuickReservation fishingTripQuickReservation : instructorQuickReservations) {
+            if (fishingTripQuickReservation.getClient() != null && fishingTripQuickReservation.getStart().plusDays(fishingTripQuickReservation.getDurationInDays()).isAfter(LocalDate.now())) {
+                throw new EntityNotDeletableException("You can't delete an entity that has reservations!");
+            }
+        }
+    }
+
+    private void checkIfCottageOwnerDeletable(CottageOwner cottageOwner) throws EntityNotDeletableException {
+        List<Integer> cottageOwnerCottageIds = _cottageRepository.findByCottageOwner(cottageOwner.getId());
+        List<CottageReservation> cottageOwnerReservations =  _cottageReservationRepository.findByCottageIdIn(cottageOwnerCottageIds);
+        for (CottageReservation cottageReservation : cottageOwnerReservations) {
+            if (cottageReservation.getClient() != null && cottageReservation.getDateRange().getEndDate().after(new Date())) {
+                throw new EntityNotDeletableException("You can't delete an entity that has reservations!");
+            }
+        }
+    }
+
+    private void checkIfClientDeletable(Client client) throws EntityNotDeletableException {
+        List<FishingTripQuickReservation> clientFishingTripQuickReservations = _fishingTripQuickReservationRepository.findByClientId(client.getId());
+        List<CottageReservation> clientCottageReservations = _cottageReservationRepository.findByClientId(client.getId());
+
+        for (FishingTripQuickReservation fishingTripQuickReservation : clientFishingTripQuickReservations) {
+            if (fishingTripQuickReservation.getStart().plusDays(fishingTripQuickReservation.getDurationInDays()).isAfter(LocalDate.now())) {
+                throw new EntityNotDeletableException("You can't delete an entity that has reservations!");
+            }
+        }
+
+        for (CottageReservation cottageReservation : clientCottageReservations) {
+            if (cottageReservation.getDateRange().getEndDate().after(new Date())) {
+                throw new EntityNotDeletableException("You can't delete an entity that has reservations!");
+            }
+        }
     }
 
     private User getLoggedInUser() {
@@ -189,11 +253,21 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void declineAccountDeletionRequest(Integer id, String responseText) throws AccountDeletionRequestDontExistException {
+    public void declineAccountDeletionRequest(Integer id, String responseText) throws AccountDeletionRequestDontExistException, NotChangedPasswordException {
         throwExceptionIfAccountDeletionRequestDontExist(id);
+        throwExceptionIfAdminDidntChangePassword();
         AccountDeletionRequest accountDeletionRequest = _accountDeletionRequestRepository.getById(id);
         _accountDeletionRequestRepository.delete(accountDeletionRequest);
         sendDeclineAccountDeletionRequestEmail(accountDeletionRequest.getUser().getEmail(), responseText);
+    }
+
+    private void throwExceptionIfAdminDidntChangePassword() throws NotChangedPasswordException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+        Admin admin = (Admin) user;
+        if (!admin.isPasswordChanged()) {
+            throw new NotChangedPasswordException("Password not changed!");
+        }
     }
 
     private void throwExceptionIfAccountDeletionRequestDontExist(Integer id) throws AccountDeletionRequestDontExistException {
@@ -214,8 +288,9 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void acceptAccountDeletionRequest(Integer id, String responseText) throws AccountDeletionRequestDontExistException {
+    public void acceptAccountDeletionRequest(Integer id, String responseText) throws AccountDeletionRequestDontExistException, NotChangedPasswordException {
         throwExceptionIfAccountDeletionRequestDontExist(id);
+        throwExceptionIfAdminDidntChangePassword();
         AccountDeletionRequest accountDeletionRequest = _accountDeletionRequestRepository.getById(id);
         _accountDeletionRequestRepository.delete(accountDeletionRequest);
         deleteUserLogic(accountDeletionRequest);
@@ -226,11 +301,11 @@ public class UserServiceImpl implements UserService {
         if (accountDeletionRequest.getUser().getRole().getName().equals("ROLE_FISHING_INSTRUCTOR")) {
             deleteFishingTripPictures((FishingInstructor) accountDeletionRequest.getUser());
         } else if (accountDeletionRequest.getUser().getRole().getName().equals("ROLE_COTTAGE_OWNER")) {
-            //unlinkReferencesCottageOwner((CottageOwner) accountDeletionRequest.getUser());
+            unlinkReferencesCottageOwner((CottageOwner) accountDeletionRequest.getUser());
         } else if (accountDeletionRequest.getUser().getRole().getName().equals("ROLE_BOAT_OWNER")) {
             //unlinkReferencesBoatOwner((BoatOwner) accountDeletionRequest.getUser());
         } else if (accountDeletionRequest.getUser().getRole().getName().equals("ROLE_CLIENT")) {
-            //unlinkReferencesClient((Client) accountDeletionRequest.getUser());
+            unlinkReferencesClient((Client) accountDeletionRequest.getUser());
         }
 
         _userRepository.delete(accountDeletionRequest.getUser());
@@ -243,6 +318,66 @@ public class UserServiceImpl implements UserService {
             for (FishingTripPicture fishingTripPicture : fishingTripPictures) {
                 FileUploadUtil.deleteFile(fishingTripPicturesDirectory, fishingTripPicture.getId() + "_" + fishingTripPicture.getName());
             }
+        }
+    }
+
+    private void unlinkReferencesCottageOwner(CottageOwner cottageOwner) {
+        List<Integer> cottageOwnerCottageIds = _cottageRepository.findByCottageOwner(cottageOwner.getId());
+        List<CottageReservation> cottageOwnerReservations =  _cottageReservationRepository.findByCottageIdIn(cottageOwnerCottageIds);
+        List<AvailabilityPeriod> allAvailabilityPeriods = _availabilityPeriodRepository.findAll();
+        List<Client> allClients = _clientRepository.findAll();
+
+        for (CottageReservation cottageReservation : cottageOwnerReservations) {
+            cottageReservation.setCottage(null);
+        }
+
+        for (AvailabilityPeriod availabilityPeriod : allAvailabilityPeriods) {
+            for (CottageReservation cottageReservation : cottageOwnerReservations) {
+                if (availabilityPeriod.getReservations().contains(cottageReservation)) {
+                    availabilityPeriod.getReservations().remove(cottageReservation);
+                    cottageReservation.setAvailabilityPeriod(null);
+                }
+            }
+        }
+
+        for (Client client : allClients) {
+            for (CottageReservation cottageReservation : cottageOwnerReservations) {
+                if (client.getReservation().contains(cottageReservation)) {
+                    client.getReservation().remove(cottageReservation);
+                    cottageReservation.setClient(null);
+                }
+            }
+        }
+
+        for (CottageReservation cottageReservation : cottageOwnerReservations) {
+            _cottageReservationRepository.delete(cottageReservation);
+        }
+    }
+
+    private void unlinkReferencesClient(Client client) {
+        List<FishingTripQuickReservation> clientFishingTripQuickReservations = _fishingTripQuickReservationRepository.findByClientId(client.getId());
+        List<CottageReservation> clientCottageReservations = _cottageReservationRepository.findByClientId(client.getId());
+
+        for (FishingTripQuickReservation fishingTripQuickReservation : clientFishingTripQuickReservations) {
+            client.getFishingTripQuickReservations().remove(fishingTripQuickReservation);
+            fishingTripQuickReservation.setClient(null);
+
+            fishingTripQuickReservation.getFishingTrip().getFishingTripQuickReservations().remove(fishingTripQuickReservation);
+            fishingTripQuickReservation.setFishingTrip(null);
+
+            _fishingTripQuickReservationRepository.delete(fishingTripQuickReservation);
+        }
+
+        for (CottageReservation cottageReservation : clientCottageReservations) {
+            client.getReservation().remove(cottageReservation);
+            cottageReservation.setClient(null);
+
+            cottageReservation.setCottage(null);
+
+            cottageReservation.getAvailabilityPeriod().getReservations().remove(cottageReservation);
+            cottageReservation.setAvailabilityPeriod(null);
+
+            _cottageReservationRepository.delete(cottageReservation);
         }
     }
 

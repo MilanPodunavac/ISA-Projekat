@@ -8,4 +8,5 @@ import java.util.List;
 public interface FishingTripQuickReservationRepository extends JpaRepository<FishingTripQuickReservation, Integer> {
     List<FishingTripQuickReservation> findByFishingTripIdIn(List<Integer> fishingTripIdList);
     List<FishingTripQuickReservation> findByFishingTripId(Integer id);
+    List<FishingTripQuickReservation> findByClientId(Integer id);
 }

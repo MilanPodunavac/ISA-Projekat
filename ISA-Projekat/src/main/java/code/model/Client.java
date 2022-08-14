@@ -20,6 +20,8 @@ public class Client extends User {
    private boolean banned;
    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    private Set<Reservation> reservation;
+   @OneToMany(mappedBy = "client", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+   private Set<FishingTripQuickReservation> fishingTripQuickReservations;
    @ManyToMany(fetch = FetchType.EAGER)
    @JoinTable(name = "client_saleEntity", joinColumns = @JoinColumn(name = "client_id", referencedColumnName = "id"),
            inverseJoinColumns = @JoinColumn(name = "saleEntity_id", referencedColumnName = "id"))

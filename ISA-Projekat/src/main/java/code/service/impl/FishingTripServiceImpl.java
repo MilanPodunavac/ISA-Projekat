@@ -75,7 +75,7 @@ public class FishingTripServiceImpl implements FishingTripService {
     private void throwExceptionIfFishingTripHasQuickReservationWithClient(Integer fishingTripId) throws FishingTripHasQuickReservationWithClientException {
         List<FishingTripQuickReservation> fishingTripQuickReservations = _fishingTripQuickReservationRepository.findByFishingTripId(fishingTripId);
         for (FishingTripQuickReservation fishingTripQuickReservation : fishingTripQuickReservations) {
-            if (fishingTripQuickReservation.getClient() != null) {
+            if (fishingTripQuickReservation.getClient() != null && fishingTripQuickReservation.getStart().plusDays(fishingTripQuickReservation.getDurationInDays()).isAfter(LocalDate.now())) {
                 throw new FishingTripHasQuickReservationWithClientException("You can't edit fishing trip that is reserved!");
             }
         }

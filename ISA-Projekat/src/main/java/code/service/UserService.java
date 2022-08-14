@@ -1,7 +1,9 @@
 package code.service;
 
 import code.exceptions.admin.ModifyAnotherUserDataException;
+import code.exceptions.admin.NotChangedPasswordException;
 import code.exceptions.entities.AccountDeletionRequestDontExistException;
+import code.exceptions.entities.EntityNotDeletableException;
 import code.exceptions.provider_registration.EmailTakenException;
 import code.exceptions.provider_registration.NotProviderException;
 import code.exceptions.provider_registration.UserAccountActivatedException;
@@ -22,7 +24,7 @@ public interface UserService {
     void declineRegistrationRequest(Integer id, String declineReason) throws UserNotFoundException, UserAccountActivatedException, NotProviderException;
     void updatePersonalInformation(User user) throws UserNotFoundException;
     void changePassword(String newPassword, String email) throws UserNotFoundException;
-    void submitAccountDeletionRequest(AccountDeletionRequest accountDeletionRequest);
-    void declineAccountDeletionRequest(Integer id, String responseText) throws AccountDeletionRequestDontExistException;
-    void acceptAccountDeletionRequest(Integer id, String responseText) throws AccountDeletionRequestDontExistException;
+    void submitAccountDeletionRequest(AccountDeletionRequest accountDeletionRequest) throws EntityNotDeletableException;
+    void declineAccountDeletionRequest(Integer id, String responseText) throws AccountDeletionRequestDontExistException, NotChangedPasswordException;
+    void acceptAccountDeletionRequest(Integer id, String responseText) throws AccountDeletionRequestDontExistException, NotChangedPasswordException;
 }
