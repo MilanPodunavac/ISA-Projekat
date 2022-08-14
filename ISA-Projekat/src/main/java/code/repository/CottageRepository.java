@@ -1,6 +1,6 @@
 package code.repository;
 
-import code.model.Cottage;
+import code.model.cottage.Cottage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

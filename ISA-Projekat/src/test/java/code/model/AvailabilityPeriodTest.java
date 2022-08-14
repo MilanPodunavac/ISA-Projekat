@@ -1,12 +1,11 @@
 package code.model;
 
+import code.model.cottage.CottageReservation;
 import code.model.wrappers.DateRange;
-import code.repository.CottageRepository;
 import lombok.AllArgsConstructor;
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
-import org.junit.Test;
 import org.junit.experimental.theories.DataPoint;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
@@ -117,6 +116,7 @@ public class AvailabilityPeriodTest {
 
     private static AvailabilityPeriod getAvailabilityPeriod(){
         AvailabilityPeriod period = new AvailabilityPeriod();
+        period.setActions(new HashSet<>());
         period.setRange(new DateRange(new GregorianCalendar(2022, Calendar.MAY, 1).getTime(), new GregorianCalendar(2022, Calendar.MAY, 30).getTime()));
         period.setReservations(new HashSet<Reservation>());
         CottageReservation res1 = new CottageReservation();

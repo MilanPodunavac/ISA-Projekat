@@ -9,7 +9,7 @@ import code.exceptions.provider_registration.NotProviderException;
 import code.exceptions.provider_registration.UserAccountActivatedException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.BoatOwner;
-import code.model.CottageOwner;
+import code.model.cottage.CottageOwner;
 import code.model.FishingInstructor;
 import code.service.BoatOwnerService;
 import code.service.CottageOwnerService;

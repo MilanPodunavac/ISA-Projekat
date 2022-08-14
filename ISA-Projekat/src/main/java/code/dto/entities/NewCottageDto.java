@@ -1,6 +1,6 @@
 package code.dto.entities;
 
-import code.model.CottageReservationTag;
+import code.model.cottage.CottageReservationTag;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

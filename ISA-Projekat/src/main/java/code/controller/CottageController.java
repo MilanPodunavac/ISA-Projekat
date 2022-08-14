@@ -11,6 +11,8 @@ import code.exceptions.entities.EntityNotOwnedException;
 import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.*;
+import code.model.cottage.Cottage;
+import code.model.cottage.CottageReservation;
 import code.model.wrappers.DateRange;
 import code.repository.CottageOwnerRepository;
 import code.repository.CottageRepository;
@@ -106,4 +108,5 @@ public class CottageController extends BaseController {
         }
         return ResponseEntity.ok("Reservation added");
     }
+
 }

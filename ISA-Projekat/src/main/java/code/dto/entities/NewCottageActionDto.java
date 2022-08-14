@@ -7,25 +7,24 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class NewCottageReservationDto {
-    @NotBlank(message = "Client email required")
-    public String clientEmail;
+@NoArgsConstructor
+public class NewCottageActionDto {
     @NotNull
-    public int cottageId;
+    private int cottageId;
     @Min(value = 1, message = "Number of people must be greater than 0")
-    public int numberOfPeople;
+    private int numberOfPeople;
     @NotNull
-    public Date startDate;
+    private Date startDate;
     @Min(value = 1, message = "Number of days must be greater than 0")
-    public int numberOfDays;
-    public List<CottageReservationTag> cottageReservationTag;
+    private int numberOfDays;
+    private List<CottageReservationTag> cottageReservationTag;
+    @NotNull
+    private Date validUntilAndIncluding;
 }

@@ -7,6 +7,7 @@ import code.exceptions.entities.UnexpectedUserRoleException;
 import code.exceptions.provider_registration.EmailTakenException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.*;
+import code.model.cottage.CottageOwner;
 import code.repository.AdminRepository;
 import code.repository.UserRepository;
 import code.service.*;

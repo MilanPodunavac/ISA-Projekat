@@ -2,12 +2,13 @@ package code.model;
 
 import code.exceptions.entities.AvailabilityPeriodBadRangeException;
 import code.exceptions.entities.InvalidReservationException;
+import code.model.cottage.Cottage;
+import code.model.cottage.CottageReservation;
 import code.model.wrappers.DateRange;
 import lombok.AllArgsConstructor;
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
-import org.junit.Test;
 import org.junit.experimental.theories.DataPoint;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
@@ -206,6 +207,7 @@ public class SaleEntityTest {
 
     private static AvailabilityPeriod getAvailabilityPeriod1(){
         AvailabilityPeriod period = new AvailabilityPeriod();
+        period.setActions(new HashSet<>());
         period.setRange(new DateRange(new GregorianCalendar(2022, Calendar.MAY, 1).getTime(), new GregorianCalendar(2022, Calendar.MAY, 30).getTime()));
         period.setReservations(new HashSet<Reservation>());
         CottageReservation res1 = new CottageReservation();
@@ -222,6 +224,7 @@ public class SaleEntityTest {
 
     private static AvailabilityPeriod getAvailabilityPeriod2(){
         AvailabilityPeriod period = new AvailabilityPeriod();
+        period.setActions(new HashSet<>());
         period.setRange(new DateRange(new GregorianCalendar(2022, Calendar.JUNE, 1).getTime(), new GregorianCalendar(2022, Calendar.JUNE, 30).getTime()));
         period.setReservations(new HashSet<Reservation>());
         CottageReservation res1 = new CottageReservation();
@@ -238,6 +241,7 @@ public class SaleEntityTest {
 
     private static AvailabilityPeriod getAvailabilityPeriod3(){
         AvailabilityPeriod period = new AvailabilityPeriod();
+        period.setActions(new HashSet<>());
         period.setRange(new DateRange(new GregorianCalendar(2022, Calendar.JULY, 1).getTime(), new GregorianCalendar(2022, Calendar.JULY, 30).getTime()));
         period.setReservations(new HashSet<Reservation>());
         CottageReservation res1 = new CottageReservation();

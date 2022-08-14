@@ -1,5 +1,6 @@
-package code.model;
+package code.model.cottage;
 
+import code.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

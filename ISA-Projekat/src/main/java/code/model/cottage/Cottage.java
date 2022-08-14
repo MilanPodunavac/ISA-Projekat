@@ -1,6 +1,7 @@
-package code.model;
+package code.model.cottage;
 
 import code.exceptions.entities.InvalidReservationException;
+import code.model.SaleEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,13 +31,17 @@ public class Cottage extends SaleEntity {
    @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "cottageOwner_id")
    private CottageOwner cottageOwner;
-   //@OneToMany(mappedBy = "cottage", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-   //private Set<CottageReservation> cottageReservation;
    public boolean addReservation(CottageReservation reservation) throws InvalidReservationException {
       for(CottageReservationTag tag : reservation.getCottageReservationTag()){
          if(!additionalServices.contains(tag))throw new InvalidReservationException("Additional service not supported");
       }
       if(reservation.getNumberOfPeople() > roomNumber * bedNumber) throw new InvalidReservationException("Not enough beds");
       return super.addReservation(reservation);
+   }
+
+   public boolean addAction(CottageAction newAction){
+      newAction.setCottage(this);
+      super.addAction(newAction);
+      return true;
    }
 }

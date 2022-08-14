@@ -3,12 +3,8 @@ package code.service.impl;
 import code.exceptions.entities.EntityNotDeletableException;
 import code.exceptions.entities.EntityNotFoundException;
 import code.model.Boat;
-import code.model.Cottage;
 import code.repository.BoatRepository;
-import code.repository.CottageRepository;
-import code.repository.UserRepository;
 import code.service.BoatService;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

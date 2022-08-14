@@ -4,6 +4,10 @@ import code.exceptions.entities.*;
 import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.*;
+import code.model.cottage.Cottage;
+import code.model.cottage.CottageAction;
+import code.model.cottage.CottageOwner;
+import code.model.cottage.CottageReservation;
 import code.repository.CottageRepository;
 import code.repository.UserRepository;
 import code.service.CottageService;
@@ -106,4 +110,20 @@ public class CottageServiceImpl implements CottageService {
     public void unlinkReferencesAndDeleteCottage(Integer id) {
 
     }
+    public void addAction(String ownerEmail, int cottageId, CottageAction action) throws UnauthorizedAccessException, EntityNotFoundException, EntityNotOwnedException {
+        CottageOwner owner;
+        try{
+            owner = (CottageOwner) _userRepository.findByEmail(ownerEmail);
+        }catch(ClassCastException ex){
+            throw new UnauthorizedAccessException("User is not a cottage owner");
+        }
+        if(owner == null)throw new UnauthorizedAccessException("Cottage owner not found");
+        Optional<Cottage> optionalCottage = _cottageRepository.findById(cottageId);
+        if(!optionalCottage.isPresent())throw new EntityNotFoundException("Cottage not found");
+        Cottage cottage = optionalCottage.get();
+        if(cottage.getCottageOwner().getId() != owner.getId())throw new EntityNotOwnedException("Cottage not owned by given user");
+        cottage.addAction(action);
+        _cottageRepository.save(cottage);
+    }
+
 }

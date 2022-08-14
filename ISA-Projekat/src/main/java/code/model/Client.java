@@ -22,6 +22,8 @@ public class Client extends User {
    private Set<Reservation> reservation;
    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    private Set<FishingTripQuickReservation> fishingTripQuickReservations;
+   @OneToMany(mappedBy = "client", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+   private Set<Action> actions;
    @ManyToMany(fetch = FetchType.EAGER)
    @JoinTable(name = "client_saleEntity", joinColumns = @JoinColumn(name = "client_id", referencedColumnName = "id"),
            inverseJoinColumns = @JoinColumn(name = "saleEntity_id", referencedColumnName = "id"))

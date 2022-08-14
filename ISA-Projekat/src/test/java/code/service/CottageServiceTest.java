@@ -4,6 +4,10 @@ import code.exceptions.entities.*;
 import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.*;
+import code.model.cottage.Cottage;
+import code.model.cottage.CottageOwner;
+import code.model.cottage.CottageReservation;
+import code.model.cottage.CottageReservationTag;
 import code.model.wrappers.DateRange;
 import code.repository.CottageRepository;
 import code.repository.UserRepository;
@@ -191,6 +195,7 @@ public class CottageServiceTest {
 
     private Cottage getMockCottage(CottageOwner cottageOwner) throws AvailabilityPeriodBadRangeException {
         AvailabilityPeriod period = new AvailabilityPeriod();
+        period.setActions(new HashSet<>());
         period.setRange(new DateRange(new GregorianCalendar(2022, Calendar.MAY, 3).getTime(), new GregorianCalendar(2022, Calendar.MAY, 30).getTime()));
         period.setReservations(new HashSet<>());
         Cottage cottage = new Cottage();

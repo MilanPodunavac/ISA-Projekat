@@ -28,11 +28,16 @@ public class AvailabilityPeriod {
     private SaleEntity saleEntity;
     @OneToMany(mappedBy = "availabilityPeriod", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Reservation> reservations;
+    @OneToMany(mappedBy = "availabilityPeriod", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<Action> actions;
 
     public boolean isAvailable(DateRange range){
         if(!this.range.includes(range)) return false;
         for (Reservation reservation: reservations) {
             if(reservation.getDateRange().overlapsWith(range) && reservation.getReservationStatus() != ReservationStatus.cancelled) return false;
+        }
+        for (Action action : actions){
+            if(action.overlapsWith(range)) return false;
         }
         return true;
     }
@@ -44,5 +49,13 @@ public class AvailabilityPeriod {
             return true;
         }
         return false;
+    }
+
+    public boolean addAction(Action action){
+        if(isAvailable(action.getRange())){
+            action.setAvailabilityPeriod(this);
+            action.setReserved(true);
+        }
+        return true;
     }
 }

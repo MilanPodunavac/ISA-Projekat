@@ -54,4 +54,11 @@ public abstract class SaleEntity {
       return false;
    }
 
+   public boolean addAction (Action action){
+      for(AvailabilityPeriod period : availabilityPeriods){
+         if(period.addAction(action) == true)return true;
+      }
+      return false;
+   }
+
 }

@@ -4,8 +4,9 @@ import code.exceptions.entities.*;
 import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.AvailabilityPeriod;
-import code.model.Cottage;
-import code.model.CottageReservation;
+import code.model.cottage.Cottage;
+import code.model.cottage.CottageAction;
+import code.model.cottage.CottageReservation;
 
 public interface CottageService {
     void addCottage(String email, Cottage cottage) throws UserNotFoundException, UnauthorizedAccessException;
@@ -14,4 +15,5 @@ public interface CottageService {
     void throwExceptionIfCottageDontExist(Integer id) throws EntityNotFoundException;
     void checkIfCottageDeletable(Integer id) throws EntityNotDeletableException;
     void unlinkReferencesAndDeleteCottage(Integer id);
+    void addAction(String ownerEmail, int cottageId, CottageAction action) throws UnauthorizedAccessException, EntityNotFoundException, EntityNotOwnedException;
 }

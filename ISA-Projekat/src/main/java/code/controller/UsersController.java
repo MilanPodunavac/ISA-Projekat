@@ -10,7 +10,7 @@ import code.exceptions.entities.AccountDeletionRequestDontExistException;
 import code.exceptions.entities.EntityNotDeletableException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.AccountDeletionRequest;
-import code.model.CottageOwner;
+import code.model.cottage.CottageOwner;
 import code.model.User;
 import code.service.UserService;
 import code.utils.TokenUtils;
