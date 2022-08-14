@@ -4,11 +4,11 @@ import code.controller.base.BaseController;
 import code.dto.admin.AdminRegistration;
 import code.dto.admin.PasswordDTO;
 import code.dto.admin.PersonalData;
-import code.dto.provider_registration.DeclineRegistrationRequestDTO;
 import code.exceptions.admin.*;
+import code.exceptions.entities.EntityNotDeletableException;
+import code.exceptions.entities.EntityNotFoundException;
+import code.exceptions.entities.UnexpectedUserRoleException;
 import code.exceptions.provider_registration.EmailTakenException;
-import code.exceptions.provider_registration.NotProviderException;
-import code.exceptions.provider_registration.UserAccountActivatedException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.Admin;
 import code.service.*;
@@ -77,6 +77,108 @@ public class AdminController extends BaseController {
             return ResponseEntity.ok("Password changed!");
         } catch (ChangedPasswordException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @DeleteMapping(value = "/deleteFishingInstructor/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> deleteFishingInstructor(@PathVariable Integer id) {
+        try {
+            _adminService.deleteFishingInstructor(id);
+            return ResponseEntity.ok("Fishing instructor deleted!");
+        } catch (NotChangedPasswordException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (UserNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (UnexpectedUserRoleException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+        } catch (EntityNotDeletableException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
+    }
+
+    @DeleteMapping(value = "/deleteCottageOwner/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> deleteCottageOwner(@PathVariable Integer id) {
+        try {
+            _adminService.deleteCottageOwner(id);
+            return ResponseEntity.ok("Cottage owner deleted!");
+        } catch (NotChangedPasswordException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (UserNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (UnexpectedUserRoleException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+        } catch (EntityNotDeletableException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
+    }
+
+    @DeleteMapping(value = "/deleteBoatOwner/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> deleteBoatOwner(@PathVariable Integer id) {
+        try {
+            _adminService.deleteBoatOwner(id);
+            return ResponseEntity.ok("Boat owner deleted!");
+        } catch (NotChangedPasswordException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (UserNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (UnexpectedUserRoleException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+        } catch (EntityNotDeletableException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
+    }
+
+    @DeleteMapping(value = "/deleteClient/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> deleteClient(@PathVariable Integer id) {
+        try {
+            _adminService.deleteClient(id);
+            return ResponseEntity.ok("Client deleted!");
+        } catch (NotChangedPasswordException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (UserNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (UnexpectedUserRoleException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+        } catch (EntityNotDeletableException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
+    }
+
+    @DeleteMapping(value = "/deleteCottage/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> deleteCottage(@PathVariable Integer id) {
+        try {
+            _adminService.deleteCottage(id);
+            return ResponseEntity.ok("Cottage deleted!");
+        } catch (NotChangedPasswordException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (UnexpectedUserRoleException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+        } catch (EntityNotDeletableException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
+    }
+
+    @DeleteMapping(value = "/deleteBoat/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> deleteBoat(@PathVariable Integer id) {
+        try {
+            _adminService.deleteBoat(id);
+            return ResponseEntity.ok("Boat deleted!");
+        } catch (NotChangedPasswordException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (UnexpectedUserRoleException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+        } catch (EntityNotDeletableException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
     }
 }

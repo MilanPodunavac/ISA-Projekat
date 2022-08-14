@@ -4,14 +4,12 @@ import code.exceptions.admin.ModifyAnotherUserDataException;
 import code.exceptions.admin.NotChangedPasswordException;
 import code.exceptions.entities.AccountDeletionRequestDontExistException;
 import code.exceptions.entities.EntityNotDeletableException;
-import code.exceptions.fishing_trip.FishingTripHasQuickReservationWithClientException;
 import code.exceptions.provider_registration.EmailTakenException;
 import code.exceptions.provider_registration.NotProviderException;
 import code.exceptions.provider_registration.UserAccountActivatedException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.*;
 import code.repository.*;
-import code.service.FishingInstructorService;
 import code.service.UserService;
 import code.utils.FileUploadUtil;
 import org.springframework.mail.SimpleMailMessage;
@@ -203,13 +201,14 @@ public class UserServiceImpl implements UserService {
         } else if (loggedInUser.getRole().getName().equals("ROLE_COTTAGE_OWNER")) {
             checkIfCottageOwnerDeletable((CottageOwner) loggedInUser);
         } else if (loggedInUser.getRole().getName().equals("ROLE_BOAT_OWNER")) {
-            //checkIfBoatOwnerDeletable((BoatOwner) loggedInUser);
+            checkIfBoatOwnerDeletable((BoatOwner) loggedInUser);
         } else if (loggedInUser.getRole().getName().equals("ROLE_CLIENT")) {
             checkIfClientDeletable((Client) loggedInUser);
         }
     }
 
-    private void checkIfFishingInstructorDeletable(FishingInstructor fishingInstructor) throws EntityNotDeletableException {
+    @Override
+    public void checkIfFishingInstructorDeletable(FishingInstructor fishingInstructor) throws EntityNotDeletableException {
         List<Integer> instructorFishingTripIds = _fishingTripRepository.findByFishingInstructor(fishingInstructor.getId());
         List<FishingTripQuickReservation> instructorQuickReservations =  _fishingTripQuickReservationRepository.findByFishingTripIdIn(instructorFishingTripIds);
         for (FishingTripQuickReservation fishingTripQuickReservation : instructorQuickReservations) {
@@ -219,7 +218,8 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private void checkIfCottageOwnerDeletable(CottageOwner cottageOwner) throws EntityNotDeletableException {
+    @Override
+    public void checkIfCottageOwnerDeletable(CottageOwner cottageOwner) throws EntityNotDeletableException {
         List<Integer> cottageOwnerCottageIds = _cottageRepository.findByCottageOwner(cottageOwner.getId());
         List<CottageReservation> cottageOwnerReservations =  _cottageReservationRepository.findByCottageIdIn(cottageOwnerCottageIds);
         for (CottageReservation cottageReservation : cottageOwnerReservations) {
@@ -229,7 +229,13 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private void checkIfClientDeletable(Client client) throws EntityNotDeletableException {
+    @Override
+    public void checkIfBoatOwnerDeletable(BoatOwner boatOwner) throws EntityNotDeletableException {
+
+    }
+
+    @Override
+    public void checkIfClientDeletable(Client client) throws EntityNotDeletableException {
         List<FishingTripQuickReservation> clientFishingTripQuickReservations = _fishingTripQuickReservationRepository.findByClientId(client.getId());
         List<CottageReservation> clientCottageReservations = _cottageReservationRepository.findByClientId(client.getId());
 
@@ -303,7 +309,7 @@ public class UserServiceImpl implements UserService {
         } else if (accountDeletionRequest.getUser().getRole().getName().equals("ROLE_COTTAGE_OWNER")) {
             unlinkReferencesCottageOwner((CottageOwner) accountDeletionRequest.getUser());
         } else if (accountDeletionRequest.getUser().getRole().getName().equals("ROLE_BOAT_OWNER")) {
-            //unlinkReferencesBoatOwner((BoatOwner) accountDeletionRequest.getUser());
+            unlinkReferencesBoatOwner((BoatOwner) accountDeletionRequest.getUser());
         } else if (accountDeletionRequest.getUser().getRole().getName().equals("ROLE_CLIENT")) {
             unlinkReferencesClient((Client) accountDeletionRequest.getUser());
         }
@@ -311,7 +317,8 @@ public class UserServiceImpl implements UserService {
         _userRepository.delete(accountDeletionRequest.getUser());
     }
 
-    private void deleteFishingTripPictures(FishingInstructor fishingInstructor) {
+    @Override
+    public void deleteFishingTripPictures(FishingInstructor fishingInstructor) {
         String fishingTripPicturesDirectory = "fishing_trip_pictures";
         for (FishingTrip fishingTrip : fishingInstructor.getFishingTrips()) {
             List<FishingTripPicture> fishingTripPictures = _fishingTripPictureRepository.findByFishingTrip(fishingTrip.getId());
@@ -321,7 +328,8 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private void unlinkReferencesCottageOwner(CottageOwner cottageOwner) {
+    @Override
+    public void unlinkReferencesCottageOwner(CottageOwner cottageOwner) {
         List<Integer> cottageOwnerCottageIds = _cottageRepository.findByCottageOwner(cottageOwner.getId());
         List<CottageReservation> cottageOwnerReservations =  _cottageReservationRepository.findByCottageIdIn(cottageOwnerCottageIds);
         List<AvailabilityPeriod> allAvailabilityPeriods = _availabilityPeriodRepository.findAll();
@@ -354,7 +362,13 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private void unlinkReferencesClient(Client client) {
+    @Override
+    public void unlinkReferencesBoatOwner(BoatOwner boatOwner) {
+
+    }
+
+    @Override
+    public void unlinkReferencesClient(Client client) {
         List<FishingTripQuickReservation> clientFishingTripQuickReservations = _fishingTripQuickReservationRepository.findByClientId(client.getId());
         List<CottageReservation> clientCottageReservations = _cottageReservationRepository.findByClientId(client.getId());
 

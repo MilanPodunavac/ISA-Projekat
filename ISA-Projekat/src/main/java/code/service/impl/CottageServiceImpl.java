@@ -89,4 +89,21 @@ public class CottageServiceImpl implements CottageService {
         _mailSender.send(message);
     }
 
+    @Override
+    public void throwExceptionIfCottageDontExist(Integer id) throws EntityNotFoundException {
+        Optional<Cottage> cottage = _cottageRepository.findById(id);
+        if (!cottage.isPresent()) {
+            throw new EntityNotFoundException("Cottage doesn't exist!");
+        }
+    }
+
+    @Override
+    public void checkIfCottageDeletable(Integer id) throws EntityNotDeletableException {
+
+    }
+
+    @Override
+    public void unlinkReferencesAndDeleteCottage(Integer id) {
+
+    }
 }

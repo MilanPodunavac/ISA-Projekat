@@ -8,9 +8,7 @@ import code.exceptions.provider_registration.EmailTakenException;
 import code.exceptions.provider_registration.NotProviderException;
 import code.exceptions.provider_registration.UserAccountActivatedException;
 import code.exceptions.provider_registration.UserNotFoundException;
-import code.model.AccountDeletionRequest;
-import code.model.CottageOwner;
-import code.model.User;
+import code.model.*;
 
 import java.util.List;
 
@@ -25,6 +23,14 @@ public interface UserService {
     void updatePersonalInformation(User user) throws UserNotFoundException;
     void changePassword(String newPassword, String email) throws UserNotFoundException;
     void submitAccountDeletionRequest(AccountDeletionRequest accountDeletionRequest) throws EntityNotDeletableException;
+    void checkIfFishingInstructorDeletable(FishingInstructor fishingInstructor) throws EntityNotDeletableException;
+    void checkIfCottageOwnerDeletable(CottageOwner cottageOwner) throws EntityNotDeletableException;
+    void checkIfBoatOwnerDeletable(BoatOwner boatOwner) throws EntityNotDeletableException;
+    void checkIfClientDeletable(Client client) throws EntityNotDeletableException;
     void declineAccountDeletionRequest(Integer id, String responseText) throws AccountDeletionRequestDontExistException, NotChangedPasswordException;
     void acceptAccountDeletionRequest(Integer id, String responseText) throws AccountDeletionRequestDontExistException, NotChangedPasswordException;
+    void deleteFishingTripPictures(FishingInstructor fishingInstructor);
+    void unlinkReferencesCottageOwner(CottageOwner cottageOwner);
+    void unlinkReferencesBoatOwner(BoatOwner boatOwner);
+    void unlinkReferencesClient(Client client);
 }
