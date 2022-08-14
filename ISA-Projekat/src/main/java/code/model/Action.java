@@ -44,6 +44,6 @@ public abstract class Action {
     }
 
     public boolean overlapsWith(DateRange range){
-        return range.overlapsWith(range);
+        return this.range.overlapsWith(range);
     }
 }

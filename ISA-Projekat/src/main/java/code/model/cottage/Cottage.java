@@ -41,7 +41,6 @@ public class Cottage extends SaleEntity {
 
    public boolean addAction(CottageAction newAction){
       newAction.setCottage(this);
-      super.addAction(newAction);
-      return true;
+      return super.addAction(newAction);
    }
 }

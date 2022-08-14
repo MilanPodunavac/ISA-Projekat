@@ -110,7 +110,7 @@ public class CottageServiceImpl implements CottageService {
     public void unlinkReferencesAndDeleteCottage(Integer id) {
 
     }
-    public void addAction(String ownerEmail, int cottageId, CottageAction action) throws UnauthorizedAccessException, EntityNotFoundException, EntityNotOwnedException {
+    public void addAction(String ownerEmail, int cottageId, CottageAction action) throws UnauthorizedAccessException, EntityNotFoundException, EntityNotOwnedException, EntityNotAvailableException {
         CottageOwner owner;
         try{
             owner = (CottageOwner) _userRepository.findByEmail(ownerEmail);
@@ -122,7 +122,7 @@ public class CottageServiceImpl implements CottageService {
         if(!optionalCottage.isPresent())throw new EntityNotFoundException("Cottage not found");
         Cottage cottage = optionalCottage.get();
         if(cottage.getCottageOwner().getId() != owner.getId())throw new EntityNotOwnedException("Cottage not owned by given user");
-        cottage.addAction(action);
+        if(!cottage.addAction(action))throw new EntityNotAvailableException("Cottage is not available at the given time");
         _cottageRepository.save(cottage);
     }
 

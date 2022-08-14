@@ -2,6 +2,7 @@ package code.mappper;
 
 import code.dto.admin.AdminRegistration;
 import code.dto.admin.PersonalData;
+import code.dto.entities.NewCottageActionDto;
 import code.dto.entities.NewCottageDto;
 import code.dto.entities.NewCottageReservationDto;
 import code.dto.fishing_trip.EditFishingTrip;
@@ -12,6 +13,7 @@ import code.dto.provider_registration.ProviderRegistrationRequest;
 import code.dto.user.UpdateUserPersonalInfoDto;
 import code.model.*;
 import code.model.cottage.Cottage;
+import code.model.cottage.CottageAction;
 import code.model.cottage.CottageOwner;
 import code.model.cottage.CottageReservation;
 import org.modelmapper.ModelMapper;
@@ -201,6 +203,13 @@ public class MapperConfiguration {
         };
         TypeMap<PersonalData, FishingInstructor> personalDataFishingInstructorTypeMap = modelMapper.createTypeMap(PersonalData.class, FishingInstructor.class);
         personalDataFishingInstructorTypeMap.addMappings(personalDataFishingInstructorPropertyMap);
+
+        PropertyMap<NewCottageActionDto, CottageAction> newCottageActionProp = new PropertyMap<NewCottageActionDto, CottageAction>(){
+            protected void configure(){
+
+            }
+        };
+        TypeMap<NewCottageActionDto, CottageAction> newCottageActionTypeMap = modelMapper.createTypeMap(NewCottageActionDto.class, CottageAction.class);
 
         return modelMapper;
     }

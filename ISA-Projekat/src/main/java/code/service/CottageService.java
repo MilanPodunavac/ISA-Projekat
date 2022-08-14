@@ -15,5 +15,5 @@ public interface CottageService {
     void throwExceptionIfCottageDontExist(Integer id) throws EntityNotFoundException;
     void checkIfCottageDeletable(Integer id) throws EntityNotDeletableException;
     void unlinkReferencesAndDeleteCottage(Integer id);
-    void addAction(String ownerEmail, int cottageId, CottageAction action) throws UnauthorizedAccessException, EntityNotFoundException, EntityNotOwnedException;
+    void addAction(String ownerEmail, int cottageId, CottageAction action) throws UnauthorizedAccessException, EntityNotFoundException, EntityNotOwnedException, EntityNotAvailableException;
 }

@@ -55,7 +55,9 @@ public class AvailabilityPeriod {
         if(isAvailable(action.getRange())){
             action.setAvailabilityPeriod(this);
             action.setReserved(true);
+            actions.add(action);
+            return true;
         }
-        return true;
+        return false;
     }
 }
