@@ -1,6 +1,6 @@
 package code.model.cottage;
 
-import code.model.Reservation;
+import code.model.base.Reservation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

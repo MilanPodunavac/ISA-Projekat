@@ -1,5 +1,8 @@
 package code.model;
 
+import code.model.base.Action;
+import code.model.base.Reservation;
+import code.model.base.SaleEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

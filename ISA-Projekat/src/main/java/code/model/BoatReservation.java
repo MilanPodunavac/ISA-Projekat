@@ -1,5 +1,6 @@
 package code.model;
 
+import code.model.base.Reservation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

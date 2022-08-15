@@ -1,7 +1,7 @@
 package code.model.cottage;
 
 import code.exceptions.entities.InvalidReservationException;
-import code.model.SaleEntity;
+import code.model.base.SaleEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,7 +41,6 @@ public class Cottage extends SaleEntity {
 
    public boolean addAction(CottageAction newAction){
       newAction.setCottage(this);
-      super.addAction(newAction);
-      return true;
+      return super.addAction(newAction);
    }
 }

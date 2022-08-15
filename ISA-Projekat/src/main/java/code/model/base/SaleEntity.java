@@ -1,7 +1,7 @@
-package code.model;
+package code.model.base;
 
 import code.exceptions.entities.AvailabilityPeriodBadRangeException;
-import code.model.wrappers.DateRange;
+import code.model.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,6 +37,8 @@ public abstract class SaleEntity {
    protected Set<Review> review;
    @OneToMany(mappedBy = "saleEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    protected Set<AvailabilityPeriod> availabilityPeriods;
+   @OneToMany(mappedBy = "saleEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+   protected Set<Picture> pictures;
 
    public void addAvailabilityPeriod (AvailabilityPeriod period) throws AvailabilityPeriodBadRangeException {
       for(AvailabilityPeriod existingPeriods: availabilityPeriods){
@@ -61,4 +63,8 @@ public abstract class SaleEntity {
       return false;
    }
 
+   public void addPicture(Picture picture){
+      picture.setSaleEntity(this);
+      pictures.add(picture);
+   }
 }

@@ -2,6 +2,7 @@ package code.controller;
 
 import code.controller.base.BaseController;
 import code.dto.entities.NewAvailabilityPeriodDto;
+import code.dto.entities.NewCottageActionDto;
 import code.dto.entities.NewCottageDto;
 import code.dto.entities.NewCottageReservationDto;
 import code.exceptions.entities.AvailabilityPeriodBadRangeException;
@@ -12,6 +13,7 @@ import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.*;
 import code.model.cottage.Cottage;
+import code.model.cottage.CottageAction;
 import code.model.cottage.CottageReservation;
 import code.model.wrappers.DateRange;
 import code.repository.CottageOwnerRepository;
@@ -26,8 +28,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -109,4 +113,56 @@ public class CottageController extends BaseController {
         return ResponseEntity.ok("Reservation added");
     }
 
+    @PostMapping(value="/action")
+    @PreAuthorize("hasRole('ROLE_COTTAGE_OWNER')")
+    public ResponseEntity<String> addAction(@Valid @RequestBody NewCottageActionDto dto, BindingResult result, @RequestHeader(HttpHeaders.AUTHORIZATION) String auth){
+        if(result.hasErrors()){
+            return formatErrorResponse(result);//400
+        }
+        try{
+            String email = _tokenUtils.getEmailFromToken(auth.substring(7));
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(dto.getStartDate());
+            cal.add(Calendar.DATE, dto.getNumberOfDays());
+            Date endDate = cal.getTime();
+            CottageAction action = _mapper.map(dto, CottageAction.class);
+            action.setId(0);
+            action.setRange(new DateRange(dto.getStartDate(), endDate));
+            _cottageService.addAction(email, dto.getCottageId(), action);
+        } catch (Exception ex) {
+            if(ex instanceof EntityNotOwnedException || ex instanceof UnauthorizedAccessException)return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+            if(ex instanceof EntityNotFoundException || ex instanceof UserNotFoundException)return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+            if(ex instanceof EntityNotAvailableException)return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+            return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
+        }
+        return ResponseEntity.ok("Action added");
+    }
+
+    @PostMapping(value="/{id}/picture")
+    @PreAuthorize("hasRole('ROLE_COTTAGE_OWNER')")
+    public ResponseEntity<String> addPicture(@PathVariable Integer id, @RequestParam(name="pictures", required=false) MultipartFile picture, @RequestHeader(HttpHeaders.AUTHORIZATION) String auth){
+        try{
+            String email = _tokenUtils.getEmailFromToken(auth.substring(7));
+            _cottageService.addPicture(id, picture, email);
+        } catch (Exception ex) {
+            if(ex instanceof EntityNotOwnedException)return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+            if(ex instanceof EntityNotFoundException)return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+            return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
+        }
+        return ResponseEntity.ok("Picture added");
+    }
+
+    @DeleteMapping(value="/{id}/picture/{pic}")
+    @PreAuthorize("hasRole('ROLE_COTTAGE_OWNER')")
+    public ResponseEntity<String> deletePicture(@PathVariable Integer id, @PathVariable int pic, @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String auth){
+        try{
+            String email = _tokenUtils.getEmailFromToken(auth.substring(7));
+            _cottageService.deletePicture(id, pic, email);
+        } catch (Exception ex) {
+            if(ex instanceof EntityNotOwnedException)return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+            if(ex instanceof EntityNotFoundException)return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+            return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
+        }
+        return ResponseEntity.ok("Picture deleted");
+    }
 }

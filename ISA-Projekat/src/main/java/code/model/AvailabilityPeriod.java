@@ -1,12 +1,15 @@
 package code.model;
 
 
+import code.model.base.Action;
+import code.model.base.Reservation;
+import code.model.base.ReservationStatus;
+import code.model.base.SaleEntity;
 import code.model.wrappers.DateRange;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.security.core.parameters.P;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -55,7 +58,9 @@ public class AvailabilityPeriod {
         if(isAvailable(action.getRange())){
             action.setAvailabilityPeriod(this);
             action.setReserved(true);
+            actions.add(action);
+            return true;
         }
-        return true;
+        return false;
     }
 }

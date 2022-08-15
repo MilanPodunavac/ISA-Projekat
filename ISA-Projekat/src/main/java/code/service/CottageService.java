@@ -7,6 +7,9 @@ import code.model.AvailabilityPeriod;
 import code.model.cottage.Cottage;
 import code.model.cottage.CottageAction;
 import code.model.cottage.CottageReservation;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 public interface CottageService {
     void addCottage(String email, Cottage cottage) throws UserNotFoundException, UnauthorizedAccessException;
@@ -15,5 +18,7 @@ public interface CottageService {
     void throwExceptionIfCottageDontExist(Integer id) throws EntityNotFoundException;
     void checkIfCottageDeletable(Integer id) throws EntityNotDeletableException;
     void unlinkReferencesAndDeleteCottage(Integer id);
-    void addAction(String ownerEmail, int cottageId, CottageAction action) throws UnauthorizedAccessException, EntityNotFoundException, EntityNotOwnedException;
+    void addAction(String ownerEmail, int cottageId, CottageAction action) throws UnauthorizedAccessException, EntityNotFoundException, EntityNotOwnedException, EntityNotAvailableException;
+    void addPicture(int id, MultipartFile picture, String email) throws EntityNotFoundException, EntityNotOwnedException, IOException;
+    void deletePicture(int id, int pic, String email) throws EntityNotOwnedException, EntityNotFoundException;
 }
