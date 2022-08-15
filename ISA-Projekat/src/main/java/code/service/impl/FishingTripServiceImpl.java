@@ -167,7 +167,6 @@ public class FishingTripServiceImpl implements FishingTripService {
         throwExceptionIfQuickReservationStartDateInPast(fishingTripQuickReservation);
         throwExceptionIfValidUntilAndIncludingDateInPastOrAfterOrEqualToStartDate(fishingTripQuickReservation);
         throwExceptionIfFishingTripReservationTagsDontContainQuickReservationTag(fishingTripQuickReservation, fishingTrip);
-        throwExceptionIfNoAvailablePeriodForQuickReservation(loggedInInstructor, fishingTripQuickReservation);
         deleteNonValidQuickReservations(loggedInInstructor);
         throwExceptionIfQuickReservationOverlapping(loggedInInstructor, fishingTripQuickReservation);
         fishingTripQuickReservation.setFishingTrip(fishingTrip);

@@ -7,7 +7,6 @@ import code.exceptions.provider_registration.EmailTakenException;
 import code.model.*;
 import code.repository.FishingInstructorAvailablePeriodRepository;
 import code.repository.FishingInstructorRepository;
-import code.repository.FishingTripRepository;
 import code.service.FishingInstructorService;
 import code.service.RoleService;
 import code.service.UserService;
@@ -17,7 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Service
