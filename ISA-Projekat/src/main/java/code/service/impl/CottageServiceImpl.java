@@ -4,6 +4,7 @@ import code.exceptions.entities.*;
 import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.*;
+import code.model.base.Picture;
 import code.model.cottage.Cottage;
 import code.model.cottage.CottageAction;
 import code.model.cottage.CottageOwner;
@@ -11,14 +12,20 @@ import code.model.cottage.CottageReservation;
 import code.repository.CottageRepository;
 import code.repository.UserRepository;
 import code.service.CottageService;
+import code.utils.FileUploadUtil;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @Service
 public class CottageServiceImpl implements CottageService {
+
+    private final String COTTAGE_PICTURE_DIRECTORY = "cottage_images";
 
     private final UserRepository _userRepository;
 
@@ -110,6 +117,7 @@ public class CottageServiceImpl implements CottageService {
     public void unlinkReferencesAndDeleteCottage(Integer id) {
 
     }
+    @Override
     public void addAction(String ownerEmail, int cottageId, CottageAction action) throws UnauthorizedAccessException, EntityNotFoundException, EntityNotOwnedException, EntityNotAvailableException {
         CottageOwner owner;
         try{
@@ -124,6 +132,35 @@ public class CottageServiceImpl implements CottageService {
         if(cottage.getCottageOwner().getId() != owner.getId())throw new EntityNotOwnedException("Cottage not owned by given user");
         if(!cottage.addAction(action))throw new EntityNotAvailableException("Cottage is not available at the given time");
         _cottageRepository.save(cottage);
+    }
+
+    @Override
+    public void addPicture(int id, MultipartFile picture, String email) throws EntityNotFoundException, EntityNotOwnedException, IOException {
+        Optional<Cottage> optionalCottage = _cottageRepository.findById(id);
+        if(!optionalCottage.isPresent())throw new EntityNotFoundException("Cottage not found");
+        Cottage cottage = optionalCottage.get();
+        if(!cottage.getCottageOwner().getEmail().equals(email))throw new EntityNotOwnedException("Cottage not owned by given user");
+        String pictureFileName = StringUtils.cleanPath(picture.getOriginalFilename());
+        Picture pic = new Picture();
+        pic.setName(pictureFileName);
+        cottage.addPicture(pic);
+        _cottageRepository.save(cottage);
+        FileUploadUtil.saveFile(COTTAGE_PICTURE_DIRECTORY, cottage.getId() + "_" + pic.getName(), picture);
+    }
+
+    @Override
+    public void deletePicture(int id, int pic, String email) throws EntityNotOwnedException, EntityNotFoundException {
+        Optional<Cottage> optionalCottage = _cottageRepository.findById(id);
+        if(!optionalCottage.isPresent())throw new EntityNotFoundException("Cottage not found");
+        Cottage cottage = optionalCottage.get();
+        if(!cottage.getCottageOwner().getEmail().equals(email))throw new EntityNotOwnedException("Cottage not owned by given user");
+        for(Picture picture : cottage.getPictures()){
+            if(picture.getId() == pic){
+                FileUploadUtil.deleteFile(COTTAGE_PICTURE_DIRECTORY, cottage.getId() + "_" + picture.getName());
+                return;
+            }
+        }
+        throw new EntityNotFoundException("Picture not found");
     }
 
 }

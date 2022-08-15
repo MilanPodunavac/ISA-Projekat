@@ -1,5 +1,6 @@
 package code.model;
 
+import code.model.base.Reservation;
 import code.model.cottage.CottageReservation;
 import code.model.wrappers.DateRange;
 import lombok.AllArgsConstructor;

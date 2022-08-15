@@ -2,6 +2,7 @@ package code.model;
 
 import code.exceptions.entities.AvailabilityPeriodBadRangeException;
 import code.exceptions.entities.InvalidReservationException;
+import code.model.base.Reservation;
 import code.model.cottage.Cottage;
 import code.model.cottage.CottageReservation;
 import code.model.wrappers.DateRange;

@@ -1,6 +1,6 @@
 package code.model.cottage;
 
-import code.model.Action;
+import code.model.base.Action;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

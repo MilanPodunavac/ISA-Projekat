@@ -1,7 +1,7 @@
 package code.model.cottage;
 
 import code.exceptions.entities.InvalidReservationException;
-import code.model.SaleEntity;
+import code.model.base.SaleEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

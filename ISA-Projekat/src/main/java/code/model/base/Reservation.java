@@ -1,5 +1,8 @@
-package code.model;
+package code.model.base;
 
+import code.model.AvailabilityPeriod;
+import code.model.Client;
+import code.model.ReservationDiscount;
 import code.model.wrappers.DateRange;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
