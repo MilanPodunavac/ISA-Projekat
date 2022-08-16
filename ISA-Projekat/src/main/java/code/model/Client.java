@@ -2,7 +2,9 @@ package code.model;
 
 import code.model.base.Action;
 import code.model.base.Reservation;
+import code.model.base.ReservationStatus;
 import code.model.base.SaleEntity;
+import code.model.wrappers.DateRange;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,4 +35,16 @@ public class Client extends User {
    private Set<SaleEntity> saleEntity;
    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    private Set<Review> review;
+
+   public boolean isAvailable(DateRange range){
+      if(reservation == null)return true;
+      for (Reservation res: reservation) {
+         if(res.getDateRange().overlapsWith(range) && res.getReservationStatus() == ReservationStatus.reserved)return false;
+      }
+      if(actions == null)return true;
+      for (Action act: actions){
+         if(act.overlapsWith(range) && !act.isReserved())return false;
+      }
+      return true;
+   }
 }

@@ -89,6 +89,7 @@ public class CottageServiceImpl implements CottageService {
         if(!optionalCottage.isPresent())throw new EntityNotFoundException("Cottage not found");
         Cottage cottage = optionalCottage.get();
         if(cottage.getCottageOwner().getId() != owner.getId())throw new EntityNotOwnedException("Cottage not owned by given user");
+        if(!client.isAvailable(reservation.getDateRange()))throw new EntityNotAvailableException("Client already has reservation at the given time");
         reservation.setClient(client);
         if(!cottage.addReservation(reservation))throw new EntityNotAvailableException("Cottage is not available at the given time");
         _cottageRepository.save(cottage);
@@ -132,6 +133,14 @@ public class CottageServiceImpl implements CottageService {
         if(cottage.getCottageOwner().getId() != owner.getId())throw new EntityNotOwnedException("Cottage not owned by given user");
         if(!cottage.addAction(action))throw new EntityNotAvailableException("Cottage is not available at the given time");
         _cottageRepository.save(cottage);
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("marko76589@gmail.com");
+        message.setSubject("Cottage reserved");
+        message.setText("New action: " + cottage.getName() + " " + action.getRange().getDays() + " days for a price of " + action.getPrice() + ". Available until " + action.getValidUntilAndIncluding());
+        for (Client client: cottage.getClient()) {
+            message.setTo(client.getEmail());
+            _mailSender.send(message);
+        }
     }
 
     @Override
