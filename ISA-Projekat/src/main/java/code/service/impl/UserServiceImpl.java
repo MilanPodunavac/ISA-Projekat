@@ -9,6 +9,7 @@ import code.exceptions.provider_registration.NotProviderException;
 import code.exceptions.provider_registration.UserAccountActivatedException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.*;
+import code.model.base.AvailabilityPeriod;
 import code.model.cottage.CottageOwner;
 import code.model.cottage.CottageReservation;
 import code.repository.*;

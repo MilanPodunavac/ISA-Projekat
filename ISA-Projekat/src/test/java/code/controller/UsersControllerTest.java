@@ -2,10 +2,7 @@ package code.controller;
 
 
 import code.controller.Base.BaseControllerTest;
-import code.controller.base.BaseController;
-import code.dto.admin.PasswordDTO;
 import code.dto.auth.LoginRequest;
-import code.dto.entities.NewCottageDto;
 import code.dto.user.UpdatePasswordDto;
 import code.dto.user.UpdateUserPersonalInfoDto;
 import code.utils.TestUtil;

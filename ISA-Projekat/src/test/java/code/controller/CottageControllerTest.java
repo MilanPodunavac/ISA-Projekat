@@ -3,10 +3,9 @@ package code.controller;
 import code.controller.Base.BaseControllerTest;
 import code.dto.auth.LoginRequest;
 import code.dto.entities.NewAvailabilityPeriodDto;
-import code.dto.entities.NewCottageDto;
+import code.dto.entities.CottageDto;
 import code.dto.entities.NewCottageReservationDto;
 import code.utils.TestUtil;
-import code.utils.TokenUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,7 +51,7 @@ public class CottageControllerTest extends BaseControllerTest {
     public void addNewCottageShouldReturnOk() throws Exception {
         String auth = logIn(mockMvc, new LoginRequest("ralo@gmail.com", "123"));
 
-        NewCottageDto dto = new NewCottageDto();
+        CottageDto dto = new CottageDto();
         dto.setBedNumber(1);
         dto.setCityName("string");
         dto.setCountryName("string");
@@ -73,7 +72,7 @@ public class CottageControllerTest extends BaseControllerTest {
     public void addNewCottageShouldReturnBadRequest() throws Exception {
         String auth = logIn(mockMvc, new LoginRequest("ralo@gmail.com", "123"));
 
-        NewCottageDto dto = new NewCottageDto();
+        CottageDto dto = new CottageDto();
         dto.setBedNumber(0);//invalid
         dto.setCityName("string");
         dto.setCountryName("string");
@@ -92,7 +91,7 @@ public class CottageControllerTest extends BaseControllerTest {
     public void addNewCottageShouldReturnUnauthorized() throws Exception {
         String auth = logIn(mockMvc, new LoginRequest("ralo@gmail.com", "123"));
 
-        NewCottageDto dto = new NewCottageDto();
+        CottageDto dto = new CottageDto();
         dto.setBedNumber(1);
         dto.setCityName("string");
         dto.setCountryName("string");

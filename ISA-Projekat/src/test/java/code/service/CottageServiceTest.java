@@ -4,6 +4,7 @@ import code.exceptions.entities.*;
 import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.*;
+import code.model.base.AvailabilityPeriod;
 import code.model.cottage.Cottage;
 import code.model.cottage.CottageOwner;
 import code.model.cottage.CottageReservation;

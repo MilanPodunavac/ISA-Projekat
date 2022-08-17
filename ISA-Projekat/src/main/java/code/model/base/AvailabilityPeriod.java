@@ -1,4 +1,4 @@
-package code.model;
+package code.model.base;
 
 
 import code.model.base.Action;
@@ -29,7 +29,7 @@ public class AvailabilityPeriod {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "saleEntity_id")
     private SaleEntity saleEntity;
-    @OneToMany(mappedBy = "availabilityPeriod", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "availabilityPeriod", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Reservation> reservations;
     @OneToMany(mappedBy = "availabilityPeriod", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Action> actions;

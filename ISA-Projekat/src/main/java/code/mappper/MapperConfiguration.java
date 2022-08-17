@@ -3,7 +3,7 @@ package code.mappper;
 import code.dto.admin.AdminRegistration;
 import code.dto.admin.PersonalData;
 import code.dto.entities.NewCottageActionDto;
-import code.dto.entities.NewCottageDto;
+import code.dto.entities.CottageDto;
 import code.dto.entities.NewCottageReservationDto;
 import code.dto.fishing_trip.EditFishingTrip;
 import code.dto.fishing_trip.NewFishingTrip;
@@ -109,7 +109,7 @@ public class MapperConfiguration {
 
         //NewCottageDto
 
-        PropertyMap<NewCottageDto, Cottage> newCottageDtoToCottagePropertyMap = new PropertyMap<NewCottageDto, Cottage>(){
+        PropertyMap<CottageDto, Cottage> newCottageDtoToCottagePropertyMap = new PropertyMap<CottageDto, Cottage>(){
             protected void configure(){
                 map().getLocation().setStreetName(source.getStreetName());
                 map().getLocation().setCityName(source.getCityName());
@@ -118,7 +118,7 @@ public class MapperConfiguration {
                 map().getLocation().setLongitude(source.getLongitude());
             }
         };
-        TypeMap<NewCottageDto, Cottage> newCottageDtoToCottage = modelMapper.createTypeMap(NewCottageDto.class, Cottage.class);
+        TypeMap<CottageDto, Cottage> newCottageDtoToCottage = modelMapper.createTypeMap(CottageDto.class, Cottage.class);
         newCottageDtoToCottage.addMappings(newCottageDtoToCottagePropertyMap);
 
         //UpdateUserPersonalInfoDto

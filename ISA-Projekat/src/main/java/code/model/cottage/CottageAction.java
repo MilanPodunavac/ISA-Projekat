@@ -22,7 +22,7 @@ public class CottageAction extends Action {
     private Cottage cottage;
     @ElementCollection(targetClass=CottageReservationTag.class)
     @Enumerated(EnumType.ORDINAL)
-    @CollectionTable(name="cottageAdditionalServices")
+    @CollectionTable(name="cottageAction_tags")
     @Column(name="tags")
     @Fetch(value = FetchMode.JOIN)
     private Set<CottageReservationTag> additionalServices;

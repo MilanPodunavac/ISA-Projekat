@@ -28,16 +28,16 @@ public abstract class SaleEntity {
    protected String rules;
    @Column
    protected int pricePerDay;
-   @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+   @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
    @JoinColumn(name="location_id")
    protected Location location;
    @ManyToMany(mappedBy = "saleEntity", fetch = FetchType.EAGER)
    protected Set<Client> client;
    @OneToMany(mappedBy = "saleEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    protected Set<Review> review;
-   @OneToMany(mappedBy = "saleEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+   @OneToMany(mappedBy = "saleEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
    protected Set<AvailabilityPeriod> availabilityPeriods;
-   @OneToMany(mappedBy = "saleEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+   @OneToMany(mappedBy = "saleEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
    protected Set<Picture> pictures;
 
    public void addAvailabilityPeriod (AvailabilityPeriod period) throws AvailabilityPeriodBadRangeException {
@@ -66,5 +66,17 @@ public abstract class SaleEntity {
    public void addPicture(Picture picture){
       picture.setSaleEntity(this);
       pictures.add(picture);
+   }
+
+   public boolean hasFutureReservationsOrActions(){
+      for(AvailabilityPeriod period : availabilityPeriods){
+         for(Reservation reservation : period.getReservations()){
+            if(System.currentTimeMillis() < reservation.getDateRange().getStartDate().getTime())return true;
+         }
+         for(Action action : period.getActions()){
+            if(System.currentTimeMillis() < action.getRange().getStartDate().getTime())return true;
+         }
+      }
+      return false;
    }
 }

@@ -4,18 +4,23 @@ import code.exceptions.entities.*;
 import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.*;
+import code.model.base.AvailabilityPeriod;
 import code.model.base.Picture;
+import code.model.base.Reservation;
 import code.model.cottage.Cottage;
 import code.model.cottage.CottageAction;
 import code.model.cottage.CottageOwner;
 import code.model.cottage.CottageReservation;
 import code.repository.CottageRepository;
+import code.repository.PictureRepository;
+import code.repository.ReservationRepository;
 import code.repository.UserRepository;
 import code.service.CottageService;
 import code.utils.FileUploadUtil;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,12 +35,16 @@ public class CottageServiceImpl implements CottageService {
     private final UserRepository _userRepository;
 
     private final CottageRepository _cottageRepository;
+    private final ReservationRepository _reservationRepository;
+    private final PictureRepository _pictureRepository;
 
     private final JavaMailSender _mailSender;
 
-    public CottageServiceImpl(UserRepository userRepository, CottageRepository cottageRepository, JavaMailSender mailSender){
+    public CottageServiceImpl(UserRepository userRepository, CottageRepository cottageRepository, ReservationRepository reservationRepository, PictureRepository pictureRepository, JavaMailSender mailSender){
         _cottageRepository = cottageRepository;
         _userRepository = userRepository;
+        _reservationRepository = reservationRepository;
+        _pictureRepository = pictureRepository;
         _mailSender = mailSender;
     }
 
@@ -110,13 +119,44 @@ public class CottageServiceImpl implements CottageService {
     }
 
     @Override
-    public void checkIfCottageDeletable(Integer id) throws EntityNotDeletableException {
+    public void checkIfCottageDeletable(Integer id) throws EntityNotDeletableException, EntityNotFoundException {
+        Optional<Cottage> optionalCottage = _cottageRepository.findById(id);
+        if(!optionalCottage.isPresent())throw new EntityNotFoundException("Cottage not found");
+        Cottage cottage = optionalCottage.get();
+        if(cottage.hasFutureReservationsOrActions())throw new EntityNotDeletableException("Cottage has reservations or actions in future");
 
     }
 
     @Override
-    public void unlinkReferencesAndDeleteCottage(Integer id) {
-
+    @Transactional
+    public void unlinkReferencesAndDeleteCottage(Integer id) throws EntityNotFoundException, EntityNotDeletableException {
+        checkIfCottageDeletable(id);
+        Optional<Cottage> optionalCottage = _cottageRepository.findById(id);
+        if(!optionalCottage.isPresent())throw new EntityNotFoundException("Cottage not found");
+        Cottage cottage = optionalCottage.get();
+        for(AvailabilityPeriod period:cottage.getAvailabilityPeriods()){
+            for(Reservation res:period.getReservations()){
+                res.getClient().getReservation().remove(res);
+                ((CottageReservation)res).setCottage(null);
+                ((CottageReservation)res).getCottageReservationTag().clear();
+                res.setClient(null);
+                period.getReservations().remove(res);
+                res.setAvailabilityPeriod(null);
+                //NE RADI, ZASTO?
+                //ISTO URADITI ZA AKCIJE, REVIEWOVE KASNIJE
+            }
+            period.setSaleEntity(null);
+            cottage.getAvailabilityPeriods().remove(period);
+        }
+        for(Picture pic : cottage.getPictures()){
+            FileUploadUtil.deleteFile(COTTAGE_PICTURE_DIRECTORY, cottage.getId() + "_" + pic.getName());
+            cottage.getPictures().remove(pic);
+            pic.setSaleEntity(null);
+        }
+        cottage.getAdditionalServices().clear();
+        cottage.setLocation(null);
+        cottage.setCottageOwner(null);
+        _cottageRepository.delete(cottage);
     }
     @Override
     public void addAction(String ownerEmail, int cottageId, CottageAction action) throws UnauthorizedAccessException, EntityNotFoundException, EntityNotOwnedException, EntityNotAvailableException {
@@ -170,6 +210,24 @@ public class CottageServiceImpl implements CottageService {
             }
         }
         throw new EntityNotFoundException("Picture not found");
+    }
+
+    @Override
+    public void updateCottage(int id, Cottage updateCottage, String email) throws EntityNotFoundException, EntityNotOwnedException, EntityNotUpdateable {
+        Optional<Cottage> optionalCottage = _cottageRepository.findById(id);
+        if(!optionalCottage.isPresent())throw new EntityNotFoundException("Cottage not found");
+        Cottage cottage = optionalCottage.get();
+        if(!cottage.getCottageOwner().getEmail().equals(email))throw new EntityNotOwnedException("Cottage not owned by given user");
+        if(cottage.hasFutureReservationsOrActions())throw new EntityNotUpdateable("Cottage has reservations or actions in future");
+        cottage.setLocation(updateCottage.getLocation());
+        cottage.setName(updateCottage.getName());
+        cottage.setAdditionalServices(updateCottage.getAdditionalServices());
+        cottage.setPricePerDay(updateCottage.getPricePerDay());
+        cottage.setRoomNumber(updateCottage.getRoomNumber());
+        cottage.setBedNumber(updateCottage.getBedNumber());
+        cottage.setDescription(updateCottage.getDescription());
+        cottage.setRules(updateCottage.getRules());
+        _cottageRepository.save(cottage);
     }
 
 }

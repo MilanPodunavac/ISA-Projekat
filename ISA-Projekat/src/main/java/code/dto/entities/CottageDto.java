@@ -14,7 +14,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class NewCottageDto {
+public class CottageDto {
     @NotBlank(message = "Name is required")
     private String name;
     @NotBlank(message = "Description name is required")

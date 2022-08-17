@@ -3,7 +3,7 @@ package code.controller;
 import code.controller.base.BaseController;
 import code.dto.entities.NewAvailabilityPeriodDto;
 import code.dto.entities.NewCottageActionDto;
-import code.dto.entities.NewCottageDto;
+import code.dto.entities.CottageDto;
 import code.dto.entities.NewCottageReservationDto;
 import code.exceptions.entities.AvailabilityPeriodBadRangeException;
 import code.exceptions.entities.EntityNotAvailableException;
@@ -11,7 +11,7 @@ import code.exceptions.entities.EntityNotFoundException;
 import code.exceptions.entities.EntityNotOwnedException;
 import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
-import code.model.*;
+import code.model.base.AvailabilityPeriod;
 import code.model.cottage.Cottage;
 import code.model.cottage.CottageAction;
 import code.model.cottage.CottageReservation;
@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -53,7 +52,7 @@ public class CottageController extends BaseController {
 
     @PostMapping()
     @PreAuthorize("hasRole('ROLE_COTTAGE_OWNER')")
-    public ResponseEntity<String> addCottage(@Valid @RequestBody NewCottageDto dto, BindingResult result, @RequestHeader(HttpHeaders.AUTHORIZATION) String auth){
+    public ResponseEntity<String> addCottage(@Valid @RequestBody CottageDto dto, BindingResult result, @RequestHeader(HttpHeaders.AUTHORIZATION) String auth){
         if(result.hasErrors()){
             return formatErrorResponse(result);//400
         }
@@ -164,5 +163,30 @@ public class CottageController extends BaseController {
             return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
         }
         return ResponseEntity.ok("Picture deleted");
+    }
+    @DeleteMapping()
+    public ResponseEntity<String> deleteCottage(){
+        try{
+            _cottageService.unlinkReferencesAndDeleteCottage(1);
+        } catch (Exception ex) {
+            if(ex instanceof EntityNotOwnedException)return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+            if(ex instanceof EntityNotFoundException)return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+            return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
+        }
+        return ResponseEntity.ok("Picture deleted");
+    }
+
+    @PutMapping(value="/{id}")
+    @PreAuthorize("hasRole('ROLE_COTTAGE_OWNER')")
+    public ResponseEntity<String> updateCottage(@PathVariable Integer id, @RequestBody CottageDto dto, @RequestHeader(HttpHeaders.AUTHORIZATION) String auth){
+        try{
+            String email = _tokenUtils.getEmailFromToken(auth.substring(7));
+            _cottageService.updateCottage(id, _mapper.map(dto, Cottage.class), email);
+        } catch (Exception ex) {
+            if(ex instanceof EntityNotOwnedException)return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+            if(ex instanceof EntityNotFoundException)return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+            return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
+        }
+        return ResponseEntity.ok("Picture added");
     }
 }
