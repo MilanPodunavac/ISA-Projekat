@@ -44,6 +44,8 @@ INSERT INTO COTTAGE_RESERVATION (id, end_date, start_date, number_of_people, pri
 
 INSERT INTO COTTAGE_RESERVATION_TAGS (cottage_reservation_id, tags) VALUES (1, 1);
 
+INSERT INTO CLIENT_SALE_ENTITY (client_id, sale_entity_id) VALUES(2, 1);
+
 INSERT INTO FISHING_TRIP (cost_per_day, description, equipment, max_people, name, percentage_instructor_keeps_if_reservation_cancelled, rules, fishing_instructor_id, location_id) VALUES (100, 'opis', 'oprema', 5, 'naziv', 0, 'pravila', 5, 10);
 INSERT INTO FISHING_TRIP (cost_per_day, description, equipment, max_people, name, percentage_instructor_keeps_if_reservation_cancelled, rules, fishing_instructor_id, location_id) VALUES (200, 'opis2', 'oprema2', 10, 'naziv2', 30, 'pravila2', 5, 11);
 INSERT INTO FISHING_TRIP (cost_per_day, description, equipment, max_people, name, percentage_instructor_keeps_if_reservation_cancelled, rules, fishing_instructor_id, location_id) VALUES (150, 'opis3', 'oprema3', 3, 'naziv3', 20, 'pravila3', 9, 12);

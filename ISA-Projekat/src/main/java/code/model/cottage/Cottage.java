@@ -1,6 +1,7 @@
 package code.model.cottage;
 
 import code.exceptions.entities.InvalidReservationException;
+import code.model.Client;
 import code.model.Review;
 import code.model.base.*;
 import code.utils.FileUploadUtil;
@@ -77,6 +78,10 @@ public class Cottage extends SaleEntity {
          review.setClient(null);
          review.setSaleEntity(null);
       }
+      for(Client client : client){
+         client.getSaleEntity().remove(this);
+      }
+      client.clear();
       review.clear();
       additionalServices.clear();
       cottageOwner.getCottage().remove(this);
