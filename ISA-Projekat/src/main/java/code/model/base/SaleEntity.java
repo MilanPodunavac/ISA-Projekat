@@ -33,7 +33,7 @@ public abstract class SaleEntity {
    protected Location location;
    @ManyToMany(mappedBy = "saleEntity", fetch = FetchType.EAGER)
    protected Set<Client> client;
-   @OneToMany(mappedBy = "saleEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+   @OneToMany(mappedBy = "saleEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
    protected Set<Review> review;
    @OneToMany(mappedBy = "saleEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
    protected Set<AvailabilityPeriod> availabilityPeriods;
