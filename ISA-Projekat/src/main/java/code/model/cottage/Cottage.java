@@ -1,7 +1,9 @@
 package code.model.cottage;
 
 import code.exceptions.entities.InvalidReservationException;
-import code.model.base.SaleEntity;
+import code.model.Review;
+import code.model.base.*;
+import code.utils.FileUploadUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,5 +44,43 @@ public class Cottage extends SaleEntity {
    public boolean addAction(CottageAction newAction){
       newAction.setCottage(this);
       return super.addAction(newAction);
+   }
+
+   @PreRemove
+   private void removeReferences(){
+      for(AvailabilityPeriod period:availabilityPeriods){
+         for(Reservation res:period.getReservations()){
+            res.getClient().getReservation().remove(res);
+            ((CottageReservation)res).setCottage(null);
+            ((CottageReservation)res).getCottageReservationTag().clear();
+            res.setClient(null);
+            res.setAvailabilityPeriod(null);
+         }
+         for(Action act : period.getActions()){
+            act.getClient().getActions().remove(act);
+            ((CottageAction)act).setCottage(null);
+            ((CottageAction)act).getAdditionalServices().clear();
+            act.setClient(null);
+            act.setAvailabilityPeriod(null);
+         }
+         period.getReservations().clear();
+         period.getActions().clear();
+         period.setSaleEntity(null);
+      }
+      availabilityPeriods.clear();
+      for(Picture pic : pictures){
+         pic.setSaleEntity(null);
+      }
+      pictures.clear();
+      for(Review review : review){
+         review.getClient().getReview().remove(review);
+         review.setClient(null);
+         review.setSaleEntity(null);
+      }
+      review.clear();
+      additionalServices.clear();
+      cottageOwner.getCottage().remove(this);
+      cottageOwner = null;
+      location = null;
    }
 }

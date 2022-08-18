@@ -5,10 +5,7 @@ import code.dto.entities.NewAvailabilityPeriodDto;
 import code.dto.entities.NewCottageActionDto;
 import code.dto.entities.CottageDto;
 import code.dto.entities.NewCottageReservationDto;
-import code.exceptions.entities.AvailabilityPeriodBadRangeException;
-import code.exceptions.entities.EntityNotAvailableException;
-import code.exceptions.entities.EntityNotFoundException;
-import code.exceptions.entities.EntityNotOwnedException;
+import code.exceptions.entities.*;
 import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.base.AvailabilityPeriod;
@@ -173,7 +170,7 @@ public class CottageController extends BaseController {
             if(ex instanceof EntityNotFoundException)return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
             return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
         }
-        return ResponseEntity.ok("Picture deleted");
+        return ResponseEntity.ok("Cottage deleted");
     }
 
     @PutMapping(value="/{id}")
@@ -185,8 +182,9 @@ public class CottageController extends BaseController {
         } catch (Exception ex) {
             if(ex instanceof EntityNotOwnedException)return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
             if(ex instanceof EntityNotFoundException)return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+            if(ex instanceof EntityNotUpdateableException)return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
             return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
         }
-        return ResponseEntity.ok("Picture added");
+        return ResponseEntity.ok("Cottage updated");
     }
 }

@@ -1,6 +1,5 @@
 package code.model.base;
 
-import code.model.FishingTrip;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

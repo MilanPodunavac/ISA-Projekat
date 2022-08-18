@@ -40,6 +40,8 @@ public abstract class Reservation {
    protected Set<ReservationDiscount> reservationDiscount;
    @Enumerated(EnumType.ORDINAL)
    protected ReservationStatus reservationStatus;
+   @Embedded
+   protected OwnerCommentary ownerCommentary;
    @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "availabilityPeriod_id")
    protected AvailabilityPeriod availabilityPeriod;

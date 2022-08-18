@@ -39,6 +39,8 @@ public abstract class Action {
     protected AvailabilityPeriod availabilityPeriod;
     @Column
     protected boolean reserved;
+    @Embedded
+    protected OwnerCommentary ownerCommentary;
 
     public boolean isValid(){
         return validUntilAndIncluding.after(new Date(System.currentTimeMillis()));

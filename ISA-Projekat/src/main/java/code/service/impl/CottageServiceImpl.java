@@ -6,7 +6,6 @@ import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.*;
 import code.model.base.AvailabilityPeriod;
 import code.model.base.Picture;
-import code.model.base.Reservation;
 import code.model.cottage.Cottage;
 import code.model.cottage.CottageAction;
 import code.model.cottage.CottageOwner;
@@ -134,28 +133,9 @@ public class CottageServiceImpl implements CottageService {
         Optional<Cottage> optionalCottage = _cottageRepository.findById(id);
         if(!optionalCottage.isPresent())throw new EntityNotFoundException("Cottage not found");
         Cottage cottage = optionalCottage.get();
-        for(AvailabilityPeriod period:cottage.getAvailabilityPeriods()){
-            for(Reservation res:period.getReservations()){
-                res.getClient().getReservation().remove(res);
-                ((CottageReservation)res).setCottage(null);
-                ((CottageReservation)res).getCottageReservationTag().clear();
-                res.setClient(null);
-                period.getReservations().remove(res);
-                res.setAvailabilityPeriod(null);
-                //NE RADI, ZASTO?
-                //ISTO URADITI ZA AKCIJE, REVIEWOVE KASNIJE
-            }
-            period.setSaleEntity(null);
-            cottage.getAvailabilityPeriods().remove(period);
-        }
         for(Picture pic : cottage.getPictures()){
             FileUploadUtil.deleteFile(COTTAGE_PICTURE_DIRECTORY, cottage.getId() + "_" + pic.getName());
-            cottage.getPictures().remove(pic);
-            pic.setSaleEntity(null);
         }
-        cottage.getAdditionalServices().clear();
-        cottage.setLocation(null);
-        cottage.setCottageOwner(null);
         _cottageRepository.delete(cottage);
     }
     @Override
@@ -213,12 +193,12 @@ public class CottageServiceImpl implements CottageService {
     }
 
     @Override
-    public void updateCottage(int id, Cottage updateCottage, String email) throws EntityNotFoundException, EntityNotOwnedException, EntityNotUpdateable {
+    public void updateCottage(int id, Cottage updateCottage, String email) throws EntityNotFoundException, EntityNotOwnedException, EntityNotUpdateableException {
         Optional<Cottage> optionalCottage = _cottageRepository.findById(id);
         if(!optionalCottage.isPresent())throw new EntityNotFoundException("Cottage not found");
         Cottage cottage = optionalCottage.get();
         if(!cottage.getCottageOwner().getEmail().equals(email))throw new EntityNotOwnedException("Cottage not owned by given user");
-        if(cottage.hasFutureReservationsOrActions())throw new EntityNotUpdateable("Cottage has reservations or actions in future");
+        if(cottage.hasFutureReservationsOrActions())throw new EntityNotUpdateableException("Cottage has reservations or actions in future");
         cottage.setLocation(updateCottage.getLocation());
         cottage.setName(updateCottage.getName());
         cottage.setAdditionalServices(updateCottage.getAdditionalServices());

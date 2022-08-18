@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.tomcat.jni.Time;
 
+import javax.persistence.Column;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -12,7 +13,9 @@ import java.util.concurrent.TimeUnit;
 @Setter
 @NoArgsConstructor
 public class DateRange {
+    @Column
     private Date startDate;
+    @Column
     private Date endDate;
 
     public DateRange(Date start, Date end){
