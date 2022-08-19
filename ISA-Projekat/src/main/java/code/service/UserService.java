@@ -33,7 +33,7 @@ public interface UserService {
     void declineAccountDeletionRequest(Integer id, String responseText) throws AccountDeletionRequestDontExistException, NotChangedPasswordException;
     void acceptAccountDeletionRequest(Integer id, String responseText) throws AccountDeletionRequestDontExistException, NotChangedPasswordException, EntityNotDeletableException;
     void unlinkReferencesFishingInstructor(FishingInstructor fishingInstructor);
-    void unlinkReferencesCottageOwner(CottageOwner cottageOwner);
+    void unlinkReferencesCottageOwner(CottageOwner cottageOwner) throws EntityNotDeletableException;
     void unlinkReferencesBoatOwner(BoatOwner boatOwner);
     void unlinkReferencesClient(Client client);
     void throwExceptionIfEnabledClientDoesntExist(Integer clientId) throws EnabledClientDoesntExistException;

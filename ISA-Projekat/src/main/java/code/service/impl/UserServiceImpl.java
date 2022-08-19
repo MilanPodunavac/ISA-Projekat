@@ -336,7 +336,7 @@ public class UserServiceImpl implements UserService {
         sendAcceptAccountDeletionRequestEmail(accountDeletionRequest.getUser().getEmail(), responseText);
     }
 
-    private void deleteUserLogic(AccountDeletionRequest accountDeletionRequest) {
+    private void deleteUserLogic(AccountDeletionRequest accountDeletionRequest) throws EntityNotDeletableException {
         if (accountDeletionRequest.getUser().getRole().getName().equals("ROLE_FISHING_INSTRUCTOR")) {
             unlinkReferencesFishingInstructor((FishingInstructor) accountDeletionRequest.getUser());
         } else if (accountDeletionRequest.getUser().getRole().getName().equals("ROLE_COTTAGE_OWNER")) {
@@ -403,7 +403,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void unlinkReferencesCottageOwner(CottageOwner cottageOwner) {
+    public void unlinkReferencesCottageOwner(CottageOwner cottageOwner) throws EntityNotDeletableException {
         /*List<Integer> cottageOwnerCottageIds = _cottageRepository.findByCottageOwner(cottageOwner.getId());
         List<CottageReservation> cottageOwnerReservations =  _cottageReservationRepository.findByCottageIdIn(cottageOwnerCottageIds);
         List<AvailabilityPeriod> allAvailabilityPeriods = _availabilityPeriodRepository.findAll();
@@ -435,6 +435,7 @@ public class UserServiceImpl implements UserService {
             _cottageReservationRepository.delete(cottageReservation);
         }*/
         List<Cottage> copy = new ArrayList<>(cottageOwner.getCottage());
+        for(Cottage cottage : copy)if(cottage.hasFutureReservationsOrActions())throw new EntityNotDeletableException("Cottage cannot be deleted, it has reservations or actions in the future");
         for(Cottage cottage : copy){
             _cottageRepository.delete(cottage);
         }
