@@ -4,12 +4,16 @@ import code.controller.base.BaseController;
 import code.dto.fishing_trip.EditFishingTrip;
 import code.dto.fishing_trip.NewFishingTrip;
 import code.dto.fishing_trip.NewQuickReservation;
+import code.dto.fishing_trip.NewReservation;
 import code.exceptions.fishing_trip.EditAnotherInstructorFishingTripException;
 import code.exceptions.fishing_trip.FishingTripHasQuickReservationWithClientException;
+import code.exceptions.fishing_trip.FishingTripHasReservationException;
 import code.exceptions.fishing_trip.FishingTripNotFoundException;
 import code.exceptions.fishing_trip.quick_reservation.*;
+import code.exceptions.fishing_trip.reservation.*;
 import code.model.FishingTrip;
 import code.model.FishingTripQuickReservation;
+import code.model.FishingTripReservation;
 import code.service.*;
 import code.utils.TokenUtils;
 import org.modelmapper.ModelMapper;
@@ -59,7 +63,7 @@ public class FishingTripController extends BaseController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (EditAnotherInstructorFishingTripException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
-        } catch (FishingTripHasQuickReservationWithClientException e) {
+        } catch (FishingTripHasQuickReservationWithClientException | FishingTripHasReservationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
     }
@@ -74,7 +78,7 @@ public class FishingTripController extends BaseController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (EditAnotherInstructorFishingTripException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
-        } catch (FishingTripHasQuickReservationWithClientException e) {
+        } catch (FishingTripHasQuickReservationWithClientException | FishingTripHasReservationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         } catch (IOException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
@@ -91,7 +95,7 @@ public class FishingTripController extends BaseController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (EditAnotherInstructorFishingTripException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
-        } catch (FishingTripHasQuickReservationWithClientException e) {
+        } catch (FishingTripHasQuickReservationWithClientException | FishingTripHasReservationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
     }
@@ -106,13 +110,36 @@ public class FishingTripController extends BaseController {
         try {
             _fishingTripService.addQuickReservation(id, _mapper.map(dto, FishingTripQuickReservation.class));
             return ResponseEntity.ok("Fishing trip quick reservation added!");
-        } catch (QuickReservationStartDateInPastException | ValidUntilAndIncludingDateInPastOrAfterOrEqualToStartDateException e) {
+        } catch (ReservationStartDateInPastException | ValidUntilAndIncludingDateInPastOrAfterOrEqualToStartDateException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (AddQuickReservationToAnotherInstructorFishingTripException e) {
+        } catch (AddReservationToAnotherInstructorFishingTripException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         } catch (FishingTripNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (FishingTripQuickReservationMaxPeopleHigherThanFishingTripMaxPeopleException | FishingTripReservationTagsDontContainQuickReservationTagException | NoAvailablePeriodForQuickReservationException | QuickReservationOverlappingException e) {
+        } catch (FishingTripQuickReservationMaxPeopleHigherThanFishingTripMaxPeopleException |
+                 FishingTripReservationTagsDontContainReservationTagException |
+                 NoAvailablePeriodForReservationException | InstructorBusyDuringReservationException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
+    }
+
+    @PostMapping(value = "/{fishingTripId}/addReservation/{clientId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
+    public ResponseEntity<String> addReservation(@PathVariable Integer fishingTripId, @PathVariable Integer clientId, @Valid @RequestBody NewReservation dto, BindingResult result) {
+        if(result.hasErrors()){
+            return formatErrorResponse(result);
+        }
+
+        try {
+            _fishingTripService.addReservation(fishingTripId, clientId, _mapper.map(dto, FishingTripReservation.class));
+            return ResponseEntity.ok("Fishing trip reservation added!");
+        } catch (ReservationStartDateInPastException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (AddReservationToAnotherInstructorFishingTripException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (FishingTripNotFoundException | EnabledClientDoesntExistException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (FishingTripReservationTagsDontContainReservationTagException | NoAvailablePeriodForReservationException | InstructorBusyDuringReservationException | FishingTripReservationNumberOfPeopleHigherThanFishingTripMaxPeopleException | ClientBannedException | ClientBusyDuringReservationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
     }

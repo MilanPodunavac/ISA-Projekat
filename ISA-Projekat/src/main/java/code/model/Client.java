@@ -28,6 +28,8 @@ public class Client extends User {
    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    private Set<FishingTripQuickReservation> fishingTripQuickReservations;
    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+   private Set<FishingTripReservation> fishingTripReservations;
+   @OneToMany(mappedBy = "client", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    private Set<Action> actions;
    @ManyToMany(fetch = FetchType.EAGER)
    @JoinTable(name = "client_saleEntity", joinColumns = @JoinColumn(name = "client_id", referencedColumnName = "id"),
@@ -35,6 +37,10 @@ public class Client extends User {
    private Set<SaleEntity> saleEntity;
    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    private Set<Review> review;
+   @ManyToMany(fetch = FetchType.EAGER)
+   @JoinTable(name = "subscriber_fishing_instructor", joinColumns = @JoinColumn(name = "client_id", referencedColumnName = "id"),
+           inverseJoinColumns = @JoinColumn(name = "instructor_id", referencedColumnName = "id"))
+   private Set<FishingInstructor> instructorsSubscribedTo;
 
    public boolean isAvailable(DateRange range){
       if(reservation == null)return true;

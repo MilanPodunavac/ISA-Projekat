@@ -4,6 +4,8 @@ import code.exceptions.admin.ModifyAnotherUserDataException;
 import code.exceptions.admin.NotChangedPasswordException;
 import code.exceptions.entities.AccountDeletionRequestDontExistException;
 import code.exceptions.entities.EntityNotDeletableException;
+import code.exceptions.entities.LoggedInUserAlreadySubmittedAccountDeletionRequestException;
+import code.exceptions.fishing_trip.reservation.EnabledClientDoesntExistException;
 import code.exceptions.provider_registration.EmailTakenException;
 import code.exceptions.provider_registration.NotProviderException;
 import code.exceptions.provider_registration.UserAccountActivatedException;
@@ -23,15 +25,16 @@ public interface UserService {
     void declineRegistrationRequest(Integer id, String declineReason) throws UserNotFoundException, UserAccountActivatedException, NotProviderException;
     void updatePersonalInformation(User user) throws UserNotFoundException;
     void changePassword(String newPassword, String email) throws UserNotFoundException;
-    void submitAccountDeletionRequest(AccountDeletionRequest accountDeletionRequest) throws EntityNotDeletableException;
+    void submitAccountDeletionRequest(AccountDeletionRequest accountDeletionRequest) throws LoggedInUserAlreadySubmittedAccountDeletionRequestException;
     void checkIfFishingInstructorDeletable(FishingInstructor fishingInstructor) throws EntityNotDeletableException;
     void checkIfCottageOwnerDeletable(CottageOwner cottageOwner) throws EntityNotDeletableException;
     void checkIfBoatOwnerDeletable(BoatOwner boatOwner) throws EntityNotDeletableException;
     void checkIfClientDeletable(Client client) throws EntityNotDeletableException;
     void declineAccountDeletionRequest(Integer id, String responseText) throws AccountDeletionRequestDontExistException, NotChangedPasswordException;
-    void acceptAccountDeletionRequest(Integer id, String responseText) throws AccountDeletionRequestDontExistException, NotChangedPasswordException;
-    void deleteFishingTripPictures(FishingInstructor fishingInstructor);
+    void acceptAccountDeletionRequest(Integer id, String responseText) throws AccountDeletionRequestDontExistException, NotChangedPasswordException, EntityNotDeletableException;
+    void unlinkReferencesFishingInstructor(FishingInstructor fishingInstructor);
     void unlinkReferencesCottageOwner(CottageOwner cottageOwner);
     void unlinkReferencesBoatOwner(BoatOwner boatOwner);
     void unlinkReferencesClient(Client client);
+    void throwExceptionIfEnabledClientDoesntExist(Integer clientId) throws EnabledClientDoesntExistException;
 }

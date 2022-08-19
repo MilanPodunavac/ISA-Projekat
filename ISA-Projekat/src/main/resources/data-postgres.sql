@@ -70,3 +70,15 @@ INSERT INTO FISHING_TRIP_QUICK_RESERVATION (duration_in_days, max_people, price,
 INSERT INTO FISHING_TRIP_QUICK_RESERVATION_TAGS (fishing_trip_quick_reservation_id, tags) VALUES (1, 2);
 INSERT INTO FISHING_TRIP_QUICK_RESERVATION_TAGS (fishing_trip_quick_reservation_id, tags) VALUES (2, 0);
 INSERT INTO FISHING_TRIP_QUICK_RESERVATION_TAGS (fishing_trip_quick_reservation_id, tags) VALUES (3, 3);
+
+INSERT INTO FISHING_TRIP_RESERVATION (duration_in_days, number_of_people, price, start, client_id, fishing_trip_id) VALUES(5, 3, 500, '2023-10-10', 2, 1);
+INSERT INTO FISHING_TRIP_RESERVATION (duration_in_days, number_of_people, price, start, client_id, fishing_trip_id) VALUES(2, 9, 400, '2023-10-15', 8, 2);
+INSERT INTO FISHING_TRIP_RESERVATION (duration_in_days, number_of_people, price, start, client_id, fishing_trip_id) VALUES(8, 2, 1200, '2023-10-15', 2, 3);
+
+INSERT INTO FISHING_TRIP_RESERVATION_TAGS (fishing_trip_reservation_id, tags) VALUES (1, 2);
+INSERT INTO FISHING_TRIP_RESERVATION_TAGS (fishing_trip_reservation_id, tags) VALUES (2, 1);
+INSERT INTO FISHING_TRIP_RESERVATION_TAGS (fishing_trip_reservation_id, tags) VALUES (3, 3);
+
+INSERT INTO SUBSCRIBER_FISHING_INSTRUCTOR (client_id, instructor_id) VALUES (2, 5);
+INSERT INTO SUBSCRIBER_FISHING_INSTRUCTOR (client_id, instructor_id) VALUES (2, 9);
+INSERT INTO SUBSCRIBER_FISHING_INSTRUCTOR (client_id, instructor_id) VALUES (8, 5);
