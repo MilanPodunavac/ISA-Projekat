@@ -5,6 +5,7 @@ import code.dto.admin.PersonalData;
 import code.dto.entities.NewCottageActionDto;
 import code.dto.entities.CottageDto;
 import code.dto.entities.NewCottageReservationDto;
+import code.dto.entities.NewOwnerCommentaryDto;
 import code.dto.fishing_trip.EditFishingTrip;
 import code.dto.fishing_trip.NewFishingTrip;
 import code.dto.fishing_trip.NewQuickReservation;
@@ -12,6 +13,7 @@ import code.dto.provider_registration.ProviderDTO;
 import code.dto.provider_registration.ProviderRegistrationRequest;
 import code.dto.user.UpdateUserPersonalInfoDto;
 import code.model.*;
+import code.model.base.OwnerCommentary;
 import code.model.cottage.Cottage;
 import code.model.cottage.CottageAction;
 import code.model.cottage.CottageOwner;
@@ -210,6 +212,10 @@ public class MapperConfiguration {
             }
         };
         TypeMap<NewCottageActionDto, CottageAction> newCottageActionTypeMap = modelMapper.createTypeMap(NewCottageActionDto.class, CottageAction.class);
+
+        //NewOwnerCommentaryDto -> OwnerCommentart
+
+        modelMapper.createTypeMap(NewOwnerCommentaryDto.class, OwnerCommentary.class);
 
         return modelMapper;
     }

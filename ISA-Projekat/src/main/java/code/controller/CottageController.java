@@ -1,14 +1,12 @@
 package code.controller;
 
 import code.controller.base.BaseController;
-import code.dto.entities.NewAvailabilityPeriodDto;
-import code.dto.entities.NewCottageActionDto;
-import code.dto.entities.CottageDto;
-import code.dto.entities.NewCottageReservationDto;
+import code.dto.entities.*;
 import code.exceptions.entities.*;
 import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.base.AvailabilityPeriod;
+import code.model.base.OwnerCommentary;
 import code.model.cottage.Cottage;
 import code.model.cottage.CottageAction;
 import code.model.cottage.CottageReservation;
@@ -187,4 +185,35 @@ public class CottageController extends BaseController {
         }
         return ResponseEntity.ok("Cottage updated");
     }
+
+    @PostMapping(value="/{id}/reservation/{resId}/commentary")
+    @PreAuthorize("hasRole('ROLE_COTTAGE_OWNER')")
+    public ResponseEntity<String> addReservationCommentary(@PathVariable Integer id, @PathVariable int resId, @RequestBody NewOwnerCommentaryDto commentary, @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String auth){
+        try{
+            String email = _tokenUtils.getEmailFromToken(auth.substring(7));
+            _cottageService.addReservationCommentary(id, resId, email, _mapper.map(commentary, OwnerCommentary.class));
+        } catch (Exception ex) {
+            if(ex instanceof EntityNotOwnedException)return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+            if(ex instanceof EntityNotFoundException)return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+            if(ex instanceof ReservationOrActionNotFinishedException)return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+            return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
+        }
+        return ResponseEntity.ok("Commentary added");
+    }
+
+    @PostMapping(value="/{id}/action/{actId}/commentary")
+    @PreAuthorize("hasRole('ROLE_COTTAGE_OWNER')")
+    public ResponseEntity<String> addActionCommentary(@PathVariable Integer id, @PathVariable int actId, @RequestBody NewOwnerCommentaryDto commentary, @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String auth){
+        try{
+            String email = _tokenUtils.getEmailFromToken(auth.substring(7));
+            _cottageService.addActionCommentary(id, actId, email, _mapper.map(commentary, OwnerCommentary.class));
+        } catch (Exception ex) {
+            if(ex instanceof EntityNotOwnedException)return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+            if(ex instanceof EntityNotFoundException)return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+            if(ex instanceof ReservationOrActionNotFinishedException)return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+            return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
+        }
+        return ResponseEntity.ok("Commentary added");
+    }
+
 }

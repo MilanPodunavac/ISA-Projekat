@@ -4,16 +4,12 @@ import code.exceptions.entities.*;
 import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.*;
-import code.model.base.AvailabilityPeriod;
-import code.model.base.Picture;
+import code.model.base.*;
 import code.model.cottage.Cottage;
 import code.model.cottage.CottageAction;
 import code.model.cottage.CottageOwner;
 import code.model.cottage.CottageReservation;
-import code.repository.CottageRepository;
-import code.repository.PictureRepository;
-import code.repository.ReservationRepository;
-import code.repository.UserRepository;
+import code.repository.*;
 import code.service.CottageService;
 import code.utils.FileUploadUtil;
 import org.springframework.mail.SimpleMailMessage;
@@ -36,14 +32,16 @@ public class CottageServiceImpl implements CottageService {
     private final CottageRepository _cottageRepository;
     private final ReservationRepository _reservationRepository;
     private final PictureRepository _pictureRepository;
+    private final ActionRepository _actionRepository;
 
     private final JavaMailSender _mailSender;
 
-    public CottageServiceImpl(UserRepository userRepository, CottageRepository cottageRepository, ReservationRepository reservationRepository, PictureRepository pictureRepository, JavaMailSender mailSender){
+    public CottageServiceImpl(UserRepository userRepository, CottageRepository cottageRepository, ReservationRepository reservationRepository, PictureRepository pictureRepository, ActionRepository actionRepository, JavaMailSender mailSender){
         _cottageRepository = cottageRepository;
         _userRepository = userRepository;
         _reservationRepository = reservationRepository;
         _pictureRepository = pictureRepository;
+        _actionRepository = actionRepository;
         _mailSender = mailSender;
     }
 
@@ -208,6 +206,49 @@ public class CottageServiceImpl implements CottageService {
         cottage.setDescription(updateCottage.getDescription());
         cottage.setRules(updateCottage.getRules());
         _cottageRepository.save(cottage);
+    }
+
+    @Override
+    public void addReservationCommentary(int id, int resId, String email, OwnerCommentary commentary) throws EntityNotFoundException, EntityNotOwnedException, ReservationOrActionNotFinishedException {
+        Optional<Cottage> optionalCottage = _cottageRepository.findById(id);
+        if(!optionalCottage.isPresent())throw new EntityNotFoundException("Cottage not found");
+        Cottage cottage = optionalCottage.get();
+        if(!cottage.getCottageOwner().getEmail().equals(email))throw new EntityNotOwnedException("Cottage not owned by given user");
+        Optional<Reservation> optRes = _reservationRepository.findById(resId);
+        if(!optRes.isPresent())throw new EntityNotFoundException("Reservation not found");
+        CottageReservation res;
+        try{
+            res = (CottageReservation) optRes.get();
+        }catch(ClassCastException ex){
+            throw new EntityNotFoundException("Reservation is not a cottage reservation");
+        }
+        if(res.getCottage().getId().intValue() != cottage.getId().intValue())throw new EntityNotFoundException("Reservation not found in given cottage");
+        if(res.getDateRange().getEndDate().getTime() > System.currentTimeMillis()) throw new ReservationOrActionNotFinishedException("Reservation is not finished");
+        commentary.setPenaltyGiven(!commentary.isClientCame());
+        res.setOwnerCommentary(commentary);
+        _reservationRepository.save(res);
+    }
+
+    @Override
+    public void addActionCommentary(int id, int actId, String email, OwnerCommentary commentary) throws EntityNotFoundException, EntityNotOwnedException, ReservationOrActionNotFinishedException {
+        Optional<Cottage> optionalCottage = _cottageRepository.findById(id);
+        if(!optionalCottage.isPresent())throw new EntityNotFoundException("Cottage not found");
+        Cottage cottage = optionalCottage.get();
+        if(!cottage.getCottageOwner().getEmail().equals(email))throw new EntityNotOwnedException("Cottage not owned by given user");
+        Optional<Action> optAct = _actionRepository.findById(actId);
+        if(!optAct.isPresent())throw new EntityNotFoundException("Reservation not found");
+        CottageAction act;
+        try{
+            act = (CottageAction) optAct.get();
+        }catch(ClassCastException ex){
+            throw new EntityNotFoundException("Reservation is not a cottage reservation");
+        }
+        if(act.getCottage().getId().intValue() != cottage.getId().intValue())throw new EntityNotFoundException("Reservation not found in given cottage");
+        if(act.getRange().getEndDate().getTime() > System.currentTimeMillis()) throw new ReservationOrActionNotFinishedException("Action is not finished");
+        if(act.getClient() == null)throw new ReservationOrActionNotFinishedException("This action was not activated");
+        commentary.setPenaltyGiven(!commentary.isClientCame());
+        act.setOwnerCommentary(commentary);
+        _actionRepository.save(act);
     }
 
 }
