@@ -195,7 +195,7 @@ public class CottageController extends BaseController {
         } catch (Exception ex) {
             if(ex instanceof EntityNotOwnedException)return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
             if(ex instanceof EntityNotFoundException)return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-            if(ex instanceof ReservationOrActionNotFinishedException)return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+            if(ex instanceof ReservationOrActionNotFinishedException || ex instanceof ReservationOrActionAlreadyCommented)return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
             return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
         }
         return ResponseEntity.ok("Commentary added");
@@ -210,7 +210,7 @@ public class CottageController extends BaseController {
         } catch (Exception ex) {
             if(ex instanceof EntityNotOwnedException)return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
             if(ex instanceof EntityNotFoundException)return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-            if(ex instanceof ReservationOrActionNotFinishedException)return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+            if(ex instanceof ReservationOrActionNotFinishedException || ex instanceof ReservationOrActionAlreadyCommented)return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
             return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
         }
         return ResponseEntity.ok("Commentary added");

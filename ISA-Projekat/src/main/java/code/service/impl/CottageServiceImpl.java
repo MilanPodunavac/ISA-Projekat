@@ -209,7 +209,7 @@ public class CottageServiceImpl implements CottageService {
     }
 
     @Override
-    public void addReservationCommentary(int id, int resId, String email, OwnerCommentary commentary) throws EntityNotFoundException, EntityNotOwnedException, ReservationOrActionNotFinishedException {
+    public void addReservationCommentary(int id, int resId, String email, OwnerCommentary commentary) throws EntityNotFoundException, EntityNotOwnedException, ReservationOrActionNotFinishedException, ReservationOrActionAlreadyCommented {
         Optional<Cottage> optionalCottage = _cottageRepository.findById(id);
         if(!optionalCottage.isPresent())throw new EntityNotFoundException("Cottage not found");
         Cottage cottage = optionalCottage.get();
@@ -222,15 +222,22 @@ public class CottageServiceImpl implements CottageService {
         }catch(ClassCastException ex){
             throw new EntityNotFoundException("Reservation is not a cottage reservation");
         }
+        if(res.getOwnerCommentary() != null) throw new ReservationOrActionAlreadyCommented("You have already commented on this reservation");
         if(res.getCottage().getId().intValue() != cottage.getId().intValue())throw new EntityNotFoundException("Reservation not found in given cottage");
         if(res.getDateRange().getEndDate().getTime() > System.currentTimeMillis()) throw new ReservationOrActionNotFinishedException("Reservation is not finished");
         commentary.setPenaltyGiven(!commentary.isClientCame());
         res.setOwnerCommentary(commentary);
+        if(!commentary.isClientCame()){
+            commentary.setSanctionSuggested(false);
+            res.getClient().setPenaltyPoints(res.getClient().getPenaltyPoints() + 1);
+            if(res.getClient().getPenaltyPoints() >= 3)res.getClient().setBanned(true);
+            _userRepository.save(res.getClient());
+        }
         _reservationRepository.save(res);
     }
 
     @Override
-    public void addActionCommentary(int id, int actId, String email, OwnerCommentary commentary) throws EntityNotFoundException, EntityNotOwnedException, ReservationOrActionNotFinishedException {
+    public void addActionCommentary(int id, int actId, String email, OwnerCommentary commentary) throws EntityNotFoundException, EntityNotOwnedException, ReservationOrActionNotFinishedException, ReservationOrActionAlreadyCommented {
         Optional<Cottage> optionalCottage = _cottageRepository.findById(id);
         if(!optionalCottage.isPresent())throw new EntityNotFoundException("Cottage not found");
         Cottage cottage = optionalCottage.get();
@@ -243,11 +250,18 @@ public class CottageServiceImpl implements CottageService {
         }catch(ClassCastException ex){
             throw new EntityNotFoundException("Reservation is not a cottage reservation");
         }
+        if(act.getOwnerCommentary() != null) throw new ReservationOrActionAlreadyCommented("You have already commented on this action");
         if(act.getCottage().getId().intValue() != cottage.getId().intValue())throw new EntityNotFoundException("Reservation not found in given cottage");
         if(act.getRange().getEndDate().getTime() > System.currentTimeMillis()) throw new ReservationOrActionNotFinishedException("Action is not finished");
         if(act.getClient() == null)throw new ReservationOrActionNotFinishedException("This action was not activated");
         commentary.setPenaltyGiven(!commentary.isClientCame());
         act.setOwnerCommentary(commentary);
+        if(!commentary.isClientCame()){
+            commentary.setSanctionSuggested(false);
+            act.getClient().setPenaltyPoints(act.getClient().getPenaltyPoints() + 1);
+            if(act.getClient().getPenaltyPoints() >= 3)act.getClient().setBanned(true);
+            _userRepository.save(act.getClient());
+        }
         _actionRepository.save(act);
     }
 
