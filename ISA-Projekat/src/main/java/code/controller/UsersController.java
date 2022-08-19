@@ -8,6 +8,7 @@ import code.dto.user.UpdateUserPersonalInfoDto;
 import code.exceptions.admin.NotChangedPasswordException;
 import code.exceptions.entities.AccountDeletionRequestDontExistException;
 import code.exceptions.entities.EntityNotDeletableException;
+import code.exceptions.entities.LoggedInUserAlreadySubmittedAccountDeletionRequestException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.AccountDeletionRequest;
 import code.model.cottage.CottageOwner;
@@ -84,7 +85,7 @@ public class UsersController extends BaseController {
         try {
             _userService.submitAccountDeletionRequest(_mapper.map(dto, AccountDeletionRequest.class));
             return ResponseEntity.ok("Account deletion request submitted!");
-        } catch (EntityNotDeletableException e) {
+        } catch (LoggedInUserAlreadySubmittedAccountDeletionRequestException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
     }
@@ -120,6 +121,8 @@ public class UsersController extends BaseController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (NotChangedPasswordException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (EntityNotDeletableException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
     }
 }

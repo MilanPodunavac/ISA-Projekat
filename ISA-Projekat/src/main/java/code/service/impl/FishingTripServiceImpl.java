@@ -2,14 +2,14 @@ package code.service.impl;
 
 import code.exceptions.fishing_trip.*;
 import code.exceptions.fishing_trip.quick_reservation.*;
+import code.exceptions.fishing_trip.reservation.*;
 import code.model.*;
-import code.repository.FishingInstructorAvailablePeriodRepository;
-import code.repository.FishingTripPictureRepository;
-import code.repository.FishingTripQuickReservationRepository;
-import code.repository.FishingTripRepository;
+import code.repository.*;
 import code.service.FishingTripService;
 import code.service.UserService;
 import code.utils.FileUploadUtil;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -27,14 +27,18 @@ public class FishingTripServiceImpl implements FishingTripService {
     private final FishingTripPictureRepository _fishingTripPictureRepository;
     private final FishingInstructorAvailablePeriodRepository _fishingInstructorAvailablePeriodRepository;
     private final FishingTripQuickReservationRepository _fishingTripQuickReservationRepository;
+    private final FishingTripReservationRepository _fishingTripReservationRepository;
     private final UserService _userService;
+    private final JavaMailSender _mailSender;
 
-    public FishingTripServiceImpl(FishingTripPictureRepository fishingTripPictureRepository, FishingTripRepository fishingTripRepository, FishingInstructorAvailablePeriodRepository fishingInstructorAvailablePeriodRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, UserService userService) {
+    public FishingTripServiceImpl(FishingTripPictureRepository fishingTripPictureRepository, FishingTripRepository fishingTripRepository, FishingInstructorAvailablePeriodRepository fishingInstructorAvailablePeriodRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, FishingTripReservationRepository fishingTripReservationRepository, UserService userService, JavaMailSender mailSender) {
         this._fishingTripPictureRepository = fishingTripPictureRepository;
         this._fishingTripRepository = fishingTripRepository;
         this._fishingInstructorAvailablePeriodRepository = fishingInstructorAvailablePeriodRepository;
         this._fishingTripQuickReservationRepository = fishingTripQuickReservationRepository;
+        this._fishingTripReservationRepository = fishingTripReservationRepository;
         this._userService = userService;
+        this._mailSender = mailSender;
     }
 
     @Override
@@ -45,10 +49,11 @@ public class FishingTripServiceImpl implements FishingTripService {
 
     @Transactional
     @Override
-    public FishingTrip edit(FishingTrip fishingTrip) throws FishingTripNotFoundException, EditAnotherInstructorFishingTripException, FishingTripHasQuickReservationWithClientException {
+    public FishingTrip edit(FishingTrip fishingTrip) throws FishingTripNotFoundException, EditAnotherInstructorFishingTripException, FishingTripHasQuickReservationWithClientException, FishingTripHasReservationException {
         throwExceptionIfFishingTripNotFound(fishingTrip.getId());
         throwExceptionIfEditAnotherInstructorFishingTrip(fishingTrip.getId());
         throwExceptionIfFishingTripHasQuickReservationWithClient(fishingTrip.getId());
+        throwExceptionIfFishingTripHasReservation(fishingTrip.getId());
         setInstructor(fishingTrip);
         setLocationId(fishingTrip);
         fishingTrip.setPictures(new HashSet<>(_fishingTripPictureRepository.findByFishingTrip(fishingTrip.getId())));
@@ -81,6 +86,15 @@ public class FishingTripServiceImpl implements FishingTripService {
         }
     }
 
+    private void throwExceptionIfFishingTripHasReservation(Integer fishingTripId) throws FishingTripHasReservationException {
+        List<FishingTripReservation> fishingTripReservations = _fishingTripReservationRepository.findByFishingTripId(fishingTripId);
+        for (FishingTripReservation fishingTripReservation : fishingTripReservations) {
+            if (fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays()).isAfter(LocalDate.now())) {
+                throw new FishingTripHasReservationException("You can't edit fishing trip that is reserved!");
+            }
+        }
+    }
+
     private void setInstructor(FishingTrip fishingTrip) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
@@ -95,10 +109,11 @@ public class FishingTripServiceImpl implements FishingTripService {
 
     @Transactional
     @Override
-    public void editPictures(Integer id, MultipartFile[] pictures) throws FishingTripNotFoundException, EditAnotherInstructorFishingTripException, IOException, FishingTripHasQuickReservationWithClientException {
+    public void editPictures(Integer id, MultipartFile[] pictures) throws FishingTripNotFoundException, EditAnotherInstructorFishingTripException, IOException, FishingTripHasQuickReservationWithClientException, FishingTripHasReservationException {
         throwExceptionIfFishingTripNotFound(id);
         throwExceptionIfEditAnotherInstructorFishingTrip(id);
         throwExceptionIfFishingTripHasQuickReservationWithClient(id);
+        throwExceptionIfFishingTripHasReservation(id);
 
         String fishingTripPicturesDirectory = "fishing_trip_pictures";
         FishingTrip fishingTrip = _fishingTripRepository.getById(id);
@@ -141,24 +156,58 @@ public class FishingTripServiceImpl implements FishingTripService {
 
     @Transactional
     @Override
-    public void deleteFishingTrip(Integer id) throws FishingTripNotFoundException, EditAnotherInstructorFishingTripException, FishingTripHasQuickReservationWithClientException {
+    public void deleteFishingTrip(Integer id) throws FishingTripNotFoundException, EditAnotherInstructorFishingTripException, FishingTripHasQuickReservationWithClientException, FishingTripHasReservationException {
         throwExceptionIfFishingTripNotFound(id);
         throwExceptionIfEditAnotherInstructorFishingTrip(id);
         throwExceptionIfFishingTripHasQuickReservationWithClient(id);
+        throwExceptionIfFishingTripHasReservation(id);
         deleteFishingTripLogic(id);
     }
 
     private void deleteFishingTripLogic(Integer id) {
+        deleteFishingTripReservations(id);
+        unlinkFishingTripQuickReservationsFromClient(id);
         FishingTrip fishingTrip = _fishingTripRepository.getById(id);
+        deleteFishingTripPictures(fishingTrip);
         FishingInstructor fishingInstructor = fishingTrip.getFishingInstructor();
         fishingInstructor.getFishingTrips().remove(fishingTrip);
         fishingTrip.setFishingInstructor(null);
         _fishingTripRepository.delete(_fishingTripRepository.getById(id));
     }
 
+    private void deleteFishingTripReservations(Integer id) {
+        List<FishingTripReservation> fishingTripReservations = _fishingTripReservationRepository.findByFishingTripId(id);
+        for (FishingTripReservation fishingTripReservation : fishingTripReservations) {
+            fishingTripReservation.setFishingTrip(null);
+
+            fishingTripReservation.getClient().getFishingTripReservations().remove(fishingTripReservation);
+            fishingTripReservation.setClient(null);
+
+            _fishingTripReservationRepository.delete(fishingTripReservation);
+        }
+    }
+
+    private void unlinkFishingTripQuickReservationsFromClient(Integer id) {
+        List<FishingTripQuickReservation> fishingTripQuickReservations = _fishingTripQuickReservationRepository.findByFishingTripId(id);
+        for (FishingTripQuickReservation fishingTripQuickReservation : fishingTripQuickReservations) {
+            if (fishingTripQuickReservation.getClient() != null) {
+                fishingTripQuickReservation.getClient().getFishingTripQuickReservations().remove(fishingTripQuickReservation);
+                fishingTripQuickReservation.setClient(null);
+            }
+        }
+    }
+
+    public void deleteFishingTripPictures(FishingTrip fishingTrip) {
+        String fishingTripPicturesDirectory = "fishing_trip_pictures";
+        List<FishingTripPicture> fishingTripPictures = _fishingTripPictureRepository.findByFishingTrip(fishingTrip.getId());
+        for (FishingTripPicture fishingTripPicture : fishingTripPictures) {
+            FileUploadUtil.deleteFile(fishingTripPicturesDirectory, fishingTripPicture.getId() + "_" + fishingTripPicture.getName());
+        }
+    }
+
     @Transactional
     @Override
-    public void addQuickReservation(Integer id, FishingTripQuickReservation fishingTripQuickReservation) throws AddQuickReservationToAnotherInstructorFishingTripException, FishingTripQuickReservationMaxPeopleHigherThanFishingTripMaxPeopleException, QuickReservationStartDateInPastException, ValidUntilAndIncludingDateInPastOrAfterOrEqualToStartDateException, FishingTripReservationTagsDontContainQuickReservationTagException, NoAvailablePeriodForQuickReservationException, QuickReservationOverlappingException, FishingTripNotFoundException {
+    public void addQuickReservation(Integer id, FishingTripQuickReservation fishingTripQuickReservation) throws AddReservationToAnotherInstructorFishingTripException, FishingTripQuickReservationMaxPeopleHigherThanFishingTripMaxPeopleException, ReservationStartDateInPastException, ValidUntilAndIncludingDateInPastOrAfterOrEqualToStartDateException, FishingTripReservationTagsDontContainReservationTagException, NoAvailablePeriodForReservationException, FishingTripNotFoundException, InstructorBusyDuringReservationException {
         FishingInstructor loggedInInstructor = getLoggedInFishingInstructor();
         throwExceptionIfFishingTripNotFound(id);
         FishingTrip fishingTrip = _fishingTripRepository.getById(id);
@@ -167,10 +216,12 @@ public class FishingTripServiceImpl implements FishingTripService {
         throwExceptionIfQuickReservationStartDateInPast(fishingTripQuickReservation);
         throwExceptionIfValidUntilAndIncludingDateInPastOrAfterOrEqualToStartDate(fishingTripQuickReservation);
         throwExceptionIfFishingTripReservationTagsDontContainQuickReservationTag(fishingTripQuickReservation, fishingTrip);
+        throwExceptionIfNoAvailablePeriodForQuickReservation(loggedInInstructor, fishingTripQuickReservation);
         deleteNonValidQuickReservations(loggedInInstructor);
-        throwExceptionIfQuickReservationOverlapping(loggedInInstructor, fishingTripQuickReservation);
+        throwExceptionIfInstructorBusyDuringReservation(loggedInInstructor, fishingTripQuickReservation);
         fishingTripQuickReservation.setFishingTrip(fishingTrip);
         _fishingTripQuickReservationRepository.save(fishingTripQuickReservation);
+        sendQuickReservationCreatedMailToSubscribers(loggedInInstructor);
     }
 
     private FishingInstructor getLoggedInFishingInstructor() {
@@ -179,9 +230,9 @@ public class FishingTripServiceImpl implements FishingTripService {
         return (FishingInstructor) _userService.findById(user.getId());
     }
 
-    private void throwExceptionIfAddQuickReservationToAnotherInstructorFishingTrip(FishingInstructor loggedInInstructor, FishingTrip fishingTrip) throws AddQuickReservationToAnotherInstructorFishingTripException {
+    private void throwExceptionIfAddQuickReservationToAnotherInstructorFishingTrip(FishingInstructor loggedInInstructor, FishingTrip fishingTrip) throws AddReservationToAnotherInstructorFishingTripException {
         if (fishingTrip.getFishingInstructor().getId() != loggedInInstructor.getId()) {
-            throw new AddQuickReservationToAnotherInstructorFishingTripException("You can't add quick reservation to another instructor's fishing trip!");
+            throw new AddReservationToAnotherInstructorFishingTripException("You can't add quick reservation to another instructor's fishing trip!");
         }
     }
 
@@ -191,9 +242,9 @@ public class FishingTripServiceImpl implements FishingTripService {
         }
     }
 
-    private void throwExceptionIfQuickReservationStartDateInPast(FishingTripQuickReservation fishingTripQuickReservation) throws QuickReservationStartDateInPastException {
+    private void throwExceptionIfQuickReservationStartDateInPast(FishingTripQuickReservation fishingTripQuickReservation) throws ReservationStartDateInPastException {
         if (fishingTripQuickReservation.getStart().isBefore(LocalDate.now())) {
-            throw new QuickReservationStartDateInPastException("Quick reservation's start date can't be in the past!");
+            throw new ReservationStartDateInPastException("Quick reservation's start date can't be in the past!");
         }
     }
 
@@ -203,17 +254,17 @@ public class FishingTripServiceImpl implements FishingTripService {
         }
     }
 
-    private void throwExceptionIfFishingTripReservationTagsDontContainQuickReservationTag(FishingTripQuickReservation fishingTripQuickReservation, FishingTrip fishingTrip) throws FishingTripReservationTagsDontContainQuickReservationTagException {
+    private void throwExceptionIfFishingTripReservationTagsDontContainQuickReservationTag(FishingTripQuickReservation fishingTripQuickReservation, FishingTrip fishingTrip) throws FishingTripReservationTagsDontContainReservationTagException {
         if (fishingTripQuickReservation.getFishingTripReservationTags() != null) {
             for (FishingTripReservationTag fishingTripReservationTag : fishingTripQuickReservation.getFishingTripReservationTags()) {
                 if (!fishingTrip.getFishingTripReservationTags().contains(fishingTripReservationTag)) {
-                    throw new FishingTripReservationTagsDontContainQuickReservationTagException("Fishing trip reservation tags must contain all quick reservation tags!");
+                    throw new FishingTripReservationTagsDontContainReservationTagException("Fishing trip reservation tags must contain all quick reservation tags!");
                 }
             }
         }
     }
 
-    private void throwExceptionIfNoAvailablePeriodForQuickReservation(FishingInstructor loggedInInstructor, FishingTripQuickReservation fishingTripQuickReservation) throws NoAvailablePeriodForQuickReservationException {
+    private void throwExceptionIfNoAvailablePeriodForQuickReservation(FishingInstructor loggedInInstructor, FishingTripQuickReservation fishingTripQuickReservation) throws NoAvailablePeriodForReservationException {
         boolean canReserve = false;
         for (FishingInstructorAvailablePeriod fishingInstructorAvailablePeriod : _fishingInstructorAvailablePeriodRepository.findByFishingInstructor(loggedInInstructor.getId())) {
             if ((fishingTripQuickReservation.getStart().isAfter(fishingInstructorAvailablePeriod.getAvailableFrom()) || fishingTripQuickReservation.getStart().isEqual(fishingInstructorAvailablePeriod.getAvailableFrom())) && (fishingTripQuickReservation.getStart().plusDays(fishingTripQuickReservation.getDurationInDays() - 1).isBefore(fishingInstructorAvailablePeriod.getAvailableTo()) || fishingTripQuickReservation.getStart().plusDays(fishingTripQuickReservation.getDurationInDays() - 1).isEqual(fishingInstructorAvailablePeriod.getAvailableTo()))) {
@@ -223,7 +274,7 @@ public class FishingTripServiceImpl implements FishingTripService {
         }
 
         if (!canReserve) {
-            throw new NoAvailablePeriodForQuickReservationException("You don't have available period to reserve this quick reservation!");
+            throw new NoAvailablePeriodForReservationException("You don't have available period to reserve this quick reservation!");
         }
     }
 
@@ -248,13 +299,146 @@ public class FishingTripServiceImpl implements FishingTripService {
         }
     }
 
-    private void throwExceptionIfQuickReservationOverlapping(FishingInstructor loggedInInstructor, FishingTripQuickReservation fishingTripQuickReservation) throws QuickReservationOverlappingException {
+    private void throwExceptionIfInstructorBusyDuringReservation(FishingInstructor loggedInInstructor, FishingTripQuickReservation fishingTripQuickReservation) throws InstructorBusyDuringReservationException {
         List<Integer> instructorFishingTripIds = _fishingTripRepository.findByFishingInstructor(loggedInInstructor.getId());
         List<FishingTripQuickReservation> instructorQuickReservations =  _fishingTripQuickReservationRepository.findByFishingTripIdIn(instructorFishingTripIds);
         for (FishingTripQuickReservation fiqr : instructorQuickReservations) {
             if (((fiqr.getStart().isBefore(fishingTripQuickReservation.getStart()) || fiqr.getStart().isEqual(fishingTripQuickReservation.getStart())) && (fiqr.getStart().plusDays(fiqr.getDurationInDays() - 1).isAfter(fishingTripQuickReservation.getStart()) || fiqr.getStart().plusDays(fiqr.getDurationInDays() - 1).isEqual(fishingTripQuickReservation.getStart()))) || ((fishingTripQuickReservation.getStart().isBefore(fiqr.getStart()) || fishingTripQuickReservation.getStart().isEqual(fiqr.getStart())) && (fishingTripQuickReservation.getStart().plusDays(fishingTripQuickReservation.getDurationInDays() - 1).isAfter(fiqr.getStart().plusDays(fiqr.getDurationInDays() - 1)) || fishingTripQuickReservation.getStart().plusDays(fishingTripQuickReservation.getDurationInDays() - 1).isEqual(fiqr.getStart().plusDays(fiqr.getDurationInDays() - 1)))) || ((fishingTripQuickReservation.getStart().plusDays(fishingTripQuickReservation.getDurationInDays() - 1).isAfter(fiqr.getStart()) || fishingTripQuickReservation.getStart().plusDays(fishingTripQuickReservation.getDurationInDays() - 1).isEqual(fiqr.getStart())) && (fishingTripQuickReservation.getStart().plusDays(fishingTripQuickReservation.getDurationInDays() - 1).isBefore(fiqr.getStart().plusDays(fiqr.getDurationInDays() - 1)) || fishingTripQuickReservation.getStart().plusDays(fishingTripQuickReservation.getDurationInDays() - 1).isEqual(fiqr.getStart().plusDays(fiqr.getDurationInDays() - 1))))){
-                throw new QuickReservationOverlappingException("Quick reservation overlapping another!");
+                throw new InstructorBusyDuringReservationException("Instructor busy during reservation!");
             }
         }
+
+        List<FishingTripReservation> instructorReservations = _fishingTripReservationRepository.findByFishingTripIdIn(instructorFishingTripIds);
+        for (FishingTripReservation fir : instructorReservations) {
+            if (((fir.getStart().isBefore(fishingTripQuickReservation.getStart()) || fir.getStart().isEqual(fishingTripQuickReservation.getStart())) && (fir.getStart().plusDays(fir.getDurationInDays() - 1).isAfter(fishingTripQuickReservation.getStart()) || fir.getStart().plusDays(fir.getDurationInDays() - 1).isEqual(fishingTripQuickReservation.getStart()))) || ((fishingTripQuickReservation.getStart().isBefore(fir.getStart()) || fishingTripQuickReservation.getStart().isEqual(fir.getStart())) && (fishingTripQuickReservation.getStart().plusDays(fishingTripQuickReservation.getDurationInDays() - 1).isAfter(fir.getStart().plusDays(fir.getDurationInDays() - 1)) || fishingTripQuickReservation.getStart().plusDays(fishingTripQuickReservation.getDurationInDays() - 1).isEqual(fir.getStart().plusDays(fir.getDurationInDays() - 1)))) || ((fishingTripQuickReservation.getStart().plusDays(fishingTripQuickReservation.getDurationInDays() - 1).isAfter(fir.getStart()) || fishingTripQuickReservation.getStart().plusDays(fishingTripQuickReservation.getDurationInDays() - 1).isEqual(fir.getStart())) && (fishingTripQuickReservation.getStart().plusDays(fishingTripQuickReservation.getDurationInDays() - 1).isBefore(fir.getStart().plusDays(fir.getDurationInDays() - 1)) || fishingTripQuickReservation.getStart().plusDays(fishingTripQuickReservation.getDurationInDays() - 1).isEqual(fir.getStart().plusDays(fir.getDurationInDays() - 1))))) {
+                throw new InstructorBusyDuringReservationException("Instructor busy during reservation!");
+            }
+        }
+    }
+
+    private void sendQuickReservationCreatedMailToSubscribers(FishingInstructor loggedInInstructor) {
+        for (Client subscriber : loggedInInstructor.getSubscribers()) {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom("marko76589@gmail.com");
+            message.setTo(subscriber.getEmail());
+            message.setSubject("Action created");
+            message.setText("Instructor " + loggedInInstructor.getFirstName() + " " + loggedInInstructor.getLastName() + " created a new action!");
+            _mailSender.send(message);
+        }
+    }
+
+    @Transactional
+    @Override
+    public void addReservation(Integer fishingTripId, Integer clientId, FishingTripReservation fishingTripReservation) throws FishingTripNotFoundException, AddReservationToAnotherInstructorFishingTripException, EnabledClientDoesntExistException, ReservationStartDateInPastException, FishingTripReservationNumberOfPeopleHigherThanFishingTripMaxPeopleException, FishingTripReservationTagsDontContainReservationTagException, NoAvailablePeriodForReservationException, ClientBannedException, ClientBusyDuringReservationException, InstructorBusyDuringReservationException {
+        FishingInstructor loggedInInstructor = getLoggedInFishingInstructor();
+        throwExceptionIfFishingTripNotFound(fishingTripId);
+        FishingTrip fishingTrip = _fishingTripRepository.getById(fishingTripId);
+        throwExceptionIfAddReservationToAnotherInstructorFishingTrip(loggedInInstructor, fishingTrip);
+        _userService.throwExceptionIfEnabledClientDoesntExist(clientId);
+        throwExceptionIfFishingTripReservationNumberOfPeopleHigherThanFishingTripMaxPeople(fishingTripReservation, fishingTrip);
+        throwExceptionIfReservationStartDateInPast(fishingTripReservation);
+        throwExceptionIfFishingTripReservationTagsDontContainQuickReservationTag(fishingTripReservation, fishingTrip);
+        throwExceptionIfNoAvailablePeriodForReservation(loggedInInstructor, fishingTripReservation);
+        deleteNonValidQuickReservations(loggedInInstructor);
+        throwExceptionIfInstructorBusyDuringReservation(loggedInInstructor, fishingTripReservation);
+        throwExceptionIfClientBanned(clientId);
+        throwExceptionIfClientBusyDuringReservation(clientId, fishingTripReservation);
+        fishingTripReservation.setFishingTrip(fishingTrip);
+        fishingTripReservation.setClient((Client) _userService.findById(clientId));
+        fishingTripReservation.setPrice(fishingTrip.getCostPerDay() * fishingTripReservation.getDurationInDays());
+        _fishingTripReservationRepository.save(fishingTripReservation);
+        sendReservationCreatedMailToClient(clientId, loggedInInstructor);
+    }
+
+    private void throwExceptionIfAddReservationToAnotherInstructorFishingTrip(FishingInstructor loggedInInstructor, FishingTrip fishingTrip) throws AddReservationToAnotherInstructorFishingTripException {
+        if (fishingTrip.getFishingInstructor().getId() != loggedInInstructor.getId()) {
+            throw new AddReservationToAnotherInstructorFishingTripException("You can't add reservation to another instructor's fishing trip!");
+        }
+    }
+
+    private void throwExceptionIfFishingTripReservationNumberOfPeopleHigherThanFishingTripMaxPeople(FishingTripReservation fishingTripReservation, FishingTrip fishingTrip) throws FishingTripReservationNumberOfPeopleHigherThanFishingTripMaxPeopleException {
+        if (fishingTripReservation.getNumberOfPeople() > fishingTrip.getMaxPeople()) {
+            throw new FishingTripReservationNumberOfPeopleHigherThanFishingTripMaxPeopleException("Fishing trip reservation number of people can't be higher than fishing trip max people!");
+        }
+    }
+
+    private void throwExceptionIfReservationStartDateInPast(FishingTripReservation fishingTripReservation) throws ReservationStartDateInPastException {
+        if (fishingTripReservation.getStart().isBefore(LocalDate.now())) {
+            throw new ReservationStartDateInPastException("Reservation's start date can't be in the past!");
+        }
+    }
+
+    private void throwExceptionIfFishingTripReservationTagsDontContainQuickReservationTag(FishingTripReservation fishingTripReservation, FishingTrip fishingTrip) throws FishingTripReservationTagsDontContainReservationTagException {
+        if (fishingTripReservation.getFishingTripReservationTags() != null) {
+            for (FishingTripReservationTag fishingTripReservationTag : fishingTripReservation.getFishingTripReservationTags()) {
+                if (!fishingTrip.getFishingTripReservationTags().contains(fishingTripReservationTag)) {
+                    throw new FishingTripReservationTagsDontContainReservationTagException("Fishing trip reservation tags must contain all reservation tags!");
+                }
+            }
+        }
+    }
+
+    private void throwExceptionIfNoAvailablePeriodForReservation(FishingInstructor loggedInInstructor, FishingTripReservation fishingTripReservation) throws NoAvailablePeriodForReservationException {
+        boolean canReserve = false;
+        for (FishingInstructorAvailablePeriod fishingInstructorAvailablePeriod : _fishingInstructorAvailablePeriodRepository.findByFishingInstructor(loggedInInstructor.getId())) {
+            if ((fishingTripReservation.getStart().isAfter(fishingInstructorAvailablePeriod.getAvailableFrom()) || fishingTripReservation.getStart().isEqual(fishingInstructorAvailablePeriod.getAvailableFrom())) && (fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isBefore(fishingInstructorAvailablePeriod.getAvailableTo()) || fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isEqual(fishingInstructorAvailablePeriod.getAvailableTo()))) {
+                canReserve = true;
+                break;
+            }
+        }
+
+        if (!canReserve) {
+            throw new NoAvailablePeriodForReservationException("You don't have available period to reserve this reservation!");
+        }
+    }
+
+    private void throwExceptionIfInstructorBusyDuringReservation(FishingInstructor loggedInInstructor, FishingTripReservation fishingTripReservation) throws InstructorBusyDuringReservationException {
+        List<Integer> instructorFishingTripIds = _fishingTripRepository.findByFishingInstructor(loggedInInstructor.getId());
+        List<FishingTripQuickReservation> instructorQuickReservations = _fishingTripQuickReservationRepository.findByFishingTripIdIn(instructorFishingTripIds);
+        for (FishingTripQuickReservation fiqr : instructorQuickReservations) {
+            if (((fiqr.getStart().isBefore(fishingTripReservation.getStart()) || fiqr.getStart().isEqual(fishingTripReservation.getStart())) && (fiqr.getStart().plusDays(fiqr.getDurationInDays() - 1).isAfter(fishingTripReservation.getStart()) || fiqr.getStart().plusDays(fiqr.getDurationInDays() - 1).isEqual(fishingTripReservation.getStart()))) || ((fishingTripReservation.getStart().isBefore(fiqr.getStart()) || fishingTripReservation.getStart().isEqual(fiqr.getStart())) && (fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isAfter(fiqr.getStart().plusDays(fiqr.getDurationInDays() - 1)) || fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isEqual(fiqr.getStart().plusDays(fiqr.getDurationInDays() - 1)))) || ((fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isAfter(fiqr.getStart()) || fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isEqual(fiqr.getStart())) && (fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isBefore(fiqr.getStart().plusDays(fiqr.getDurationInDays() - 1)) || fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isEqual(fiqr.getStart().plusDays(fiqr.getDurationInDays() - 1))))) {
+                throw new InstructorBusyDuringReservationException("Instructor busy during reservation!");
+            }
+        }
+
+        List<FishingTripReservation> instructorReservations = _fishingTripReservationRepository.findByFishingTripIdIn(instructorFishingTripIds);
+        for (FishingTripReservation fir : instructorReservations) {
+            if (((fir.getStart().isBefore(fishingTripReservation.getStart()) || fir.getStart().isEqual(fishingTripReservation.getStart())) && (fir.getStart().plusDays(fir.getDurationInDays() - 1).isAfter(fishingTripReservation.getStart()) || fir.getStart().plusDays(fir.getDurationInDays() - 1).isEqual(fishingTripReservation.getStart()))) || ((fishingTripReservation.getStart().isBefore(fir.getStart()) || fishingTripReservation.getStart().isEqual(fir.getStart())) && (fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isAfter(fir.getStart().plusDays(fir.getDurationInDays() - 1)) || fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isEqual(fir.getStart().plusDays(fir.getDurationInDays() - 1)))) || ((fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isAfter(fir.getStart()) || fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isEqual(fir.getStart())) && (fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isBefore(fir.getStart().plusDays(fir.getDurationInDays() - 1)) || fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isEqual(fir.getStart().plusDays(fir.getDurationInDays() - 1))))) {
+                throw new InstructorBusyDuringReservationException("Instructor busy during reservation!");
+            }
+        }
+    }
+
+    private void throwExceptionIfClientBanned(Integer clientId) throws ClientBannedException {
+        Client client = (Client) _userService.findById(clientId);
+        if (client.isBanned()) {
+            throw new ClientBannedException("Client is banned!");
+        }
+    }
+
+    private void throwExceptionIfClientBusyDuringReservation(Integer clientId, FishingTripReservation fishingTripReservation) throws ClientBusyDuringReservationException {
+        List<FishingTripQuickReservation> clientFishingTripQuickReservations = _fishingTripQuickReservationRepository.findByClientId(clientId);
+        for (FishingTripQuickReservation fiqr : clientFishingTripQuickReservations) {
+            if (((fiqr.getStart().isBefore(fishingTripReservation.getStart()) || fiqr.getStart().isEqual(fishingTripReservation.getStart())) && (fiqr.getStart().plusDays(fiqr.getDurationInDays() - 1).isAfter(fishingTripReservation.getStart()) || fiqr.getStart().plusDays(fiqr.getDurationInDays() - 1).isEqual(fishingTripReservation.getStart()))) || ((fishingTripReservation.getStart().isBefore(fiqr.getStart()) || fishingTripReservation.getStart().isEqual(fiqr.getStart())) && (fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isAfter(fiqr.getStart().plusDays(fiqr.getDurationInDays() - 1)) || fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isEqual(fiqr.getStart().plusDays(fiqr.getDurationInDays() - 1)))) || ((fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isAfter(fiqr.getStart()) || fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isEqual(fiqr.getStart())) && (fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isBefore(fiqr.getStart().plusDays(fiqr.getDurationInDays() - 1)) || fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isEqual(fiqr.getStart().plusDays(fiqr.getDurationInDays() - 1))))){
+                throw new ClientBusyDuringReservationException("Client busy during reservation!");
+            }
+        }
+
+        List<FishingTripReservation> clientFishingTripReservations = _fishingTripReservationRepository.findByClientId(clientId);
+        for (FishingTripReservation fir : clientFishingTripReservations) {
+            if (((fir.getStart().isBefore(fishingTripReservation.getStart()) || fir.getStart().isEqual(fishingTripReservation.getStart())) && (fir.getStart().plusDays(fir.getDurationInDays() - 1).isAfter(fishingTripReservation.getStart()) || fir.getStart().plusDays(fir.getDurationInDays() - 1).isEqual(fishingTripReservation.getStart()))) || ((fishingTripReservation.getStart().isBefore(fir.getStart()) || fishingTripReservation.getStart().isEqual(fir.getStart())) && (fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isAfter(fir.getStart().plusDays(fir.getDurationInDays() - 1)) || fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isEqual(fir.getStart().plusDays(fir.getDurationInDays() - 1)))) || ((fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isAfter(fir.getStart()) || fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isEqual(fir.getStart())) && (fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isBefore(fir.getStart().plusDays(fir.getDurationInDays() - 1)) || fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isEqual(fir.getStart().plusDays(fir.getDurationInDays() - 1))))){
+                throw new ClientBusyDuringReservationException("Client busy during reservation!");
+            }
+        }
+    }
+
+    private void sendReservationCreatedMailToClient(Integer clientId, FishingInstructor loggedInInstructor) {
+        Client client = (Client) _userService.findById(clientId);
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("marko76589@gmail.com");
+        message.setTo(client.getEmail());
+        message.setSubject("Reservation created");
+        message.setText("Instructor " + loggedInInstructor.getFirstName() + " " + loggedInInstructor.getLastName() + " created reservation for you!");
+        _mailSender.send(message);
     }
 }

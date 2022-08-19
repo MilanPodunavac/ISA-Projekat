@@ -124,7 +124,7 @@ public class AdminServiceImpl implements AdminService {
 
         FishingInstructor fishingInstructor = (FishingInstructor) _userService.findById(id);
         _userService.checkIfFishingInstructorDeletable(fishingInstructor);
-        _userService.deleteFishingTripPictures(fishingInstructor);
+        _userService.unlinkReferencesFishingInstructor(fishingInstructor);
         _userRepository.delete(fishingInstructor);
     }
 
