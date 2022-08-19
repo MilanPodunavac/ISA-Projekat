@@ -12,6 +12,7 @@ import code.exceptions.provider_registration.UserAccountActivatedException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.*;
 import code.model.base.AvailabilityPeriod;
+import code.model.cottage.Cottage;
 import code.model.cottage.CottageOwner;
 import code.model.cottage.CottageReservation;
 import code.repository.*;
@@ -403,7 +404,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void unlinkReferencesCottageOwner(CottageOwner cottageOwner) {
-        List<Integer> cottageOwnerCottageIds = _cottageRepository.findByCottageOwner(cottageOwner.getId());
+        /*List<Integer> cottageOwnerCottageIds = _cottageRepository.findByCottageOwner(cottageOwner.getId());
         List<CottageReservation> cottageOwnerReservations =  _cottageReservationRepository.findByCottageIdIn(cottageOwnerCottageIds);
         List<AvailabilityPeriod> allAvailabilityPeriods = _availabilityPeriodRepository.findAll();
         List<Client> allClients = _clientRepository.findAll();
@@ -432,7 +433,14 @@ public class UserServiceImpl implements UserService {
 
         for (CottageReservation cottageReservation : cottageOwnerReservations) {
             _cottageReservationRepository.delete(cottageReservation);
+        }*/
+        List<Cottage> copy = new ArrayList<>(cottageOwner.getCottage());
+        for(Cottage cottage : copy){
+            _cottageRepository.delete(cottage);
         }
+        cottageOwner.getCottage().clear();
+        cottageOwner.setRole(null);
+        cottageOwner.setLocation(null);
     }
 
     @Override

@@ -181,4 +181,13 @@ public class AdminController extends BaseController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
     }
+    @DeleteMapping(value ="cottageOwnereDeleteTest/{id}")
+    public ResponseEntity<String> cottageOwnereDeleteTest(@PathVariable Integer id){
+        try {
+            _adminService.deleteCottageOwner(id);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok("deleted");
+    }
 }

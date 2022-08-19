@@ -35,7 +35,7 @@ public abstract class User implements UserDetails {
    protected String phoneNumber;
    @Column
    private boolean enabled;
-   @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+   @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
    @JoinColumn(name="location_id")
    protected Location location;
    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
