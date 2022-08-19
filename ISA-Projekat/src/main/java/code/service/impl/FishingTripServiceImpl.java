@@ -8,6 +8,8 @@ import code.repository.*;
 import code.service.FishingTripService;
 import code.service.UserService;
 import code.utils.FileUploadUtil;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
@@ -217,7 +219,6 @@ public class FishingTripServiceImpl implements FishingTripService {
         throwExceptionIfValidUntilAndIncludingDateInPastOrAfterOrEqualToStartDate(fishingTripQuickReservation);
         throwExceptionIfFishingTripReservationTagsDontContainQuickReservationTag(fishingTripQuickReservation, fishingTrip);
         throwExceptionIfNoAvailablePeriodForQuickReservation(loggedInInstructor, fishingTripQuickReservation);
-        deleteNonValidQuickReservations(loggedInInstructor);
         throwExceptionIfInstructorBusyDuringReservation(loggedInInstructor, fishingTripQuickReservation);
         fishingTripQuickReservation.setFishingTrip(fishingTrip);
         _fishingTripQuickReservationRepository.save(fishingTripQuickReservation);
@@ -278,18 +279,14 @@ public class FishingTripServiceImpl implements FishingTripService {
         }
     }
 
-    @Override
-    public void deleteNonValidQuickReservations(FishingInstructor loggedInInstructor) {
-        List<Integer> instructorFishingTripIds = _fishingTripRepository.findByFishingInstructor(loggedInInstructor.getId());
-        List<FishingTripQuickReservation> instructorQuickReservations =  _fishingTripQuickReservationRepository.findByFishingTripIdIn(instructorFishingTripIds);
-        List<FishingTrip> instructorFishingTrips = new ArrayList<>();
+    @EventListener(ApplicationReadyEvent.class)
+    @Transactional
+    public void deleteNonValidQuickReservations() {
+        List<FishingTrip> allFishingTrips = _fishingTripRepository.findAll();
+        List<FishingTripQuickReservation> allFishingTripQuickReservations =  _fishingTripQuickReservationRepository.findAll();
 
-        for (Integer id : instructorFishingTripIds) {
-            instructorFishingTrips.add(_fishingTripRepository.getById(id));
-        }
-
-        for (FishingTrip fishingTrip : instructorFishingTrips) {
-            for (FishingTripQuickReservation fishingTripQuickReservation : instructorQuickReservations) {
+        for (FishingTrip fishingTrip : allFishingTrips) {
+            for (FishingTripQuickReservation fishingTripQuickReservation : allFishingTripQuickReservations) {
                 if (fishingTripQuickReservation.getFishingTrip() != null && fishingTrip.getId() == fishingTripQuickReservation.getFishingTrip().getId() && fishingTripQuickReservation.getClient() == null && fishingTripQuickReservation.getValidUntilAndIncluding().isBefore(LocalDate.now())) {
                     fishingTrip.getFishingTripQuickReservations().remove(fishingTripQuickReservation);
                     fishingTripQuickReservation.setFishingTrip(null);
@@ -339,7 +336,6 @@ public class FishingTripServiceImpl implements FishingTripService {
         throwExceptionIfReservationStartDateInPast(fishingTripReservation);
         throwExceptionIfFishingTripReservationTagsDontContainQuickReservationTag(fishingTripReservation, fishingTrip);
         throwExceptionIfNoAvailablePeriodForReservation(loggedInInstructor, fishingTripReservation);
-        deleteNonValidQuickReservations(loggedInInstructor);
         throwExceptionIfInstructorBusyDuringReservation(loggedInInstructor, fishingTripReservation);
         throwExceptionIfClientBanned(clientId);
         throwExceptionIfClientBusyDuringReservation(clientId, fishingTripReservation);

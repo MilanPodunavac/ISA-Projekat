@@ -21,5 +21,5 @@ public class OwnerCommentary {
     @Column
     private boolean clientCame;
     @Column
-    private int penaltyPoints;
+    private boolean penaltyGiven;
 }

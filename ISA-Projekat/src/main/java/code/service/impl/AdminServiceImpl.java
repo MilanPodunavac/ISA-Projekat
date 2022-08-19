@@ -9,13 +9,17 @@ import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.*;
 import code.model.cottage.CottageOwner;
 import code.repository.AdminRepository;
+import code.repository.ClientRepository;
 import code.repository.UserRepository;
 import code.service.*;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -26,8 +30,9 @@ public class AdminServiceImpl implements AdminService {
     private final UserRepository _userRepository;
     private final CottageService _cottageService;
     private final BoatService _boatService;
+    private final ClientRepository _clientRepository;
 
-    public AdminServiceImpl(AdminRepository adminRepository, PasswordEncoder passwordEncoder, RoleService roleService, UserService userService, UserRepository userRepository, CottageService cottageService, BoatService boatService) {
+    public AdminServiceImpl(AdminRepository adminRepository, PasswordEncoder passwordEncoder, RoleService roleService, UserService userService, UserRepository userRepository, CottageService cottageService, BoatService boatService, ClientRepository clientRepository) {
         this._adminRepository = adminRepository;
         this._passwordEncoder = passwordEncoder;
         this._roleService = roleService;
@@ -35,6 +40,7 @@ public class AdminServiceImpl implements AdminService {
         this._userRepository = userRepository;
         this._cottageService = cottageService;
         this._boatService = boatService;
+        this._clientRepository = clientRepository;
     }
 
     @Override
@@ -209,5 +215,15 @@ public class AdminServiceImpl implements AdminService {
 
         _boatService.checkIfBoatDeletable(id);
         _boatService.unlinkReferencesAndDeleteBoat(id);
+    }
+
+    @Scheduled(cron="0 0 0 1 1/1 *")
+    public void unbanAllClientsAndResetTheirPenaltyPoints() {
+        List<Client> allClients = _clientRepository.findAll();
+        for (Client client : allClients) {
+            client.setBanned(false);
+            client.setPenaltyPoints(0);
+            _clientRepository.save(client);
+        }
     }
 }
