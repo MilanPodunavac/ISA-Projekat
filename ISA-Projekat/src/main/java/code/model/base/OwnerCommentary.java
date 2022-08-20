@@ -22,4 +22,6 @@ public class OwnerCommentary {
     private boolean clientCame;
     @Column
     private boolean penaltyGiven;
+    @Column
+    private boolean adminApproved;
 }

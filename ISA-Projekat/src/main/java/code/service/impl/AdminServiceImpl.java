@@ -1,17 +1,22 @@
 package code.service.impl;
 
 import code.exceptions.admin.*;
+import code.exceptions.entities.CommentaryNotApprovableException;
 import code.exceptions.entities.EntityNotDeletableException;
 import code.exceptions.entities.EntityNotFoundException;
 import code.exceptions.entities.UnexpectedUserRoleException;
 import code.exceptions.provider_registration.EmailTakenException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.*;
+import code.model.base.Action;
+import code.model.base.Reservation;
+import code.model.cottage.CottageAction;
 import code.model.cottage.CottageOwner;
-import code.repository.AdminRepository;
-import code.repository.ClientRepository;
-import code.repository.UserRepository;
+import code.model.cottage.CottageReservation;
+import code.repository.*;
 import code.service.*;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -31,8 +37,13 @@ public class AdminServiceImpl implements AdminService {
     private final CottageService _cottageService;
     private final BoatService _boatService;
     private final ClientRepository _clientRepository;
+    private final FishingTripReservationRepository _fishingTripReservationRepository;
+    private final FishingTripQuickReservationRepository _fishingTripQuickReservationRepository;
+    private final ReservationRepository _reservationRepository;
+    private final ActionRepository _actionRepository;
+    private final JavaMailSender _mailSender;
 
-    public AdminServiceImpl(AdminRepository adminRepository, PasswordEncoder passwordEncoder, RoleService roleService, UserService userService, UserRepository userRepository, CottageService cottageService, BoatService boatService, ClientRepository clientRepository) {
+    public AdminServiceImpl(AdminRepository adminRepository, PasswordEncoder passwordEncoder, RoleService roleService, UserService userService, UserRepository userRepository, CottageService cottageService, BoatService boatService, ClientRepository clientRepository, FishingTripReservationRepository fishingTripReservationRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, ReservationRepository reservationRepository, ActionRepository actionRepository, JavaMailSender mailSender) {
         this._adminRepository = adminRepository;
         this._passwordEncoder = passwordEncoder;
         this._roleService = roleService;
@@ -41,6 +52,11 @@ public class AdminServiceImpl implements AdminService {
         this._cottageService = cottageService;
         this._boatService = boatService;
         this._clientRepository = clientRepository;
+        this._fishingTripQuickReservationRepository = fishingTripQuickReservationRepository;
+        this._fishingTripReservationRepository = fishingTripReservationRepository;
+        this._reservationRepository = reservationRepository;
+        this._actionRepository = actionRepository;
+        this._mailSender = mailSender;
     }
 
     @Override
@@ -215,6 +231,294 @@ public class AdminServiceImpl implements AdminService {
 
         _boatService.checkIfBoatDeletable(id);
         _boatService.unlinkReferencesAndDeleteBoat(id);
+    }
+
+    @Transactional
+    @Override
+    public void fishingReservationCommentaryAccept(Integer reservationId) throws EntityNotFoundException, NotChangedPasswordException, CommentaryNotApprovableException {
+        throwExceptionIfFishingReservationDoesntExist(reservationId);
+        throwExceptionIfAdminDidntChangePassword(getLoggedInAdmin());
+        FishingTripReservation fishingTripReservation = _fishingTripReservationRepository.getById(reservationId);
+        throwExceptionIfCommentaryNotApprovable(fishingTripReservation);
+
+        fishingTripReservation.getClient().setPenaltyPoints(fishingTripReservation.getClient().getPenaltyPoints() + 1);
+        if (fishingTripReservation.getClient().getPenaltyPoints() == 3) {
+            fishingTripReservation.getClient().setBanned(true);
+        }
+        _clientRepository.save(fishingTripReservation.getClient());
+
+        fishingTripReservation.getOwnerCommentary().setAdminApproved(true);
+        fishingTripReservation.getOwnerCommentary().setPenaltyGiven(true);
+        _fishingTripReservationRepository.save(fishingTripReservation);
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("marko76589@gmail.com");
+        message.setTo(fishingTripReservation.getClient().getEmail());
+        message.setSubject("Finished reservation report");
+        message.setText("Instructor " + fishingTripReservation.getFishingTrip().getFishingInstructor().getFirstName() + " " + fishingTripReservation.getFishingTrip().getFishingInstructor().getLastName() + " gave you 1 penalty point!");
+        _mailSender.send(message);
+
+        SimpleMailMessage message2 = new SimpleMailMessage();
+        message2.setFrom("marko76589@gmail.com");
+        message2.setTo(fishingTripReservation.getFishingTrip().getFishingInstructor().getEmail());
+        message2.setSubject("Finished reservation report");
+        message2.setText("Client " + fishingTripReservation.getClient().getFirstName() + " " + fishingTripReservation.getClient().getLastName() + " was given 1 penalty point!");
+        _mailSender.send(message2);
+    }
+
+    private void throwExceptionIfFishingReservationDoesntExist(Integer reservationId) throws EntityNotFoundException {
+        Optional<FishingTripReservation> fishingTripReservation = _fishingTripReservationRepository.findById(reservationId);
+        if (!fishingTripReservation.isPresent()) {
+            throw new EntityNotFoundException("Reservation doesn't exist!");
+        }
+    }
+
+    private void throwExceptionIfCommentaryNotApprovable(FishingTripReservation fishingTripReservation) throws CommentaryNotApprovableException {
+        if (!(fishingTripReservation.getOwnerCommentary() != null && fishingTripReservation.getOwnerCommentary().isClientCame() && fishingTripReservation.getOwnerCommentary().isSanctionSuggested() && !fishingTripReservation.getOwnerCommentary().isAdminApproved())) {
+            throw new CommentaryNotApprovableException("Commentary can't be approved by admin!");
+        }
+    }
+
+    @Transactional
+    @Override
+    public void fishingReservationCommentaryDecline(Integer reservationId) throws EntityNotFoundException, NotChangedPasswordException, CommentaryNotApprovableException {
+        throwExceptionIfFishingReservationDoesntExist(reservationId);
+        throwExceptionIfAdminDidntChangePassword(getLoggedInAdmin());
+        FishingTripReservation fishingTripReservation = _fishingTripReservationRepository.getById(reservationId);
+        throwExceptionIfCommentaryNotApprovable(fishingTripReservation);
+
+        fishingTripReservation.getOwnerCommentary().setAdminApproved(true);
+        fishingTripReservation.getOwnerCommentary().setPenaltyGiven(false);
+        _fishingTripReservationRepository.save(fishingTripReservation);
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("marko76589@gmail.com");
+        message.setTo(fishingTripReservation.getFishingTrip().getFishingInstructor().getEmail());
+        message.setSubject("Finished reservation report");
+        message.setText("Client " + fishingTripReservation.getClient().getFirstName() + " " + fishingTripReservation.getClient().getLastName() + " wasn't given any penalty points!");
+        _mailSender.send(message);
+    }
+
+    @Transactional
+    @Override
+    public void fishingQuickReservationCommentaryAccept(Integer quickReservationId) throws EntityNotFoundException, NotChangedPasswordException, CommentaryNotApprovableException {
+        throwExceptionIfFishingQuickReservationDoesntExist(quickReservationId);
+        throwExceptionIfAdminDidntChangePassword(getLoggedInAdmin());
+        FishingTripQuickReservation fishingTripQuickReservation = _fishingTripQuickReservationRepository.getById(quickReservationId);
+        throwExceptionIfCommentaryNotApprovable(fishingTripQuickReservation);
+
+        fishingTripQuickReservation.getClient().setPenaltyPoints(fishingTripQuickReservation.getClient().getPenaltyPoints() + 1);
+        if (fishingTripQuickReservation.getClient().getPenaltyPoints() == 3) {
+            fishingTripQuickReservation.getClient().setBanned(true);
+        }
+        _clientRepository.save(fishingTripQuickReservation.getClient());
+
+        fishingTripQuickReservation.getOwnerCommentary().setAdminApproved(true);
+        fishingTripQuickReservation.getOwnerCommentary().setPenaltyGiven(true);
+        _fishingTripQuickReservationRepository.save(fishingTripQuickReservation);
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("marko76589@gmail.com");
+        message.setTo(fishingTripQuickReservation.getClient().getEmail());
+        message.setSubject("Finished reservation report");
+        message.setText("Instructor " + fishingTripQuickReservation.getFishingTrip().getFishingInstructor().getFirstName() + " " + fishingTripQuickReservation.getFishingTrip().getFishingInstructor().getLastName() + " gave you 1 penalty point!");
+        _mailSender.send(message);
+
+        SimpleMailMessage message2 = new SimpleMailMessage();
+        message2.setFrom("marko76589@gmail.com");
+        message2.setTo(fishingTripQuickReservation.getFishingTrip().getFishingInstructor().getEmail());
+        message2.setSubject("Finished reservation report");
+        message2.setText("Client " + fishingTripQuickReservation.getClient().getFirstName() + " " + fishingTripQuickReservation.getClient().getLastName() + " was given 1 penalty point!");
+        _mailSender.send(message2);
+    }
+
+    private void throwExceptionIfFishingQuickReservationDoesntExist(Integer quickReservationId) throws EntityNotFoundException {
+        Optional<FishingTripQuickReservation> fishingTripQuickReservation = _fishingTripQuickReservationRepository.findById(quickReservationId);
+        if (!fishingTripQuickReservation.isPresent()) {
+            throw new EntityNotFoundException("Quick reservation doesn't exist!");
+        }
+    }
+
+    private void throwExceptionIfCommentaryNotApprovable(FishingTripQuickReservation fishingTripQuickReservation) throws CommentaryNotApprovableException {
+        if (!(fishingTripQuickReservation.getOwnerCommentary() != null && fishingTripQuickReservation.getOwnerCommentary().isClientCame() && fishingTripQuickReservation.getOwnerCommentary().isSanctionSuggested() && !fishingTripQuickReservation.getOwnerCommentary().isAdminApproved())) {
+            throw new CommentaryNotApprovableException("Commentary can't be approved by admin!");
+        }
+    }
+
+    @Transactional
+    @Override
+    public void fishingQuickReservationCommentaryDecline(Integer quickReservationId) throws EntityNotFoundException, NotChangedPasswordException, CommentaryNotApprovableException {
+        throwExceptionIfFishingQuickReservationDoesntExist(quickReservationId);
+        throwExceptionIfAdminDidntChangePassword(getLoggedInAdmin());
+        FishingTripQuickReservation fishingTripQuickReservation = _fishingTripQuickReservationRepository.getById(quickReservationId);
+        throwExceptionIfCommentaryNotApprovable(fishingTripQuickReservation);
+
+        fishingTripQuickReservation.getOwnerCommentary().setAdminApproved(true);
+        fishingTripQuickReservation.getOwnerCommentary().setPenaltyGiven(false);
+        _fishingTripQuickReservationRepository.save(fishingTripQuickReservation);
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("marko76589@gmail.com");
+        message.setTo(fishingTripQuickReservation.getFishingTrip().getFishingInstructor().getEmail());
+        message.setSubject("Finished reservation report");
+        message.setText("Client " + fishingTripQuickReservation.getClient().getFirstName() + " " + fishingTripQuickReservation.getClient().getLastName() + " wasn't given any penalty points!");
+        _mailSender.send(message);
+    }
+
+    @Transactional
+    @Override
+    public void reservationCommentaryAccept(Integer reservationId) throws EntityNotFoundException, NotChangedPasswordException, CommentaryNotApprovableException {
+        throwExceptionIfReservationDoesntExist(reservationId);
+        throwExceptionIfAdminDidntChangePassword(getLoggedInAdmin());
+        Reservation reservation = _reservationRepository.getById(reservationId);
+        throwExceptionIfCommentaryNotApprovable(reservation);
+
+        reservation.getClient().setPenaltyPoints(reservation.getClient().getPenaltyPoints() + 1);
+        if (reservation.getClient().getPenaltyPoints() == 3) {
+            reservation.getClient().setBanned(true);
+        }
+        _clientRepository.save(reservation.getClient());
+
+        reservation.getOwnerCommentary().setAdminApproved(true);
+        reservation.getOwnerCommentary().setPenaltyGiven(true);
+        _reservationRepository.save(reservation);
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("marko76589@gmail.com");
+        message.setTo(reservation.getClient().getEmail());
+        message.setSubject("Finished reservation report");
+        if (reservation instanceof CottageReservation) {
+            message.setText("Cottage owner " + ((CottageReservation) reservation).getCottage().getCottageOwner().getFirstName() + " " + ((CottageReservation) reservation).getCottage().getCottageOwner().getLastName() + " gave you 1 penalty point!");
+        } else if (reservation instanceof BoatReservation) {
+            message.setText("Boat owner " + ((BoatReservation) reservation).getBoat().getBoatOwner().getFirstName() + " " + ((BoatReservation) reservation).getBoat().getBoatOwner().getLastName() + " gave you 1 penalty point!");
+        }
+        _mailSender.send(message);
+
+        SimpleMailMessage message2 = new SimpleMailMessage();
+        message2.setFrom("marko76589@gmail.com");
+        if (reservation instanceof CottageReservation) {
+            message2.setTo(((CottageReservation) reservation).getCottage().getCottageOwner().getEmail());
+        } else if (reservation instanceof BoatReservation) {
+            message2.setTo(((BoatReservation) reservation).getBoat().getBoatOwner().getEmail());
+        }
+        message2.setSubject("Finished reservation report");
+        message2.setText("Client " + reservation.getClient().getFirstName() + " " + reservation.getClient().getLastName() + " was given 1 penalty point!");
+        _mailSender.send(message2);
+    }
+
+    private void throwExceptionIfReservationDoesntExist(Integer reservationId) throws EntityNotFoundException {
+        Optional<Reservation> reservation = _reservationRepository.findById(reservationId);
+        if (!reservation.isPresent()) {
+            throw new EntityNotFoundException("Reservation doesn't exist!");
+        }
+    }
+
+    private void throwExceptionIfCommentaryNotApprovable(Reservation reservation) throws CommentaryNotApprovableException {
+        if (!(reservation.getOwnerCommentary() != null && reservation.getOwnerCommentary().isClientCame() && reservation.getOwnerCommentary().isSanctionSuggested() && !reservation.getOwnerCommentary().isAdminApproved())) {
+            throw new CommentaryNotApprovableException("Commentary can't be approved by admin!");
+        }
+    }
+
+    @Transactional
+    @Override
+    public void reservationCommentaryDecline(Integer reservationId) throws EntityNotFoundException, NotChangedPasswordException, CommentaryNotApprovableException {
+        throwExceptionIfReservationDoesntExist(reservationId);
+        throwExceptionIfAdminDidntChangePassword(getLoggedInAdmin());
+        Reservation reservation = _reservationRepository.getById(reservationId);
+        throwExceptionIfCommentaryNotApprovable(reservation);
+
+        reservation.getOwnerCommentary().setAdminApproved(true);
+        reservation.getOwnerCommentary().setPenaltyGiven(false);
+        _reservationRepository.save(reservation);
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("marko76589@gmail.com");
+        if (reservation instanceof CottageReservation) {
+            message.setTo(((CottageReservation) reservation).getCottage().getCottageOwner().getEmail());
+        } else if (reservation instanceof BoatReservation) {
+            message.setTo(((BoatReservation) reservation).getBoat().getBoatOwner().getEmail());
+        }
+        message.setSubject("Finished reservation report");
+        message.setText("Client " + reservation.getClient().getFirstName() + " " + reservation.getClient().getLastName() + " wasn't given any penalty points!");
+        _mailSender.send(message);
+    }
+
+    @Transactional
+    @Override
+    public void quickReservationCommentaryAccept(Integer quickReservationId) throws EntityNotFoundException, NotChangedPasswordException, CommentaryNotApprovableException {
+        throwExceptionIfQuickReservationDoesntExist(quickReservationId);
+        throwExceptionIfAdminDidntChangePassword(getLoggedInAdmin());
+        Action quickReservation = _actionRepository.getById(quickReservationId);
+        throwExceptionIfCommentaryNotApprovable(quickReservation);
+
+        quickReservation.getClient().setPenaltyPoints(quickReservation.getClient().getPenaltyPoints() + 1);
+        if (quickReservation.getClient().getPenaltyPoints() == 3) {
+            quickReservation.getClient().setBanned(true);
+        }
+        _clientRepository.save(quickReservation.getClient());
+
+        quickReservation.getOwnerCommentary().setAdminApproved(true);
+        quickReservation.getOwnerCommentary().setPenaltyGiven(true);
+        _actionRepository.save(quickReservation);
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("marko76589@gmail.com");
+        message.setTo(quickReservation.getClient().getEmail());
+        message.setSubject("Finished reservation report");
+        if (quickReservation instanceof CottageAction) {
+            message.setText("Cottage owner " + ((CottageAction) quickReservation).getCottage().getCottageOwner().getFirstName() + " " + ((CottageAction) quickReservation).getCottage().getCottageOwner().getLastName() + " gave you 1 penalty point!");
+        }/* else if (quickReservation instanceof BoatAction) {
+            message.setText("Boat owner " + ((BoatAction) quickReservation).getBoat().getBoatOwner().getFirstName() + " " + ((BoatAction) quickReservation).getBoat().getBoatOwner().getLastName() + " gave you 1 penalty point!");
+        }*/
+        _mailSender.send(message);
+
+        SimpleMailMessage message2 = new SimpleMailMessage();
+        message2.setFrom("marko76589@gmail.com");
+        if (quickReservation instanceof CottageAction) {
+            message2.setTo(((CottageAction) quickReservation).getCottage().getCottageOwner().getEmail());
+        }/* else if (quickReservation instanceof BoatAction) {
+            message2.setTo(((BoatAction) quickReservation).getBoat().getBoatOwner().getEmail());
+        }*/
+        message2.setSubject("Finished reservation report");
+        message2.setText("Client " + quickReservation.getClient().getFirstName() + " " + quickReservation.getClient().getLastName() + " was given 1 penalty point!");
+        _mailSender.send(message2);
+    }
+
+    private void throwExceptionIfQuickReservationDoesntExist(Integer quickReservationId) throws EntityNotFoundException {
+        Optional<Action> quickReservation = _actionRepository.findById(quickReservationId);
+        if (!quickReservation.isPresent()) {
+            throw new EntityNotFoundException("Quick reservation doesn't exist!");
+        }
+    }
+
+    private void throwExceptionIfCommentaryNotApprovable(Action quickReservation) throws CommentaryNotApprovableException {
+        if (!(quickReservation.getOwnerCommentary() != null && quickReservation.getOwnerCommentary().isClientCame() && quickReservation.getOwnerCommentary().isSanctionSuggested() && !quickReservation.getOwnerCommentary().isAdminApproved())) {
+            throw new CommentaryNotApprovableException("Commentary can't be approved by admin!");
+        }
+    }
+
+    @Transactional
+    @Override
+    public void quickReservationCommentaryDecline(Integer quickReservationId) throws EntityNotFoundException, NotChangedPasswordException, CommentaryNotApprovableException {
+        throwExceptionIfQuickReservationDoesntExist(quickReservationId);
+        throwExceptionIfAdminDidntChangePassword(getLoggedInAdmin());
+        Action quickReservation = _actionRepository.getById(quickReservationId);
+        throwExceptionIfCommentaryNotApprovable(quickReservation);
+
+        quickReservation.getOwnerCommentary().setAdminApproved(true);
+        quickReservation.getOwnerCommentary().setPenaltyGiven(false);
+        _actionRepository.save(quickReservation);
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("marko76589@gmail.com");
+        if (quickReservation instanceof CottageAction) {
+            message.setTo(((CottageAction) quickReservation).getCottage().getCottageOwner().getEmail());
+        }/* else if (quickReservation instanceof BoatAction) {
+            message.setTo(((BoatAction) quickReservation).getBoat().getBoatOwner().getEmail());
+        }*/
+        message.setSubject("Finished reservation report");
+        message.setText("Client " + quickReservation.getClient().getFirstName() + " " + quickReservation.getClient().getLastName() + " wasn't given any penalty points!");
+        _mailSender.send(message);
     }
 
     @Scheduled(cron="0 0 0 1 1/1 *")

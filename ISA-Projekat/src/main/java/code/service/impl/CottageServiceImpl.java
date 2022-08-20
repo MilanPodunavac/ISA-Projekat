@@ -226,6 +226,7 @@ public class CottageServiceImpl implements CottageService {
         if(res.getCottage().getId().intValue() != cottage.getId().intValue())throw new EntityNotFoundException("Reservation not found in given cottage");
         if(res.getDateRange().getEndDate().getTime() > System.currentTimeMillis()) throw new ReservationOrActionNotFinishedException("Reservation is not finished");
         commentary.setPenaltyGiven(!commentary.isClientCame());
+        commentary.setAdminApproved(false);
         res.setOwnerCommentary(commentary);
         if(!commentary.isClientCame()){
             commentary.setSanctionSuggested(false);
@@ -255,6 +256,7 @@ public class CottageServiceImpl implements CottageService {
         if(act.getRange().getEndDate().getTime() > System.currentTimeMillis()) throw new ReservationOrActionNotFinishedException("Action is not finished");
         if(act.getClient() == null)throw new ReservationOrActionNotFinishedException("This action was not activated");
         commentary.setPenaltyGiven(!commentary.isClientCame());
+        commentary.setAdminApproved(false);
         act.setOwnerCommentary(commentary);
         if(!commentary.isClientCame()){
             commentary.setSanctionSuggested(false);
