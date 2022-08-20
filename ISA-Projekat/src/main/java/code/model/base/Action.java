@@ -28,6 +28,8 @@ public abstract class Action {
     @Column
     protected int price;
     @Column
+    protected int discount;
+    @Column
     protected double systemCharge;
     @Column
     protected double reservationRefund;

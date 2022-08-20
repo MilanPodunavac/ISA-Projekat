@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -28,5 +29,6 @@ public class NewCottageActionDto {
     @NotNull
     private Date validUntilAndIncluding;
     @Min(value = 1, message = "Price must be greater than 0")
-    private int price;
+    @Max(value =50, message = "Maximum discount is 50%")
+    private int discount;
 }
