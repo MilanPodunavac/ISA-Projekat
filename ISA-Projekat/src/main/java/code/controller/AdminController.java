@@ -4,13 +4,13 @@ import code.controller.base.BaseController;
 import code.dto.admin.AdminRegistration;
 import code.dto.admin.PasswordDTO;
 import code.dto.admin.PersonalData;
+import code.dto.entities.NewOwnerCommentaryDto;
 import code.exceptions.admin.*;
-import code.exceptions.entities.EntityNotDeletableException;
-import code.exceptions.entities.EntityNotFoundException;
-import code.exceptions.entities.UnexpectedUserRoleException;
+import code.exceptions.entities.*;
 import code.exceptions.provider_registration.EmailTakenException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.Admin;
+import code.model.base.OwnerCommentary;
 import code.service.*;
 import code.utils.TokenUtils;
 import org.modelmapper.ModelMapper;
@@ -189,5 +189,125 @@ public class AdminController extends BaseController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok("deleted");
+    }
+
+    @PutMapping(value = "/fishingReservation/{reservationId}/commentaryAccept", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> fishingReservationCommentaryAccept(@PathVariable Integer reservationId) {
+        try {
+            _adminService.fishingReservationCommentaryAccept(reservationId);
+            return ResponseEntity.ok("Fishing reservation commentary accepted!");
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (CommentaryNotApprovableException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        } catch (NotChangedPasswordException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @PutMapping(value = "/fishingReservation/{reservationId}/commentaryDecline", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> fishingReservationCommentaryDecline(@PathVariable Integer reservationId) {
+        try {
+            _adminService.fishingReservationCommentaryDecline(reservationId);
+            return ResponseEntity.ok("Fishing reservation commentary declined!");
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (CommentaryNotApprovableException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        } catch (NotChangedPasswordException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @PutMapping(value = "/fishingQuickReservation/{quickReservationId}/commentaryAccept", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> fishingQuickReservationCommentaryAccept(@PathVariable Integer quickReservationId) {
+        try {
+            _adminService.fishingQuickReservationCommentaryAccept(quickReservationId);
+            return ResponseEntity.ok("Fishing reservation commentary accepted!");
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (CommentaryNotApprovableException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        } catch (NotChangedPasswordException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @PutMapping(value = "/fishingQuickReservation/{quickReservationId}/commentaryDecline", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> fishingQuickReservationCommentaryDecline(@PathVariable Integer quickReservationId) {
+        try {
+            _adminService.fishingQuickReservationCommentaryDecline(quickReservationId);
+            return ResponseEntity.ok("Fishing reservation commentary declined!");
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (CommentaryNotApprovableException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        } catch (NotChangedPasswordException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @PutMapping(value = "/reservation/{reservationId}/commentaryAccept", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> reservationCommentaryAccept(@PathVariable Integer reservationId) {
+        try {
+            _adminService.reservationCommentaryAccept(reservationId);
+            return ResponseEntity.ok("Fishing reservation commentary accepted!");
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (CommentaryNotApprovableException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        } catch (NotChangedPasswordException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @PutMapping(value = "/reservation/{reservationId}/commentaryDecline", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> reservationCommentaryDecline(@PathVariable Integer reservationId) {
+        try {
+            _adminService.reservationCommentaryDecline(reservationId);
+            return ResponseEntity.ok("Fishing reservation commentary declined!");
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (CommentaryNotApprovableException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        } catch (NotChangedPasswordException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @PutMapping(value = "/quickReservation/{quickReservationId}/commentaryAccept", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> quickReservationCommentaryAccept(@PathVariable Integer quickReservationId) {
+        try {
+            _adminService.quickReservationCommentaryAccept(quickReservationId);
+            return ResponseEntity.ok("Fishing reservation commentary accepted!");
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (CommentaryNotApprovableException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        } catch (NotChangedPasswordException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @PutMapping(value = "/quickReservation/{quickReservationId}/commentaryDecline", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> quickReservationCommentaryDecline(@PathVariable Integer quickReservationId) {
+        try {
+            _adminService.quickReservationCommentaryDecline(quickReservationId);
+            return ResponseEntity.ok("Fishing reservation commentary declined!");
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (CommentaryNotApprovableException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        } catch (NotChangedPasswordException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
     }
 }

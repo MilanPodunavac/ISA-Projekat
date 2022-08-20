@@ -1,10 +1,15 @@
 package code.controller;
 
 import code.controller.base.BaseController;
+import code.dto.entities.NewOwnerCommentaryDto;
 import code.dto.fishing_trip.EditFishingTrip;
 import code.dto.fishing_trip.NewFishingTrip;
 import code.dto.fishing_trip.NewQuickReservation;
 import code.dto.fishing_trip.NewReservation;
+import code.exceptions.entities.EntityNotFoundException;
+import code.exceptions.entities.EntityNotOwnedException;
+import code.exceptions.entities.ReservationOrActionAlreadyCommented;
+import code.exceptions.entities.ReservationOrActionNotFinishedException;
 import code.exceptions.fishing_trip.EditAnotherInstructorFishingTripException;
 import code.exceptions.fishing_trip.FishingTripHasQuickReservationWithClientException;
 import code.exceptions.fishing_trip.FishingTripHasReservationException;
@@ -14,6 +19,7 @@ import code.exceptions.fishing_trip.reservation.*;
 import code.model.FishingTrip;
 import code.model.FishingTripQuickReservation;
 import code.model.FishingTripReservation;
+import code.model.base.OwnerCommentary;
 import code.service.*;
 import code.utils.TokenUtils;
 import org.modelmapper.ModelMapper;
@@ -141,6 +147,36 @@ public class FishingTripController extends BaseController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (FishingTripReservationTagsDontContainReservationTagException | NoAvailablePeriodForReservationException | InstructorBusyDuringReservationException | FishingTripReservationNumberOfPeopleHigherThanFishingTripMaxPeopleException | ClientBannedException | ClientBusyDuringReservationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
+    }
+
+    @PostMapping(value = "/reservation/{reservationId}/commentary", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
+    public ResponseEntity<String> addReservationCommentary(@PathVariable Integer reservationId, @RequestBody NewOwnerCommentaryDto dto) {
+       try {
+           _fishingTripService.addReservationCommentary(reservationId, _mapper.map(dto, OwnerCommentary.class));
+           return ResponseEntity.ok("Reservation commentary added!");
+       } catch (ReservationOrActionNotFinishedException | ReservationOrActionAlreadyCommented e) {
+           return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+       } catch (EntityNotFoundException e) {
+           return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+       } catch (EntityNotOwnedException e) {
+           return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+       }
+    }
+
+    @PostMapping(value = "/quickReservation/{quickReservationId}/commentary", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
+    public ResponseEntity<String> addQuickReservationCommentary(@PathVariable Integer quickReservationId, @RequestBody NewOwnerCommentaryDto dto) {
+        try {
+            _fishingTripService.addQuickReservationCommentary(quickReservationId, _mapper.map(dto, OwnerCommentary.class));
+            return ResponseEntity.ok("Quick reservation commentary added!");
+        } catch (ReservationOrActionNotFinishedException | ReservationOrActionAlreadyCommented e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (EntityNotOwnedException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
     }
 }

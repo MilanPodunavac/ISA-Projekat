@@ -1,5 +1,6 @@
 package code.model;
 
+import code.model.base.OwnerCommentary;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,4 +43,6 @@ public class FishingTripQuickReservation {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "client_id")
     private Client client;
+    @Embedded
+    protected OwnerCommentary ownerCommentary;
 }

@@ -70,15 +70,15 @@ INSERT INTO FISHING_TRIP_PICTURE (name, fishing_trip_id) VALUES ('fishing_trip_1
 INSERT INTO FISHING_INSTRUCTOR_AVAILABLE_PERIOD (available_from, available_to, fishing_instructor_id) VALUES('2023-09-05', '2023-12-05', 5);
 INSERT INTO FISHING_INSTRUCTOR_AVAILABLE_PERIOD (available_from, available_to, fishing_instructor_id) VALUES('2023-09-05', '2023-12-05', 9);
 
-INSERT INTO FISHING_TRIP_QUICK_RESERVATION (duration_in_days, max_people, price, start, valid_until_and_including, fishing_trip_id, location_id) VALUES(3, 5, 200, '2023-09-10', '2023-09-08', 1, 13);
-INSERT INTO FISHING_TRIP_QUICK_RESERVATION (duration_in_days, max_people, price, start, valid_until_and_including, fishing_trip_id, location_id) VALUES(3, 8, 300, '2023-09-20', '2023-09-08', 2, 14);
+INSERT INTO FISHING_TRIP_QUICK_RESERVATION (duration_in_days, max_people, price, start, valid_until_and_including, fishing_trip_id, location_id, client_id, admin_approved, client_came, commentary, penalty_given, sanction_suggested) VALUES(3, 5, 200, '2021-09-10', '2023-09-08', 1, 13, 2, false, true, 'ekstra', false, true);
+INSERT INTO FISHING_TRIP_QUICK_RESERVATION (duration_in_days, max_people, price, start, valid_until_and_including, fishing_trip_id, location_id) VALUES(3, 8, 300, '2021-09-20', '2023-09-08', 2, 14);
 INSERT INTO FISHING_TRIP_QUICK_RESERVATION (duration_in_days, max_people, price, start, valid_until_and_including, fishing_trip_id, location_id) VALUES(3, 2, 400, '2023-09-10', '2023-09-08', 3, 15);
 
 INSERT INTO FISHING_TRIP_QUICK_RESERVATION_TAGS (fishing_trip_quick_reservation_id, tags) VALUES (1, 2);
 INSERT INTO FISHING_TRIP_QUICK_RESERVATION_TAGS (fishing_trip_quick_reservation_id, tags) VALUES (2, 0);
 INSERT INTO FISHING_TRIP_QUICK_RESERVATION_TAGS (fishing_trip_quick_reservation_id, tags) VALUES (3, 3);
 
-INSERT INTO FISHING_TRIP_RESERVATION (duration_in_days, number_of_people, price, start, client_id, fishing_trip_id) VALUES(5, 3, 500, '2023-10-10', 2, 1);
+INSERT INTO FISHING_TRIP_RESERVATION (duration_in_days, number_of_people, price, start, client_id, fishing_trip_id, admin_approved, client_came, commentary, penalty_given, sanction_suggested) VALUES(5, 3, 500, '2021-10-10', 2, 1, false, true, 'ekstra', false, true);
 INSERT INTO FISHING_TRIP_RESERVATION (duration_in_days, number_of_people, price, start, client_id, fishing_trip_id) VALUES(2, 9, 400, '2023-10-15', 8, 2);
 INSERT INTO FISHING_TRIP_RESERVATION (duration_in_days, number_of_people, price, start, client_id, fishing_trip_id) VALUES(8, 2, 1200, '2023-10-15', 2, 3);
 

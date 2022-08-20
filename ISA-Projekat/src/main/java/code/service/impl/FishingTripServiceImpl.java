@@ -1,9 +1,14 @@
 package code.service.impl;
 
+import code.exceptions.entities.EntityNotFoundException;
+import code.exceptions.entities.EntityNotOwnedException;
+import code.exceptions.entities.ReservationOrActionAlreadyCommented;
+import code.exceptions.entities.ReservationOrActionNotFinishedException;
 import code.exceptions.fishing_trip.*;
 import code.exceptions.fishing_trip.quick_reservation.*;
 import code.exceptions.fishing_trip.reservation.*;
 import code.model.*;
+import code.model.base.OwnerCommentary;
 import code.repository.*;
 import code.service.FishingTripService;
 import code.service.UserService;
@@ -30,16 +35,18 @@ public class FishingTripServiceImpl implements FishingTripService {
     private final FishingInstructorAvailablePeriodRepository _fishingInstructorAvailablePeriodRepository;
     private final FishingTripQuickReservationRepository _fishingTripQuickReservationRepository;
     private final FishingTripReservationRepository _fishingTripReservationRepository;
+    private final ClientRepository _clientRepository;
     private final UserService _userService;
     private final JavaMailSender _mailSender;
 
-    public FishingTripServiceImpl(FishingTripPictureRepository fishingTripPictureRepository, FishingTripRepository fishingTripRepository, FishingInstructorAvailablePeriodRepository fishingInstructorAvailablePeriodRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, FishingTripReservationRepository fishingTripReservationRepository, UserService userService, JavaMailSender mailSender) {
+    public FishingTripServiceImpl(FishingTripPictureRepository fishingTripPictureRepository, FishingTripRepository fishingTripRepository, FishingInstructorAvailablePeriodRepository fishingInstructorAvailablePeriodRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, FishingTripReservationRepository fishingTripReservationRepository, ClientRepository clientRepository, UserService userService, JavaMailSender mailSender) {
         this._fishingTripPictureRepository = fishingTripPictureRepository;
         this._fishingTripRepository = fishingTripRepository;
         this._fishingInstructorAvailablePeriodRepository = fishingInstructorAvailablePeriodRepository;
         this._fishingTripQuickReservationRepository = fishingTripQuickReservationRepository;
         this._fishingTripReservationRepository = fishingTripReservationRepository;
         this._userService = userService;
+        this._clientRepository = clientRepository;
         this._mailSender = mailSender;
     }
 
@@ -436,5 +443,109 @@ public class FishingTripServiceImpl implements FishingTripService {
         message.setSubject("Reservation created");
         message.setText("Instructor " + loggedInInstructor.getFirstName() + " " + loggedInInstructor.getLastName() + " created reservation for you!");
         _mailSender.send(message);
+    }
+
+    @Transactional
+    @Override
+    public void addReservationCommentary(Integer reservationId, OwnerCommentary ownerCommentary) throws EntityNotFoundException, EntityNotOwnedException, ReservationOrActionAlreadyCommented, ReservationOrActionNotFinishedException {
+        throwExceptionIfReservationDoesntExist(reservationId);
+        FishingTripReservation fishingTripReservation = _fishingTripReservationRepository.getById(reservationId);
+        throwExceptionIfReservationDoesntBelongToLoggedInInstructor(fishingTripReservation);
+        throwExceptionIfReservationNotFinished(fishingTripReservation);
+        throwExceptionIfReservationAlreadyCommented(fishingTripReservation);
+
+        ownerCommentary.setPenaltyGiven(!ownerCommentary.isClientCame());
+        ownerCommentary.setAdminApproved(false);
+        fishingTripReservation.setOwnerCommentary(ownerCommentary);
+
+        if (!ownerCommentary.isClientCame()) {
+            fishingTripReservation.getOwnerCommentary().setSanctionSuggested(false);
+            fishingTripReservation.getClient().setPenaltyPoints(fishingTripReservation.getClient().getPenaltyPoints() + 1);
+            if (fishingTripReservation.getClient().getPenaltyPoints() == 3) {
+                fishingTripReservation.getClient().setBanned(true);
+            }
+            _clientRepository.save(fishingTripReservation.getClient());
+        }
+
+        _fishingTripReservationRepository.save(fishingTripReservation);
+    }
+
+    private void throwExceptionIfReservationDoesntExist(Integer reservationId) throws EntityNotFoundException {
+        Optional<FishingTripReservation> fishingTripReservation = _fishingTripReservationRepository.findById(reservationId);
+        if (!fishingTripReservation.isPresent()) {
+            throw new EntityNotFoundException("Reservation doesn't exist!");
+        }
+    }
+
+    private void throwExceptionIfReservationDoesntBelongToLoggedInInstructor(FishingTripReservation fishingTripReservation) throws EntityNotOwnedException {
+        List<Integer> instructorFishingTripIds = _fishingTripRepository.findByFishingInstructor(getLoggedInFishingInstructor().getId());
+        List<FishingTripReservation> instructorReservations = _fishingTripReservationRepository.findByFishingTripIdIn(instructorFishingTripIds);
+        if (!instructorReservations.contains(fishingTripReservation)) {
+            throw new EntityNotOwnedException("Reservation doesn't belong to logged in instructor!");
+        }
+    }
+
+    private void throwExceptionIfReservationNotFinished(FishingTripReservation fishingTripReservation) throws ReservationOrActionNotFinishedException {
+        if (fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays()).isAfter(LocalDate.now())) {
+            throw new ReservationOrActionNotFinishedException("Reservation not finished!");
+        }
+    }
+
+    private void throwExceptionIfReservationAlreadyCommented(FishingTripReservation fishingTripReservation) throws ReservationOrActionAlreadyCommented {
+        if (fishingTripReservation.getOwnerCommentary() != null) {
+            throw new ReservationOrActionAlreadyCommented("Reservation already commented!");
+        }
+    }
+
+    @Transactional
+    @Override
+    public void addQuickReservationCommentary(Integer quickReservationId, OwnerCommentary ownerCommentary) throws EntityNotFoundException, EntityNotOwnedException, ReservationOrActionNotFinishedException, ReservationOrActionAlreadyCommented {
+        throwExceptionIfQuickReservationDoesntExist(quickReservationId);
+        FishingTripQuickReservation fishingTripQuickReservation = _fishingTripQuickReservationRepository.getById(quickReservationId);
+        throwExceptionIfQuickReservationDoesntBelongToLoggedInInstructor(fishingTripQuickReservation);
+        throwExceptionIfQuickReservationNotFinished(fishingTripQuickReservation);
+        throwExceptionIfQuickReservationAlreadyCommented(fishingTripQuickReservation);
+
+        ownerCommentary.setPenaltyGiven(!ownerCommentary.isClientCame());
+        ownerCommentary.setAdminApproved(false);
+        fishingTripQuickReservation.setOwnerCommentary(ownerCommentary);
+
+        if (!ownerCommentary.isClientCame()) {
+            fishingTripQuickReservation.getOwnerCommentary().setSanctionSuggested(false);
+            fishingTripQuickReservation.getClient().setPenaltyPoints(fishingTripQuickReservation.getClient().getPenaltyPoints() + 1);
+            if (fishingTripQuickReservation.getClient().getPenaltyPoints() == 3) {
+                fishingTripQuickReservation.getClient().setBanned(true);
+            }
+            _clientRepository.save(fishingTripQuickReservation.getClient());
+        }
+
+        _fishingTripQuickReservationRepository.save(fishingTripQuickReservation);
+    }
+
+    private void throwExceptionIfQuickReservationDoesntExist(Integer quickReservationId) throws EntityNotFoundException {
+        Optional<FishingTripQuickReservation> fishingTripQuickReservation = _fishingTripQuickReservationRepository.findById(quickReservationId);
+        if (!fishingTripQuickReservation.isPresent()) {
+            throw new EntityNotFoundException("Quick reservation doesn't exist!");
+        }
+    }
+
+    private void throwExceptionIfQuickReservationDoesntBelongToLoggedInInstructor(FishingTripQuickReservation fishingTripQuickReservation) throws EntityNotOwnedException {
+        List<Integer> instructorFishingTripIds = _fishingTripRepository.findByFishingInstructor(getLoggedInFishingInstructor().getId());
+        List<FishingTripQuickReservation> instructorQuickReservations = _fishingTripQuickReservationRepository.findByFishingTripIdIn(instructorFishingTripIds);
+        if (!instructorQuickReservations.contains(fishingTripQuickReservation)) {
+            throw new EntityNotOwnedException("Quick reservation doesn't belong to logged in instructor!");
+        }
+    }
+
+    private void throwExceptionIfQuickReservationNotFinished(FishingTripQuickReservation fishingTripQuickReservation) throws ReservationOrActionNotFinishedException {
+        if (fishingTripQuickReservation.getClient() == null || fishingTripQuickReservation.getStart().plusDays(fishingTripQuickReservation.getDurationInDays()).isAfter(LocalDate.now())) {
+            throw new ReservationOrActionNotFinishedException("Quick reservation not finished or doesn't have a client!");
+        }
+    }
+
+    private void throwExceptionIfQuickReservationAlreadyCommented(FishingTripQuickReservation fishingTripQuickReservation) throws ReservationOrActionAlreadyCommented {
+        if (fishingTripQuickReservation.getOwnerCommentary() != null) {
+            throw new ReservationOrActionAlreadyCommented("Quick reservation already commented!");
+        }
     }
 }
