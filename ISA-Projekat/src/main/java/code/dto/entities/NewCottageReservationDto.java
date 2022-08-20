@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -28,4 +29,6 @@ public class NewCottageReservationDto {
     @Min(value = 1, message = "Number of days must be greater than 0")
     public int numberOfDays;
     public List<CottageReservationTag> cottageReservationTag;
+    @Max(value =50, message = "Maximum refund is 50%")
+    private double reservationRefund;
 }

@@ -1,6 +1,7 @@
 package code.model.base;
 
 import code.exceptions.entities.AvailabilityPeriodBadRangeException;
+import code.exceptions.entities.ClientCancelledThisPeriodException;
 import code.model.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -48,7 +49,7 @@ public abstract class SaleEntity {
       availabilityPeriods.add(period);
    }
 
-   public boolean addReservation (Reservation reservation){
+   public boolean addReservation (Reservation reservation) throws ClientCancelledThisPeriodException {
       reservation.setPrice(pricePerDay * reservation.getDateRange().getDays());
       for (AvailabilityPeriod period: availabilityPeriods) {
          if(period.addReservation(reservation) == true) return true;
@@ -57,6 +58,7 @@ public abstract class SaleEntity {
    }
 
    public boolean addAction (Action action){
+      action.setPrice((int) ((action.getRange().getDays() * pricePerDay)*(1 - ((double)action.getDiscount()/100))));
       for(AvailabilityPeriod period : availabilityPeriods){
          if(period.addAction(action) == true)return true;
       }

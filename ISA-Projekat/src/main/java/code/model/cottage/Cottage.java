@@ -1,5 +1,6 @@
 package code.model.cottage;
 
+import code.exceptions.entities.ClientCancelledThisPeriodException;
 import code.exceptions.entities.InvalidReservationException;
 import code.model.Client;
 import code.model.Review;
@@ -34,7 +35,7 @@ public class Cottage extends SaleEntity {
    @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "cottageOwner_id")
    private CottageOwner cottageOwner;
-   public boolean addReservation(CottageReservation reservation) throws InvalidReservationException {
+   public boolean addReservation(CottageReservation reservation) throws InvalidReservationException, ClientCancelledThisPeriodException {
       for(CottageReservationTag tag : reservation.getCottageReservationTag()){
          if(!additionalServices.contains(tag))throw new InvalidReservationException("Additional service not supported");
       }
@@ -42,7 +43,10 @@ public class Cottage extends SaleEntity {
       return super.addReservation(reservation);
    }
 
-   public boolean addAction(CottageAction newAction){
+   public boolean addAction(CottageAction newAction) throws InvalidReservationException {
+      for(CottageReservationTag tag : newAction.getAdditionalServices()){
+         if(!additionalServices.contains(tag))throw new InvalidReservationException("Additional service not supported");
+      }
       newAction.setCottage(this);
       return super.addAction(newAction);
    }

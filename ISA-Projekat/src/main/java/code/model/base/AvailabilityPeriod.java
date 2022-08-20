@@ -1,6 +1,7 @@
 package code.model.base;
 
 
+import code.exceptions.entities.ClientCancelledThisPeriodException;
 import code.model.wrappers.DateRange;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,8 +41,13 @@ public class AvailabilityPeriod {
         }
         return true;
     }
-    public boolean addReservation(Reservation reservation){
+    public boolean addReservation(Reservation reservation) throws ClientCancelledThisPeriodException {
         if(isAvailable(reservation.getDateRange())){
+            for(Reservation res : reservations){
+                if(res.getReservationStatus() == ReservationStatus.cancelled && res.getClient().getId().intValue() == reservation.getClient().getId().intValue() && res.getDateRange().overlapsWith(reservation.getDateRange())){
+                    throw new ClientCancelledThisPeriodException("Client cancelled this period before");
+                }
+            }
             reservation.setAvailabilityPeriod(this);
             reservation.setReservationStatus(ReservationStatus.reserved);
             reservations.add(reservation);
@@ -53,7 +59,7 @@ public class AvailabilityPeriod {
     public boolean addAction(Action action){
         if(isAvailable(action.getRange())){
             action.setAvailabilityPeriod(this);
-            action.setReserved(true);
+            action.setReserved(false);
             actions.add(action);
             return true;
         }

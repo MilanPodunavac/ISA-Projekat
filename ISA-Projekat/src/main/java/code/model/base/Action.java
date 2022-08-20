@@ -32,7 +32,7 @@ public abstract class Action {
     @Column
     protected double systemCharge;
     @Column
-    protected double reservationRefund;
+    protected double actionRefund;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "client_id")
     protected Client client;

@@ -101,7 +101,7 @@ public class CottageController extends BaseController {
         }catch(Exception ex){
             if(ex instanceof EntityNotOwnedException || ex instanceof UnauthorizedAccessException)return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
             if(ex instanceof EntityNotFoundException || ex instanceof UserNotFoundException)return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-            if(ex instanceof EntityNotAvailableException)return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+            if(ex instanceof EntityNotAvailableException || ex instanceof InvalidReservationException || ex instanceof ClientCancelledThisPeriodException)return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
             return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
         }
         return ResponseEntity.ok("Reservation added");
@@ -126,7 +126,7 @@ public class CottageController extends BaseController {
         } catch (Exception ex) {
             if(ex instanceof EntityNotOwnedException || ex instanceof UnauthorizedAccessException)return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
             if(ex instanceof EntityNotFoundException || ex instanceof UserNotFoundException)return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-            if(ex instanceof EntityNotAvailableException)return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+            if(ex instanceof EntityNotAvailableException || ex instanceof InvalidReservationException || ex instanceof ClientCancelledThisPeriodException)return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
             return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
         }
         return ResponseEntity.ok("Action added");

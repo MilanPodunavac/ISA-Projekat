@@ -39,10 +39,15 @@ INSERT INTO ACCOUNT_DELETION_REQUEST (text, user_id) VALUES ('molim te', 5);
 INSERT INTO COTTAGE (id, description, name, rules, location_id, bed_number, room_number, cottage_owner_id, price_per_day) VALUES (1, 'cottage', 'cottage', 'rules', 16, 2, 2, 7, 100);
 INSERT INTO COTTAGE (id, description, name, rules, location_id, bed_number, room_number, cottage_owner_id, price_per_day) VALUES (2, 'cottage', 'cottage', 'rules', 17, 2, 2, 7, 100);
 
+INSERT INTO COTTAGE_ADDITIONAL_SERVICES (cottage_id, tags) VALUES (1, 0);
+INSERT INTO COTTAGE_ADDITIONAL_SERVICES (cottage_id, tags) VALUES (1, 3);
+INSERT INTO COTTAGE_ADDITIONAL_SERVICES (cottage_id, tags) VALUES (1, 2);
+INSERT INTO COTTAGE_ADDITIONAL_SERVICES (cottage_id, tags) VALUES (1, 1);
+
 INSERT INTO AVAILABILITY_PERIOD (id, end_date, start_date, sale_entity_id) VALUES(1, '2022-04-30 00:00:00', '2022-04-1 00:00:00', 1);
 INSERT INTO AVAILABILITY_PERIOD (id, end_date, start_date, sale_entity_id) VALUES(2, '2022-10-30 00:00:00', '2022-10-1 00:00:00', 1);
 
-INSERT INTO COTTAGE_RESERVATION (id, end_date, start_date, number_of_people, price, reservation_refund, reservation_status, system_charge, availability_period_id, client_id, cottage_id) VALUES (1, '2022-04-10 00:00:00', '2022-04-1 00:00:00', 4, 6, 2, 0, 3, 1, 2, 1);
+INSERT INTO COTTAGE_RESERVATION (id, end_date, start_date, number_of_people, price, reservation_refund, reservation_status, system_charge, availability_period_id, client_id, cottage_id) VALUES (1, '2022-04-10 00:00:00', '2022-04-1 00:00:00', 4, 6, 2, 1, 3, 1, 2, 1);
 
 INSERT INTO COTTAGE_RESERVATION_TAGS (cottage_reservation_id, tags) VALUES (1, 1);
 

@@ -76,7 +76,7 @@ public class CottageServiceImpl implements CottageService {
     }
 
     @Override
-    public void addReservation(String clientEmail, int cottageId, CottageReservation reservation, String email) throws EntityNotFoundException, UserNotFoundException, InvalidReservationException, EntityNotOwnedException, EntityNotAvailableException, UnauthorizedAccessException {
+    public void addReservation(String clientEmail, int cottageId, CottageReservation reservation, String email) throws EntityNotFoundException, UserNotFoundException, InvalidReservationException, EntityNotOwnedException, EntityNotAvailableException, UnauthorizedAccessException, ClientCancelledThisPeriodException {
         CottageOwner owner;
         try{
              owner = (CottageOwner) _userRepository.findByEmail(email);
@@ -137,7 +137,7 @@ public class CottageServiceImpl implements CottageService {
         _cottageRepository.delete(cottage);
     }
     @Override
-    public void addAction(String ownerEmail, int cottageId, CottageAction action) throws UnauthorizedAccessException, EntityNotFoundException, EntityNotOwnedException, EntityNotAvailableException {
+    public void addAction(String ownerEmail, int cottageId, CottageAction action) throws UnauthorizedAccessException, EntityNotFoundException, EntityNotOwnedException, EntityNotAvailableException, InvalidReservationException {
         CottageOwner owner;
         try{
             owner = (CottageOwner) _userRepository.findByEmail(ownerEmail);
