@@ -10,6 +10,8 @@ import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.*;
 import code.model.base.Action;
 import code.model.base.Reservation;
+import code.model.boat.BoatOwner;
+import code.model.boat.BoatReservation;
 import code.model.cottage.CottageAction;
 import code.model.cottage.CottageOwner;
 import code.model.cottage.CottageReservation;

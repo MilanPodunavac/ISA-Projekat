@@ -2,6 +2,9 @@ package code.controller;
 
 import code.controller.base.BaseController;
 import code.dto.entities.*;
+import code.dto.entities.cottage.CottageDto;
+import code.dto.entities.cottage.NewCottageActionDto;
+import code.dto.entities.cottage.NewCottageReservationDto;
 import code.exceptions.entities.*;
 import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;

@@ -1,4 +1,4 @@
-package code.model;
+package code.model.boat;
 
 
 public enum BoatReservationTag {

@@ -2,6 +2,7 @@ package code.service.impl;
 
 import code.exceptions.provider_registration.EmailTakenException;
 import code.model.*;
+import code.model.boat.BoatOwner;
 import code.repository.BoatOwnerRepository;
 import code.service.BoatOwnerService;
 import code.service.RoleService;

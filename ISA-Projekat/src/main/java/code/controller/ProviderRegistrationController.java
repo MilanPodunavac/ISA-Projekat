@@ -8,7 +8,7 @@ import code.exceptions.provider_registration.EmailTakenException;
 import code.exceptions.provider_registration.NotProviderException;
 import code.exceptions.provider_registration.UserAccountActivatedException;
 import code.exceptions.provider_registration.UserNotFoundException;
-import code.model.BoatOwner;
+import code.model.boat.BoatOwner;
 import code.model.cottage.CottageOwner;
 import code.model.FishingInstructor;
 import code.service.BoatOwnerService;

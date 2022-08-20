@@ -1,4 +1,4 @@
-package code.dto.entities;
+package code.dto.entities.cottage;
 
 import code.model.cottage.CottageReservationTag;
 import lombok.AllArgsConstructor;

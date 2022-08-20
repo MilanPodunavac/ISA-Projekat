@@ -11,6 +11,7 @@ import code.exceptions.provider_registration.NotProviderException;
 import code.exceptions.provider_registration.UserAccountActivatedException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.*;
+import code.model.boat.BoatOwner;
 import code.model.cottage.CottageOwner;
 
 import java.util.List;

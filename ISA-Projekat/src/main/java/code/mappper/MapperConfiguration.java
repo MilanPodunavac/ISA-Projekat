@@ -2,9 +2,10 @@ package code.mappper;
 
 import code.dto.admin.AdminRegistration;
 import code.dto.admin.PersonalData;
-import code.dto.entities.NewCottageActionDto;
-import code.dto.entities.CottageDto;
-import code.dto.entities.NewCottageReservationDto;
+import code.dto.entities.boat.BoatDto;
+import code.dto.entities.cottage.NewCottageActionDto;
+import code.dto.entities.cottage.CottageDto;
+import code.dto.entities.cottage.NewCottageReservationDto;
 import code.dto.entities.NewOwnerCommentaryDto;
 import code.dto.fishing_trip.EditFishingTrip;
 import code.dto.fishing_trip.NewFishingTrip;
@@ -14,6 +15,8 @@ import code.dto.provider_registration.ProviderRegistrationRequest;
 import code.dto.user.UpdateUserPersonalInfoDto;
 import code.model.*;
 import code.model.base.OwnerCommentary;
+import code.model.boat.Boat;
+import code.model.boat.BoatOwner;
 import code.model.cottage.Cottage;
 import code.model.cottage.CottageAction;
 import code.model.cottage.CottageOwner;
@@ -216,6 +219,20 @@ public class MapperConfiguration {
         //NewOwnerCommentaryDto -> OwnerCommentart
 
         modelMapper.createTypeMap(NewOwnerCommentaryDto.class, OwnerCommentary.class);
+
+        //BoatDto
+
+        PropertyMap<BoatDto, Boat> boatDtoToBoatPropertyMap = new PropertyMap<BoatDto, Boat>(){
+            protected void configure(){
+                map().getLocation().setStreetName(source.getStreetName());
+                map().getLocation().setCityName(source.getCityName());
+                map().getLocation().setCountryName(source.getCountryName());
+                map().getLocation().setLatitude(source.getLatitude());
+                map().getLocation().setLongitude(source.getLongitude());
+            }
+        };
+        TypeMap<BoatDto, Boat> boatDtoToBoat = modelMapper.createTypeMap(BoatDto.class, Boat.class);
+        boatDtoToBoat.addMappings(boatDtoToBoatPropertyMap);
 
         return modelMapper;
     }
