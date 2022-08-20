@@ -98,4 +98,4 @@ INSERT INTO BOAT (id, description, name, price_per_day, rules, location_id, engi
 INSERT INTO AVAILABILITY_PERIOD (id, end_date, start_date, sale_entity_id) VALUES(3, '2022-04-30 00:00:00', '2022-04-1 00:00:00', 10);
 INSERT INTO AVAILABILITY_PERIOD (id, end_date, start_date, sale_entity_id) VALUES(4, '2022-10-30 00:00:00', '2022-10-1 00:00:00', 10);
 
-INSERT INTO BOAT_RESERVATION (id, end_date, start_date, number_of_people, price, reservation_refund, reservation_status, system_charge, availability_period_id, client_id, boat_id) VALUES (1, '2022-04-12 00:00:00', '2022-04-11 00:00:00', 2, 6, 2, 1, 3, 3, 10, 10);
+INSERT INTO BOAT_RESERVATION (id, end_date, start_date, number_of_people, price, reservation_refund, reservation_status, system_charge, availability_period_id, client_id, boat_id) VALUES (14, '2022-04-12 00:00:00', '2022-04-11 00:00:00', 2, 6, 2, 1, 3, 3, 10, 10);
