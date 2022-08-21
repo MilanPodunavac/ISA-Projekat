@@ -28,9 +28,9 @@ public class FishingTrip {
    @Column
    private Integer maxPeople;
    @Column
-   private Integer costPerDay;
+   private double costPerDay;
    @Column
-   private Integer percentageInstructorKeepsIfReservationCancelled;
+   private double percentageInstructorKeepsIfReservationCancelled;
    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    @JoinColumn(name="location_id")
    private Location location;

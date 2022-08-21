@@ -11,7 +11,6 @@ import code.model.*;
 import code.model.base.Action;
 import code.model.base.OwnerCommentary;
 import code.model.base.Reservation;
-import code.model.cottage.CottageReservation;
 import code.repository.*;
 import code.service.FishingTripService;
 import code.service.UserService;
@@ -43,9 +42,11 @@ public class FishingTripServiceImpl implements FishingTripService {
     private final UserService _userService;
     private final ReservationRepository _reservationRepository;
     private final ActionRepository _actionRepository;
+    private final CurrentSystemTaxPercentageRepository _currentSystemTaxPercentageRepository;
+    private final IncomeRecordRepository _incomeRecordRepository;
     private final JavaMailSender _mailSender;
 
-    public FishingTripServiceImpl(FishingTripPictureRepository fishingTripPictureRepository, FishingTripRepository fishingTripRepository, FishingInstructorAvailablePeriodRepository fishingInstructorAvailablePeriodRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, FishingTripReservationRepository fishingTripReservationRepository, ClientRepository clientRepository, UserService userService, ReservationRepository reservationRepository, ActionRepository actionRepository, JavaMailSender mailSender) {
+    public FishingTripServiceImpl(FishingTripPictureRepository fishingTripPictureRepository, FishingTripRepository fishingTripRepository, FishingInstructorAvailablePeriodRepository fishingInstructorAvailablePeriodRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, FishingTripReservationRepository fishingTripReservationRepository, ClientRepository clientRepository, UserService userService, ReservationRepository reservationRepository, ActionRepository actionRepository, CurrentSystemTaxPercentageRepository currentSystemTaxPercentageRepository, IncomeRecordRepository incomeRecordRepository, JavaMailSender mailSender) {
         this._fishingTripPictureRepository = fishingTripPictureRepository;
         this._fishingTripRepository = fishingTripRepository;
         this._fishingInstructorAvailablePeriodRepository = fishingInstructorAvailablePeriodRepository;
@@ -55,6 +56,8 @@ public class FishingTripServiceImpl implements FishingTripService {
         this._clientRepository = clientRepository;
         this._reservationRepository = reservationRepository;
         this._actionRepository = actionRepository;
+        this._currentSystemTaxPercentageRepository = currentSystemTaxPercentageRepository;
+        this._incomeRecordRepository = incomeRecordRepository;
         this._mailSender = mailSender;
     }
 
@@ -236,6 +239,7 @@ public class FishingTripServiceImpl implements FishingTripService {
         throwExceptionIfNoAvailablePeriodForQuickReservation(loggedInInstructor, fishingTripQuickReservation);
         throwExceptionIfInstructorBusyDuringReservation(loggedInInstructor, fishingTripQuickReservation);
         fishingTripQuickReservation.setFishingTrip(fishingTrip);
+        fishingTripQuickReservation.setSystemTaxPercentage(_currentSystemTaxPercentageRepository.getById(1).getCurrentSystemTaxPercentage());
         _fishingTripQuickReservationRepository.save(fishingTripQuickReservation);
         sendQuickReservationCreatedMailToSubscribers(loggedInInstructor);
     }
@@ -357,8 +361,10 @@ public class FishingTripServiceImpl implements FishingTripService {
         fishingTripReservation.setFishingTrip(fishingTrip);
         fishingTripReservation.setClient((Client) _userService.findById(clientId));
         fishingTripReservation.setPrice(fishingTrip.getCostPerDay() * fishingTripReservation.getDurationInDays());
+        fishingTripReservation.setSystemTaxPercentage(_currentSystemTaxPercentageRepository.getById(1).getCurrentSystemTaxPercentage());
         _fishingTripReservationRepository.save(fishingTripReservation);
         sendReservationCreatedMailToClient(clientId, loggedInInstructor);
+        createIncomeRecord(fishingTripReservation, fishingTrip, loggedInInstructor);
     }
 
     private void throwExceptionIfAddReservationToAnotherInstructorFishingTrip(FishingInstructor loggedInInstructor, FishingTrip fishingTrip) throws AddReservationToAnotherInstructorFishingTripException {
@@ -469,6 +475,22 @@ public class FishingTripServiceImpl implements FishingTripService {
         message.setSubject("Reservation created");
         message.setText("Instructor " + loggedInInstructor.getFirstName() + " " + loggedInInstructor.getLastName() + " created reservation for you!");
         _mailSender.send(message);
+    }
+
+    private void createIncomeRecord(FishingTripReservation fishingTripReservation, FishingTrip fishingTrip, FishingInstructor loggedInInstructor) {
+        IncomeRecord incomeRecord = new IncomeRecord();
+        incomeRecord.setReserved(true);
+        incomeRecord.setDateOfEntry(LocalDate.now());
+        incomeRecord.setReservationOwner(loggedInInstructor);
+        incomeRecord.setReservationStart(fishingTripReservation.getStart());
+        incomeRecord.setReservationEnd(fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1));
+        incomeRecord.setReservationPrice(fishingTripReservation.getPrice());
+        incomeRecord.setSystemTaxPercentage(_currentSystemTaxPercentageRepository.getById(1).getCurrentSystemTaxPercentage());
+        incomeRecord.setPercentageOwnerKeepsIfReservationCancelled(fishingTrip.getPercentageInstructorKeepsIfReservationCancelled());
+        double systemIncome = incomeRecord.getReservationPrice() * incomeRecord.getSystemTaxPercentage() / 100;
+        incomeRecord.setSystemIncome(systemIncome);
+        incomeRecord.setOwnerIncome(incomeRecord.getReservationPrice() - systemIncome);
+        _incomeRecordRepository.save(incomeRecord);
     }
 
     @Transactional

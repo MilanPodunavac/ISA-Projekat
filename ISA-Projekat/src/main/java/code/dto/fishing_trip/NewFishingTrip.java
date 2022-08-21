@@ -31,11 +31,11 @@ public class NewFishingTrip {
     private Integer maxPeople;
     @NotNull(message = "Cost per day is required")
     @Min(value = 1, message = "Cost per day must be at least 1")
-    private Integer costPerDay;
+    private double costPerDay;
     @NotNull(message = "Percentage instructor keeps if reservation is cancelled is required")
     @Min(value = 0, message = "Percentage instructor keeps if reservation is cancelled must be at least 0")
     @Max(value = 100, message = "Percentage instructor keeps if reservation is cancelled can't be higher than 100")
-    private Integer percentageInstructorKeepsIfReservationCancelled;
+    private double percentageInstructorKeepsIfReservationCancelled;
     @NotBlank(message = "Address is required")
     private String address;
     @NotBlank(message = "City is required")

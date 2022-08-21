@@ -98,7 +98,7 @@ public class CottageServiceTest {
     }
 
     @Test
-    public void addReservationSuccess() throws AvailabilityPeriodBadRangeException, UserNotFoundException, EntityNotAvailableException, InvalidReservationException, EntityNotFoundException, EntityNotOwnedException, UnauthorizedAccessException {
+    public void addReservationSuccess() throws AvailabilityPeriodBadRangeException, UserNotFoundException, EntityNotAvailableException, InvalidReservationException, EntityNotFoundException, EntityNotOwnedException, UnauthorizedAccessException, ClientCancelledThisPeriodException {
         //ARRANGE
         CottageOwner cottageOwner = getMockCottageOwner();
         Cottage cottage = getMockCottage(cottageOwner);
@@ -125,7 +125,7 @@ public class CottageServiceTest {
     }
 
     @Test(expected = InvalidReservationException.class)
-    public void addReservationNotEnoughBeds() throws AvailabilityPeriodBadRangeException, UserNotFoundException, EntityNotAvailableException, InvalidReservationException, EntityNotFoundException, EntityNotOwnedException, UnauthorizedAccessException {
+    public void addReservationNotEnoughBeds() throws AvailabilityPeriodBadRangeException, UserNotFoundException, EntityNotAvailableException, InvalidReservationException, EntityNotFoundException, EntityNotOwnedException, UnauthorizedAccessException, ClientCancelledThisPeriodException {
         //ARRANGE
         CottageOwner cottageOwner = getMockCottageOwner();
         Cottage cottage = getMockCottage(cottageOwner);
@@ -145,7 +145,7 @@ public class CottageServiceTest {
     }
 
     @Test(expected = EntityNotAvailableException.class)
-    public void addReservationNotAvailable() throws AvailabilityPeriodBadRangeException, UserNotFoundException, EntityNotAvailableException, InvalidReservationException, EntityNotFoundException, EntityNotOwnedException, UnauthorizedAccessException {
+    public void addReservationNotAvailable() throws AvailabilityPeriodBadRangeException, UserNotFoundException, EntityNotAvailableException, InvalidReservationException, EntityNotFoundException, EntityNotOwnedException, UnauthorizedAccessException, ClientCancelledThisPeriodException {
         //ARRANGE
         CottageOwner cottageOwner = getMockCottageOwner();
         Cottage cottage = getMockCottage(cottageOwner);
@@ -166,7 +166,7 @@ public class CottageServiceTest {
     }
 
     @Test(expected = InvalidReservationException.class)
-    public void addReservationNoAdditionalService() throws AvailabilityPeriodBadRangeException, UserNotFoundException, EntityNotAvailableException, InvalidReservationException, EntityNotFoundException, EntityNotOwnedException, UnauthorizedAccessException {
+    public void addReservationNoAdditionalService() throws AvailabilityPeriodBadRangeException, UserNotFoundException, EntityNotAvailableException, InvalidReservationException, EntityNotFoundException, EntityNotOwnedException, UnauthorizedAccessException, ClientCancelledThisPeriodException {
         //ARRANGE
         CottageOwner cottageOwner = getMockCottageOwner();
         Cottage cottage = getMockCottage(cottageOwner);

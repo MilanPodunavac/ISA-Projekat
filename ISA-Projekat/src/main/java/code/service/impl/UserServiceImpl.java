@@ -41,10 +41,11 @@ public class UserServiceImpl implements UserService {
     private final FishingTripQuickReservationRepository _fishingTripQuickReservationRepository;
     private final FishingTripReservationRepository _fishingTripReservationRepository;
     private final AccountDeletionRequestRepository _accountDeletionRequestRepository;
+    private final IncomeRecordRepository _incomeRecordRepository;
     private final JavaMailSender _mailSender;
     private final PasswordEncoder _passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, ClientRepository clientRepository, AvailabilityPeriodRepository availabilityPeriodRepository, CottageRepository cottageRepository, CottageReservationRepository cottageReservationRepository, FishingTripPictureRepository fishingTripPictureRepository, FishingTripRepository fishingTripRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, FishingTripReservationRepository fishingTripReservationRepository, AccountDeletionRequestRepository accountDeletionRequestRepository, JavaMailSender mailSender, PasswordEncoder encoder) {
+    public UserServiceImpl(UserRepository userRepository, ClientRepository clientRepository, AvailabilityPeriodRepository availabilityPeriodRepository, CottageRepository cottageRepository, CottageReservationRepository cottageReservationRepository, FishingTripPictureRepository fishingTripPictureRepository, FishingTripRepository fishingTripRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, FishingTripReservationRepository fishingTripReservationRepository, AccountDeletionRequestRepository accountDeletionRequestRepository, IncomeRecordRepository incomeRecordRepository, JavaMailSender mailSender, PasswordEncoder encoder) {
         this._userRepository = userRepository;
         this._clientRepository = clientRepository;
         this._availabilityPeriodRepository = availabilityPeriodRepository;
@@ -55,6 +56,7 @@ public class UserServiceImpl implements UserService {
         this._fishingTripQuickReservationRepository = fishingTripQuickReservationRepository;
         this._fishingTripReservationRepository = fishingTripReservationRepository;
         this._accountDeletionRequestRepository = accountDeletionRequestRepository;
+        this._incomeRecordRepository = incomeRecordRepository;
         this._mailSender = mailSender;
         _passwordEncoder = encoder;
     }
@@ -354,6 +356,7 @@ public class UserServiceImpl implements UserService {
         deleteFishingTripReservations(fishingInstructor.getId());
         unlinkFishingTripQuickReservations(fishingInstructor.getId());
         deleteSubscribers(fishingInstructor);
+        unlinkIncomeRecords(fishingInstructor.getId());
         deleteFishingTripPictures(fishingInstructor);
     }
 
@@ -388,6 +391,14 @@ public class UserServiceImpl implements UserService {
         while (subscribersIterator.hasNext()) {
             subscribersIterator.next().getInstructorsSubscribedTo().remove(fishingInstructor);
             subscribersIterator.remove();
+        }
+    }
+
+    private void unlinkIncomeRecords(Integer id) {
+        List<IncomeRecord> instructorIncomeRecords = _incomeRecordRepository.findByReservationOwnerId(id);
+        for (IncomeRecord incomeRecord : instructorIncomeRecords) {
+            incomeRecord.setReservationOwner(null);
+            _incomeRecordRepository.save(incomeRecord);
         }
     }
 

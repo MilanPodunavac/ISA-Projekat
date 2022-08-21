@@ -27,7 +27,9 @@ public class FishingTripReservation {
    @Column
    private Integer numberOfPeople;
    @Column
-   private Integer price;
+   private double price;
+   @Column
+   private double systemTaxPercentage;
    @ElementCollection(targetClass= FishingTripReservationTag.class)
    @Enumerated(EnumType.ORDINAL)
    @CollectionTable(name="fishingTripReservation_tags")
