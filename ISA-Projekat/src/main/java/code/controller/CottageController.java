@@ -2,7 +2,9 @@ package code.controller;
 
 import code.controller.base.BaseController;
 import code.dto.entities.*;
+import code.dto.entities.boat.BoatGetDto;
 import code.dto.entities.cottage.CottageDto;
+import code.dto.entities.cottage.CottageGetDto;
 import code.dto.entities.cottage.NewCottageActionDto;
 import code.dto.entities.cottage.NewCottageReservationDto;
 import code.exceptions.entities.*;
@@ -20,6 +22,7 @@ import code.repository.UserRepository;
 import code.service.CottageService;
 import code.utils.TokenUtils;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/cottage")
@@ -48,6 +52,22 @@ public class CottageController extends BaseController {
         _cottageService = cottageService;
     }
 
+    @GetMapping()
+    public ResponseEntity<List<Object>> get(){
+        return ResponseEntity.ok(_mapper.map(_cottageService.getAllCottages(), new TypeToken<List<BoatGetDto>>() {}.getType()));
+    }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<Object> get(@PathVariable Integer id){
+        try{
+            Cottage cottage = _cottageService.getCottage(id);
+            CottageGetDto cottageDto = _mapper.map(cottage, CottageGetDto.class);
+            return ResponseEntity.ok(cottageDto);
+        }catch(Exception ex){
+            if(ex instanceof EntityNotFoundException) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cottage not found");
+            return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
+        }
+    }
     @PostMapping()
     @PreAuthorize("hasRole('ROLE_COTTAGE_OWNER')")
     public ResponseEntity<String> addCottage(@Valid @RequestBody CottageDto dto, BindingResult result, @RequestHeader(HttpHeaders.AUTHORIZATION) String auth){

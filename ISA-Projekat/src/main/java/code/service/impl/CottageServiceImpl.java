@@ -5,6 +5,7 @@ import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.*;
 import code.model.base.*;
+import code.model.boat.Boat;
 import code.model.cottage.Cottage;
 import code.model.cottage.CottageAction;
 import code.model.cottage.CottageOwner;
@@ -20,6 +21,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -266,5 +268,16 @@ public class CottageServiceImpl implements CottageService {
         }
         _actionRepository.save(act);
     }
-
+    @Override
+    public List<Cottage> getAllCottages(){
+        return _cottageRepository.findAll();
+    }
+    @Override
+    public Cottage getCottage(Integer id) throws EntityNotFoundException {
+        Cottage cottage = _cottageRepository.findById(id).orElse(null);
+        if(cottage == null) {
+            throw new EntityNotFoundException("Cottage doesn't exist!");
+        }
+        return cottage;
+    }
 }

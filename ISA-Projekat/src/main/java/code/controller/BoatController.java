@@ -1,8 +1,8 @@
 package code.controller;
 
 import code.controller.base.BaseController;
+import code.dto.entities.boat.BoatGetDto;
 import code.dto.entities.boat.BoatDto;
-import code.dto.entities.boat.NewBoatDto;
 import code.exceptions.entities.EntityNotFoundException;
 import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
@@ -14,7 +14,6 @@ import code.service.BoatService;
 import code.utils.TokenUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -42,14 +41,14 @@ public class BoatController extends BaseController {
 
     @GetMapping()
     public ResponseEntity<List<Object>> get(){
-        return ResponseEntity.ok(_mapper.map(_boatService.getAllBoats(), new TypeToken<List<BoatDto>>() {}.getType()));
+        return ResponseEntity.ok(_mapper.map(_boatService.getAllBoats(), new TypeToken<List<BoatGetDto>>() {}.getType()));
     }
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<Object> get(@PathVariable Integer id){
         try{
             Boat boat = _boatService.getBoat(id);
-            BoatDto boatDto = _mapper.map(boat, BoatDto.class);
+            BoatGetDto boatDto = _mapper.map(boat, BoatGetDto.class);
             return ResponseEntity.ok(boatDto);
         }catch(Exception ex){
             if(ex instanceof EntityNotFoundException) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Boat not found");
@@ -59,7 +58,7 @@ public class BoatController extends BaseController {
 
     @PostMapping()
     @PreAuthorize("hasRole('ROLE_BOAT_OWNER')")
-    public ResponseEntity<String> addBoat(@Valid @RequestBody NewBoatDto dto, BindingResult result){
+    public ResponseEntity<String> addBoat(@Valid @RequestBody BoatDto dto, BindingResult result){
         if(result.hasErrors()){
             return formatErrorResponse(result);//400
         }

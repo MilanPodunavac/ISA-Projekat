@@ -16,7 +16,9 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class BoatDto {
+public class BoatGetDto {
+    @NotBlank(message = "Id is required")
+    private Integer id;
     @NotBlank(message = "Name is required")
     private String name;
     @NotBlank(message = "Description name is required")

@@ -1,7 +1,6 @@
-package code.dto.entities.boat;
+package code.dto.entities.cottage;
 
-import code.model.boat.BoatReservationTag;
-import code.model.boat.NavigationalEquipment;
+import code.model.cottage.CottageReservationTag;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,14 +8,15 @@ import lombok.Setter;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class NewBoatDto {
+public class CottageGetDto {
+    @NotBlank(message = "Id is required")
+    private Integer id;
     @NotBlank(message = "Name is required")
     private String name;
     @NotBlank(message = "Description name is required")
@@ -31,21 +31,11 @@ public class NewBoatDto {
     private String cityName;
     @NotBlank(message = "Country Name is required")
     private String countryName;
+    @Min(value = 1, message = "Room number must be greater than 0")
+    private int roomNumber;
+    @Min(value = 1, message = "Bed number must be greater than 0")
+    private int bedNumber;
     @Min(value = 1, message = "Price per day must be greater than 0")
     private int pricePerDay;
-    @Min(value = 1, message = "Length must be greater than 0")
-    private double length;
-    @NotBlank
-    private String type;
-    @NotNull
-    private int engineNumber;
-    @NotNull
-    private int enginePower;
-    @NotNull
-    private int maxSpeed;
-    @Min(value = 1, message = "Maximum number of people must be greater than 0")
-    private int maxPeople;
-    private NavigationalEquipment navigationalEquipment;
-    private String fishingEquipment;
-    private Set<BoatReservationTag> additionalServices;
+    private List<CottageReservationTag> additionalServices;
 }
