@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -54,5 +55,17 @@ public class BoatServiceImpl  implements BoatService {
         if(owner == null) throw new UserNotFoundException("Cottage owner not found");
         owner.addBoat(boat);
         _boatRepository.save(boat);
+    }
+    @Override
+    public List<Boat> getAllBoats(){
+        return _boatRepository.findAll();
+    }
+    @Override
+    public Boat getBoat(Integer id) throws EntityNotFoundException {
+        Boat boat = _boatRepository.findById(id).orElse(null);
+        if(boat == null) {
+            throw new EntityNotFoundException("Boat doesn't exist!");
+        }
+        return boat;
     }
 }
