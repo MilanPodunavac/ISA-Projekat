@@ -39,6 +39,8 @@ INSERT INTO CLIENT (id, email, password, enabled, first_name, last_name, phone_n
 
 INSERT INTO ACCOUNT_DELETION_REQUEST (text, user_id) VALUES ('molim te', 5);
 
+INSERT INTO CURRENT_SYSTEM_TAX_PERCENTAGE (current_system_tax_percentage) VALUES (0);
+
 INSERT INTO COTTAGE (id, description, name, rules, location_id, bed_number, room_number, cottage_owner_id, price_per_day) VALUES (1, 'cottage', 'cottage', 'rules', 16, 2, 2, 7, 100);
 INSERT INTO COTTAGE (id, description, name, rules, location_id, bed_number, room_number, cottage_owner_id, price_per_day) VALUES (2, 'cottage', 'cottage', 'rules', 17, 2, 2, 7, 100);
 

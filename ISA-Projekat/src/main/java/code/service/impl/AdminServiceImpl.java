@@ -43,9 +43,10 @@ public class AdminServiceImpl implements AdminService {
     private final FishingTripQuickReservationRepository _fishingTripQuickReservationRepository;
     private final ReservationRepository _reservationRepository;
     private final ActionRepository _actionRepository;
+    private final CurrentSystemTaxPercentageRepository _currentSystemTaxPercentageRepository;
     private final JavaMailSender _mailSender;
 
-    public AdminServiceImpl(AdminRepository adminRepository, PasswordEncoder passwordEncoder, RoleService roleService, UserService userService, UserRepository userRepository, CottageService cottageService, BoatService boatService, ClientRepository clientRepository, FishingTripReservationRepository fishingTripReservationRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, ReservationRepository reservationRepository, ActionRepository actionRepository, JavaMailSender mailSender) {
+    public AdminServiceImpl(AdminRepository adminRepository, PasswordEncoder passwordEncoder, RoleService roleService, UserService userService, UserRepository userRepository, CottageService cottageService, BoatService boatService, ClientRepository clientRepository, FishingTripReservationRepository fishingTripReservationRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, ReservationRepository reservationRepository, ActionRepository actionRepository, CurrentSystemTaxPercentageRepository currentSystemTaxPercentageRepository, JavaMailSender mailSender) {
         this._adminRepository = adminRepository;
         this._passwordEncoder = passwordEncoder;
         this._roleService = roleService;
@@ -58,6 +59,7 @@ public class AdminServiceImpl implements AdminService {
         this._fishingTripReservationRepository = fishingTripReservationRepository;
         this._reservationRepository = reservationRepository;
         this._actionRepository = actionRepository;
+        this._currentSystemTaxPercentageRepository = currentSystemTaxPercentageRepository;
         this._mailSender = mailSender;
     }
 
@@ -521,6 +523,15 @@ public class AdminServiceImpl implements AdminService {
         message.setSubject("Finished reservation report");
         message.setText("Client " + quickReservation.getClient().getFirstName() + " " + quickReservation.getClient().getLastName() + " wasn't given any penalty points!");
         _mailSender.send(message);
+    }
+
+    @Transactional
+    @Override
+    public void changeCurrentSystemTaxPercentage(CurrentSystemTaxPercentage currentSystemTaxPercentage) throws NotChangedPasswordException {
+        throwExceptionIfAdminDidntChangePassword(getLoggedInAdmin());
+        CurrentSystemTaxPercentage currentSystemTaxPercentageFromDatabase = _currentSystemTaxPercentageRepository.getById(1);
+        currentSystemTaxPercentageFromDatabase.setCurrentSystemTaxPercentage(currentSystemTaxPercentage.getCurrentSystemTaxPercentage());
+        _currentSystemTaxPercentageRepository.save(currentSystemTaxPercentageFromDatabase);
     }
 
     @Scheduled(cron="0 0 0 1 1/1 *")

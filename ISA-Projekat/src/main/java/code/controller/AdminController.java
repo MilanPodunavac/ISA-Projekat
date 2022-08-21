@@ -2,15 +2,14 @@ package code.controller;
 
 import code.controller.base.BaseController;
 import code.dto.admin.AdminRegistration;
+import code.dto.admin.CurrentSystemTaxPercentageDTO;
 import code.dto.admin.PasswordDTO;
 import code.dto.admin.PersonalData;
-import code.dto.entities.NewOwnerCommentaryDto;
 import code.exceptions.admin.*;
 import code.exceptions.entities.*;
 import code.exceptions.provider_registration.EmailTakenException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.Admin;
-import code.model.base.OwnerCommentary;
 import code.service.*;
 import code.utils.TokenUtils;
 import org.modelmapper.ModelMapper;
@@ -28,7 +27,7 @@ import javax.validation.Valid;
 public class AdminController extends BaseController {
     private final AdminService _adminService;
 
-    public AdminController(AdminService adminService, UserService userService, ModelMapper mapper, TokenUtils tokenUtils) {
+    public AdminController(AdminService adminService, ModelMapper mapper, TokenUtils tokenUtils) {
         super(mapper, tokenUtils);
         this._adminService = adminService;
     }
@@ -306,6 +305,21 @@ public class AdminController extends BaseController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (CommentaryNotApprovableException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        } catch (NotChangedPasswordException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @PutMapping(value = "/currentSystemTaxPercentage", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> changeCurrentSystemTaxPercentage(@Valid @RequestBody CurrentSystemTaxPercentageDTO dto, BindingResult result) {
+        if(result.hasErrors()){
+            return formatErrorResponse(result);
+        }
+
+        try {
+            _adminService.changeCurrentSystemTaxPercentage(_mapper.map(dto, code.model.CurrentSystemTaxPercentage.class));
+            return ResponseEntity.ok("Current system tax percentage changed!");
         } catch (NotChangedPasswordException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }

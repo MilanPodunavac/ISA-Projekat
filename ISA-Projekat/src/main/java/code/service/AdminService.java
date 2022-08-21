@@ -8,6 +8,7 @@ import code.exceptions.entities.UnexpectedUserRoleException;
 import code.exceptions.provider_registration.EmailTakenException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.Admin;
+import code.model.CurrentSystemTaxPercentage;
 
 public interface AdminService {
     Admin save(Admin admin) throws NonMainAdminRegisterOtherAdminException, EmailTakenException;
@@ -27,4 +28,5 @@ public interface AdminService {
     void reservationCommentaryDecline(Integer reservationId) throws EntityNotFoundException, NotChangedPasswordException, CommentaryNotApprovableException;
     void quickReservationCommentaryAccept(Integer quickReservationId) throws EntityNotFoundException, NotChangedPasswordException, CommentaryNotApprovableException;
     void quickReservationCommentaryDecline(Integer quickReservationId) throws EntityNotFoundException, NotChangedPasswordException, CommentaryNotApprovableException;
+    void changeCurrentSystemTaxPercentage(CurrentSystemTaxPercentage currentSystemTaxPercentage) throws NotChangedPasswordException;
 }
