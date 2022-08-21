@@ -39,7 +39,11 @@ INSERT INTO CLIENT (id, email, password, enabled, first_name, last_name, phone_n
 
 INSERT INTO ACCOUNT_DELETION_REQUEST (text, user_id) VALUES ('molim te', 5);
 
-INSERT INTO CURRENT_SYSTEM_TAX_PERCENTAGE (current_system_tax_percentage) VALUES (0);
+INSERT INTO CURRENT_SYSTEM_TAX_PERCENTAGE (current_system_tax_percentage) VALUES (20);
+
+INSERT INTO INCOME_RECORD (date_of_entry, owner_income, percentage_owner_keeps_if_reservation_cancelled, reservation_end, reservation_price, reservation_start, reserved, system_income, system_tax_percentage, reservation_owner_id) VALUES ('2022-08-21', 450, 0, '2023-10-14', 500, '2023-10-10', true, 50, 10, 5);
+INSERT INTO INCOME_RECORD (date_of_entry, owner_income, percentage_owner_keeps_if_reservation_cancelled, reservation_end, reservation_price, reservation_start, reserved, system_income, system_tax_percentage, reservation_owner_id) VALUES ('2022-08-21', 320, 30, '2023-10-16', 400, '2023-10-15', true, 80, 20, 5);
+INSERT INTO INCOME_RECORD (date_of_entry, owner_income, percentage_owner_keeps_if_reservation_cancelled, reservation_end, reservation_price, reservation_start, reserved, system_income, system_tax_percentage, reservation_owner_id) VALUES ('2022-08-21', 1020, 20, '2023-10-22', 1200, '2023-10-15', true, 180, 15, 9);
 
 INSERT INTO COTTAGE (id, description, name, rules, location_id, bed_number, room_number, cottage_owner_id, price_per_day, reservation_refund) VALUES (1, 'cottage', 'cottage', 'rules', 16, 2, 2, 7, 100, 10);
 INSERT INTO COTTAGE (id, description, name, rules, location_id, bed_number, room_number, cottage_owner_id, price_per_day, reservation_refund) VALUES (2, 'cottage', 'cottage', 'rules', 17, 2, 2, 7, 100, 10);
@@ -75,17 +79,17 @@ INSERT INTO FISHING_TRIP_PICTURE (name, fishing_trip_id) VALUES ('fishing_trip_1
 INSERT INTO FISHING_INSTRUCTOR_AVAILABLE_PERIOD (available_from, available_to, fishing_instructor_id) VALUES('2023-09-05', '2023-12-05', 5);
 INSERT INTO FISHING_INSTRUCTOR_AVAILABLE_PERIOD (available_from, available_to, fishing_instructor_id) VALUES('2023-09-05', '2023-12-05', 9);
 
-INSERT INTO FISHING_TRIP_QUICK_RESERVATION (duration_in_days, max_people, price, start, valid_until_and_including, fishing_trip_id, location_id) VALUES(3, 5, 200, '2023-09-10', '2023-09-08', 1, 13);
-INSERT INTO FISHING_TRIP_QUICK_RESERVATION (duration_in_days, max_people, price, start, valid_until_and_including, fishing_trip_id, location_id) VALUES(3, 8, 300, '2023-09-20', '2023-09-08', 2, 14);
-INSERT INTO FISHING_TRIP_QUICK_RESERVATION (duration_in_days, max_people, price, start, valid_until_and_including, fishing_trip_id, location_id) VALUES(3, 2, 400, '2023-09-10', '2023-09-08', 3, 15);
+INSERT INTO FISHING_TRIP_QUICK_RESERVATION (duration_in_days, max_people, price, system_tax_percentage, start, valid_until_and_including, fishing_trip_id, location_id) VALUES(3, 5, 200, 10, '2023-09-10', '2023-09-08', 1, 13);
+INSERT INTO FISHING_TRIP_QUICK_RESERVATION (duration_in_days, max_people, price, system_tax_percentage, start, valid_until_and_including, fishing_trip_id, location_id) VALUES(3, 8, 300, 20, '2023-09-20', '2023-09-08', 2, 14);
+INSERT INTO FISHING_TRIP_QUICK_RESERVATION (duration_in_days, max_people, price, system_tax_percentage, start, valid_until_and_including, fishing_trip_id, location_id) VALUES(3, 2, 400, 15, '2023-09-10', '2023-09-08', 3, 15);
 
 INSERT INTO FISHING_TRIP_QUICK_RESERVATION_TAGS (fishing_trip_quick_reservation_id, tags) VALUES (1, 2);
 INSERT INTO FISHING_TRIP_QUICK_RESERVATION_TAGS (fishing_trip_quick_reservation_id, tags) VALUES (2, 0);
 INSERT INTO FISHING_TRIP_QUICK_RESERVATION_TAGS (fishing_trip_quick_reservation_id, tags) VALUES (3, 3);
 
-INSERT INTO FISHING_TRIP_RESERVATION (duration_in_days, number_of_people, price, start, client_id, fishing_trip_id) VALUES(5, 3, 500, '2023-10-10', 2, 1);
-INSERT INTO FISHING_TRIP_RESERVATION (duration_in_days, number_of_people, price, start, client_id, fishing_trip_id) VALUES(2, 9, 400, '2023-10-15', 8, 2);
-INSERT INTO FISHING_TRIP_RESERVATION (duration_in_days, number_of_people, price, start, client_id, fishing_trip_id) VALUES(8, 2, 1200, '2023-10-15', 2, 3);
+INSERT INTO FISHING_TRIP_RESERVATION (duration_in_days, number_of_people, price, system_tax_percentage, start, client_id, fishing_trip_id) VALUES(5, 3, 500, 10, '2023-10-10', 2, 1);
+INSERT INTO FISHING_TRIP_RESERVATION (duration_in_days, number_of_people, price, system_tax_percentage, start, client_id, fishing_trip_id) VALUES(2, 9, 400, 20, '2023-10-15', 8, 2);
+INSERT INTO FISHING_TRIP_RESERVATION (duration_in_days, number_of_people, price, system_tax_percentage, start, client_id, fishing_trip_id) VALUES(8, 2, 1200, 15, '2023-10-15', 2, 3);
 
 INSERT INTO FISHING_TRIP_RESERVATION_TAGS (fishing_trip_reservation_id, tags) VALUES (1, 2);
 INSERT INTO FISHING_TRIP_RESERVATION_TAGS (fishing_trip_reservation_id, tags) VALUES (2, 1);

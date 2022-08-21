@@ -18,5 +18,4 @@ public class Admin extends User {
    private boolean mainAdmin;
    @Column
    private boolean passwordChanged;
-   private static double systemCharge;
 }

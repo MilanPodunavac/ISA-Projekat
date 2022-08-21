@@ -1,6 +1,7 @@
 package code.model;
 
 import code.exceptions.entities.AvailabilityPeriodBadRangeException;
+import code.exceptions.entities.ClientCancelledThisPeriodException;
 import code.exceptions.entities.InvalidReservationException;
 import code.model.base.AvailabilityPeriod;
 import code.model.base.Reservation;
@@ -106,7 +107,7 @@ public class SaleEntityTest {
     }
 
     @Theory
-    public void AddReservationTest(AddReservationTestData data) throws InvalidReservationException {
+    public void AddReservationTest(AddReservationTestData data) throws InvalidReservationException, ClientCancelledThisPeriodException {
         boolean assertion = data.cottage.addReservation(data.newReservation);
         Assert.assertEquals(data.shouldBe, assertion);
         boolean addAgain = data.cottage.addReservation(data.newReservation);
