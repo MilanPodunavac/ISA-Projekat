@@ -8,7 +8,10 @@ import code.exceptions.fishing_trip.*;
 import code.exceptions.fishing_trip.quick_reservation.*;
 import code.exceptions.fishing_trip.reservation.*;
 import code.model.*;
+import code.model.base.Action;
 import code.model.base.OwnerCommentary;
+import code.model.base.Reservation;
+import code.model.cottage.CottageReservation;
 import code.repository.*;
 import code.service.FishingTripService;
 import code.service.UserService;
@@ -26,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 
 @Service
@@ -37,9 +41,11 @@ public class FishingTripServiceImpl implements FishingTripService {
     private final FishingTripReservationRepository _fishingTripReservationRepository;
     private final ClientRepository _clientRepository;
     private final UserService _userService;
+    private final ReservationRepository _reservationRepository;
+    private final ActionRepository _actionRepository;
     private final JavaMailSender _mailSender;
 
-    public FishingTripServiceImpl(FishingTripPictureRepository fishingTripPictureRepository, FishingTripRepository fishingTripRepository, FishingInstructorAvailablePeriodRepository fishingInstructorAvailablePeriodRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, FishingTripReservationRepository fishingTripReservationRepository, ClientRepository clientRepository, UserService userService, JavaMailSender mailSender) {
+    public FishingTripServiceImpl(FishingTripPictureRepository fishingTripPictureRepository, FishingTripRepository fishingTripRepository, FishingInstructorAvailablePeriodRepository fishingInstructorAvailablePeriodRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, FishingTripReservationRepository fishingTripReservationRepository, ClientRepository clientRepository, UserService userService, ReservationRepository reservationRepository, ActionRepository actionRepository, JavaMailSender mailSender) {
         this._fishingTripPictureRepository = fishingTripPictureRepository;
         this._fishingTripRepository = fishingTripRepository;
         this._fishingInstructorAvailablePeriodRepository = fishingInstructorAvailablePeriodRepository;
@@ -47,6 +53,8 @@ public class FishingTripServiceImpl implements FishingTripService {
         this._fishingTripReservationRepository = fishingTripReservationRepository;
         this._userService = userService;
         this._clientRepository = clientRepository;
+        this._reservationRepository = reservationRepository;
+        this._actionRepository = actionRepository;
         this._mailSender = mailSender;
     }
 
@@ -430,6 +438,24 @@ public class FishingTripServiceImpl implements FishingTripService {
         List<FishingTripReservation> clientFishingTripReservations = _fishingTripReservationRepository.findByClientId(clientId);
         for (FishingTripReservation fir : clientFishingTripReservations) {
             if (((fir.getStart().isBefore(fishingTripReservation.getStart()) || fir.getStart().isEqual(fishingTripReservation.getStart())) && (fir.getStart().plusDays(fir.getDurationInDays() - 1).isAfter(fishingTripReservation.getStart()) || fir.getStart().plusDays(fir.getDurationInDays() - 1).isEqual(fishingTripReservation.getStart()))) || ((fishingTripReservation.getStart().isBefore(fir.getStart()) || fishingTripReservation.getStart().isEqual(fir.getStart())) && (fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isAfter(fir.getStart().plusDays(fir.getDurationInDays() - 1)) || fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isEqual(fir.getStart().plusDays(fir.getDurationInDays() - 1)))) || ((fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isAfter(fir.getStart()) || fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isEqual(fir.getStart())) && (fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isBefore(fir.getStart().plusDays(fir.getDurationInDays() - 1)) || fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isEqual(fir.getStart().plusDays(fir.getDurationInDays() - 1))))){
+                throw new ClientBusyDuringReservationException("Client busy during reservation!");
+            }
+        }
+
+        List<Reservation> clientReservations = _reservationRepository.findByClientId(clientId);
+        for (Reservation r : clientReservations) {
+            LocalDate reservationStart = r.getDateRange().getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            LocalDate reservationEnd = r.getDateRange().getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            if (((reservationStart.isBefore(fishingTripReservation.getStart()) || reservationStart.isEqual(fishingTripReservation.getStart())) && (reservationEnd.isAfter(fishingTripReservation.getStart()) || reservationEnd.isEqual(fishingTripReservation.getStart()))) || ((fishingTripReservation.getStart().isBefore(reservationStart) || fishingTripReservation.getStart().isEqual(reservationStart)) && (fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isAfter(reservationEnd) || fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isEqual(reservationEnd))) || ((fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isAfter(reservationStart) || fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isEqual(reservationStart)) && (fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isBefore(reservationEnd) || fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isEqual(reservationEnd)))){
+                throw new ClientBusyDuringReservationException("Client busy during reservation!");
+            }
+        }
+
+        List<Action> clientActions = _actionRepository.findByClientId(clientId);
+        for (Action a : clientActions) {
+            LocalDate reservationStart = a.getRange().getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            LocalDate reservationEnd = a.getRange().getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            if (((reservationStart.isBefore(fishingTripReservation.getStart()) || reservationStart.isEqual(fishingTripReservation.getStart())) && (reservationEnd.isAfter(fishingTripReservation.getStart()) || reservationEnd.isEqual(fishingTripReservation.getStart()))) || ((fishingTripReservation.getStart().isBefore(reservationStart) || fishingTripReservation.getStart().isEqual(reservationStart)) && (fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isAfter(reservationEnd) || fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isEqual(reservationEnd))) || ((fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isAfter(reservationStart) || fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isEqual(reservationStart)) && (fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isBefore(reservationEnd) || fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isEqual(reservationEnd)))){
                 throw new ClientBusyDuringReservationException("Client busy during reservation!");
             }
         }
