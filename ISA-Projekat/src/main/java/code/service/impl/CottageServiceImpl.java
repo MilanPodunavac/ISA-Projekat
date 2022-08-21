@@ -205,6 +205,7 @@ public class CottageServiceImpl implements CottageService {
         cottage.setBedNumber(updateCottage.getBedNumber());
         cottage.setDescription(updateCottage.getDescription());
         cottage.setRules(updateCottage.getRules());
+        cottage.setReservationRefund(updateCottage.getReservationRefund());
         _cottageRepository.save(cottage);
     }
 

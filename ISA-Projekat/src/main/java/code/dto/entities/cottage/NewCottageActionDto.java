@@ -31,6 +31,4 @@ public class NewCottageActionDto {
     @Min(value = 1, message = "Price must be greater than 0")
     @Max(value =50, message = "Maximum discount is 50%")
     private int discount;
-    @Max(value =50, message = "Maximum refund is 50%")
-    private double actionRefund;
 }

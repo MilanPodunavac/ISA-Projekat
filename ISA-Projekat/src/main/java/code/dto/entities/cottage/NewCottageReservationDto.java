@@ -29,6 +29,4 @@ public class NewCottageReservationDto {
     @Min(value = 1, message = "Number of days must be greater than 0")
     public int numberOfDays;
     public List<CottageReservationTag> cottageReservationTag;
-    @Max(value =50, message = "Maximum refund is 50%")
-    private double reservationRefund;
 }

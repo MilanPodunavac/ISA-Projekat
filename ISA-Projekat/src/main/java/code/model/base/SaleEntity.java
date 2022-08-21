@@ -29,6 +29,8 @@ public abstract class SaleEntity {
    protected String rules;
    @Column
    protected int pricePerDay;
+   @Column
+   protected int reservationRefund;
    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
    @JoinColumn(name="location_id")
    protected Location location;
@@ -51,6 +53,7 @@ public abstract class SaleEntity {
 
    public boolean addReservation (Reservation reservation) throws ClientCancelledThisPeriodException {
       reservation.setPrice(pricePerDay * reservation.getDateRange().getDays());
+      reservation.setReservationRefund(reservationRefund);
       for (AvailabilityPeriod period: availabilityPeriods) {
          if(period.addReservation(reservation) == true) return true;
       }
@@ -59,6 +62,7 @@ public abstract class SaleEntity {
 
    public boolean addAction (Action action){
       action.setPrice((int) ((action.getRange().getDays() * pricePerDay)*(1 - ((double)action.getDiscount()/100))));
+      action.setActionRefund(reservationRefund);
       for(AvailabilityPeriod period : availabilityPeriods){
          if(period.addAction(action) == true)return true;
       }

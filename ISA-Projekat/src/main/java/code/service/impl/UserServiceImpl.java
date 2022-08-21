@@ -11,6 +11,7 @@ import code.exceptions.provider_registration.NotProviderException;
 import code.exceptions.provider_registration.UserAccountActivatedException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.*;
+import code.model.base.Picture;
 import code.model.boat.BoatOwner;
 import code.model.cottage.Cottage;
 import code.model.cottage.CottageOwner;
@@ -31,6 +32,7 @@ import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
+    private final String COTTAGE_PICTURE_DIRECTORY = "cottage_images";
     private final UserRepository _userRepository;
     private final ClientRepository _clientRepository;
     private final AvailabilityPeriodRepository _availabilityPeriodRepository;
@@ -436,6 +438,9 @@ public class UserServiceImpl implements UserService {
         List<Cottage> copy = new ArrayList<>(cottageOwner.getCottage());
         for(Cottage cottage : copy)if(cottage.hasFutureReservationsOrActions())throw new EntityNotDeletableException("Cottage cannot be deleted, it has reservations or actions in the future");
         for(Cottage cottage : copy){
+            for(Picture pic : cottage.getPictures()){
+                FileUploadUtil.deleteFile(COTTAGE_PICTURE_DIRECTORY, cottage.getId() + "_" + pic.getName());
+            }
             _cottageRepository.delete(cottage);
         }
         cottageOwner.getCottage().clear();
