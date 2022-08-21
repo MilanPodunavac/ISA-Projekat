@@ -17,5 +17,5 @@ public class CurrentSystemTaxPercentage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column
-    private Integer currentSystemTaxPercentage;
+    private double currentSystemTaxPercentage;
 }

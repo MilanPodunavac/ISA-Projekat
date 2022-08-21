@@ -28,7 +28,9 @@ public class FishingTripQuickReservation {
     @Column
     private Integer maxPeople;
     @Column
-    private Integer price;
+    private double price;
+    @Column
+    private double systemTaxPercentage;
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name="location_id")
     private Location location;

@@ -41,7 +41,7 @@ public class NewQuickReservation {
     private Integer maxPeople;
     @NotNull(message = "Price is required")
     @Min(value = 1, message = "Price must be at least 1")
-    private Integer price;
+    private double price;
     @NotBlank(message = "Address is required")
     private String address;
     @NotBlank(message = "City is required")

@@ -17,5 +17,5 @@ public class CurrentSystemTaxPercentageDTO {
     @NotNull(message = "Current system tax percentage is required")
     @Min(value = 0, message = "Current system tax percentage must be at least 0")
     @Max(value = 100, message = "Current system tax percentage can't be higher than 100")
-    private Integer currentSystemTaxPercentage;
+    private double currentSystemTaxPercentage;
 }
