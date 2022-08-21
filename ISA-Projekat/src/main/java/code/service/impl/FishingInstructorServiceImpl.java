@@ -1,10 +1,12 @@
 package code.service.impl;
 
+import code.exceptions.entities.EntityNotFoundException;
 import code.exceptions.fishing_instructor.AddAvailablePeriodInPastException;
 import code.exceptions.fishing_instructor.AvailablePeriodOverlappingException;
 import code.exceptions.fishing_instructor.AvailablePeriodStartAfterEndDateException;
 import code.exceptions.provider_registration.EmailTakenException;
 import code.model.*;
+import code.model.cottage.Cottage;
 import code.repository.FishingInstructorAvailablePeriodRepository;
 import code.repository.FishingInstructorRepository;
 import code.service.FishingInstructorService;
@@ -118,5 +120,18 @@ public class FishingInstructorServiceImpl implements FishingInstructorService {
     private void changePasswordField(FishingInstructor loggedInFishingInstructor, FishingInstructor fishingInstructor) {
         loggedInFishingInstructor.setPassword(_passwordEncoder.encode(fishingInstructor.getPassword()));
         _fishingInstructorRepository.save(loggedInFishingInstructor);
+    }
+
+    @Override
+    public List<FishingInstructor> getAllFishingInstructors(){
+        return _fishingInstructorRepository.findAll();
+    }
+    @Override
+    public FishingInstructor getFishingInstructor(Integer id) throws EntityNotFoundException {
+        FishingInstructor fishingInstructor = _fishingInstructorRepository.findById(id).orElse(null);
+        if(fishingInstructor == null) {
+            throw new EntityNotFoundException("Fishing instructor doesn't exist!");
+        }
+        return fishingInstructor;
     }
 }

@@ -3,10 +3,14 @@ package code.controller;
 import code.controller.base.BaseController;
 import code.dto.admin.PasswordDTO;
 import code.dto.admin.PersonalData;
+import code.dto.entities.boat.BoatGetDto;
+import code.dto.entities.cottage.CottageGetDto;
+import code.dto.fishing_instructor.FishingInstructorGetDto;
 import code.dto.fishing_instructor.NewAvailablePeriod;
 import code.exceptions.admin.ChangedPasswordException;
 import code.exceptions.admin.ModifyAnotherUserDataException;
 import code.exceptions.admin.NotChangedPasswordException;
+import code.exceptions.entities.EntityNotFoundException;
 import code.exceptions.fishing_instructor.AddAvailablePeriodInPastException;
 import code.exceptions.fishing_instructor.AvailablePeriodOverlappingException;
 import code.exceptions.fishing_instructor.AvailablePeriodStartAfterEndDateException;
@@ -14,9 +18,11 @@ import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.Admin;
 import code.model.FishingInstructor;
 import code.model.FishingInstructorAvailablePeriod;
+import code.model.cottage.Cottage;
 import code.service.FishingInstructorService;
 import code.utils.TokenUtils;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +31,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/fishing-instructor")
@@ -34,6 +41,22 @@ public class FishingInstructorController extends BaseController {
     public FishingInstructorController(FishingInstructorService fishingInstructorService, ModelMapper mapper, TokenUtils tokenUtils) {
         super(mapper, tokenUtils);
         this._fishingInstructorService = fishingInstructorService;
+    }
+    @GetMapping()
+    public ResponseEntity<List<Object>> get(){
+        return ResponseEntity.ok(_mapper.map(_fishingInstructorService.getAllFishingInstructors(), new TypeToken<List<FishingInstructorGetDto>>() {}.getType()));
+    }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<Object> get(@PathVariable Integer id){
+        try{
+            FishingInstructor fishingInstructor = _fishingInstructorService.getFishingInstructor(id);
+            FishingInstructorGetDto fishingInstructorGetDto = _mapper.map(fishingInstructor, FishingInstructorGetDto.class);
+            return ResponseEntity.ok(fishingInstructorGetDto);
+        }catch(Exception ex){
+            if(ex instanceof EntityNotFoundException) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Fishing instructor not found");
+            return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
+        }
     }
 
     @PostMapping(value = "/addAvailablePeriod", consumes = MediaType.APPLICATION_JSON_VALUE)

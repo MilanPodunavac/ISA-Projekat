@@ -54,7 +54,7 @@ public class CottageController extends BaseController {
 
     @GetMapping()
     public ResponseEntity<List<Object>> get(){
-        return ResponseEntity.ok(_mapper.map(_cottageService.getAllCottages(), new TypeToken<List<BoatGetDto>>() {}.getType()));
+        return ResponseEntity.ok(_mapper.map(_cottageService.getAllCottages(), new TypeToken<List<CottageGetDto>>() {}.getType()));
     }
 
     @GetMapping(value = "/{id}")
