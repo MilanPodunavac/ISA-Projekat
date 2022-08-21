@@ -47,6 +47,7 @@ public class Cottage extends SaleEntity {
       for(CottageReservationTag tag : newAction.getAdditionalServices()){
          if(!additionalServices.contains(tag))throw new InvalidReservationException("Additional service not supported");
       }
+      if(newAction.getNumberOfPeople() > bedNumber * roomNumber)throw new InvalidReservationException("This cottage supports maximum " + bedNumber * roomNumber + " people");
       newAction.setCottage(this);
       return super.addAction(newAction);
    }

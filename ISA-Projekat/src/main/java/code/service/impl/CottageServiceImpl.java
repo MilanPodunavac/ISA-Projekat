@@ -184,6 +184,8 @@ public class CottageServiceImpl implements CottageService {
         for(Picture picture : cottage.getPictures()){
             if(picture.getId() == pic){
                 FileUploadUtil.deleteFile(COTTAGE_PICTURE_DIRECTORY, cottage.getId() + "_" + picture.getName());
+                cottage.getPictures().remove(picture);
+                _cottageRepository.save(cottage);
                 return;
             }
         }

@@ -82,7 +82,7 @@ public class CottageController extends BaseController {
             if(ex instanceof AvailabilityPeriodBadRangeException)return ResponseEntity.badRequest().body(ex.getMessage());
             return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
         }
-        return ResponseEntity.ok("Cottage added successfully");
+        return ResponseEntity.ok("Availability period added successfully");
     }
 
     @PostMapping(value = "/reservation")
@@ -181,7 +181,7 @@ public class CottageController extends BaseController {
             String email = _tokenUtils.getEmailFromToken(auth.substring(7));
             _cottageService.updateCottage(id, _mapper.map(dto, Cottage.class), email);
         } catch (Exception ex) {
-            if(ex instanceof EntityNotOwnedException)return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+            if(ex instanceof EntityNotOwnedException || ex instanceof UnauthorizedAccessException || ex instanceof UserNotFoundException)return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
             if(ex instanceof EntityNotFoundException)return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
             if(ex instanceof EntityNotUpdateableException)return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
             return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");

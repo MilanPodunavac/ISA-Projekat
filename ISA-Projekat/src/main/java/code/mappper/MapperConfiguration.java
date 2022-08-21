@@ -3,6 +3,8 @@ package code.mappper;
 import code.dto.admin.AdminRegistration;
 import code.dto.admin.PersonalData;
 import code.dto.entities.boat.BoatDto;
+import code.dto.entities.boat.NewBoatActionDto;
+import code.dto.entities.boat.NewBoatReservationDto;
 import code.dto.entities.cottage.NewCottageActionDto;
 import code.dto.entities.cottage.CottageDto;
 import code.dto.entities.cottage.NewCottageReservationDto;
@@ -16,7 +18,9 @@ import code.dto.user.UpdateUserPersonalInfoDto;
 import code.model.*;
 import code.model.base.OwnerCommentary;
 import code.model.boat.Boat;
+import code.model.boat.BoatAction;
 import code.model.boat.BoatOwner;
+import code.model.boat.BoatReservation;
 import code.model.cottage.Cottage;
 import code.model.cottage.CottageAction;
 import code.model.cottage.CottageOwner;
@@ -137,8 +141,8 @@ public class MapperConfiguration {
                 map().getLocation().setLongitude(source.getLongitude());
             }
         };
-        //TypeMap<UpdateUserPersonalInfoDto, CottageOwner> updateUserPersonalInfoToUserMap = modelMapper.createTypeMap(UpdateUserPersonalInfoDto.class, CottageOwner.class);
-        //updateUserPersonalInfoToUserMap.addMappings(updateUserPersonalInfoDtoMap);
+        TypeMap<UpdateUserPersonalInfoDto, CottageOwner> updateUserPersonalInfoToUserMap = modelMapper.createTypeMap(UpdateUserPersonalInfoDto.class, CottageOwner.class);
+        updateUserPersonalInfoToUserMap.addMappings(updateUserPersonalInfoDtoMap);
 
         //NewAvailabilityPeriodDto
         /*PropertyMap<NewAvailabilityPeriodDto, AvailabilityPeriod> newAvailabilityPeriodPropMap = new PropertyMap<NewAvailabilityPeriodDto, AvailabilityPeriod>(){
@@ -233,6 +237,14 @@ public class MapperConfiguration {
         };
         TypeMap<BoatDto, Boat> boatDtoToBoat = modelMapper.createTypeMap(BoatDto.class, Boat.class);
         boatDtoToBoat.addMappings(boatDtoToBoatPropertyMap);
+
+        //NewBoatReservationDto
+
+        TypeMap<NewBoatReservationDto, BoatReservation> newBoatReservationMap = modelMapper.createTypeMap(NewBoatReservationDto.class, BoatReservation.class);
+
+        //NewBoatActionDto
+
+        TypeMap<NewBoatActionDto, BoatAction> newBoatActionDtoBoatActionTypeMap = modelMapper.createTypeMap(NewBoatActionDto.class, BoatAction.class);
 
         return modelMapper;
     }

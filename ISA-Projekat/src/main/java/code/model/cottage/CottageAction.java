@@ -26,6 +26,7 @@ public class CottageAction extends Action {
     @Column(name="tags")
     @Fetch(value = FetchMode.JOIN)
     private Set<CottageReservationTag> additionalServices;
+    private int numberOfPeople;
 
 
 }
