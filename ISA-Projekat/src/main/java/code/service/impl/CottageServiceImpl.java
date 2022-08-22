@@ -15,11 +15,15 @@ import code.utils.FileUploadUtil;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Optional;
 
 @Service
@@ -33,15 +37,19 @@ public class CottageServiceImpl implements CottageService {
     private final ReservationRepository _reservationRepository;
     private final PictureRepository _pictureRepository;
     private final ActionRepository _actionRepository;
+    private final CurrentSystemTaxPercentageRepository _currentSystemTaxPercentageRepository;
+    private final IncomeRecordRepository _incomeRecordRepository;
 
     private final JavaMailSender _mailSender;
 
-    public CottageServiceImpl(UserRepository userRepository, CottageRepository cottageRepository, ReservationRepository reservationRepository, PictureRepository pictureRepository, ActionRepository actionRepository, JavaMailSender mailSender){
+    public CottageServiceImpl(UserRepository userRepository, CottageRepository cottageRepository, ReservationRepository reservationRepository, PictureRepository pictureRepository, ActionRepository actionRepository, CurrentSystemTaxPercentageRepository currentSystemTaxPercentageRepository, IncomeRecordRepository incomeRecordRepository, JavaMailSender mailSender){
         _cottageRepository = cottageRepository;
         _userRepository = userRepository;
         _reservationRepository = reservationRepository;
         _pictureRepository = pictureRepository;
         _actionRepository = actionRepository;
+        _currentSystemTaxPercentageRepository = currentSystemTaxPercentageRepository;
+        _incomeRecordRepository = incomeRecordRepository;
         _mailSender = mailSender;
     }
 
@@ -76,6 +84,7 @@ public class CottageServiceImpl implements CottageService {
     }
 
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
     public void addReservation(String clientEmail, int cottageId, CottageReservation reservation, String email) throws EntityNotFoundException, UserNotFoundException, InvalidReservationException, EntityNotOwnedException, EntityNotAvailableException, UnauthorizedAccessException, ClientCancelledThisPeriodException {
         CottageOwner owner;
         try{
@@ -98,13 +107,30 @@ public class CottageServiceImpl implements CottageService {
         if(!client.isAvailable(reservation.getDateRange()))throw new EntityNotAvailableException("Client already has reservation at the given time");
         reservation.setClient(client);
         if(!cottage.addReservation(reservation))throw new EntityNotAvailableException("Cottage is not available at the given time");
+        reservation.setSystemCharge(_currentSystemTaxPercentageRepository.findById(1).get().getCurrentSystemTaxPercentage());
         _cottageRepository.save(cottage);
+        makeIncomeRecord(reservation, owner);
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("marko76589@gmail.com");
         message.setTo(client.getEmail());
         message.setSubject("Cottage reserved");
         message.setText("Cottage " + cottage.getName() + " has been successfully reserved" );
         _mailSender.send(message);
+    }
+
+    private void makeIncomeRecord(Reservation reservation, CottageOwner owner) {
+        IncomeRecord incRec = new IncomeRecord();
+        incRec.setReservationStart(reservation.getDateRange().getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+        incRec.setReservationEnd(reservation.getDateRange().getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+        incRec.setReserved(true);
+        incRec.setDateOfEntry(LocalDate.now());
+        incRec.setReservationOwner(owner);
+        incRec.setReservationPrice(reservation.getPrice());
+        incRec.setSystemTaxPercentage(reservation.getSystemCharge());
+        incRec.setPercentageOwnerKeepsIfReservationCancelled(reservation.getReservationRefund());
+        incRec.setSystemIncome(incRec.getReservationPrice() * incRec.getSystemTaxPercentage()/100);
+        incRec.setOwnerIncome(incRec.getReservationPrice() - incRec.getSystemIncome());
+        _incomeRecordRepository.save(incRec);
     }
 
     @Override
@@ -150,6 +176,7 @@ public class CottageServiceImpl implements CottageService {
         Cottage cottage = optionalCottage.get();
         if(cottage.getCottageOwner().getId() != owner.getId())throw new EntityNotOwnedException("Cottage not owned by given user");
         if(!cottage.addAction(action))throw new EntityNotAvailableException("Cottage is not available at the given time");
+        action.setSystemCharge(_currentSystemTaxPercentageRepository.findById(1).get().getCurrentSystemTaxPercentage());
         _cottageRepository.save(cottage);
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("marko76589@gmail.com");

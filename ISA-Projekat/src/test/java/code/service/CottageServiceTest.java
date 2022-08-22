@@ -11,6 +11,8 @@ import code.model.cottage.CottageReservation;
 import code.model.cottage.CottageReservationTag;
 import code.model.wrappers.DateRange;
 import code.repository.CottageRepository;
+import code.repository.CurrentSystemTaxPercentageRepository;
+import code.repository.IncomeRecordRepository;
 import code.repository.UserRepository;
 import code.service.impl.CottageServiceImpl;
 import org.junit.Test;
@@ -42,6 +44,12 @@ public class CottageServiceTest {
 
     @Mock
     private JavaMailSender _mailSender;
+
+    @Mock
+    private CurrentSystemTaxPercentageRepository _currentSystemTaxPercentageRepository;
+
+    @Mock
+    private IncomeRecordRepository _incomeRecordRepository;
 
     @InjectMocks
     private CottageServiceImpl _cottageService;
@@ -103,10 +111,13 @@ public class CottageServiceTest {
         CottageOwner cottageOwner = getMockCottageOwner();
         Cottage cottage = getMockCottage(cottageOwner);
         Client client = getMockClient();
+        IncomeRecord rec = new IncomeRecord();
         when(_userRepository.findByEmail(cottageOwner.getEmail())).thenReturn(cottageOwner);
         when(_userRepository.findByEmail(client.getEmail())).thenReturn(client);
         when(_cottageRepository.findById(cottage.getId())).thenReturn(Optional.of(cottage));
         when(_cottageRepository.save(cottage)).thenReturn(cottage);
+        when(_currentSystemTaxPercentageRepository.findById(1)).thenReturn(Optional.of(new CurrentSystemTaxPercentage(1, 20)));
+        when(_incomeRecordRepository.save(rec)).thenReturn(rec);
         CottageReservation reservation = new CottageReservation();
         reservation.setCottageReservationTag(new HashSet<>());
         reservation.setNumberOfPeople(2);
@@ -121,6 +132,7 @@ public class CottageServiceTest {
         verify(_userRepository, times(1)).findByEmail(client.getEmail());
         verify(_cottageRepository, times(1)).findById(cottage.getId());
         verify(_cottageRepository, times(1)).save(cottage);
+        verify(_incomeRecordRepository, times(1)).save(any(IncomeRecord.class));
         verify(_mailSender, times(1)).send(any(SimpleMailMessage.class));
     }
 

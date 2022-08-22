@@ -43,19 +43,31 @@ public abstract class SaleEntity {
    @OneToMany(mappedBy = "saleEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
    protected Set<Picture> pictures;
 
+   @Column
+   protected int scheduleChanged;
+
+   @Version
+   protected int version;
+
+
+
    public void addAvailabilityPeriod (AvailabilityPeriod period) throws AvailabilityPeriodBadRangeException {
       for(AvailabilityPeriod existingPeriods: availabilityPeriods){
          if(period.getRange().overlapsWith(existingPeriods.getRange())){ throw new AvailabilityPeriodBadRangeException("This period is already available");}
       }
       period.setSaleEntity(this);
       availabilityPeriods.add(period);
+      scheduleChanged += 1;
    }
 
    public boolean addReservation (Reservation reservation) throws ClientCancelledThisPeriodException {
       reservation.setPrice(pricePerDay * reservation.getDateRange().getDays());
       reservation.setReservationRefund(reservationRefund);
       for (AvailabilityPeriod period: availabilityPeriods) {
-         if(period.addReservation(reservation) == true) return true;
+         if(period.addReservation(reservation) == true) {
+            scheduleChanged += 1;
+            return true;
+         }
       }
       return false;
    }
@@ -64,7 +76,10 @@ public abstract class SaleEntity {
       action.setPrice((int) ((action.getRange().getDays() * pricePerDay)*(1 - ((double)action.getDiscount()/100))));
       action.setActionRefund(reservationRefund);
       for(AvailabilityPeriod period : availabilityPeriods){
-         if(period.addAction(action) == true)return true;
+         if(period.addAction(action) == true){
+            scheduleChanged += 1;
+            return true;
+         }
       }
       return false;
    }

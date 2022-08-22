@@ -53,6 +53,7 @@ public class Boat extends SaleEntity {
       }
       if(reservation.getNumberOfPeople() > maxPeople) throw new InvalidReservationException("This boat supports maximum " + maxPeople + " people");
       reservation.setBoat(this);
+      //OVDE UVESTI DODATNO RACUNANJE POPUSTA ZA KLIJENTA I PROFITA ZA VLASNIKA
       return super.addReservation(reservation);
    }
 

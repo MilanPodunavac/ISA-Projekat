@@ -40,6 +40,7 @@ public class Cottage extends SaleEntity {
          if(!additionalServices.contains(tag))throw new InvalidReservationException("Additional service not supported");
       }
       if(reservation.getNumberOfPeople() > roomNumber * bedNumber) throw new InvalidReservationException("Not enough beds");
+      //OVDE UVESTI DODATNO RACUNANJE POPUSTA ZA KLIJENTA I PROFITA ZA VLASNIKA
       return super.addReservation(reservation);
    }
 

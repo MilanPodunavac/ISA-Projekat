@@ -45,8 +45,8 @@ INSERT INTO INCOME_RECORD (date_of_entry, owner_income, percentage_owner_keeps_i
 INSERT INTO INCOME_RECORD (date_of_entry, owner_income, percentage_owner_keeps_if_reservation_cancelled, reservation_end, reservation_price, reservation_start, reserved, system_income, system_tax_percentage, reservation_owner_id) VALUES ('2022-08-21', 320, 30, '2023-10-16', 400, '2023-10-15', true, 80, 20, 5);
 INSERT INTO INCOME_RECORD (date_of_entry, owner_income, percentage_owner_keeps_if_reservation_cancelled, reservation_end, reservation_price, reservation_start, reserved, system_income, system_tax_percentage, reservation_owner_id) VALUES ('2022-08-21', 1020, 20, '2023-10-22', 1200, '2023-10-15', true, 180, 15, 9);
 
-INSERT INTO COTTAGE (id, description, name, rules, location_id, bed_number, room_number, cottage_owner_id, price_per_day, reservation_refund) VALUES (1, 'cottage', 'cottage', 'rules', 16, 2, 2, 7, 100, 10);
-INSERT INTO COTTAGE (id, description, name, rules, location_id, bed_number, room_number, cottage_owner_id, price_per_day, reservation_refund) VALUES (2, 'cottage', 'cottage', 'rules', 17, 2, 2, 7, 100, 10);
+INSERT INTO COTTAGE (id, description, name, rules, location_id, bed_number, room_number, cottage_owner_id, price_per_day, reservation_refund, version, schedule_changed) VALUES (1, 'cottage', 'cottage', 'rules', 16, 2, 2, 7, 100, 10, 0, 0);
+INSERT INTO COTTAGE (id, description, name, rules, location_id, bed_number, room_number, cottage_owner_id, price_per_day, reservation_refund, version, schedule_changed) VALUES (2, 'cottage', 'cottage', 'rules', 17, 2, 2, 7, 100, 10, 0, 0);
 
 INSERT INTO COTTAGE_ADDITIONAL_SERVICES (cottage_id, tags) VALUES (1, 0);
 INSERT INTO COTTAGE_ADDITIONAL_SERVICES (cottage_id, tags) VALUES (1, 3);
@@ -99,7 +99,7 @@ INSERT INTO SUBSCRIBER_FISHING_INSTRUCTOR (client_id, instructor_id) VALUES (2, 
 INSERT INTO SUBSCRIBER_FISHING_INSTRUCTOR (client_id, instructor_id) VALUES (2, 9);
 INSERT INTO SUBSCRIBER_FISHING_INSTRUCTOR (client_id, instructor_id) VALUES (8, 5);
 
-INSERT INTO BOAT (id, description, name, price_per_day, rules, location_id, engine_number, engine_power, fishing_equipment, length, max_people, max_speed, navigational_equipment, type, user_id, reservation_refund) VALUES (10, 'Ovo je camac', 'Camac', 100, 'pravila pravila da bi me udavila ili kicmu savila il skroz osasavila', 18, 2, 100, 'Stap za pecanje', 5, 4, 150, 0, 'camac', 4, 10);
+INSERT INTO BOAT (id, description, name, price_per_day, rules, location_id, engine_number, engine_power, fishing_equipment, length, max_people, max_speed, navigational_equipment, type, user_id, reservation_refund, version, schedule_changed) VALUES (10, 'Ovo je camac', 'Camac', 100, 'pravila pravila da bi me udavila ili kicmu savila il skroz osasavila', 18, 2, 100, 'Stap za pecanje', 5, 4, 150, 0, 'camac', 4, 10, 0, 0);
 
 INSERT INTO AVAILABILITY_PERIOD (id, end_date, start_date, sale_entity_id) VALUES(3, '2022-04-30 00:00:00', '2022-04-1 00:00:00', 10);
 INSERT INTO AVAILABILITY_PERIOD (id, end_date, start_date, sale_entity_id) VALUES(4, '2022-10-30 00:00:00', '2022-10-1 00:00:00', 10);

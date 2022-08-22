@@ -4,16 +4,14 @@ import code.exceptions.entities.*;
 import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.Client;
+import code.model.IncomeRecord;
 import code.model.base.*;
 import code.model.boat.Boat;
 import code.model.boat.BoatAction;
 import code.model.boat.BoatOwner;
 import code.model.boat.BoatReservation;
-import code.model.cottage.CottageReservation;
-import code.repository.ActionRepository;
-import code.repository.BoatRepository;
-import code.repository.ReservationRepository;
-import code.repository.UserRepository;
+import code.model.cottage.CottageOwner;
+import code.repository.*;
 import code.service.BoatService;
 import code.utils.FileUploadUtil;
 import org.springframework.mail.SimpleMailMessage;
@@ -26,6 +24,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Optional;
 
 @Service
@@ -36,13 +36,17 @@ public class BoatServiceImpl  implements BoatService {
     private final UserRepository _userRepository;
     private final ReservationRepository _reservationRepository;
     private final ActionRepository _actionRepository;
+    private final CurrentSystemTaxPercentageRepository _currentSystemTaxPercentageRepository;
+    private final IncomeRecordRepository _incomeRecordRepository;
     private final JavaMailSender _mailSender;
 
-    public BoatServiceImpl(BoatRepository boatRepository, UserRepository userRepository, ReservationRepository reservationRepository, ActionRepository actionRepository, JavaMailSender mailSender){
+    public BoatServiceImpl(BoatRepository boatRepository, UserRepository userRepository, ReservationRepository reservationRepository, ActionRepository actionRepository, CurrentSystemTaxPercentageRepository currentSystemTaxPercentageRepository, IncomeRecordRepository incomeRecordRepository, JavaMailSender mailSender){
         _boatRepository = boatRepository;
         _userRepository = userRepository;
         _reservationRepository = reservationRepository;
         _actionRepository = actionRepository;
+        _currentSystemTaxPercentageRepository = currentSystemTaxPercentageRepository;
+        _incomeRecordRepository = incomeRecordRepository;
         _mailSender = mailSender;
     }
 
@@ -132,14 +136,31 @@ public class BoatServiceImpl  implements BoatService {
         }
         if(client == null)throw new UserNotFoundException("Client not found");
         reservation.setClient(client);
+        reservation.setSystemCharge(_currentSystemTaxPercentageRepository.findById(1).get().getCurrentSystemTaxPercentage());
         if(!boat.addReservation(reservation))throw new EntityNotAvailableException("Boat is not available at the given time");
         _boatRepository.save(boat);
+        makeIncomeRecord(reservation, owner);
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("marko76589@gmail.com");
         message.setTo(client.getEmail());
         message.setSubject("Boat reserved");
         message.setText("Boat " + boat.getName() + " has been successfully reserved" );
         _mailSender.send(message);
+    }
+
+    private void makeIncomeRecord(Reservation reservation, BoatOwner owner) {
+        IncomeRecord incRec = new IncomeRecord();
+        incRec.setReservationStart(reservation.getDateRange().getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+        incRec.setReservationEnd(reservation.getDateRange().getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+        incRec.setReserved(true);
+        incRec.setDateOfEntry(LocalDate.now());
+        incRec.setReservationOwner(owner);
+        incRec.setReservationPrice(reservation.getPrice());
+        incRec.setSystemTaxPercentage(reservation.getSystemCharge());
+        incRec.setPercentageOwnerKeepsIfReservationCancelled(reservation.getReservationRefund());
+        incRec.setSystemIncome(incRec.getReservationPrice() * incRec.getSystemTaxPercentage()/100);
+        incRec.setOwnerIncome(incRec.getReservationPrice() - incRec.getSystemIncome());
+        _incomeRecordRepository.save(incRec);
     }
 
     @Override
@@ -157,6 +178,7 @@ public class BoatServiceImpl  implements BoatService {
         if(!optionalBoat.isPresent())throw new EntityNotFoundException("Boat not found");
         Boat boat = optionalBoat.get();
         if(boat.getBoatOwner().getId() != owner.getId())throw new EntityNotOwnedException("Boat not owned by given user");
+        action.setSystemCharge(_currentSystemTaxPercentageRepository.findById(1).get().getCurrentSystemTaxPercentage());
         if(!boat.addAction(action))throw new EntityNotAvailableException("Boat is not available at the given time");
         _boatRepository.save(boat);
         SimpleMailMessage message = new SimpleMailMessage();

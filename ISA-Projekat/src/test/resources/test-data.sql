@@ -28,7 +28,7 @@ INSERT INTO COTTAGE_OWNER (id, email, password, enabled, first_name, last_name, 
 INSERT INTO COTTAGE_OWNER (id, email, password, enabled, first_name, last_name, phone_number, reason_for_registration, location_id, role_id) VALUES (8, 'ralo1@gmail.com', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', true, 'Aco', 'Acić', '222333444', 'dobar', 8, 2);
 INSERT INTO CLIENT (id, email, password, enabled, first_name, last_name, phone_number, banned, penalty_points, location_id, role_id) VALUES (9, 'klijent@gmail.com', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', true, 'Klijent', 'Klijentic', '111111111', false, 0, 9, 2);
 
-INSERT INTO COTTAGE (id, description, name, rules, location_id, bed_number, room_number, cottage_owner_id, price_per_day, reservation_refund) VALUES (1, 'cottage', 'cottage', 'rules', 10, 2, 2, 7, 100, 20);
+INSERT INTO COTTAGE (id, description, name, rules, location_id, bed_number, room_number, cottage_owner_id, price_per_day, reservation_refund, version, schedule_changed) VALUES (1, 'cottage', 'cottage', 'rules', 10, 2, 2, 7, 100, 20, 0, 0);
 
 INSERT INTO AVAILABILITY_PERIOD (id, end_date, start_date, sale_entity_id) VALUES(1, '2022-05-30 00:00:00 +4:00', '2022-05-1 00:00:00 +4:00', 1);
 INSERT INTO AVAILABILITY_PERIOD (id, end_date, start_date, sale_entity_id) VALUES(2, '2022-06-30 00:00:00 +4:00', '2022-06-1 00:00:00 +4:00', 1);
