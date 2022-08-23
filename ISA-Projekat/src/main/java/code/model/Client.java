@@ -41,6 +41,11 @@ public class Client extends User {
    @JoinTable(name = "subscriber_fishing_instructor", joinColumns = @JoinColumn(name = "client_id", referencedColumnName = "id"),
            inverseJoinColumns = @JoinColumn(name = "instructor_id", referencedColumnName = "id"))
    private Set<FishingInstructor> instructorsSubscribedTo;
+   @Column
+   private double loyaltyPoints;
+   @ManyToOne(fetch = FetchType.EAGER)
+   @JoinColumn(name="category_id")
+   private LoyaltyProgramClient category;
 
    public boolean isAvailable(DateRange range){
       if(reservation == null)return true;

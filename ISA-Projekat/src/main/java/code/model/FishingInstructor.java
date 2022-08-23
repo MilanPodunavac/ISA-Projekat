@@ -24,4 +24,9 @@ public class FishingInstructor extends User {
    private Set<FishingInstructorAvailablePeriod> fishingInstructorAvailablePeriods;
    @ManyToMany(mappedBy = "instructorsSubscribedTo")
    private Set<Client> subscribers;
+   @Column
+   private double loyaltyPoints;
+   @ManyToOne(fetch = FetchType.EAGER)
+   @JoinColumn(name="category_id")
+   private LoyaltyProgramProvider category;
 }
