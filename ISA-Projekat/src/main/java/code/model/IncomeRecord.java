@@ -30,12 +30,12 @@ public class IncomeRecord {
     @Column
     private double systemTaxPercentage;
     @Column
-    private double percentageOwnerKeepsIfReservationCancelled;
+    private double percentageProviderKeepsIfReservationCancelled;
     @Column
     private double systemIncome;
     @Column
-    private double ownerIncome;
+    private double providerIncome;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "reservation_owner_id")
-    private User reservationOwner;
+    @JoinColumn(name = "reservation_provider_id")
+    private User reservationProvider;
 }
