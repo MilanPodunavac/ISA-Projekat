@@ -1,14 +1,10 @@
 package code.service;
 
 import code.exceptions.admin.*;
-import code.exceptions.entities.CommentaryNotApprovableException;
-import code.exceptions.entities.EntityNotDeletableException;
-import code.exceptions.entities.EntityNotFoundException;
-import code.exceptions.entities.UnexpectedUserRoleException;
+import code.exceptions.entities.*;
 import code.exceptions.provider_registration.EmailTakenException;
 import code.exceptions.provider_registration.UserNotFoundException;
-import code.model.Admin;
-import code.model.CurrentSystemTaxPercentage;
+import code.model.*;
 
 public interface AdminService {
     Admin save(Admin admin) throws NonMainAdminRegisterOtherAdminException, EmailTakenException;
@@ -29,4 +25,8 @@ public interface AdminService {
     void quickReservationCommentaryAccept(Integer quickReservationId) throws EntityNotFoundException, NotChangedPasswordException, CommentaryNotApprovableException;
     void quickReservationCommentaryDecline(Integer quickReservationId) throws EntityNotFoundException, NotChangedPasswordException, CommentaryNotApprovableException;
     void changeCurrentSystemTaxPercentage(CurrentSystemTaxPercentage currentSystemTaxPercentage) throws NotChangedPasswordException;
+    void currentPointsClientGetsAfterReservation(CurrentPointsClientGetsAfterReservation currentPointsClientGetsAfterReservation) throws NotChangedPasswordException;
+    void currentPointsProviderGetsAfterReservation(CurrentPointsProviderGetsAfterReservation currentPointsProviderGetsAfterReservation) throws NotChangedPasswordException;
+    void changeClientPointsNeededForLoyaltyProgramCategory(Integer id, LoyaltyProgramClient loyaltyProgramClient) throws NotChangedPasswordException, EntityNotUpdateableException;
+    void changeProviderPointsNeededForLoyaltyProgramCategory(Integer id, LoyaltyProgramProvider loyaltyProgramProvider) throws NotChangedPasswordException, EntityNotUpdateableException;
 }

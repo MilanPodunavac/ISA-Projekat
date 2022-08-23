@@ -397,9 +397,9 @@ public class UserServiceImpl implements UserService {
     }
 
     private void unlinkIncomeRecords(Integer id) {
-        List<IncomeRecord> instructorIncomeRecords = _incomeRecordRepository.findByReservationOwnerId(id);
+        List<IncomeRecord> instructorIncomeRecords = _incomeRecordRepository.findByReservationProviderId(id);
         for (IncomeRecord incomeRecord : instructorIncomeRecords) {
-            incomeRecord.setReservationOwner(null);
+            incomeRecord.setReservationProvider(null);
             _incomeRecordRepository.save(incomeRecord);
         }
     }

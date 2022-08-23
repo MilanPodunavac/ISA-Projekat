@@ -15,10 +15,9 @@ import code.repository.*;
 import code.service.FishingTripService;
 import code.service.UserService;
 import code.utils.FileUploadUtil;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -33,6 +32,7 @@ import java.util.*;
 
 @Service
 public class FishingTripServiceImpl implements FishingTripService {
+    private final FishingInstructorRepository _fishingInstructorRepository;
     private final FishingTripRepository _fishingTripRepository;
     private final FishingTripPictureRepository _fishingTripPictureRepository;
     private final FishingInstructorAvailablePeriodRepository _fishingInstructorAvailablePeriodRepository;
@@ -44,9 +44,14 @@ public class FishingTripServiceImpl implements FishingTripService {
     private final ActionRepository _actionRepository;
     private final CurrentSystemTaxPercentageRepository _currentSystemTaxPercentageRepository;
     private final IncomeRecordRepository _incomeRecordRepository;
+    private final CurrentPointsClientGetsAfterReservationRepository _currentPointsClientGetsAfterReservationRepository;
+    private final CurrentPointsProviderGetsAfterReservationRepository _currentPointsProviderGetsAfterReservationRepository;
+    private final LoyaltyProgramClientRepository _loyaltyProgramClientRepository;
+    private final LoyaltyProgramProviderRepository _loyaltyProgramProviderRepository;
     private final JavaMailSender _mailSender;
 
-    public FishingTripServiceImpl(FishingTripPictureRepository fishingTripPictureRepository, FishingTripRepository fishingTripRepository, FishingInstructorAvailablePeriodRepository fishingInstructorAvailablePeriodRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, FishingTripReservationRepository fishingTripReservationRepository, ClientRepository clientRepository, UserService userService, ReservationRepository reservationRepository, ActionRepository actionRepository, CurrentSystemTaxPercentageRepository currentSystemTaxPercentageRepository, IncomeRecordRepository incomeRecordRepository, JavaMailSender mailSender) {
+    public FishingTripServiceImpl(FishingInstructorRepository fishingInstructorRepository, FishingTripPictureRepository fishingTripPictureRepository, FishingTripRepository fishingTripRepository, FishingInstructorAvailablePeriodRepository fishingInstructorAvailablePeriodRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, FishingTripReservationRepository fishingTripReservationRepository, ClientRepository clientRepository, UserService userService, ReservationRepository reservationRepository, ActionRepository actionRepository, CurrentSystemTaxPercentageRepository currentSystemTaxPercentageRepository, IncomeRecordRepository incomeRecordRepository, CurrentPointsClientGetsAfterReservationRepository currentPointsClientGetsAfterReservationRepository, CurrentPointsProviderGetsAfterReservationRepository currentPointsProviderGetsAfterReservationRepository, LoyaltyProgramClientRepository loyaltyProgramClientRepository, LoyaltyProgramProviderRepository loyaltyProgramProviderRepository, JavaMailSender mailSender) {
+        this._fishingInstructorRepository = fishingInstructorRepository;
         this._fishingTripPictureRepository = fishingTripPictureRepository;
         this._fishingTripRepository = fishingTripRepository;
         this._fishingInstructorAvailablePeriodRepository = fishingInstructorAvailablePeriodRepository;
@@ -58,6 +63,10 @@ public class FishingTripServiceImpl implements FishingTripService {
         this._actionRepository = actionRepository;
         this._currentSystemTaxPercentageRepository = currentSystemTaxPercentageRepository;
         this._incomeRecordRepository = incomeRecordRepository;
+        this._currentPointsClientGetsAfterReservationRepository = currentPointsClientGetsAfterReservationRepository;
+        this._currentPointsProviderGetsAfterReservationRepository = currentPointsProviderGetsAfterReservationRepository;
+        this._loyaltyProgramClientRepository = loyaltyProgramClientRepository;
+        this._loyaltyProgramProviderRepository = loyaltyProgramProviderRepository;
         this._mailSender = mailSender;
     }
 
@@ -239,7 +248,8 @@ public class FishingTripServiceImpl implements FishingTripService {
         throwExceptionIfNoAvailablePeriodForQuickReservation(loggedInInstructor, fishingTripQuickReservation);
         throwExceptionIfInstructorBusyDuringReservation(loggedInInstructor, fishingTripQuickReservation);
         fishingTripQuickReservation.setFishingTrip(fishingTrip);
-        fishingTripQuickReservation.setSystemTaxPercentage(_currentSystemTaxPercentageRepository.getById(1).getCurrentSystemTaxPercentage());
+        fishingTripQuickReservation.setSystemTaxPercentage(_currentSystemTaxPercentageRepository.getById(1).getCurrentSystemTaxPercentage() - loggedInInstructor.getCategory().getLesserSystemTaxPercentage());
+        fishingTripQuickReservation.setLoyaltyPointsGiven(false);
         _fishingTripQuickReservationRepository.save(fishingTripQuickReservation);
         sendQuickReservationCreatedMailToSubscribers(loggedInInstructor);
     }
@@ -298,23 +308,6 @@ public class FishingTripServiceImpl implements FishingTripService {
         }
     }
 
-    @EventListener(ApplicationReadyEvent.class)
-    @Transactional
-    public void deleteNonValidQuickReservations() {
-        List<FishingTrip> allFishingTrips = _fishingTripRepository.findAll();
-        List<FishingTripQuickReservation> allFishingTripQuickReservations =  _fishingTripQuickReservationRepository.findAll();
-
-        for (FishingTrip fishingTrip : allFishingTrips) {
-            for (FishingTripQuickReservation fishingTripQuickReservation : allFishingTripQuickReservations) {
-                if (fishingTripQuickReservation.getFishingTrip() != null && fishingTrip.getId() == fishingTripQuickReservation.getFishingTrip().getId() && fishingTripQuickReservation.getClient() == null && fishingTripQuickReservation.getValidUntilAndIncluding().isBefore(LocalDate.now())) {
-                    fishingTrip.getFishingTripQuickReservations().remove(fishingTripQuickReservation);
-                    fishingTripQuickReservation.setFishingTrip(null);
-                    _fishingTripQuickReservationRepository.delete(fishingTripQuickReservation);
-                }
-            }
-        }
-    }
-
     private void throwExceptionIfInstructorBusyDuringReservation(FishingInstructor loggedInInstructor, FishingTripQuickReservation fishingTripQuickReservation) throws InstructorBusyDuringReservationException {
         List<Integer> instructorFishingTripIds = _fishingTripRepository.findByFishingInstructor(loggedInInstructor.getId());
         List<FishingTripQuickReservation> instructorQuickReservations =  _fishingTripQuickReservationRepository.findByFishingTripIdIn(instructorFishingTripIds);
@@ -360,8 +353,9 @@ public class FishingTripServiceImpl implements FishingTripService {
         throwExceptionIfClientBusyDuringReservation(clientId, fishingTripReservation);
         fishingTripReservation.setFishingTrip(fishingTrip);
         fishingTripReservation.setClient((Client) _userService.findById(clientId));
-        fishingTripReservation.setPrice(fishingTrip.getCostPerDay() * fishingTripReservation.getDurationInDays());
-        fishingTripReservation.setSystemTaxPercentage(_currentSystemTaxPercentageRepository.getById(1).getCurrentSystemTaxPercentage());
+        fishingTripReservation.setPrice(fishingTrip.getCostPerDay() * fishingTripReservation.getDurationInDays() * (100 - fishingTripReservation.getClient().getCategory().getDiscountPercentage()) / 100);
+        fishingTripReservation.setSystemTaxPercentage(_currentSystemTaxPercentageRepository.getById(1).getCurrentSystemTaxPercentage() - loggedInInstructor.getCategory().getLesserSystemTaxPercentage());
+        fishingTripReservation.setLoyaltyPointsGiven(false);
         _fishingTripReservationRepository.save(fishingTripReservation);
         sendReservationCreatedMailToClient(clientId, loggedInInstructor);
         createIncomeRecord(fishingTripReservation, fishingTrip, loggedInInstructor);
@@ -481,15 +475,15 @@ public class FishingTripServiceImpl implements FishingTripService {
         IncomeRecord incomeRecord = new IncomeRecord();
         incomeRecord.setReserved(true);
         incomeRecord.setDateOfEntry(LocalDate.now());
-        incomeRecord.setReservationOwner(loggedInInstructor);
+        incomeRecord.setReservationProvider(loggedInInstructor);
         incomeRecord.setReservationStart(fishingTripReservation.getStart());
         incomeRecord.setReservationEnd(fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1));
         incomeRecord.setReservationPrice(fishingTripReservation.getPrice());
-        incomeRecord.setSystemTaxPercentage(_currentSystemTaxPercentageRepository.getById(1).getCurrentSystemTaxPercentage());
-        incomeRecord.setPercentageOwnerKeepsIfReservationCancelled(fishingTrip.getPercentageInstructorKeepsIfReservationCancelled());
+        incomeRecord.setSystemTaxPercentage(fishingTripReservation.getSystemTaxPercentage());
+        incomeRecord.setPercentageProviderKeepsIfReservationCancelled(fishingTrip.getPercentageInstructorKeepsIfReservationCancelled());
         double systemIncome = incomeRecord.getReservationPrice() * incomeRecord.getSystemTaxPercentage() / 100;
         incomeRecord.setSystemIncome(systemIncome);
-        incomeRecord.setOwnerIncome(incomeRecord.getReservationPrice() - systemIncome);
+        incomeRecord.setProviderIncome(incomeRecord.getReservationPrice() - systemIncome);
         _incomeRecordRepository.save(incomeRecord);
     }
 
@@ -594,6 +588,84 @@ public class FishingTripServiceImpl implements FishingTripService {
     private void throwExceptionIfQuickReservationAlreadyCommented(FishingTripQuickReservation fishingTripQuickReservation) throws ReservationOrActionAlreadyCommented {
         if (fishingTripQuickReservation.getOwnerCommentary() != null) {
             throw new ReservationOrActionAlreadyCommented("Quick reservation already commented!");
+        }
+    }
+
+    @Scheduled(cron="0 0 1 * * *")
+    @Transactional
+    public void deleteNonValidQuickReservations() {
+        List<FishingTrip> allFishingTrips = _fishingTripRepository.findAll();
+        List<FishingTripQuickReservation> allFishingTripQuickReservations =  _fishingTripQuickReservationRepository.findAll();
+
+        for (FishingTrip fishingTrip : allFishingTrips) {
+            for (FishingTripQuickReservation fishingTripQuickReservation : allFishingTripQuickReservations) {
+                if (fishingTripQuickReservation.getFishingTrip() != null && fishingTrip.getId() == fishingTripQuickReservation.getFishingTrip().getId() && fishingTripQuickReservation.getClient() == null && fishingTripQuickReservation.getValidUntilAndIncluding().isBefore(LocalDate.now())) {
+                    fishingTrip.getFishingTripQuickReservations().remove(fishingTripQuickReservation);
+                    fishingTripQuickReservation.setFishingTrip(null);
+                    _fishingTripQuickReservationRepository.delete(fishingTripQuickReservation);
+                }
+            }
+        }
+    }
+
+    @Scheduled(cron="0 0 1 * * *")
+    @Transactional
+    public void awardLoyaltyPoints() {
+        List<FishingTripReservation> allFishingTripReservations =  _fishingTripReservationRepository.findAll();
+        List<FishingTripQuickReservation> allFishingTripQuickReservations =  _fishingTripQuickReservationRepository.findAll();
+
+        for (FishingTripReservation fishingTripReservation : allFishingTripReservations) {
+            if (!fishingTripReservation.isLoyaltyPointsGiven() && fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1).isBefore(LocalDate.now())) {
+                fishingTripReservation.getClient().setLoyaltyPoints(fishingTripReservation.getClient().getLoyaltyPoints() + _currentPointsClientGetsAfterReservationRepository.getById(1).getCurrentPointsClientGetsAfterReservation());
+                List<LoyaltyProgramClient> loyaltyProgramClients = _loyaltyProgramClientRepository.findAll();
+                Collections.sort(loyaltyProgramClients, Comparator.comparing(LoyaltyProgramClient::getPointsNeeded));
+                for (LoyaltyProgramClient lpc : loyaltyProgramClients) {
+                    if (fishingTripReservation.getClient().getLoyaltyPoints() >= lpc.getPointsNeeded()) {
+                        fishingTripReservation.getClient().setCategory(lpc);
+                    }
+                }
+                _clientRepository.save(fishingTripReservation.getClient());
+
+                fishingTripReservation.getFishingTrip().getFishingInstructor().setLoyaltyPoints(fishingTripReservation.getFishingTrip().getFishingInstructor().getLoyaltyPoints() + _currentPointsProviderGetsAfterReservationRepository.getById(1).getCurrentPointsProviderGetsAfterReservation());
+                List<LoyaltyProgramProvider> loyaltyProgramProviders = _loyaltyProgramProviderRepository.findAll();
+                Collections.sort(loyaltyProgramProviders, Comparator.comparing(LoyaltyProgramProvider::getPointsNeeded));
+                for (LoyaltyProgramProvider lpp : loyaltyProgramProviders) {
+                    if (fishingTripReservation.getFishingTrip().getFishingInstructor().getLoyaltyPoints() >= lpp.getPointsNeeded()) {
+                        fishingTripReservation.getFishingTrip().getFishingInstructor().setCategory(lpp);
+                    }
+                }
+                _fishingInstructorRepository.save(fishingTripReservation.getFishingTrip().getFishingInstructor());
+
+                fishingTripReservation.setLoyaltyPointsGiven(true);
+                _fishingTripReservationRepository.save(fishingTripReservation);
+            }
+        }
+
+        for (FishingTripQuickReservation fishingTripQuickReservation : allFishingTripQuickReservations) {
+            if (!fishingTripQuickReservation.isLoyaltyPointsGiven() && fishingTripQuickReservation.getClient() != null && fishingTripQuickReservation.getStart().plusDays(fishingTripQuickReservation.getDurationInDays() - 1).isBefore(LocalDate.now())) {
+                fishingTripQuickReservation.getClient().setLoyaltyPoints(fishingTripQuickReservation.getClient().getLoyaltyPoints() + _currentPointsClientGetsAfterReservationRepository.getById(1).getCurrentPointsClientGetsAfterReservation());
+                List<LoyaltyProgramClient> loyaltyProgramClients = _loyaltyProgramClientRepository.findAll();
+                Collections.sort(loyaltyProgramClients, Comparator.comparing(LoyaltyProgramClient::getPointsNeeded));
+                for (LoyaltyProgramClient lpc : loyaltyProgramClients) {
+                    if (fishingTripQuickReservation.getClient().getLoyaltyPoints() >= lpc.getPointsNeeded()) {
+                        fishingTripQuickReservation.getClient().setCategory(lpc);
+                    }
+                }
+                _clientRepository.save(fishingTripQuickReservation.getClient());
+
+                fishingTripQuickReservation.getFishingTrip().getFishingInstructor().setLoyaltyPoints(fishingTripQuickReservation.getFishingTrip().getFishingInstructor().getLoyaltyPoints() + _currentPointsProviderGetsAfterReservationRepository.getById(1).getCurrentPointsProviderGetsAfterReservation());
+                List<LoyaltyProgramProvider> loyaltyProgramProviders = _loyaltyProgramProviderRepository.findAll();
+                Collections.sort(loyaltyProgramProviders, Comparator.comparing(LoyaltyProgramProvider::getPointsNeeded));
+                for (LoyaltyProgramProvider lpp : loyaltyProgramProviders) {
+                    if (fishingTripQuickReservation.getFishingTrip().getFishingInstructor().getLoyaltyPoints() >= lpp.getPointsNeeded()) {
+                        fishingTripQuickReservation.getFishingTrip().getFishingInstructor().setCategory(lpp);
+                    }
+                }
+                _fishingInstructorRepository.save(fishingTripQuickReservation.getFishingTrip().getFishingInstructor());
+
+                fishingTripQuickReservation.setLoyaltyPointsGiven(true);
+                _fishingTripQuickReservationRepository.save(fishingTripQuickReservation);
+            }
         }
     }
 }

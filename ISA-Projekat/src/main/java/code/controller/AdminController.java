@@ -1,10 +1,7 @@
 package code.controller;
 
 import code.controller.base.BaseController;
-import code.dto.admin.AdminRegistration;
-import code.dto.admin.CurrentSystemTaxPercentageDTO;
-import code.dto.admin.PasswordDTO;
-import code.dto.admin.PersonalData;
+import code.dto.admin.*;
 import code.exceptions.admin.*;
 import code.exceptions.entities.*;
 import code.exceptions.provider_registration.EmailTakenException;
@@ -322,6 +319,70 @@ public class AdminController extends BaseController {
             return ResponseEntity.ok("Current system tax percentage changed!");
         } catch (NotChangedPasswordException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @PutMapping(value = "/currentPointsClientGetsAfterReservation", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> currentPointsClientGetsAfterReservation(@Valid @RequestBody CurrentPointsClientGetsAfterReservationDTO dto, BindingResult result) {
+        if(result.hasErrors()){
+            return formatErrorResponse(result);
+        }
+
+        try {
+            _adminService.currentPointsClientGetsAfterReservation(_mapper.map(dto, code.model.CurrentPointsClientGetsAfterReservation.class));
+            return ResponseEntity.ok("Current points client gets after reservation changed!");
+        } catch (NotChangedPasswordException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @PutMapping(value = "/currentPointsProviderGetsAfterReservation", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> currentPointsProviderGetsAfterReservation(@Valid @RequestBody CurrentPointsProviderGetsAfterReservationDTO dto, BindingResult result) {
+        if(result.hasErrors()){
+            return formatErrorResponse(result);
+        }
+
+        try {
+            _adminService.currentPointsProviderGetsAfterReservation(_mapper.map(dto, code.model.CurrentPointsProviderGetsAfterReservation.class));
+            return ResponseEntity.ok("Current points provider gets after reservation changed!");
+        } catch (NotChangedPasswordException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @PutMapping(value = "/changeClientPointsNeededForLoyaltyProgramCategory/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> changeClientPointsNeededForLoyaltyProgramCategory(@PathVariable Integer id, @Valid @RequestBody PointsNeededForLoyaltyProgramCategory dto, BindingResult result) {
+        if(result.hasErrors()){
+            return formatErrorResponse(result);
+        }
+
+        try {
+            _adminService.changeClientPointsNeededForLoyaltyProgramCategory(id, _mapper.map(dto, code.model.LoyaltyProgramClient.class));
+            return ResponseEntity.ok("Client points needed for loyalty program category changed!");
+        } catch (NotChangedPasswordException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (EntityNotUpdateableException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
+    }
+
+    @PutMapping(value = "/changeProviderPointsNeededForLoyaltyProgramCategory/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> changeProviderPointsNeededForLoyaltyProgramCategory(@PathVariable Integer id, @Valid @RequestBody PointsNeededForLoyaltyProgramCategory dto, BindingResult result) {
+        if(result.hasErrors()){
+            return formatErrorResponse(result);
+        }
+
+        try {
+            _adminService.changeProviderPointsNeededForLoyaltyProgramCategory(id, _mapper.map(dto, code.model.LoyaltyProgramProvider.class));
+            return ResponseEntity.ok("Provider points needed for loyalty program category changed!");
+        } catch (NotChangedPasswordException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (EntityNotUpdateableException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
     }
 }

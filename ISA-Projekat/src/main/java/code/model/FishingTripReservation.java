@@ -30,6 +30,8 @@ public class FishingTripReservation {
    private double price;
    @Column
    private double systemTaxPercentage;
+   @Column
+   private boolean loyaltyPointsGiven;
    @ElementCollection(targetClass= FishingTripReservationTag.class)
    @Enumerated(EnumType.ORDINAL)
    @CollectionTable(name="fishingTripReservation_tags")

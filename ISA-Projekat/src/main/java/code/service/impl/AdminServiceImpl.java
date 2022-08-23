@@ -1,10 +1,7 @@
 package code.service.impl;
 
 import code.exceptions.admin.*;
-import code.exceptions.entities.CommentaryNotApprovableException;
-import code.exceptions.entities.EntityNotDeletableException;
-import code.exceptions.entities.EntityNotFoundException;
-import code.exceptions.entities.UnexpectedUserRoleException;
+import code.exceptions.entities.*;
 import code.exceptions.provider_registration.EmailTakenException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.*;
@@ -26,6 +23,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,14 +38,19 @@ public class AdminServiceImpl implements AdminService {
     private final CottageService _cottageService;
     private final BoatService _boatService;
     private final ClientRepository _clientRepository;
+    private final FishingInstructorRepository _fishingInstructorRepository;
     private final FishingTripReservationRepository _fishingTripReservationRepository;
     private final FishingTripQuickReservationRepository _fishingTripQuickReservationRepository;
     private final ReservationRepository _reservationRepository;
     private final ActionRepository _actionRepository;
     private final CurrentSystemTaxPercentageRepository _currentSystemTaxPercentageRepository;
+    private final CurrentPointsClientGetsAfterReservationRepository _currentPointsClientGetsAfterReservationRepository;
+    private final CurrentPointsProviderGetsAfterReservationRepository _currentPointsProviderGetsAfterReservationRepository;
+    private final LoyaltyProgramClientRepository _loyaltyProgramClientRepository;
+    private final LoyaltyProgramProviderRepository _loyaltyProgramProviderRepository;
     private final JavaMailSender _mailSender;
 
-    public AdminServiceImpl(AdminRepository adminRepository, PasswordEncoder passwordEncoder, RoleService roleService, UserService userService, UserRepository userRepository, CottageService cottageService, BoatService boatService, ClientRepository clientRepository, FishingTripReservationRepository fishingTripReservationRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, ReservationRepository reservationRepository, ActionRepository actionRepository, CurrentSystemTaxPercentageRepository currentSystemTaxPercentageRepository, JavaMailSender mailSender) {
+    public AdminServiceImpl(AdminRepository adminRepository, PasswordEncoder passwordEncoder, RoleService roleService, UserService userService, UserRepository userRepository, CottageService cottageService, BoatService boatService, ClientRepository clientRepository, FishingInstructorRepository fishingInstructorRepository, FishingTripReservationRepository fishingTripReservationRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, ReservationRepository reservationRepository, ActionRepository actionRepository, CurrentSystemTaxPercentageRepository currentSystemTaxPercentageRepository, CurrentPointsClientGetsAfterReservationRepository currentPointsClientGetsAfterReservationRepository, CurrentPointsProviderGetsAfterReservationRepository currentPointsProviderGetsAfterReservationRepository, LoyaltyProgramClientRepository loyaltyProgramClientRepository, LoyaltyProgramProviderRepository loyaltyProgramProviderRepository, JavaMailSender mailSender) {
         this._adminRepository = adminRepository;
         this._passwordEncoder = passwordEncoder;
         this._roleService = roleService;
@@ -55,11 +59,16 @@ public class AdminServiceImpl implements AdminService {
         this._cottageService = cottageService;
         this._boatService = boatService;
         this._clientRepository = clientRepository;
+        this._fishingInstructorRepository = fishingInstructorRepository;
         this._fishingTripQuickReservationRepository = fishingTripQuickReservationRepository;
         this._fishingTripReservationRepository = fishingTripReservationRepository;
         this._reservationRepository = reservationRepository;
         this._actionRepository = actionRepository;
         this._currentSystemTaxPercentageRepository = currentSystemTaxPercentageRepository;
+        this._currentPointsClientGetsAfterReservationRepository = currentPointsClientGetsAfterReservationRepository;
+        this._currentPointsProviderGetsAfterReservationRepository = currentPointsProviderGetsAfterReservationRepository;
+        this._loyaltyProgramClientRepository = loyaltyProgramClientRepository;
+        this._loyaltyProgramProviderRepository = loyaltyProgramProviderRepository;
         this._mailSender = mailSender;
     }
 
@@ -532,6 +541,92 @@ public class AdminServiceImpl implements AdminService {
         CurrentSystemTaxPercentage currentSystemTaxPercentageFromDatabase = _currentSystemTaxPercentageRepository.getById(1);
         currentSystemTaxPercentageFromDatabase.setCurrentSystemTaxPercentage(currentSystemTaxPercentage.getCurrentSystemTaxPercentage());
         _currentSystemTaxPercentageRepository.save(currentSystemTaxPercentageFromDatabase);
+    }
+
+    @Transactional
+    @Override
+    public void currentPointsClientGetsAfterReservation(CurrentPointsClientGetsAfterReservation currentPointsClientGetsAfterReservation) throws NotChangedPasswordException {
+        throwExceptionIfAdminDidntChangePassword(getLoggedInAdmin());
+
+        CurrentPointsClientGetsAfterReservation currentPointsClientGetsAfterReservationFromDatabase = _currentPointsClientGetsAfterReservationRepository.getById(1);
+        currentPointsClientGetsAfterReservationFromDatabase.setCurrentPointsClientGetsAfterReservation(currentPointsClientGetsAfterReservation.getCurrentPointsClientGetsAfterReservation());
+        _currentPointsClientGetsAfterReservationRepository.save(currentPointsClientGetsAfterReservationFromDatabase);
+    }
+
+    @Transactional
+    @Override
+    public void currentPointsProviderGetsAfterReservation(CurrentPointsProviderGetsAfterReservation currentPointsProviderGetsAfterReservation) throws NotChangedPasswordException {
+        throwExceptionIfAdminDidntChangePassword(getLoggedInAdmin());
+
+        CurrentPointsProviderGetsAfterReservation currentPointsProviderGetsAfterReservationFromDatabase = _currentPointsProviderGetsAfterReservationRepository.getById(1);
+        currentPointsProviderGetsAfterReservationFromDatabase.setCurrentPointsProviderGetsAfterReservation(currentPointsProviderGetsAfterReservation.getCurrentPointsProviderGetsAfterReservation());
+        _currentPointsProviderGetsAfterReservationRepository.save(currentPointsProviderGetsAfterReservationFromDatabase);
+    }
+
+    @Transactional
+    @Override
+    public void changeClientPointsNeededForLoyaltyProgramCategory(Integer id, LoyaltyProgramClient loyaltyProgramClient) throws NotChangedPasswordException, EntityNotUpdateableException {
+        throwExceptionIfAdminDidntChangePassword(getLoggedInAdmin());
+        throwExceptionIfChangingPointsForLoyaltyProgramCategoryThatIsRegularOrDoesntExist(id);
+        throwExceptionIfClientPointsNeededForLoyaltyProgramSilverCategoryHigherThanGoldCategory(id, loyaltyProgramClient);
+
+        LoyaltyProgramClient loyaltyProgramClientFromDatabase = _loyaltyProgramClientRepository.getById(id);
+        loyaltyProgramClientFromDatabase.setPointsNeeded(loyaltyProgramClient.getPointsNeeded());
+        _loyaltyProgramClientRepository.save(loyaltyProgramClientFromDatabase);
+
+        List<LoyaltyProgramClient> loyaltyProgramClients = _loyaltyProgramClientRepository.findAll();
+        Collections.sort(loyaltyProgramClients, Comparator.comparing(LoyaltyProgramClient::getPointsNeeded));
+
+        for (Client client : _clientRepository.findAll()) {
+            for (LoyaltyProgramClient lpc : loyaltyProgramClients) {
+                if (client.getLoyaltyPoints() >= lpc.getPointsNeeded()) {
+                    client.setCategory(lpc);
+                }
+            }
+            _clientRepository.save(client);
+        }
+    }
+
+    private void throwExceptionIfChangingPointsForLoyaltyProgramCategoryThatIsRegularOrDoesntExist(Integer id) throws EntityNotUpdateableException {
+        if (id != 2 && id != 3) {
+            throw new EntityNotUpdateableException("Changing points needed for regular category in loyalty program not allowed or category doesn't exist!");
+        }
+    }
+
+    private void throwExceptionIfClientPointsNeededForLoyaltyProgramSilverCategoryHigherThanGoldCategory(Integer id, LoyaltyProgramClient loyaltyProgramClient) throws EntityNotUpdateableException {
+        if ((id == 2 && loyaltyProgramClient.getPointsNeeded() >= _loyaltyProgramClientRepository.getById(3).getPointsNeeded()) || (id == 3 && loyaltyProgramClient.getPointsNeeded() <= _loyaltyProgramClientRepository.getById(2).getPointsNeeded())) {
+            throw new EntityNotUpdateableException("Silver loyalty program category can't have higher or equal points needed than gold category!");
+        }
+    }
+
+    @Transactional
+    @Override
+    public void changeProviderPointsNeededForLoyaltyProgramCategory(Integer id, LoyaltyProgramProvider loyaltyProgramProvider) throws NotChangedPasswordException, EntityNotUpdateableException {
+        throwExceptionIfAdminDidntChangePassword(getLoggedInAdmin());
+        throwExceptionIfChangingPointsForLoyaltyProgramCategoryThatIsRegularOrDoesntExist(id);
+        throwExceptionIfProviderPointsNeededForLoyaltyProgramSilverCategoryHigherThanGoldCategory(id, loyaltyProgramProvider);
+
+        LoyaltyProgramProvider loyaltyProgramProviderFromDatabase = _loyaltyProgramProviderRepository.getById(id);
+        loyaltyProgramProviderFromDatabase.setPointsNeeded(loyaltyProgramProvider.getPointsNeeded());
+        _loyaltyProgramProviderRepository.save(loyaltyProgramProviderFromDatabase);
+
+        List<LoyaltyProgramProvider> loyaltyProgramProviders = _loyaltyProgramProviderRepository.findAll();
+        Collections.sort(loyaltyProgramProviders, Comparator.comparing(LoyaltyProgramProvider::getPointsNeeded));
+
+        for (FishingInstructor fishingInstructor : _fishingInstructorRepository.findAll()) {
+            for (LoyaltyProgramProvider lpp : loyaltyProgramProviders) {
+                if (fishingInstructor.getLoyaltyPoints() >= lpp.getPointsNeeded()) {
+                    fishingInstructor.setCategory(lpp);
+                }
+            }
+            _fishingInstructorRepository.save(fishingInstructor);
+        }
+    }
+
+    private void throwExceptionIfProviderPointsNeededForLoyaltyProgramSilverCategoryHigherThanGoldCategory(Integer id, LoyaltyProgramProvider loyaltyProgramProvider) throws EntityNotUpdateableException {
+        if ((id == 2 && loyaltyProgramProvider.getPointsNeeded() >= _loyaltyProgramProviderRepository.getById(3).getPointsNeeded()) || (id == 3 && loyaltyProgramProvider.getPointsNeeded() <= _loyaltyProgramProviderRepository.getById(2).getPointsNeeded())) {
+            throw new EntityNotUpdateableException("Silver loyalty program category can't have higher points needed requirement than gold category!");
+        }
     }
 
     @Scheduled(cron="0 0 0 1 1/1 *")

@@ -38,7 +38,7 @@ public abstract class User implements UserDetails {
    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
    @JoinColumn(name="location_id")
    protected Location location;
-   @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+   @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name="role_id")
    private Role role;
 

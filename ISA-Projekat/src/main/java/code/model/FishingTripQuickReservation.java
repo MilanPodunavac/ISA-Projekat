@@ -31,6 +31,8 @@ public class FishingTripQuickReservation {
     private double price;
     @Column
     private double systemTaxPercentage;
+    @Column
+    private boolean loyaltyPointsGiven;
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name="location_id")
     private Location location;
