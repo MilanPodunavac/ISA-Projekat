@@ -35,7 +35,7 @@ public interface UserService {
     void acceptAccountDeletionRequest(Integer id, String responseText) throws AccountDeletionRequestDontExistException, NotChangedPasswordException, EntityNotDeletableException;
     void unlinkReferencesFishingInstructor(FishingInstructor fishingInstructor);
     void unlinkReferencesCottageOwner(CottageOwner cottageOwner) throws EntityNotDeletableException;
-    void unlinkReferencesBoatOwner(BoatOwner boatOwner);
+    void unlinkReferencesBoatOwner(BoatOwner boatOwner) throws EntityNotDeletableException;
     void unlinkReferencesClient(Client client);
     void throwExceptionIfEnabledClientDoesntExist(Integer clientId) throws EnabledClientDoesntExistException;
 }

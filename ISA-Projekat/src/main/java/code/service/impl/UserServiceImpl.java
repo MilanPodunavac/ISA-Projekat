@@ -12,6 +12,7 @@ import code.exceptions.provider_registration.UserAccountActivatedException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.*;
 import code.model.base.Picture;
+import code.model.boat.Boat;
 import code.model.boat.BoatOwner;
 import code.model.cottage.Cottage;
 import code.model.cottage.CottageOwner;
@@ -33,10 +34,12 @@ import java.util.*;
 @Service
 public class UserServiceImpl implements UserService {
     private final String COTTAGE_PICTURE_DIRECTORY = "cottage_images";
+    private final String BOAT_PICTURE_DIRECTORY = "boat_images";
     private final UserRepository _userRepository;
     private final ClientRepository _clientRepository;
     private final AvailabilityPeriodRepository _availabilityPeriodRepository;
     private final CottageRepository _cottageRepository;
+    private final BoatRepository _boatRepository;
     private final CottageReservationRepository _cottageReservationRepository;
     private final FishingTripPictureRepository _fishingTripPictureRepository;
     private final FishingTripRepository _fishingTripRepository;
@@ -47,11 +50,12 @@ public class UserServiceImpl implements UserService {
     private final JavaMailSender _mailSender;
     private final PasswordEncoder _passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, ClientRepository clientRepository, AvailabilityPeriodRepository availabilityPeriodRepository, CottageRepository cottageRepository, CottageReservationRepository cottageReservationRepository, FishingTripPictureRepository fishingTripPictureRepository, FishingTripRepository fishingTripRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, FishingTripReservationRepository fishingTripReservationRepository, AccountDeletionRequestRepository accountDeletionRequestRepository, IncomeRecordRepository incomeRecordRepository, JavaMailSender mailSender, PasswordEncoder encoder) {
+    public UserServiceImpl(UserRepository userRepository, ClientRepository clientRepository, AvailabilityPeriodRepository availabilityPeriodRepository, CottageRepository cottageRepository, BoatRepository boatRepository, CottageReservationRepository cottageReservationRepository, FishingTripPictureRepository fishingTripPictureRepository, FishingTripRepository fishingTripRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, FishingTripReservationRepository fishingTripReservationRepository, AccountDeletionRequestRepository accountDeletionRequestRepository, IncomeRecordRepository incomeRecordRepository, JavaMailSender mailSender, PasswordEncoder encoder) {
         this._userRepository = userRepository;
         this._clientRepository = clientRepository;
         this._availabilityPeriodRepository = availabilityPeriodRepository;
         this._cottageRepository = cottageRepository;
+        _boatRepository = boatRepository;
         this._cottageReservationRepository = cottageReservationRepository;
         this._fishingTripPictureRepository = fishingTripPictureRepository;
         this._fishingTripRepository = fishingTripRepository;
@@ -456,12 +460,34 @@ public class UserServiceImpl implements UserService {
         }
         cottageOwner.getCottage().clear();
         cottageOwner.setRole(null);
+        List<IncomeRecord> instructorIncomeRecords = _incomeRecordRepository.findByReservationProviderId(cottageOwner.getId());
+        for (IncomeRecord incomeRecord : instructorIncomeRecords) {
+            incomeRecord.setReservationProvider(null);
+            _incomeRecordRepository.save(incomeRecord);
+        }
+        cottageOwner.setCategory(null);
         cottageOwner.setLocation(null);
     }
 
     @Override
-    public void unlinkReferencesBoatOwner(BoatOwner boatOwner) {
-
+    public void unlinkReferencesBoatOwner(BoatOwner boatOwner) throws EntityNotDeletableException {
+        List<Boat> copy = new ArrayList<>(boatOwner.getBoat());
+        for(Boat boat : copy)if(boat.hasFutureReservationsOrActions())throw new EntityNotDeletableException("Boat cannot be deleted, it has reservations or actions in the future");
+        for(Boat boat : copy){
+            for(Picture pic : boat.getPictures()){
+                FileUploadUtil.deleteFile(COTTAGE_PICTURE_DIRECTORY, boat.getId() + "_" + pic.getName());
+            }
+            _boatRepository.delete(boat);
+        }
+        boatOwner.getBoat().clear();
+        boatOwner.setRole(null);
+        List<IncomeRecord> instructorIncomeRecords = _incomeRecordRepository.findByReservationProviderId(boatOwner.getId());
+        for (IncomeRecord incomeRecord : instructorIncomeRecords) {
+            incomeRecord.setReservationProvider(null);
+            _incomeRecordRepository.save(incomeRecord);
+        }
+        boatOwner.setCategory(null);
+        boatOwner.setLocation(null);
     }
 
     @Override
