@@ -45,8 +45,10 @@ public class AdminServiceImpl implements AdminService {
     private final ActionRepository _actionRepository;
     private final CurrentSystemTaxPercentageRepository _currentSystemTaxPercentageRepository;
     private final JavaMailSender _mailSender;
+    private final CurrentPointsClientGetsAfterReservationRepository _currentPointsClientGetsAfterReservationRepository;
+    private final CurrentPointsProviderGetsAfterReservationRepository _currentPointsProviderGetsAfterReservationRepository;
 
-    public AdminServiceImpl(AdminRepository adminRepository, PasswordEncoder passwordEncoder, RoleService roleService, UserService userService, UserRepository userRepository, CottageService cottageService, BoatService boatService, ClientRepository clientRepository, FishingTripReservationRepository fishingTripReservationRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, ReservationRepository reservationRepository, ActionRepository actionRepository, CurrentSystemTaxPercentageRepository currentSystemTaxPercentageRepository, JavaMailSender mailSender) {
+    public AdminServiceImpl(AdminRepository adminRepository, PasswordEncoder passwordEncoder, RoleService roleService, UserService userService, UserRepository userRepository, CottageService cottageService, BoatService boatService, ClientRepository clientRepository, FishingInstructorRepository fishingInstructorRepository, FishingTripReservationRepository fishingTripReservationRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, ReservationRepository reservationRepository, ActionRepository actionRepository, CurrentSystemTaxPercentageRepository currentSystemTaxPercentageRepository, CurrentPointsClientGetsAfterReservationRepository currentPointsClientGetsAfterReservationRepository, CurrentPointsProviderGetsAfterReservationRepository currentPointsProviderGetsAfterReservationRepository, LoyaltyProgramClientRepository loyaltyProgramClientRepository, LoyaltyProgramProviderRepository loyaltyProgramProviderRepository, CottageOwnerRepository cottageOwnerRepository, BoatOwnerRepository boatOwnerRepository, JavaMailSender mailSender) {
         this._adminRepository = adminRepository;
         this._passwordEncoder = passwordEncoder;
         this._roleService = roleService;
@@ -60,6 +62,12 @@ public class AdminServiceImpl implements AdminService {
         this._reservationRepository = reservationRepository;
         this._actionRepository = actionRepository;
         this._currentSystemTaxPercentageRepository = currentSystemTaxPercentageRepository;
+        this._currentPointsClientGetsAfterReservationRepository = currentPointsClientGetsAfterReservationRepository;
+        this._currentPointsProviderGetsAfterReservationRepository = currentPointsProviderGetsAfterReservationRepository;
+        this._loyaltyProgramClientRepository = loyaltyProgramClientRepository;
+        this._loyaltyProgramProviderRepository = loyaltyProgramProviderRepository;
+        _cottageOwnerRepository = cottageOwnerRepository;
+        _boatOwnerRepository = boatOwnerRepository;
         this._mailSender = mailSender;
     }
 
@@ -533,7 +541,112 @@ public class AdminServiceImpl implements AdminService {
         currentSystemTaxPercentageFromDatabase.setCurrentSystemTaxPercentage(currentSystemTaxPercentage.getCurrentSystemTaxPercentage());
         _currentSystemTaxPercentageRepository.save(currentSystemTaxPercentageFromDatabase);
     }
+    
+    @Transactional
+    @Override
+    public void currentPointsClientGetsAfterReservation(CurrentPointsClientGetsAfterReservation currentPointsClientGetsAfterReservation) throws NotChangedPasswordException {
+        throwExceptionIfAdminDidntChangePassword(getLoggedInAdmin());
 
+        CurrentPointsClientGetsAfterReservation currentPointsClientGetsAfterReservationFromDatabase = _currentPointsClientGetsAfterReservationRepository.getById(1);
+        currentPointsClientGetsAfterReservationFromDatabase.setCurrentPointsClientGetsAfterReservation(currentPointsClientGetsAfterReservation.getCurrentPointsClientGetsAfterReservation());
+        _currentPointsClientGetsAfterReservationRepository.save(currentPointsClientGetsAfterReservationFromDatabase);
+    }
+
+    @Transactional
+    @Override
+    public void currentPointsProviderGetsAfterReservation(CurrentPointsProviderGetsAfterReservation currentPointsProviderGetsAfterReservation) throws NotChangedPasswordException {
+        throwExceptionIfAdminDidntChangePassword(getLoggedInAdmin());
+
+        CurrentPointsProviderGetsAfterReservation currentPointsProviderGetsAfterReservationFromDatabase = _currentPointsProviderGetsAfterReservationRepository.getById(1);
+        currentPointsProviderGetsAfterReservationFromDatabase.setCurrentPointsProviderGetsAfterReservation(currentPointsProviderGetsAfterReservation.getCurrentPointsProviderGetsAfterReservation());
+        _currentPointsProviderGetsAfterReservationRepository.save(currentPointsProviderGetsAfterReservationFromDatabase);
+    }
+
+    @Transactional
+    @Override
+    public void changeClientPointsNeededForLoyaltyProgramCategory(Integer id, LoyaltyProgramClient loyaltyProgramClient) throws NotChangedPasswordException, EntityNotUpdateableException {
+        throwExceptionIfAdminDidntChangePassword(getLoggedInAdmin());
+        throwExceptionIfChangingPointsForLoyaltyProgramCategoryThatIsRegularOrDoesntExist(id);
+        throwExceptionIfClientPointsNeededForLoyaltyProgramSilverCategoryHigherThanGoldCategory(id, loyaltyProgramClient);
+
+        LoyaltyProgramClient loyaltyProgramClientFromDatabase = _loyaltyProgramClientRepository.getById(id);
+        loyaltyProgramClientFromDatabase.setPointsNeeded(loyaltyProgramClient.getPointsNeeded());
+        _loyaltyProgramClientRepository.save(loyaltyProgramClientFromDatabase);
+
+        List<LoyaltyProgramClient> loyaltyProgramClients = _loyaltyProgramClientRepository.findAll();
+        Collections.sort(loyaltyProgramClients, Comparator.comparing(LoyaltyProgramClient::getPointsNeeded));
+
+        for (Client client : _clientRepository.findAll()) {
+            for (LoyaltyProgramClient lpc : loyaltyProgramClients) {
+                if (client.getLoyaltyPoints() >= lpc.getPointsNeeded()) {
+                    client.setCategory(lpc);
+                }
+            }
+            _clientRepository.save(client);
+        }
+    }
+
+    private void throwExceptionIfChangingPointsForLoyaltyProgramCategoryThatIsRegularOrDoesntExist(Integer id) throws EntityNotUpdateableException {
+        if (id != 2 && id != 3) {
+            throw new EntityNotUpdateableException("Changing points needed for regular category in loyalty program not allowed or category doesn't exist!");
+        }
+    }
+
+    private void throwExceptionIfClientPointsNeededForLoyaltyProgramSilverCategoryHigherThanGoldCategory(Integer id, LoyaltyProgramClient loyaltyProgramClient) throws EntityNotUpdateableException {
+        if ((id == 2 && loyaltyProgramClient.getPointsNeeded() >= _loyaltyProgramClientRepository.getById(3).getPointsNeeded()) || (id == 3 && loyaltyProgramClient.getPointsNeeded() <= _loyaltyProgramClientRepository.getById(2).getPointsNeeded())) {
+            throw new EntityNotUpdateableException("Silver loyalty program category can't have higher or equal points needed than gold category!");
+        }
+    }
+
+    @Transactional
+    @Override
+    public void changeProviderPointsNeededForLoyaltyProgramCategory(Integer id, LoyaltyProgramProvider loyaltyProgramProvider) throws NotChangedPasswordException, EntityNotUpdateableException {
+        throwExceptionIfAdminDidntChangePassword(getLoggedInAdmin());
+        throwExceptionIfChangingPointsForLoyaltyProgramCategoryThatIsRegularOrDoesntExist(id);
+        throwExceptionIfProviderPointsNeededForLoyaltyProgramSilverCategoryHigherThanGoldCategory(id, loyaltyProgramProvider);
+
+        LoyaltyProgramProvider loyaltyProgramProviderFromDatabase = _loyaltyProgramProviderRepository.getById(id);
+        loyaltyProgramProviderFromDatabase.setPointsNeeded(loyaltyProgramProvider.getPointsNeeded());
+        _loyaltyProgramProviderRepository.save(loyaltyProgramProviderFromDatabase);
+
+        List<LoyaltyProgramProvider> loyaltyProgramProviders = _loyaltyProgramProviderRepository.findAll();
+        Collections.sort(loyaltyProgramProviders, Comparator.comparing(LoyaltyProgramProvider::getPointsNeeded));
+
+        for (FishingInstructor fishingInstructor : _fishingInstructorRepository.findAll()) {
+            for (LoyaltyProgramProvider lpp : loyaltyProgramProviders) {
+                if (fishingInstructor.getLoyaltyPoints() >= lpp.getPointsNeeded()) {
+                    fishingInstructor.setCategory(lpp);
+                }
+            }
+            _fishingInstructorRepository.save(fishingInstructor);
+        }
+
+        for (CottageOwner owner : _cottageOwnerRepository.findAll()){
+            for (LoyaltyProgramProvider lpp : loyaltyProgramProviders){
+                if (owner.getLoyaltyPoints() >= lpp.getPointsNeeded()){
+                    owner.setCategory(lpp);
+                }
+            }
+            _cottageOwnerRepository.save(owner);
+        }
+
+        for (BoatOwner owner : _boatOwnerRepository.findAll()){
+            for (LoyaltyProgramProvider lpp : loyaltyProgramProviders){
+                if (owner.getLoyaltyPoints() >= lpp.getPointsNeeded()){
+                    owner.setCategory(lpp);
+                }
+            }
+            _boatOwnerRepository.save(owner);
+        }
+
+    }
+
+    private void throwExceptionIfProviderPointsNeededForLoyaltyProgramSilverCategoryHigherThanGoldCategory(Integer id, LoyaltyProgramProvider loyaltyProgramProvider) throws EntityNotUpdateableException {
+        if ((id == 2 && loyaltyProgramProvider.getPointsNeeded() >= _loyaltyProgramProviderRepository.getById(3).getPointsNeeded()) || (id == 3 && loyaltyProgramProvider.getPointsNeeded() <= _loyaltyProgramProviderRepository.getById(2).getPointsNeeded())) {
+            throw new EntityNotUpdateableException("Silver loyalty program category can't have higher points needed requirement than gold category!");
+        }
+    }
+    
     @Scheduled(cron="0 0 0 1 1/1 *")
     public void unbanAllClientsAndResetTheirPenaltyPoints() {
         List<Client> allClients = _clientRepository.findAll();

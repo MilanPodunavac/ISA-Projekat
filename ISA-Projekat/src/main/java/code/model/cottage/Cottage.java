@@ -40,6 +40,8 @@ public class Cottage extends SaleEntity {
          if(!additionalServices.contains(tag))throw new InvalidReservationException("Additional service not supported");
       }
       if(reservation.getNumberOfPeople() > roomNumber * bedNumber) throw new InvalidReservationException("Not enough beds");
+      reservation.setCottage(this);
+      reservation.setSystemCharge(reservation.getSystemCharge() - cottageOwner.getCategory().getLesserSystemTaxPercentage());
       //OVDE UVESTI DODATNO RACUNANJE POPUSTA ZA KLIJENTA I PROFITA ZA VLASNIKA
       return super.addReservation(reservation);
    }
@@ -50,6 +52,7 @@ public class Cottage extends SaleEntity {
       }
       if(newAction.getNumberOfPeople() > bedNumber * roomNumber)throw new InvalidReservationException("This cottage supports maximum " + bedNumber * roomNumber + " people");
       newAction.setCottage(this);
+      newAction.setSystemCharge(newAction.getSystemCharge() - cottageOwner.getCategory().getLesserSystemTaxPercentage());
       return super.addAction(newAction);
    }
 

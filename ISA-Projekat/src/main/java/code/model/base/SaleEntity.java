@@ -61,7 +61,7 @@ public abstract class SaleEntity {
    }
 
    public boolean addReservation (Reservation reservation) throws ClientCancelledThisPeriodException {
-      reservation.setPrice(pricePerDay * reservation.getDateRange().getDays());
+      reservation.setPrice((pricePerDay * reservation.getDateRange().getDays()) * (1 - reservation.getClient().getCategory().getDiscountPercentage()/100));
       reservation.setReservationRefund(reservationRefund);
       for (AvailabilityPeriod period: availabilityPeriods) {
          if(period.addReservation(reservation) == true) {

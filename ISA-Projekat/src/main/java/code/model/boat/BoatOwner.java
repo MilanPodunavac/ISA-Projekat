@@ -1,5 +1,6 @@
 package code.model.boat;
 
+import code.model.LoyaltyProgramProvider;
 import code.model.User;
 import code.model.boat.Boat;
 import code.model.cottage.Cottage;
@@ -21,6 +22,11 @@ public class BoatOwner extends User {
    private String reasonForRegistration;
    @OneToMany(mappedBy = "boatOwner", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    private Set<Boat> boat;
+   @Column
+   private double loyaltyPoints;
+   @ManyToOne(fetch = FetchType.EAGER)
+   @JoinColumn(name="category_id")
+   private LoyaltyProgramProvider category;
 
    public void addBoat(Boat boat){
       boat.setBoatOwner(this);

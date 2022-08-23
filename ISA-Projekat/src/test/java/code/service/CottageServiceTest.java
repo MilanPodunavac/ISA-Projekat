@@ -59,11 +59,13 @@ public class CottageServiceTest {
         //ARRANGE
         CottageOwner cottageOwner = getMockCottageOwner();
         Cottage cottage = getMockCottage(cottageOwner);
+        CurrentSystemTaxPercentage perc = new CurrentSystemTaxPercentage(1, 20);
         AvailabilityPeriod period = new AvailabilityPeriod();
         period.setRange(new DateRange(new GregorianCalendar(2022, Calendar.JUNE, 3).getTime(), new GregorianCalendar(2022, Calendar.JUNE, 30).getTime()));
         when(_userRepository.findByEmail(cottageOwner.getEmail())).thenReturn(cottageOwner);
         when(_cottageRepository.findById(cottage.getId())).thenReturn(Optional.of(cottage));
         when(_cottageRepository.save(cottage)).thenReturn(cottage);
+        when(_currentSystemTaxPercentageRepository.findById(1)).thenReturn(Optional.of(perc));
         //ACT
         _cottageService.addAvailabilityPeriod(cottage.getId(), period, cottageOwner.getEmail());
         //ASSERT
@@ -78,11 +80,13 @@ public class CottageServiceTest {
         //ARRANGE
         CottageOwner cottageOwner = getMockCottageOwner();
         Cottage cottage = getMockCottage(cottageOwner);
+        CurrentSystemTaxPercentage perc = new CurrentSystemTaxPercentage(1, 20);
         AvailabilityPeriod period = new AvailabilityPeriod();
         period.setRange(new DateRange(new GregorianCalendar(2022, Calendar.JUNE, 3).getTime(), new GregorianCalendar(2022, Calendar.JUNE, 30).getTime()));
         when(_userRepository.findByEmail("invalid")).thenReturn(null);
         when(_cottageRepository.findById(cottage.getId())).thenReturn(Optional.of(cottage));
         when(_cottageRepository.save(cottage)).thenReturn(cottage);
+        when(_currentSystemTaxPercentageRepository.findById(1)).thenReturn(Optional.of(perc));
         //ACT
         _cottageService.addAvailabilityPeriod(cottage.getId(), period, "invalid");
         //ASSERT
@@ -94,11 +98,13 @@ public class CottageServiceTest {
         //ARRANGE
         CottageOwner cottageOwner = getMockCottageOwner();
         Cottage cottage = getMockCottage(cottageOwner);
+        CurrentSystemTaxPercentage perc = new CurrentSystemTaxPercentage(1, 20);
         AvailabilityPeriod period = new AvailabilityPeriod();
         period.setRange(new DateRange(new GregorianCalendar(2022, Calendar.JUNE, 3).getTime(), new GregorianCalendar(2022, Calendar.JUNE, 30).getTime()));
         when(_userRepository.findByEmail(cottageOwner.getEmail())).thenReturn(cottageOwner);
         when(_cottageRepository.findById(2344235)).thenReturn(Optional.empty());
         when(_cottageRepository.save(cottage)).thenReturn(cottage);
+        when(_currentSystemTaxPercentageRepository.findById(1)).thenReturn(Optional.of(perc));
         //ACT
         _cottageService.addAvailabilityPeriod(2344235, period, cottageOwner.getEmail());
         //ASSERT
@@ -142,10 +148,12 @@ public class CottageServiceTest {
         CottageOwner cottageOwner = getMockCottageOwner();
         Cottage cottage = getMockCottage(cottageOwner);
         Client client = getMockClient();
+        CurrentSystemTaxPercentage perc = new CurrentSystemTaxPercentage(1, 20);
         when(_userRepository.findByEmail(cottageOwner.getEmail())).thenReturn(cottageOwner);
         when(_userRepository.findByEmail(client.getEmail())).thenReturn(client);
         when(_cottageRepository.findById(cottage.getId())).thenReturn(Optional.of(cottage));
         when(_cottageRepository.save(cottage)).thenReturn(cottage);
+        when(_currentSystemTaxPercentageRepository.findById(1)).thenReturn(Optional.of(perc));
         CottageReservation reservation = new CottageReservation();
         reservation.setCottageReservationTag(new HashSet<>());
         reservation.setNumberOfPeople(7);
@@ -162,10 +170,12 @@ public class CottageServiceTest {
         CottageOwner cottageOwner = getMockCottageOwner();
         Cottage cottage = getMockCottage(cottageOwner);
         Client client = getMockClient();
+        CurrentSystemTaxPercentage perc = new CurrentSystemTaxPercentage(1, 20);
         when(_userRepository.findByEmail(cottageOwner.getEmail())).thenReturn(cottageOwner);
         when(_userRepository.findByEmail(client.getEmail())).thenReturn(client);
         when(_cottageRepository.findById(cottage.getId())).thenReturn(Optional.of(cottage));
         when(_cottageRepository.save(cottage)).thenReturn(cottage);
+        when(_currentSystemTaxPercentageRepository.findById(1)).thenReturn(Optional.of(perc));
         CottageReservation reservation = new CottageReservation();
         reservation.setCottageReservationTag(new HashSet<>());
         reservation.setNumberOfPeople(2);
@@ -184,10 +194,12 @@ public class CottageServiceTest {
         Cottage cottage = getMockCottage(cottageOwner);
         cottage.getAdditionalServices().add(CottageReservationTag.childFriendly);
         Client client = getMockClient();
+        CurrentSystemTaxPercentage perc = new CurrentSystemTaxPercentage(1, 20);
         when(_userRepository.findByEmail(cottageOwner.getEmail())).thenReturn(cottageOwner);
         when(_userRepository.findByEmail(client.getEmail())).thenReturn(client);
         when(_cottageRepository.findById(cottage.getId())).thenReturn(Optional.of(cottage));
         when(_cottageRepository.save(cottage)).thenReturn(cottage);
+        when(_currentSystemTaxPercentageRepository.findById(1)).thenReturn(Optional.of(perc));
         CottageReservation reservation = new CottageReservation();
         reservation.setCottageReservationTag(new HashSet<>());
         reservation.setNumberOfPeople(2);
@@ -203,6 +215,8 @@ public class CottageServiceTest {
     private Client getMockClient() {
         Client client = new Client();
         client.setEmail("TESTCLIENT@gmail.com");
+        client.setLoyaltyPoints(0);
+        client.setCategory(new LoyaltyProgramClient(1, 0, 0, LoyaltyProgramCategory.regular));
         return client;
     }
 
@@ -227,6 +241,8 @@ public class CottageServiceTest {
         CottageOwner cottageOwner = new CottageOwner();
         cottageOwner.setEmail("TESTCOTTAGEOWNER@gmail.com");
         cottageOwner.setCottage(new HashSet<>());
+        cottageOwner.setLoyaltyPoints(0);
+        cottageOwner.setCategory(new LoyaltyProgramProvider(1, 0, 0, LoyaltyProgramCategory.regular));
         return cottageOwner;
     }
 

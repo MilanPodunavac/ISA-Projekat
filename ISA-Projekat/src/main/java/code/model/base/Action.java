@@ -43,6 +43,8 @@ public abstract class Action {
     protected boolean reserved;
     @Embedded
     protected OwnerCommentary ownerCommentary;
+    @Column
+    protected boolean loyaltyPointsGiven;
 
     public boolean isValid(){
         return validUntilAndIncluding.after(new Date(System.currentTimeMillis()));

@@ -45,5 +45,7 @@ public abstract class Reservation {
    @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "availabilityPeriod_id")
    protected AvailabilityPeriod availabilityPeriod;
+   @Column
+   protected boolean loyaltyPointsGiven;
 
 }

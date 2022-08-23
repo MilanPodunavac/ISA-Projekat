@@ -3,9 +3,11 @@ package code.transactions;
 import code.exceptions.entities.*;
 import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
+import code.model.Client;
 import code.model.cottage.Cottage;
 import code.model.cottage.CottageReservation;
 import code.model.wrappers.DateRange;
+import code.repository.ClientRepository;
 import code.repository.CottageRepository;
 import code.service.CottageService;
 import org.checkerframework.checker.units.qual.A;
@@ -31,6 +33,8 @@ public class CottageServiceTransactionTest {
     private CottageService _cottageService;
     @Autowired
     private CottageRepository _cottageRepository;
+    @Autowired
+    private ClientRepository _clientRepository;
 
     @Test(expected = ObjectOptimisticLockingFailureException.class)
     public void testOptimisticReservationLock() throws Throwable {
@@ -40,9 +44,11 @@ public class CottageServiceTransactionTest {
             public void run() {
                 CottageReservation reservation = new CottageReservation();
                 Cottage cottage = _cottageRepository.findById(1).get();
+                Client client = _clientRepository.findById(9).get();
                 reservation.setDateRange(new DateRange(new GregorianCalendar(2022, Calendar.JUNE, 25).getTime(), new GregorianCalendar(2022, Calendar.JUNE, 26).getTime()));
                 reservation.setNumberOfPeople(2);
                 reservation.setCottageReservationTag(new HashSet<>());
+                reservation.setClient(client);
                 try {
                     cottage.addReservation(reservation);
                 } catch (InvalidReservationException e) {
@@ -59,9 +65,11 @@ public class CottageServiceTransactionTest {
             public void run() {
                 CottageReservation reservation = new CottageReservation();
                 Cottage cottage = _cottageRepository.findById(1).get();
+                Client client = _clientRepository.findById(9).get();
                 reservation.setDateRange(new DateRange(new GregorianCalendar(2022, Calendar.JUNE, 25).getTime(), new GregorianCalendar(2022, Calendar.JUNE, 26).getTime()));
                 reservation.setNumberOfPeople(2);
                 reservation.setCottageReservationTag(new HashSet<>());
+                reservation.setClient(client);
                 try {
                     cottage.addReservation(reservation);
                 } catch (InvalidReservationException e) {

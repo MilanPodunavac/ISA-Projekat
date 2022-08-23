@@ -1,5 +1,6 @@
 package code.model.cottage;
 
+import code.model.LoyaltyProgramProvider;
 import code.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,6 +20,11 @@ public class CottageOwner extends User {
    private String reasonForRegistration;
    @OneToMany(mappedBy = "cottageOwner", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    private Set<Cottage> cottage;
+   @Column
+   private double loyaltyPoints;
+   @ManyToOne(fetch = FetchType.EAGER)
+   @JoinColumn(name="category_id")
+   private LoyaltyProgramProvider category;
 
    public void addCottage(Cottage cottage){
       cottage.setCottageOwner(this);

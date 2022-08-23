@@ -53,6 +53,7 @@ public class Boat extends SaleEntity {
       }
       if(reservation.getNumberOfPeople() > maxPeople) throw new InvalidReservationException("This boat supports maximum " + maxPeople + " people");
       reservation.setBoat(this);
+      reservation.setSystemCharge(reservation.getSystemCharge() - boatOwner.getCategory().getLesserSystemTaxPercentage());
       //OVDE UVESTI DODATNO RACUNANJE POPUSTA ZA KLIJENTA I PROFITA ZA VLASNIKA
       return super.addReservation(reservation);
    }
@@ -63,6 +64,7 @@ public class Boat extends SaleEntity {
       }
       if(newAction.getNumberOfPeople() > maxPeople)throw new InvalidReservationException("This boat supports maximum " + maxPeople + " people");
       newAction.setBoat(this);
+      newAction.setSystemCharge(newAction.getSystemCharge() - boatOwner.getCategory().getLesserSystemTaxPercentage());
       return super.addAction(newAction);
    }
 

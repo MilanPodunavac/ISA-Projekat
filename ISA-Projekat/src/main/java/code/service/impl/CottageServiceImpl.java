@@ -14,6 +14,7 @@ import code.service.CottageService;
 import code.utils.FileUploadUtil;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -24,6 +25,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -38,18 +42,30 @@ public class CottageServiceImpl implements CottageService {
     private final PictureRepository _pictureRepository;
     private final ActionRepository _actionRepository;
     private final CurrentSystemTaxPercentageRepository _currentSystemTaxPercentageRepository;
+    private final LoyaltyProgramProviderRepository _loyaltyProgramProviderRepository;
+    private final LoyaltyProgramClientRepository _loyaltyProgramClientRepository;
+    private final CurrentPointsClientGetsAfterReservationRepository _currentPointsClientGetsAfterReservationRepository;
+    private final CurrentPointsProviderGetsAfterReservationRepository _currentPointsProviderGetsAfterReservationRepository;
     private final IncomeRecordRepository _incomeRecordRepository;
+    private final ClientRepository _clientRepository;
+    private final CottageOwnerRepository _cottageOwnerRepository;
 
     private final JavaMailSender _mailSender;
 
-    public CottageServiceImpl(UserRepository userRepository, CottageRepository cottageRepository, ReservationRepository reservationRepository, PictureRepository pictureRepository, ActionRepository actionRepository, CurrentSystemTaxPercentageRepository currentSystemTaxPercentageRepository, IncomeRecordRepository incomeRecordRepository, JavaMailSender mailSender){
+    public CottageServiceImpl(UserRepository userRepository, CottageRepository cottageRepository, ReservationRepository reservationRepository, PictureRepository pictureRepository, ActionRepository actionRepository, CurrentSystemTaxPercentageRepository currentSystemTaxPercentageRepository, LoyaltyProgramProviderRepository loyaltyProgramProviderRepository, LoyaltyProgramClientRepository loyaltyProgramClientRepository, CurrentPointsClientGetsAfterReservationRepository currentPointsClientGetsAfterReservationRepository, CurrentPointsProviderGetsAfterReservationRepository currentPointsProviderGetsAfterReservationRepository, IncomeRecordRepository incomeRecordRepository, ClientRepository clientRepository, CottageOwnerRepository cottageOwnerRepository, JavaMailSender mailSender){
         _cottageRepository = cottageRepository;
         _userRepository = userRepository;
         _reservationRepository = reservationRepository;
         _pictureRepository = pictureRepository;
         _actionRepository = actionRepository;
         _currentSystemTaxPercentageRepository = currentSystemTaxPercentageRepository;
+        _loyaltyProgramProviderRepository = loyaltyProgramProviderRepository;
+        _loyaltyProgramClientRepository = loyaltyProgramClientRepository;
+        _currentPointsClientGetsAfterReservationRepository = currentPointsClientGetsAfterReservationRepository;
+        _currentPointsProviderGetsAfterReservationRepository = currentPointsProviderGetsAfterReservationRepository;
         _incomeRecordRepository = incomeRecordRepository;
+        _clientRepository = clientRepository;
+        _cottageOwnerRepository = cottageOwnerRepository;
         _mailSender = mailSender;
     }
 
@@ -107,8 +123,8 @@ public class CottageServiceImpl implements CottageService {
         if(cottage.getCottageOwner().getId() != owner.getId())throw new EntityNotOwnedException("Cottage not owned by given user");
         if(!client.isAvailable(reservation.getDateRange()))throw new EntityNotAvailableException("Client already has reservation at the given time");
         reservation.setClient(client);
-        if(!cottage.addReservation(reservation))throw new EntityNotAvailableException("Cottage is not available at the given time");
         reservation.setSystemCharge(_currentSystemTaxPercentageRepository.findById(1).get().getCurrentSystemTaxPercentage());
+        if(!cottage.addReservation(reservation))throw new EntityNotAvailableException("Cottage is not available at the given time");
         _cottageRepository.save(cottage);
         makeIncomeRecord(reservation, owner);
         SimpleMailMessage message = new SimpleMailMessage();
@@ -125,12 +141,12 @@ public class CottageServiceImpl implements CottageService {
         incRec.setReservationEnd(reservation.getDateRange().getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         incRec.setReserved(true);
         incRec.setDateOfEntry(LocalDate.now());
-        incRec.setReservationOwner(owner);
+        incRec.setReservationProvider(owner);
         incRec.setReservationPrice(reservation.getPrice());
         incRec.setSystemTaxPercentage(reservation.getSystemCharge());
-        incRec.setPercentageOwnerKeepsIfReservationCancelled(reservation.getReservationRefund());
+        incRec.setPercentageProviderKeepsIfReservationCancelled(reservation.getReservationRefund());
         incRec.setSystemIncome(incRec.getReservationPrice() * incRec.getSystemTaxPercentage()/100);
-        incRec.setOwnerIncome(incRec.getReservationPrice() - incRec.getSystemIncome());
+        incRec.setProviderIncome(incRec.getReservationPrice() - incRec.getSystemIncome());
         _incomeRecordRepository.save(incRec);
     }
 
@@ -177,8 +193,8 @@ public class CottageServiceImpl implements CottageService {
         if(!optionalCottage.isPresent())throw new EntityNotFoundException("Cottage not found");
         Cottage cottage = optionalCottage.get();
         if(cottage.getCottageOwner().getId() != owner.getId())throw new EntityNotOwnedException("Cottage not owned by given user");
-        if(!cottage.addAction(action))throw new EntityNotAvailableException("Cottage is not available at the given time");
         action.setSystemCharge(_currentSystemTaxPercentageRepository.findById(1).get().getCurrentSystemTaxPercentage());
+        if(!cottage.addAction(action))throw new EntityNotAvailableException("Cottage is not available at the given time");
         _cottageRepository.save(cottage);
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("marko76589@gmail.com");
@@ -300,4 +316,58 @@ public class CottageServiceImpl implements CottageService {
         _actionRepository.save(act);
     }
 
+    @Scheduled(cron="0 0 1 * * *")
+    @Transactional
+    public void awardLoyaltyPoints() {
+        List<Cottage> cottageList = _cottageRepository.findAll();
+        List<LoyaltyProgramProvider> loyaltyProgramProviders = _loyaltyProgramProviderRepository.findAll();
+        List<LoyaltyProgramClient> loyaltyProgramClients = _loyaltyProgramClientRepository.findAll();
+        Collections.sort(loyaltyProgramClients, Comparator.comparing(LoyaltyProgramClient::getPointsNeeded));
+        Collections.sort(loyaltyProgramProviders, Comparator.comparing(LoyaltyProgramProvider::getPointsNeeded));
+        for(Cottage cottage : cottageList){
+            for(AvailabilityPeriod period : cottage.getAvailabilityPeriods()){
+                for(Reservation res : period.getReservations()){
+                    if(res.getDateRange().isInPast() && !res.isLoyaltyPointsGiven() && res.getReservationStatus() != ReservationStatus.cancelled){
+                        res.getClient().setLoyaltyPoints(res.getClient().getLoyaltyPoints() + _currentPointsClientGetsAfterReservationRepository.findById(1).get().getCurrentPointsClientGetsAfterReservation());
+                        for (LoyaltyProgramClient lpc : loyaltyProgramClients) {
+                            if (res.getClient().getLoyaltyPoints() >= lpc.getPointsNeeded()) {
+                                res.getClient().setCategory(lpc);
+                            }
+                        }
+                        _clientRepository.save(res.getClient());
+                        cottage.getCottageOwner().setLoyaltyPoints(cottage.getCottageOwner().getLoyaltyPoints() + _currentPointsProviderGetsAfterReservationRepository.findById(1).get().getCurrentPointsProviderGetsAfterReservation());
+                        for (LoyaltyProgramProvider lpp : loyaltyProgramProviders) {
+                            if (cottage.getCottageOwner().getLoyaltyPoints() >= lpp.getPointsNeeded()) {
+                                cottage.getCottageOwner().setCategory(lpp);
+                            }
+                        }
+                        _cottageOwnerRepository.save(cottage.getCottageOwner());
+                        res.setLoyaltyPointsGiven(true);
+                        _reservationRepository.save(res);
+                    }
+                }
+                for(Action act : period.getActions()){
+                    if(act.getRange().isInPast() && !act.isLoyaltyPointsGiven() && act.getClient() != null){
+                        act.getClient().setLoyaltyPoints(act.getClient().getLoyaltyPoints() + _currentPointsClientGetsAfterReservationRepository.findById(1).
+                                get().getCurrentPointsClientGetsAfterReservation());
+                        for (LoyaltyProgramClient lpc : loyaltyProgramClients) {
+                            if (act.getClient().getLoyaltyPoints() >= lpc.getPointsNeeded()) {
+                                act.getClient().setCategory(lpc);
+                            }
+                        }
+                        _clientRepository.save(act.getClient());
+                        cottage.getCottageOwner().setLoyaltyPoints(cottage.getCottageOwner().getLoyaltyPoints() + _currentPointsProviderGetsAfterReservationRepository.findById(1).get().getCurrentPointsProviderGetsAfterReservation());
+                        for (LoyaltyProgramProvider lpp : loyaltyProgramProviders) {
+                            if (cottage.getCottageOwner().getLoyaltyPoints() >= lpp.getPointsNeeded()) {
+                                cottage.getCottageOwner().setCategory(lpp);
+                            }
+                        }
+                        _cottageOwnerRepository.save(cottage.getCottageOwner());
+                        act.setLoyaltyPointsGiven(true);
+                        _actionRepository.save(act);
+                    }
+                }
+            }
+        }
+    }
 }
