@@ -7,6 +7,7 @@ import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.*;
 import code.model.base.Action;
 import code.model.base.Reservation;
+import code.model.boat.BoatAction;
 import code.model.boat.BoatOwner;
 import code.model.boat.BoatReservation;
 import code.model.cottage.CottageAction;
@@ -484,18 +485,18 @@ public class AdminServiceImpl implements AdminService {
         message.setSubject("Finished reservation report");
         if (quickReservation instanceof CottageAction) {
             message.setText("Cottage owner " + ((CottageAction) quickReservation).getCottage().getCottageOwner().getFirstName() + " " + ((CottageAction) quickReservation).getCottage().getCottageOwner().getLastName() + " gave you 1 penalty point!");
-        }/* else if (quickReservation instanceof BoatAction) {
+        } else if (quickReservation instanceof BoatAction) {
             message.setText("Boat owner " + ((BoatAction) quickReservation).getBoat().getBoatOwner().getFirstName() + " " + ((BoatAction) quickReservation).getBoat().getBoatOwner().getLastName() + " gave you 1 penalty point!");
-        }*/
+        }
         _mailSender.send(message);
 
         SimpleMailMessage message2 = new SimpleMailMessage();
         message2.setFrom("marko76589@gmail.com");
         if (quickReservation instanceof CottageAction) {
             message2.setTo(((CottageAction) quickReservation).getCottage().getCottageOwner().getEmail());
-        }/* else if (quickReservation instanceof BoatAction) {
+        } else if (quickReservation instanceof BoatAction) {
             message2.setTo(((BoatAction) quickReservation).getBoat().getBoatOwner().getEmail());
-        }*/
+        }
         message2.setSubject("Finished reservation report");
         message2.setText("Client " + quickReservation.getClient().getFirstName() + " " + quickReservation.getClient().getLastName() + " was given 1 penalty point!");
         _mailSender.send(message2);
@@ -530,9 +531,9 @@ public class AdminServiceImpl implements AdminService {
         message.setFrom("marko76589@gmail.com");
         if (quickReservation instanceof CottageAction) {
             message.setTo(((CottageAction) quickReservation).getCottage().getCottageOwner().getEmail());
-        }/* else if (quickReservation instanceof BoatAction) {
+        } else if (quickReservation instanceof BoatAction) {
             message.setTo(((BoatAction) quickReservation).getBoat().getBoatOwner().getEmail());
-        }*/
+        }
         message.setSubject("Finished reservation report");
         message.setText("Client " + quickReservation.getClient().getFirstName() + " " + quickReservation.getClient().getLastName() + " wasn't given any penalty points!");
         _mailSender.send(message);
