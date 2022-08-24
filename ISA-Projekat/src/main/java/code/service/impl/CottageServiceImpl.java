@@ -83,7 +83,7 @@ public class CottageServiceImpl implements CottageService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
+    @Transactional()
     public void addAvailabilityPeriod(int cottageId, AvailabilityPeriod period, String email) throws AvailabilityPeriodBadRangeException, EntityNotFoundException, EntityNotOwnedException, UnauthorizedAccessException {
         CottageOwner owner;
         try{
@@ -101,7 +101,7 @@ public class CottageServiceImpl implements CottageService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
+    @Transactional()
     public void addReservation(String clientEmail, int cottageId, CottageReservation reservation, String email) throws EntityNotFoundException, UserNotFoundException, InvalidReservationException, EntityNotOwnedException, EntityNotAvailableException, UnauthorizedAccessException, ClientCancelledThisPeriodException {
         CottageOwner owner;
         try{
@@ -180,7 +180,7 @@ public class CottageServiceImpl implements CottageService {
         _cottageRepository.delete(cottage);
     }
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
+    @Transactional()
     public void addAction(String ownerEmail, int cottageId, CottageAction action) throws UnauthorizedAccessException, EntityNotFoundException, EntityNotOwnedException, EntityNotAvailableException, InvalidReservationException {
         CottageOwner owner;
         try{
@@ -238,7 +238,7 @@ public class CottageServiceImpl implements CottageService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
+    @Transactional()
     public void updateCottage(int id, Cottage updateCottage, String email) throws EntityNotFoundException, EntityNotOwnedException, EntityNotUpdateableException {
         Optional<Cottage> optionalCottage = _cottageRepository.findById(id);
         if(!optionalCottage.isPresent())throw new EntityNotFoundException("Cottage not found");

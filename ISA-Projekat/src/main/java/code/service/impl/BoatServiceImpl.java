@@ -114,7 +114,7 @@ public class BoatServiceImpl  implements BoatService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
+    @Transactional()
     public void addAvailabilityPeriod(int boatId, AvailabilityPeriod period) throws AvailabilityPeriodBadRangeException, UserNotFoundException, EntityNotFoundException, EntityNotOwnedException, UnauthorizedAccessException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         BoatOwner owner;
@@ -134,7 +134,7 @@ public class BoatServiceImpl  implements BoatService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
+    @Transactional()
     public void addReservation(String clientEmail, int boatId, BoatReservation reservation) throws EntityNotFoundException, UserNotFoundException, InvalidReservationException, EntityNotOwnedException, EntityNotAvailableException, UnauthorizedAccessException, ClientCancelledThisPeriodException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         BoatOwner owner;
@@ -185,7 +185,7 @@ public class BoatServiceImpl  implements BoatService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
+    @Transactional()
     public void addAction(int boatId, BoatAction action) throws UnauthorizedAccessException, EntityNotFoundException, EntityNotOwnedException, EntityNotAvailableException, InvalidReservationException, UserNotFoundException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         BoatOwner owner;
@@ -263,7 +263,7 @@ public class BoatServiceImpl  implements BoatService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
+    @Transactional()
     public void updateBoat(int id, Boat updateBoat) throws EntityNotFoundException, EntityNotOwnedException, EntityNotUpdateableException, UnauthorizedAccessException, UserNotFoundException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         BoatOwner owner;
