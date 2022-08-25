@@ -3,109 +3,75 @@
 		<div class="row d-flex justify-content-center align-items-center h-100">
     		<div class="col-12 col-md-8 col-lg-6 col-xl-6">
     			<div class="card shadow-2-strong" style="border-radius: 1rem;">
-    				<div class="card-body px-5 text-center">
-						<h3 class="mb-3">Sign up</h3>
+                    <form [formGroup]="registrationForm" (submit)="onSubmit()">
+                        <h1>Register</h1>
 
-                        <div class="row mb-3">
-                            <mdb-form-control style="width: 45%">
-                                <input mdbInput type="text" id="formName" class="form-control" />
-                                <label mdbLabel class="form-label" for="formName">First name</label>
-                            </mdb-form-control>
+                        <div class="content">
+                            <div class="input-field" style="width: 50%; display: inline-block;">
+                                <input type="text" placeholder="First name *" formControlName="firstName">
+                            </div>
+                            <div class="input-field" style="width: 50%; display: inline-block;">
+                                <input type="text" placeholder="Last name *" formControlName="lastName">
+                            </div>
 
-                            <mdb-form-control style="width: 45%; margin-left: 10%;">
-                                <input mdbInput type="text" id="formSurname" class="form-control" />
-                                <label mdbLabel class="form-label" for="formSurname">Last name</label>
-                            </mdb-form-control>
+                            <div class="input-field">
+                                <input type="text" placeholder="Street address *" formControlName="streetAddress">
+                            </div>
+
+                            <div class="input-field" style="width: 50%; display: inline-block;">
+                                <input type="text" placeholder="City *" formControlName="city">
+                            </div>
+                            <div class="input-field" style="width: 50%; display: inline-block;">
+                                <input type="text" placeholder="Country *" formControlName="country">
+                            </div>
+
+                            <div class="input-field">
+                                <input type="text" placeholder="Phone number *" formControlName="phoneNumber"> 
+                            </div>
+
+                            <div class="input-field">
+                                <input type="text" placeholder="Email *" formControlName="email">
+                            </div>
+
+                            <div class="input-field" style="width: 50%; display: inline-block;">
+                                <input type="password" placeholder="Password *" formControlName="password">
+                            </div>
+                            <div class="input-field" style="width: 50%; display: inline-block;">
+                                <input type="password" placeholder="Repeat password *" formControlName="repeatPassword">
+                            </div>
+
+                            <div style="display: inline-block;">
+                                <input type="radio" name="providerType" value="CottageOwner" id="providerType1" formControlName="providerType"/>
+                            </div>&nbsp;
+                            <div style="display: inline-block;">
+                                <label for="providerType1">Cottage owner</label>
+                            </div>&nbsp;&nbsp;&nbsp;&nbsp;
+                            <div style="display: inline-block;">
+                                <input type="radio" name="providerType" value="BoatOwner" id="providerType2" formControlName="providerType" />
+                            </div>&nbsp;
+                            <div style="display: inline-block;">
+                                <label for="providerType2">Boat owner</label>
+                            </div>&nbsp;&nbsp;&nbsp;&nbsp;
+                            <div style="display: inline-block;">
+                                <input type="radio" name="providerType" value="FishingInstructor" id="providerType3" formControlName="providerType" />
+                            </div>&nbsp;
+                            <div style="display: inline-block;">
+                                <label for="providerType3">Fishing instructor</label>
+                            </div>
+
+                            <div class="input-field">
+                                <input type="text" placeholder="Reason for registration *" formControlName="reasonForRegistration">
+                            </div>
+
+                            <div class="input-field">
+                                <input type="text" placeholder="Biography" formControlName="biography">
+                            </div>
+                            <p style="padding: 20px 0px 0px 0px; color: red; font-size: large;">{{errorMessage}}</p>
                         </div>
-
-                        <div class="row mb-3">
-                            <mdb-form-control>
-                                <input mdbInput type="text" id="formAddress" class="form-control" />
-                                <label mdbLabel class="form-label" for="formAddress">Street address</label>
-                            </mdb-form-control>
+                        <div class="action">
+                            <button type="submit" [disabled]="!registrationForm.valid || registrationForm.get('password').value !== registrationForm.get('repeatPassword').value">Sign up</button>
                         </div>
-
-                        <div class="row mb-3">
-                            <mdb-form-control style="width: 45%">
-                                <input mdbInput type="text" id="formCity" class="form-control" />
-                                <label mdbLabel class="form-label" for="formCity">City</label>
-                            </mdb-form-control>
-
-                            <mdb-form-control style="width: 45%; margin-left: 10%;">
-                                <input mdbInput type="text" id="formCountry" class="form-control" />
-                                <label mdbLabel class="form-label" for="formCountry">Country</label>
-                            </mdb-form-control>
-                        </div>
-
-                        <div class="row mb-3">
-                            <mdb-form-control>
-                                <input mdbInput type="text" id="formNumber" class="form-control" />
-                                <label mdbLabel class="form-label" for="formNumber">Phone Number</label>
-                            </mdb-form-control>
-                        </div>
-
-                        <div class="row mb-3">
-                            <mdb-form-control>
-                                <input mdbInput type="text" id="formEmail" class="form-control" />
-                                <label mdbLabel class="form-label" for="formEmail">Email</label>
-                            </mdb-form-control>
-                        </div>
-
-                        <div class="row mb-3">
-                            <mdb-form-control style="width: 45%">
-                                <input mdbInput type="password" id="formPassword" class="form-control" />
-                                <label mdbLabel class="form-label" for="formPassword">Password</label>
-                            </mdb-form-control>
-
-                            <mdb-form-control style="width: 45%; margin-left: 10%;">
-                                <input mdbInput type="password" id="formRepeatPassword" class="form-control" />
-                                <label mdbLabel class="form-label" for="formRepeatPassword">Repeat password</label>
-                            </mdb-form-control>
-                        </div>
-
-                        <div class="form-check form-check-inline">
-                            <input
-                              mdbRadio
-                              class="form-check-input"
-                              type="radio"
-                              name="inlineRadioOptions"
-                              id="cottageOwner"
-                              value="cottageOwner"
-                            />
-                            <label class="form-check-label" for="cottageOwner">Cottage owner</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input
-                              mdbRadio
-                              class="form-check-input"
-                              type="radio"
-                              name="inlineRadioOptions"
-                              id="shipOwner"
-                              value="shipOwner"
-                            />
-                            <label class="form-check-label" for="shipOwner">Ship owner</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input
-                              mdbRadio
-                              class="form-check-input"
-                              type="radio"
-                              name="inlineRadioOptions"
-                              id="fishingInstructor"
-                              value="fishingInstructor"
-                            />
-                            <label class="form-check-label" for="fishingInstructor">Fishing instructor</label>
-                        </div>
-
-                        <div class="row mt-3 mb-4">
-                            <mdb-form-control>
-                                <input mdbInput type="text" id="formReason" class="form-control" />
-                                <label mdbLabel class="form-label" for="formReason">Reason for registration</label>
-                            </mdb-form-control>
-                        </div>
-
-						<button class="btn btn-primary btn-lg btn-block w-50 offset-3">Register</button>
-          			</div>
+                    </form>
         		</div>
       		</div>
     	</div>

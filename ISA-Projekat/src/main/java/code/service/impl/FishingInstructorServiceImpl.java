@@ -7,6 +7,7 @@ import code.exceptions.provider_registration.EmailTakenException;
 import code.model.*;
 import code.repository.FishingInstructorAvailablePeriodRepository;
 import code.repository.FishingInstructorRepository;
+import code.repository.LoyaltyProgramProviderRepository;
 import code.service.FishingInstructorService;
 import code.service.RoleService;
 import code.service.UserService;
@@ -25,13 +26,15 @@ public class FishingInstructorServiceImpl implements FishingInstructorService {
     private final PasswordEncoder _passwordEncoder;
     private final RoleService _roleService;
     private final UserService _userService;
+    private final LoyaltyProgramProviderRepository _loyaltyProgramProviderRepository;
 
-    public FishingInstructorServiceImpl(UserService userService, FishingInstructorRepository fishingInstructorRepository, FishingInstructorAvailablePeriodRepository fishingInstructorAvailablePeriodRepository, PasswordEncoder passwordEncoder, RoleService roleService) {
+    public FishingInstructorServiceImpl(UserService userService, FishingInstructorRepository fishingInstructorRepository, FishingInstructorAvailablePeriodRepository fishingInstructorAvailablePeriodRepository, PasswordEncoder passwordEncoder, RoleService roleService, LoyaltyProgramProviderRepository loyaltyProgramProviderRepository) {
         this._userService = userService;
         this._fishingInstructorRepository = fishingInstructorRepository;
         this._fishingInstructorAvailablePeriodRepository = fishingInstructorAvailablePeriodRepository;
         this._passwordEncoder = passwordEncoder;
         this._roleService = roleService;
+        this._loyaltyProgramProviderRepository = loyaltyProgramProviderRepository;
     }
 
     @Override
@@ -43,6 +46,8 @@ public class FishingInstructorServiceImpl implements FishingInstructorService {
     private FishingInstructor saveRegistrationRequest(FishingInstructor fishingInstructor) {
             fishingInstructor.setPassword(_passwordEncoder.encode(fishingInstructor.getPassword()));
             fishingInstructor.setEnabled(false);
+            fishingInstructor.setLoyaltyPoints(0);
+            fishingInstructor.setCategory(_loyaltyProgramProviderRepository.getById(1));
 
             Role role = _roleService.findByName("ROLE_FISHING_INSTRUCTOR");
             fishingInstructor.setRole(role);
