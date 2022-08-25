@@ -1,4 +1,4 @@
-export class RegisterUser {
+export class RegisterProvider {
     email: string;
     password: string;
     firstName: string;
@@ -9,4 +9,5 @@ export class RegisterUser {
     country: string;
     reasonForRegistration: string;
     biography: string;
+    providerType: string;
 }

@@ -3,21 +3,20 @@
 		<div class="row d-flex justify-content-center align-items-center h-100">
     		<div class="col-12 col-md-8 col-lg-6 col-xl-5">
     			<div class="card shadow-2-strong" style="border-radius: 1rem;">
-    				<div class="card-body px-5 text-center">
-						<h3 class="mb-3">Sign in</h3>
-
-						<mdb-form-control class="mb-3">
-							<input mdbInput name="inputEmail" [(ngModel)]="inputEmail" type="text" id="formEmail" class="form-control" />
-							<label mdbLabel class="form-label" for="formEmail">Email</label>
-						</mdb-form-control>
-
-						<mdb-form-control class="mb-4">
-							<input mdbInput name="inputPassword" [(ngModel)]="inputPassword" type="password" id="formPassword" class="form-control" />
-							<label mdbLabel class="form-label" for="formPassword">Password</label>
-						</mdb-form-control>
-
-						<button (click)="login()" class="btn btn-primary btn-lg btn-block w-50 offset-3">Login</button>
-          			</div>
+					<form [formGroup]="loginForm" (submit)="login()">
+						<h1>Login</h1>
+						<div class="content">
+							<div class="input-field">
+								<input type="text" placeholder="Email" formControlName="email">
+							</div>
+							<div class="input-field">
+								<input type="password" placeholder="Password" formControlName="password">
+							</div>
+						</div>
+						<div class="action">
+							<button type="submit">Sign in</button>
+						</div>
+					</form>
         		</div>
       		</div>
     	</div>
