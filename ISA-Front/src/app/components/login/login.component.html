@@ -1,25 +1,23 @@
-<div class="vh-100" style="background-color: #508bfc;">
-	<div class="container py-5 h-100">
-		<div class="row d-flex justify-content-center align-items-center h-100">
-    		<div class="col-12 col-md-8 col-lg-6 col-xl-5">
-    			<div class="card shadow-2-strong" style="border-radius: 1rem;">
-					<form [formGroup]="loginForm" (submit)="login()">
-						<h1>Login</h1>
-						<div class="content">
-							<div class="input-field">
-								<input type="text" placeholder="Email" formControlName="email">
-							</div>
-							<div class="input-field">
-								<input type="password" placeholder="Password" formControlName="password">
-							</div>
-							<p style="padding: 20px 0px 0px 0px; color: red; font-size: large;">{{errorMessage}}</p>
+<div class="container py-5 h-100">
+	<div class="row d-flex justify-content-center align-items-center h-100">
+		<div class="col-12 col-md-8 col-lg-6 col-xl-5">
+			<div class="card shadow-1-strong" style="border-radius: 1rem;">
+				<form [formGroup]="loginForm" (submit)="login()">
+					<h1>Login</h1>
+					<div class="content">
+						<div class="input-field">
+							<input type="text" placeholder="Email" formControlName="email">
 						</div>
-						<div class="action">
-							<button type="submit">Sign in</button>
+						<div class="input-field">
+							<input type="password" placeholder="Password" formControlName="password">
 						</div>
-					</form>
-        		</div>
-      		</div>
-    	</div>
+						<p style="padding: 20px 0px 0px 0px; color: red; font-size: large;">{{errorMessage}}</p>
+					</div>
+					<div class="action">
+						<button type="submit">Sign in</button>
+					</div>
+				</form>
+			</div>
+		</div>
 	</div>
 </div>

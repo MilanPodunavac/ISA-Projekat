@@ -29,12 +29,14 @@ import { TokenInterceptor } from './interceptor/token-interceptor';
 import { MaterialModule } from './angular-material/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from './service/auth.service';
+import { HeaderComponent } from './components/header/header.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     RegisterProviderComponent,
+    HeaderComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,79 +1,77 @@
-<div style="background-color: #508bfc;">
-	<div class="container py-5 h-100">
-		<div class="row d-flex justify-content-center align-items-center h-100">
-    		<div class="col-12 col-md-8 col-lg-6 col-xl-6">
-    			<div class="card shadow-2-strong" style="border-radius: 1rem;">
-                    <form [formGroup]="registrationForm" (submit)="onSubmit()">
-                        <h1>Register</h1>
+<div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-6">
+            <div class="card shadow-1-strong" style="border-radius: 1rem;">
+                <form [formGroup]="registrationForm" (submit)="onSubmit()">
+                    <h1>Register</h1>
 
-                        <div class="content">
-                            <div class="input-field" style="width: 50%; display: inline-block;">
-                                <input type="text" placeholder="First name *" formControlName="firstName">
-                            </div>
-                            <div class="input-field" style="width: 50%; display: inline-block;">
-                                <input type="text" placeholder="Last name *" formControlName="lastName">
-                            </div>
-
-                            <div class="input-field">
-                                <input type="text" placeholder="Street address *" formControlName="streetAddress">
-                            </div>
-
-                            <div class="input-field" style="width: 50%; display: inline-block;">
-                                <input type="text" placeholder="City *" formControlName="city">
-                            </div>
-                            <div class="input-field" style="width: 50%; display: inline-block;">
-                                <input type="text" placeholder="Country *" formControlName="country">
-                            </div>
-
-                            <div class="input-field">
-                                <input type="text" placeholder="Phone number *" formControlName="phoneNumber"> 
-                            </div>
-
-                            <div class="input-field">
-                                <input type="text" placeholder="Email *" formControlName="email">
-                            </div>
-
-                            <div class="input-field" style="width: 50%; display: inline-block;">
-                                <input type="password" placeholder="Password *" formControlName="password">
-                            </div>
-                            <div class="input-field" style="width: 50%; display: inline-block;">
-                                <input type="password" placeholder="Repeat password *" formControlName="repeatPassword">
-                            </div>
-
-                            <div style="display: inline-block;">
-                                <input type="radio" name="providerType" value="CottageOwner" id="providerType1" formControlName="providerType"/>
-                            </div>&nbsp;
-                            <div style="display: inline-block;">
-                                <label for="providerType1">Cottage owner</label>
-                            </div>&nbsp;&nbsp;&nbsp;&nbsp;
-                            <div style="display: inline-block;">
-                                <input type="radio" name="providerType" value="BoatOwner" id="providerType2" formControlName="providerType" />
-                            </div>&nbsp;
-                            <div style="display: inline-block;">
-                                <label for="providerType2">Boat owner</label>
-                            </div>&nbsp;&nbsp;&nbsp;&nbsp;
-                            <div style="display: inline-block;">
-                                <input type="radio" name="providerType" value="FishingInstructor" id="providerType3" formControlName="providerType" />
-                            </div>&nbsp;
-                            <div style="display: inline-block;">
-                                <label for="providerType3">Fishing instructor</label>
-                            </div>
-
-                            <div class="input-field">
-                                <input type="text" placeholder="Reason for registration *" formControlName="reasonForRegistration">
-                            </div>
-
-                            <div class="input-field">
-                                <input type="text" placeholder="Biography" formControlName="biography">
-                            </div>
-                            <p style="padding: 20px 0px 0px 0px; color: red; font-size: large;">{{errorMessage}}</p>
+                    <div class="content">
+                        <div class="input-field" style="width: 50%; display: inline-block;">
+                            <input type="text" placeholder="First name *" formControlName="firstName">
                         </div>
-                        <div class="action">
-                            <button type="submit" [disabled]="!registrationForm.valid || registrationForm.get('password').value !== registrationForm.get('repeatPassword').value">Sign up</button>
+                        <div class="input-field" style="width: 50%; display: inline-block;">
+                            <input type="text" placeholder="Last name *" formControlName="lastName">
                         </div>
-                    </form>
-        		</div>
-      		</div>
-    	</div>
-	</div>
+
+                        <div class="input-field">
+                            <input type="text" placeholder="Street address *" formControlName="streetAddress">
+                        </div>
+
+                        <div class="input-field" style="width: 50%; display: inline-block;">
+                            <input type="text" placeholder="City *" formControlName="city">
+                        </div>
+                        <div class="input-field" style="width: 50%; display: inline-block;">
+                            <input type="text" placeholder="Country *" formControlName="country">
+                        </div>
+
+                        <div class="input-field">
+                            <input type="text" placeholder="Phone number *" formControlName="phoneNumber"> 
+                        </div>
+
+                        <div class="input-field">
+                            <input type="text" placeholder="Email *" formControlName="email">
+                        </div>
+
+                        <div class="input-field" style="width: 50%; display: inline-block;">
+                            <input type="password" placeholder="Password *" formControlName="password">
+                        </div>
+                        <div class="input-field" style="width: 50%; display: inline-block;">
+                            <input type="password" placeholder="Repeat password *" formControlName="repeatPassword">
+                        </div>
+
+                        <div style="display: inline-block;">
+                            <input type="radio" name="providerType" value="CottageOwner" id="providerType1" formControlName="providerType"/>
+                        </div>&nbsp;
+                        <div style="display: inline-block;">
+                            <label for="providerType1">Cottage owner</label>
+                        </div>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <div style="display: inline-block;">
+                            <input type="radio" name="providerType" value="BoatOwner" id="providerType2" formControlName="providerType" />
+                        </div>&nbsp;
+                        <div style="display: inline-block;">
+                            <label for="providerType2">Boat owner</label>
+                        </div>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <div style="display: inline-block;">
+                            <input type="radio" name="providerType" value="FishingInstructor" id="providerType3" formControlName="providerType" />
+                        </div>&nbsp;
+                        <div style="display: inline-block;">
+                            <label for="providerType3">Fishing instructor</label>
+                        </div>
+
+                        <div class="input-field">
+                            <input type="text" placeholder="Reason for registration *" formControlName="reasonForRegistration">
+                        </div>
+
+                        <div class="input-field">
+                            <input type="text" placeholder="Biography" formControlName="biography">
+                        </div>
+                        <p style="padding: 20px 0px 0px 0px; color: red; font-size: large;">{{errorMessage}}</p>
+                    </div>
+                    <div class="action">
+                        <button type="submit" [disabled]="!registrationForm.valid || registrationForm.get('password').value !== registrationForm.get('repeatPassword').value">Sign up</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
