@@ -1,5 +1,6 @@
 package code.dto.entities.cottage;
 
+import code.model.cottage.CottageOwner;
 import code.model.cottage.CottageReservationTag;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -38,4 +39,5 @@ public class CottageGetDto {
     @Min(value = 1, message = "Price per day must be greater than 0")
     private int pricePerDay;
     private List<CottageReservationTag> additionalServices;
+    private CottageOwner cottageOwner;
 }

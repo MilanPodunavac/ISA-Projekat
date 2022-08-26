@@ -1,5 +1,6 @@
 package code.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,5 +21,6 @@ public class AccountDeletionRequest {
     private String text;
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="user_id")
+    @JsonBackReference
     private User user;
 }

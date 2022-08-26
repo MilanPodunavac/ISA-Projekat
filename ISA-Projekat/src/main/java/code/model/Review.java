@@ -1,6 +1,7 @@
 package code.model;
 
 import code.model.base.SaleEntity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,9 +26,11 @@ public class Review {
    private boolean approved;
    @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "client_id")
+   @JsonBackReference
    private Client client;
    @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "saleEntity_id")
+   @JsonBackReference
    private SaleEntity saleEntity;
 
 }

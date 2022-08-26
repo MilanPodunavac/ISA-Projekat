@@ -2,6 +2,7 @@ package code.model.base;
 
 import code.model.Client;
 import code.model.wrappers.DateRange;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,9 +36,11 @@ public abstract class Action {
     protected double actionRefund;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "client_id")
+    @JsonBackReference
     protected Client client;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "availabilityPeriod_id")
+    @JsonBackReference
     protected AvailabilityPeriod availabilityPeriod;
     @Column
     protected boolean reserved;

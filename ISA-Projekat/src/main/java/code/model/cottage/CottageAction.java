@@ -1,6 +1,7 @@
 package code.model.cottage;
 
 import code.model.base.Action;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.Set;
 public class CottageAction extends Action {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cottage_id")
+    @JsonBackReference
     private Cottage cottage;
     @ElementCollection(targetClass=CottageReservationTag.class)
     @Enumerated(EnumType.ORDINAL)

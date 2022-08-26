@@ -30,7 +30,7 @@ public class FishingInstructorGetDto {
     private boolean enabled;
     private String reasonForRegistration;
     private String biography;
-    //private Set<FishingTrip> fishingTrips;
-    //private Set<FishingInstructorAvailablePeriod> fishingInstructorAvailablePeriods;
-    //private Set<Client> subscribers;
+    private Set<FishingTrip> fishingTrips;
+    private Set<FishingInstructorAvailablePeriod> fishingInstructorAvailablePeriods;
+    private Set<Client> subscribers;
 }

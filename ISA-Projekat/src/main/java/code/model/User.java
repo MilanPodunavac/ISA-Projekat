@@ -1,6 +1,7 @@
 package code.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,9 +38,11 @@ public abstract class User implements UserDetails {
    private boolean enabled;
    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
    @JoinColumn(name="location_id")
+   @JsonManagedReference
    protected Location location;
    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
    @JoinColumn(name="role_id")
+   @JsonManagedReference
    private Role role;
 
    @Override

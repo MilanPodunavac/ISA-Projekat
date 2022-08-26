@@ -5,6 +5,8 @@ import code.model.base.Reservation;
 import code.model.base.ReservationStatus;
 import code.model.base.SaleEntity;
 import code.model.wrappers.DateRange;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,22 +26,29 @@ public class Client extends User {
    @Column
    private boolean banned;
    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+   @JsonManagedReference
    private Set<Reservation> reservation;
    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+   @JsonManagedReference
    private Set<FishingTripQuickReservation> fishingTripQuickReservations;
    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+   @JsonManagedReference
    private Set<FishingTripReservation> fishingTripReservations;
    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+   @JsonManagedReference
    private Set<Action> actions;
    @ManyToMany(fetch = FetchType.EAGER)
    @JoinTable(name = "client_saleEntity", joinColumns = @JoinColumn(name = "client_id", referencedColumnName = "id"),
            inverseJoinColumns = @JoinColumn(name = "saleEntity_id", referencedColumnName = "id"))
+   @JsonManagedReference
    private Set<SaleEntity> saleEntity;
    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+   @JsonManagedReference
    private Set<Review> review;
    @ManyToMany(fetch = FetchType.EAGER)
    @JoinTable(name = "subscriber_fishing_instructor", joinColumns = @JoinColumn(name = "client_id", referencedColumnName = "id"),
            inverseJoinColumns = @JoinColumn(name = "instructor_id", referencedColumnName = "id"))
+   @JsonBackReference
    private Set<FishingInstructor> instructorsSubscribedTo;
 
    public boolean isAvailable(DateRange range){

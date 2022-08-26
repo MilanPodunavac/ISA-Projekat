@@ -1,5 +1,6 @@
 package code.model;
 
+import code.exceptions.entities.ClientCancelledThisPeriodException;
 import code.model.base.AvailabilityPeriod;
 import code.model.base.Reservation;
 import code.model.cottage.CottageReservation;
@@ -59,7 +60,7 @@ public class AvailabilityPeriodTest {
     public static AddReservationTestsData data7 = getAddReservationTestData7();
 
     @Theory
-    public void AddReservationTests(AddReservationTestsData data){
+    public void AddReservationTests(AddReservationTestsData data) throws ClientCancelledThisPeriodException {
         boolean assertion = data.period.addReservation(data.newReservation);
         Assert.assertEquals(data.addShouldBe, assertion);
         Assert.assertEquals(data.period.getReservations().size(), data.sizeShouldBe);

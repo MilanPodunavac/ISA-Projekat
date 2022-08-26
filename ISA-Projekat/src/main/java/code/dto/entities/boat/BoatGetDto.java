@@ -1,5 +1,6 @@
 package code.dto.entities.boat;
 
+import code.model.boat.BoatOwner;
 import code.model.boat.BoatReservationTag;
 import code.model.boat.NavigationalEquipment;
 import lombok.AllArgsConstructor;
@@ -50,4 +51,5 @@ public class BoatGetDto {
     private NavigationalEquipment navigationalEquipment;
     private String fishingEquipment;
     private Set<BoatReservationTag> additionalServices;
+    private BoatOwner boatOwner;
 }

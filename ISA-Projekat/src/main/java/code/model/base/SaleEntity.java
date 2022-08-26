@@ -3,6 +3,8 @@ package code.model.base;
 import code.exceptions.entities.AvailabilityPeriodBadRangeException;
 import code.exceptions.entities.ClientCancelledThisPeriodException;
 import code.model.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,14 +33,19 @@ public abstract class SaleEntity {
    protected int pricePerDay;
    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
    @JoinColumn(name="location_id")
+   @JsonManagedReference
    protected Location location;
    @ManyToMany(mappedBy = "saleEntity", fetch = FetchType.EAGER)
+   @JsonBackReference
    protected Set<Client> client;
    @OneToMany(mappedBy = "saleEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+   @JsonManagedReference
    protected Set<Review> review;
    @OneToMany(mappedBy = "saleEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+   @JsonManagedReference
    protected Set<AvailabilityPeriod> availabilityPeriods;
    @OneToMany(mappedBy = "saleEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+   @JsonManagedReference
    protected Set<Picture> pictures;
 
    public void addAvailabilityPeriod (AvailabilityPeriod period) throws AvailabilityPeriodBadRangeException {

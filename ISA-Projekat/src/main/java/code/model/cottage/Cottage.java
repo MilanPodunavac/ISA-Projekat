@@ -6,6 +6,7 @@ import code.model.Client;
 import code.model.Review;
 import code.model.base.*;
 import code.utils.FileUploadUtil;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,6 +35,7 @@ public class Cottage extends SaleEntity {
    private Set<CottageReservationTag> additionalServices;
    @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "cottageOwner_id")
+   @JsonBackReference
    private CottageOwner cottageOwner;
    public boolean addReservation(CottageReservation reservation) throws InvalidReservationException, ClientCancelledThisPeriodException {
       for(CottageReservationTag tag : reservation.getCottageReservationTag()){

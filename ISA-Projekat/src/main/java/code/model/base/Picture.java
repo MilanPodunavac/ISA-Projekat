@@ -1,5 +1,6 @@
 package code.model.base;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,5 +21,6 @@ public class Picture {
     private String name;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "saleEntity_id")
+    @JsonBackReference
     private SaleEntity saleEntity;
 }
