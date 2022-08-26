@@ -125,4 +125,10 @@ public class UsersController extends BaseController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
     }
+
+    @GetMapping("/role")
+    @PreAuthorize("hasAnyRole('CLIENT','FISHING_INSTRUCTOR','COTTAGE_OWNER','BOAT_OWNER', 'ADMIN')")
+    public ResponseEntity<String> getLoggedInUserRole(){
+        return ResponseEntity.ok(_userService.getLoggedInUserRole());
+    }
 }

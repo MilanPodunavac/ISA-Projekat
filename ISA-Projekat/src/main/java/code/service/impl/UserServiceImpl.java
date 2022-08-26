@@ -533,4 +533,9 @@ public class UserServiceImpl implements UserService {
             throw new EnabledClientDoesntExistException("User isn't enabled client or doesn't exist!");
         }
     }
+
+    @Override
+    public String getLoggedInUserRole() {
+        return getLoggedInUser().getRole().getName();
+    }
 }

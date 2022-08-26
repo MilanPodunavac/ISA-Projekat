@@ -38,4 +38,5 @@ public interface UserService {
     void unlinkReferencesBoatOwner(BoatOwner boatOwner) throws EntityNotDeletableException;
     void unlinkReferencesClient(Client client);
     void throwExceptionIfEnabledClientDoesntExist(Integer clientId) throws EnabledClientDoesntExistException;
+    String getLoggedInUserRole();
 }
