@@ -31,6 +31,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from './service/auth.service';
 import { HeaderComponent } from './components/header/header.component';
 import { FishingInstructorComponent } from './components/fishing-instructor/fishing-instructor.component';
+import { CottageOwnerComponent } from './components/cottage-owner/cottage-owner.component';
+import { CottageOwnerCottageComponent } from './components/cottage-owner/cottage-owner-cottage/cottage-owner-cottage.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +41,8 @@ import { FishingInstructorComponent } from './components/fishing-instructor/fish
     RegisterProviderComponent,
     HeaderComponent,
     FishingInstructorComponent,
+    CottageOwnerComponent,
+    CottageOwnerCottageComponent,
   ],
   imports: [
     BrowserModule,

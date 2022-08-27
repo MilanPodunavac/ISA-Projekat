@@ -1,0 +1,65 @@
+<div *ngIf="cottage" class="container mb-3">
+    <div class="form-group mb-3">
+        <label class="form-label">Cottage Name:</label>
+        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.name" id="name">
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Description:</label>
+        <textarea type="text" class="form-control" id="description" [(ngModel)]="cottage.description" rows="5"></textarea>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Description:</label>
+        <textarea type="text" class="form-control" id="description" [(ngModel)]="cottage.rules" rows="5"></textarea>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Room number:</label>
+        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.roomNumber" id="name">
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Beds per room:</label>
+        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.bedNumber" id="name">
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Price per day:</label>
+        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.bedNumber" id="name">
+    </div>
+    <div *ngIf="cottage.additionalServices?.length" class="table-responsive m-1">
+        <div class="panel-heading m-3">
+            <h2>Additional Services List</h2>
+        </div>
+        <table class="table table-bordered table-striped table-hover" id="additionalServicesTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor='let service of additionalServicesTableMap'>
+                    <td>{{service}}</td>
+                    <td><button (click)="RemoveService(service)" id="removeServiceBtn" class="btn btn-primary"><strong>remove</strong></button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="form-group mb-3">
+        <label>Add additional service</label>
+        <mat-form-field appearance="fill" class="form-control mb-2">
+            <mat-select [(value)] = "selectedNewService">
+              <mat-option *ngFor="let service of additionalServices" [value]="service.value">
+                {{service.viewValue}}
+              </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <button (click)="AddService()" class="btn btn-primary">Add</button>
+    </div>
+</div>
+<div>
+    <label class="form-label">Location:</label>
+</div>
+<div id="map" name="map" class="map" (click)="getCoord($event)"></div>
+<div class="form-group mb-5">
+    <button (click)="UpdateCottage()" id="updateButton" class="btn btn-primary">
+        <strong>Update cottage</strong>
+    </button>
+</div>

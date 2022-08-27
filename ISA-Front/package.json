@@ -22,6 +22,7 @@
     "@angular/router": "~13.2.4",
     "@fortawesome/fontawesome-free": "^6.0.0",
     "mdb-angular-ui-kit": "file:mdb-angular-ui-kit-2.3.0.tgz",
+    "ol": "6.5",
     "rxjs": "~7.5.0",
     "tslib": "^2.1.0",
     "zone.js": "~0.11.4"
@@ -32,6 +33,7 @@
     "@angular/compiler-cli": "~13.2.4",
     "@types/jasmine": "~3.6.0",
     "@types/node": "^12.11.1",
+    "@types/ol": "^6.5.3",
     "jasmine-core": "~3.8.0",
     "karma": "~6.3.0",
     "karma-chrome-launcher": "~3.1.0",
