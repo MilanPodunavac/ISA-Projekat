@@ -53,12 +53,29 @@
         </mat-form-field>
         <button (click)="AddService()" class="btn btn-primary">Add</button>
     </div>
-</div>
-<div>
-    <label class="form-label">Location:</label>
+    <div class="form-group mb-3">
+        <label class="form-label">Longitude:</label>
+        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.longitude" id="name">
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Latitude:</label>
+        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.latitude" id="name">
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Street name and number:</label>
+        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.streetName" id="name">
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">City:</label>
+        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.city" id="name">
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Country:</label>
+        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.country" id="name">
+    </div>
 </div>
 <div id="map" name="map" class="map" (click)="getCoord($event)"></div>
-<div class="form-group mb-5">
+<div class="container mb-3">
     <button (click)="UpdateCottage()" id="updateButton" class="btn btn-primary">
         <strong>Update cottage</strong>
     </button>
