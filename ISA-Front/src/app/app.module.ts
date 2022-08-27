@@ -30,6 +30,7 @@ import { MaterialModule } from './angular-material/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from './service/auth.service';
 import { HeaderComponent } from './components/header/header.component';
+import { FishingInstructorComponent } from './components/fishing-instructor/fishing-instructor.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { HeaderComponent } from './components/header/header.component';
     LoginComponent,
     RegisterProviderComponent,
     HeaderComponent,
+    FishingInstructorComponent,
   ],
   imports: [
     BrowserModule,
