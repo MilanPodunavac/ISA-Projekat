@@ -11,12 +11,10 @@ import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 
 @RunWith(Theories.class)
@@ -109,6 +107,6 @@ public class DateRangeTest {
     @Test
     public void getDaysTestShouldReturnTwo(){
         DateRange dateRange = new DateRange(new GregorianCalendar(2022, Calendar.MAY, 1).getTime(), new GregorianCalendar(2022, Calendar.MAY, 3).getTime());
-        Assert.assertEquals(2, dateRange.getDays());
+        Assert.assertEquals(2, dateRange.durationInDays());
     }
 }

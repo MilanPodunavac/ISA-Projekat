@@ -36,11 +36,11 @@ INSERT INTO LOYALTY_PROGRAM_PROVIDER (points_needed, lesser_system_tax_percentag
 
 INSERT INTO ADMIN (id, email, password, enabled, first_name, last_name, phone_number, main_admin, password_changed, location_id, role_id) VALUES (1, 'marko76589@gmail.com', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', true, 'Marko', 'Marković', '123456789', true, true, 1, 1);
 INSERT INTO CLIENT (id, email, password, enabled, first_name, last_name, phone_number, banned, penalty_points, loyalty_points, category_id, location_id, role_id) VALUES (2, 'lazo@gmail.com', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', true, 'Lazo', 'Lazić', '111111111', false, 0, 0, 1, 2, 2);
-INSERT INTO COTTAGE_OWNER (id, email, password, enabled, first_name, last_name, phone_number, reason_for_registration, location_id, role_id) VALUES (3, 'jana@gmail.com', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', true, 'Jana', 'Janić', '222222222', 'dobar', 3, 3);
-INSERT INTO BOAT_OWNER (id, email, password, enabled, first_name, last_name, phone_number, reason_for_registration, location_id, role_id) VALUES (4, 'lana@gmail.com', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', true, 'Lana', 'Lanić', '333333333', 'imam', 4, 4);
+INSERT INTO COTTAGE_OWNER (id, email, password, enabled, first_name, last_name, phone_number, reason_for_registration, location_id, role_id, loyalty_points, category_id) VALUES (3, 'jana@gmail.com', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', true, 'Jana', 'Janić', '222222222', 'dobar', 3, 3, 0, 1);
+INSERT INTO BOAT_OWNER (id, email, password, enabled, first_name, last_name, phone_number, reason_for_registration, location_id, role_id, loyalty_points, category_id) VALUES (4, 'lana@gmail.com', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', true, 'Lana', 'Lanić', '333333333', 'imam', 4, 4, 0, 1);
 INSERT INTO FISHING_INSTRUCTOR (id, email, password, enabled, first_name, last_name, phone_number, reason_for_registration, biography, loyalty_points, category_id, location_id, role_id) VALUES (5, 'aleksandar.savic99@gmail.com', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', true, 'Aleksandar', 'Savić', '555555555', 'razlog', 'ja sam Aleksandar', 0, 1, 5, 5);
 INSERT INTO ADMIN (id, email, password, enabled, first_name, last_name, phone_number, main_admin, password_changed, location_id, role_id) VALUES (6, 'milan@gmail.com', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', true, 'Milan', 'Milić', '123456789', false, false, 6, 1);
-INSERT INTO COTTAGE_OWNER (id, email, password, enabled, first_name, last_name, phone_number, reason_for_registration, location_id, role_id) VALUES (7, 'radisic@gmail.com', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', true, 'Aleksandar', 'Radisic', '222222222', 'dobar', 8, 3);
+INSERT INTO COTTAGE_OWNER (id, email, password, enabled, first_name, last_name, phone_number, reason_for_registration, location_id, role_id, loyalty_points, category_id) VALUES (7, 'radisic@gmail.com', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', true, 'Aleksandar', 'Radisic', '222222222', 'dobar', 8, 3, 0, 1);
 INSERT INTO CLIENT (id, email, password, enabled, first_name, last_name, phone_number, banned, penalty_points, loyalty_points, category_id, location_id, role_id) VALUES (8, 'klijent@gmail.com', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', true, 'Klijent', 'Klijentic', '111111111', false, 0, 0, 1, 9, 2);
 INSERT INTO FISHING_INSTRUCTOR (id, email, password, enabled, first_name, last_name, phone_number, reason_for_registration, biography, loyalty_points, category_id, location_id, role_id) VALUES (9, 'pero@gmail.com', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', true, 'Pero', 'Perić', '888777666', 'dobar razlog', 'ja sam Pero', 0, 1, 7, 5);
 INSERT INTO CLIENT (id, email, password, enabled, first_name, last_name, phone_number, banned, penalty_points, loyalty_points, category_id, location_id, role_id) VALUES (10, 'klijentZaCamac@gmail.com', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', true, 'KlijentCamac', 'KlijenticCamcic', '111111111', false, 0, 0, 1, 19, 2);
@@ -64,7 +64,7 @@ INSERT INTO COTTAGE_ADDITIONAL_SERVICES (cottage_id, tags) VALUES (1, 1);
 INSERT INTO AVAILABILITY_PERIOD (id, end_date, start_date, sale_entity_id) VALUES(1, '2022-04-30 00:00:00', '2022-04-1 00:00:00', 1);
 INSERT INTO AVAILABILITY_PERIOD (id, end_date, start_date, sale_entity_id) VALUES(2, '2022-10-30 00:00:00', '2022-10-1 00:00:00', 1);
 
-INSERT INTO COTTAGE_RESERVATION (id, end_date, start_date, number_of_people, price, reservation_refund, reservation_status, system_charge, availability_period_id, client_id, cottage_id) VALUES (1, '2022-04-10 00:00:00', '2022-04-1 00:00:00', 4, 6, 10, 1, 3, 1, 2, 1);
+INSERT INTO COTTAGE_RESERVATION (id, end_date, start_date, number_of_people, price, reservation_refund, reservation_status, system_charge, availability_period_id, client_id, cottage_id, loyalty_points_given) VALUES (1, '2022-04-10 00:00:00', '2022-04-1 00:00:00', 4, 6, 10, 1, 3, 1, 2, 1, false);
 
 INSERT INTO COTTAGE_RESERVATION_TAGS (cottage_reservation_id, tags) VALUES (1, 1);
 
@@ -112,7 +112,7 @@ INSERT INTO BOAT (id, description, name, price_per_day, rules, location_id, engi
 INSERT INTO AVAILABILITY_PERIOD (id, end_date, start_date, sale_entity_id) VALUES(3, '2022-04-30 00:00:00', '2022-04-1 00:00:00', 10);
 INSERT INTO AVAILABILITY_PERIOD (id, end_date, start_date, sale_entity_id) VALUES(4, '2022-10-30 00:00:00', '2022-10-1 00:00:00', 10);
 
-INSERT INTO BOAT_RESERVATION (id, end_date, start_date, number_of_people, price, reservation_refund, reservation_status, system_charge, availability_period_id, client_id, boat_id) VALUES (14, '2022-04-12 00:00:00', '2022-04-11 00:00:00', 2, 6, 2, 1, 3, 3, 10, 10);
+INSERT INTO BOAT_RESERVATION (id, end_date, start_date, number_of_people, price, reservation_refund, reservation_status, system_charge, availability_period_id, client_id, boat_id, loyalty_points_given) VALUES (14, '2022-04-12 00:00:00', '2022-04-11 00:00:00', 2, 6, 2, 1, 3, 3, 10, 10, false);
 
 INSERT INTO CURRENT_POINTS_CLIENT_GETS_AFTER_RESERVATION (current_points_client_gets_after_reservation) VALUES (200);
 

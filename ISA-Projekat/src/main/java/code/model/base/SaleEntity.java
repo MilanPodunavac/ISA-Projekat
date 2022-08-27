@@ -68,7 +68,7 @@ public abstract class SaleEntity {
    }
 
    public boolean addReservation (Reservation reservation) throws ClientCancelledThisPeriodException {
-      reservation.setPrice((pricePerDay * reservation.getDateRange().getDays()) * (1 - reservation.getClient().getCategory().getDiscountPercentage()/100));
+      reservation.setPrice((pricePerDay * reservation.getDateRange().durationInDays()) * (1 - reservation.getClient().getCategory().getDiscountPercentage()/100));
       reservation.setReservationRefund(reservationRefund);
       for (AvailabilityPeriod period: availabilityPeriods) {
          if(period.addReservation(reservation) == true) {
@@ -80,7 +80,7 @@ public abstract class SaleEntity {
    }
 
    public boolean addAction (Action action){
-      action.setPrice((int) ((action.getRange().getDays() * pricePerDay)*(1 - ((double)action.getDiscount()/100))));
+      action.setPrice((int) ((action.getRange().durationInDays() * pricePerDay)*(1 - ((double)action.getDiscount()/100))));
       action.setActionRefund(reservationRefund);
       for(AvailabilityPeriod period : availabilityPeriods){
          if(period.addAction(action) == true){

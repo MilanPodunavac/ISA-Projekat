@@ -21,8 +21,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -206,7 +204,7 @@ public class BoatServiceImpl  implements BoatService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("marko76589@gmail.com");
         message.setSubject("Cottage reserved");
-        message.setText("New action: " + boat.getName() + " " + action.getRange().getDays() + " days for a price of " + action.getPrice() + ". Available until " + action.getValidUntilAndIncluding());
+        message.setText("New action: " + boat.getName() + " " + action.getRange().durationInDays() + " days for a price of " + action.getPrice() + ". Available until " + action.getValidUntilAndIncluding());
         for (Client client: boat.getClient()) {
             message.setTo(client.getEmail());
             _mailSender.send(message);
@@ -385,7 +383,7 @@ public class BoatServiceImpl  implements BoatService {
         for(Boat boat : boatList){
             for(AvailabilityPeriod period : boat.getAvailabilityPeriods()){
                 for(Reservation res : period.getReservations()){
-                    if(res.getDateRange().isInPast() && !res.isLoyaltyPointsGiven() && res.getReservationStatus() != ReservationStatus.cancelled){
+                    if(res.getDateRange().DateRangeInPast() && !res.isLoyaltyPointsGiven() && res.getReservationStatus() != ReservationStatus.cancelled){
                         res.getClient().setLoyaltyPoints(res.getClient().getLoyaltyPoints() + _currentPointsClientGetsAfterReservationRepository.findById(1).get().getCurrentPointsClientGetsAfterReservation());
                         for (LoyaltyProgramClient lpc : loyaltyProgramClients) {
                             if (res.getClient().getLoyaltyPoints() >= lpc.getPointsNeeded()) {
@@ -405,7 +403,7 @@ public class BoatServiceImpl  implements BoatService {
                     }
                 }
                 for(Action act : period.getActions()){
-                    if(act.getRange().isInPast() && !act.isLoyaltyPointsGiven() && act.getClient() != null){
+                    if(act.getRange().DateRangeInPast() && !act.isLoyaltyPointsGiven() && act.getClient() != null){
                         act.getClient().setLoyaltyPoints(act.getClient().getLoyaltyPoints() + _currentPointsClientGetsAfterReservationRepository.findById(1).
                                 get().getCurrentPointsClientGetsAfterReservation());
                         for (LoyaltyProgramClient lpc : loyaltyProgramClients) {

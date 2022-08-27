@@ -5,7 +5,6 @@ import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.*;
 import code.model.base.*;
-import code.model.boat.Boat;
 import code.model.cottage.Cottage;
 import code.model.cottage.CottageAction;
 import code.model.cottage.CottageOwner;
@@ -17,8 +16,6 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -200,7 +197,7 @@ public class CottageServiceImpl implements CottageService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("marko76589@gmail.com");
         message.setSubject("Cottage reserved");
-        message.setText("New action: " + cottage.getName() + " " + action.getRange().getDays() + " days for a price of " + action.getPrice() + ". Available until " + action.getValidUntilAndIncluding());
+        message.setText("New action: " + cottage.getName() + " " + action.getRange().durationInDays() + " days for a price of " + action.getPrice() + ". Available until " + action.getValidUntilAndIncluding());
         for (Client client: cottage.getClient()) {
             message.setTo(client.getEmail());
             _mailSender.send(message);
@@ -327,7 +324,7 @@ public class CottageServiceImpl implements CottageService {
         for(Cottage cottage : cottageList){
             for(AvailabilityPeriod period : cottage.getAvailabilityPeriods()){
                 for(Reservation res : period.getReservations()){
-                    if(res.getDateRange().isInPast() && !res.isLoyaltyPointsGiven() && res.getReservationStatus() != ReservationStatus.cancelled){
+                    if(res.getDateRange().DateRangeInPast() && !res.isLoyaltyPointsGiven() && res.getReservationStatus() != ReservationStatus.cancelled){
                         res.getClient().setLoyaltyPoints(res.getClient().getLoyaltyPoints() + _currentPointsClientGetsAfterReservationRepository.findById(1).get().getCurrentPointsClientGetsAfterReservation());
                         for (LoyaltyProgramClient lpc : loyaltyProgramClients) {
                             if (res.getClient().getLoyaltyPoints() >= lpc.getPointsNeeded()) {
@@ -347,7 +344,7 @@ public class CottageServiceImpl implements CottageService {
                     }
                 }
                 for(Action act : period.getActions()){
-                    if(act.getRange().isInPast() && !act.isLoyaltyPointsGiven() && act.getClient() != null){
+                    if(act.getRange().DateRangeInPast() && !act.isLoyaltyPointsGiven() && act.getClient() != null){
                         act.getClient().setLoyaltyPoints(act.getClient().getLoyaltyPoints() + _currentPointsClientGetsAfterReservationRepository.findById(1).
                                 get().getCurrentPointsClientGetsAfterReservation());
                         for (LoyaltyProgramClient lpc : loyaltyProgramClients) {
