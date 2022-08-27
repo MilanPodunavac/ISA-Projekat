@@ -1,14 +1,16 @@
 <mat-toolbar color="warn" class="navbar">
+    <button *ngIf="role === 'ROLE_FISHING_INSTRUCTOR'" mat-button [routerLink]="['fishing-instructor']">Home</button>
+
     <button *ngIf="role === 'ROLE_ADMIN'" mat-button id="facility" [matMenuTriggerFor]="facility">Our Facility</button>
     <mat-menu #facility="matMenu">
         <button mat-menu-item [routerLink]="['hospital-map']">Hospital map</button>
         <button mat-menu-item [routerLink]="['moving-equipment']">Move equipment</button>
         <button mat-menu-item [routerLink]="['renovation']">Renovation</button>
         <button mat-menu-item [routerLink]="['shifts']">Shifts</button>
-        <button mat-menu-item id="doctors" [routerLink]="['doctors']">Doctors</button>
+        <button mat-menu-item [routerLink]="['doctors']">Doctors</button>
     </mat-menu>
     
-    <button *ngIf="role === 'ROLE_FISHING_INSTRUCTOR'" mat-button [matMenuTriggerFor]="pharmacies">Pharmacies</button>
+    <button *ngIf="role === 'a'" mat-button [matMenuTriggerFor]="pharmacies">Pharmacies</button>
     <mat-menu #pharmacies="matMenu">
         <button mat-menu-item [routerLink]="['registration']">Register pharmacy</button>
         <button mat-menu-item [routerLink]="['pharmacy-profiles']">All pharmacies</button>
