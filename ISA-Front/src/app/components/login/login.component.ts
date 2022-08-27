@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { LoginUser } from 'src/app/model/login-user';
 import { AuthService } from 'src/app/service/auth.service';
 import { UserService } from 'src/app/service/user.service';
@@ -13,7 +14,7 @@ export class LoginComponent implements OnInit {
     loginForm: FormGroup;
     errorMessage: string;
 
-    constructor(formBuilder: FormBuilder, private authService: AuthService, private userService: UserService) {
+    constructor(formBuilder: FormBuilder, private router: Router, private authService: AuthService, private userService: UserService) {
         this.loginForm = formBuilder.group({
             email: [''],
             password: ['']
@@ -35,6 +36,12 @@ export class LoginComponent implements OnInit {
                 localStorage.setItem("jwt", data.accessToken);
                 this.userService.loggedInRole().subscribe(data => {
                     localStorage.setItem("role", data);
+                    
+                    if (data === "ROLE_FISHING_INSTRUCTOR") {
+                        this.router.navigate(['fishing-instructor']).then(() => {
+                            window.location.reload();
+                        });;
+                    }
                 });
             },
             error: () => {
