@@ -1,5 +1,8 @@
 package code.constants;
 
+import code.model.LoyaltyProgramCategory;
+import code.model.LoyaltyProgramProvider;
+
 public class RegistrationConstants {
     public static final Integer NEW_USER_ID = 5;
     public static final String NEW_FIRST_NAME = "Milica";
@@ -19,4 +22,5 @@ public class RegistrationConstants {
     public static final Integer DB_USER_ID_ACCEPT = 2;
     public static final Integer DB_USER_ID_DECLINE = 3;
     public static final String DECLINE_REASON = "ne može";
+    public static final LoyaltyProgramProvider DB_LOYALTY_PROGRAM_PROVIDER = new LoyaltyProgramProvider(1, 0, 0, LoyaltyProgramCategory.regular);
 }

@@ -1,5 +1,8 @@
 package code.constants;
 
+import code.model.LoyaltyProgramCategory;
+import code.model.LoyaltyProgramProvider;
+
 import java.time.LocalDate;
 
 public class FishingInstructorConstants {

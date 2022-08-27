@@ -9,6 +9,7 @@ import code.model.Location;
 import code.model.Role;
 import code.model.User;
 import code.repository.FishingInstructorRepository;
+import code.repository.LoyaltyProgramProviderRepository;
 import code.repository.UserRepository;
 import code.service.impl.FishingInstructorServiceImpl;
 import code.service.impl.UserServiceImpl;
@@ -42,6 +43,9 @@ public class RegistrationServiceTest {
     @Mock
     private UserService userServiceMock;
 
+    @Mock
+    private LoyaltyProgramProviderRepository loyaltyProgramProviderRepositoryMock;
+
     @InjectMocks
     private FishingInstructorServiceImpl fishingInstructorService;
 
@@ -59,6 +63,7 @@ public class RegistrationServiceTest {
         FishingInstructor fishingInstructor = setFishingInstructorSaveRegistrationRequest();
         fishingInstructor.setEmail(NEW_EMAIL);
 
+        when(loyaltyProgramProviderRepositoryMock.getById(1)).thenReturn(DB_LOYALTY_PROGRAM_PROVIDER);
         when(fishingInstructorRepositoryMock.save(fishingInstructor)).thenReturn(fishingInstructor);
         when(passwordEncoder.encode(NEW_PASSWORD)).thenReturn(NEW_PASSWORD_ENCODED);
         when(roleServiceMock.findByName(DB_ROLE_NAME)).thenReturn(new Role(DB_ROLE_ID, DB_ROLE_NAME));
@@ -79,9 +84,11 @@ public class RegistrationServiceTest {
         assertThat(dbFishingInstructor.isEnabled()).isEqualTo(false);
         assertThat(dbFishingInstructor.getPassword()).isEqualTo(NEW_PASSWORD_ENCODED);
 
+        verify(loyaltyProgramProviderRepositoryMock, times(1)).getById(1);
         verify(fishingInstructorRepositoryMock, times(1)).save(fishingInstructor);
         verify(passwordEncoder, times(1)).encode(NEW_PASSWORD);
         verify(roleServiceMock, times(1)).findByName(DB_ROLE_NAME);
+        verifyNoMoreInteractions(loyaltyProgramProviderRepositoryMock);
         verifyNoMoreInteractions(fishingInstructorRepositoryMock);
         verifyNoMoreInteractions(passwordEncoder);
         verifyNoMoreInteractions(roleServiceMock);
