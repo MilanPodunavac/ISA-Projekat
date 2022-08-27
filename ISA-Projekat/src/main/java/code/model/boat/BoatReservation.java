@@ -1,6 +1,7 @@
 package code.model.boat;
 
 import code.model.base.Reservation;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,5 +26,6 @@ public class BoatReservation extends Reservation {
    private Set<BoatReservationTag> boatReservationTag;
    @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "boat_id")
+   @JsonBackReference
    private Boat boat;
 }

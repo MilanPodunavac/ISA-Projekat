@@ -3,6 +3,8 @@ package code.model.base;
 import code.model.Client;
 import code.model.ReservationDiscount;
 import code.model.wrappers.DateRange;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,9 +36,11 @@ public abstract class Reservation {
    protected double systemCharge;
    @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "client_id")
+   @JsonBackReference
    protected Client client;
    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    @JoinColumn(name = "reservationDiscount_id")
+   @JsonManagedReference
    protected Set<ReservationDiscount> reservationDiscount;
    @Enumerated(EnumType.ORDINAL)
    protected ReservationStatus reservationStatus;
@@ -44,6 +48,7 @@ public abstract class Reservation {
    protected OwnerCommentary ownerCommentary;
    @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "availabilityPeriod_id")
+   @JsonBackReference
    protected AvailabilityPeriod availabilityPeriod;
    @Column
    protected boolean loyaltyPointsGiven;

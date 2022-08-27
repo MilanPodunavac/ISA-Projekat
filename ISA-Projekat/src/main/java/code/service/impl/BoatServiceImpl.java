@@ -428,4 +428,16 @@ public class BoatServiceImpl  implements BoatService {
             }
         }
     }
+    @Override
+    public List<Boat> getAllBoats(){
+        return _boatRepository.findAll();
+    }
+    @Override
+    public Boat getBoat(Integer id) throws EntityNotFoundException {
+        Boat boat = _boatRepository.findById(id).orElse(null);
+        if(boat == null) {
+            throw new EntityNotFoundException("Boat doesn't exist!");
+        }
+        return boat;
+    }
 }

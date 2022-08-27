@@ -5,6 +5,7 @@ import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.*;
 import code.model.base.*;
+import code.model.boat.Boat;
 import code.model.cottage.Cottage;
 import code.model.cottage.CottageAction;
 import code.model.cottage.CottageOwner;
@@ -315,7 +316,6 @@ public class CottageServiceImpl implements CottageService {
         }
         _actionRepository.save(act);
     }
-
     @Scheduled(cron="0 0 1 * * *")
     @Transactional
     public void awardLoyaltyPoints() {
@@ -369,5 +369,17 @@ public class CottageServiceImpl implements CottageService {
                 }
             }
         }
+    }
+    @Override
+    public List<Cottage> getAllCottages(){
+        return _cottageRepository.findAll();
+    }
+    @Override
+    public Cottage getCottage(Integer id) throws EntityNotFoundException {
+        Cottage cottage = _cottageRepository.findById(id).orElse(null);
+        if(cottage == null) {
+            throw new EntityNotFoundException("Cottage doesn't exist!");
+        }
+        return cottage;
     }
 }

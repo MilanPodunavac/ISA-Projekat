@@ -2,6 +2,7 @@ package code.mappper;
 
 import code.dto.admin.AdminRegistration;
 import code.dto.admin.PersonalData;
+import code.dto.entities.boat.BoatGetDto;
 import code.dto.entities.boat.BoatDto;
 import code.dto.entities.boat.NewBoatActionDto;
 import code.dto.entities.boat.NewBoatReservationDto;
@@ -235,8 +236,16 @@ public class MapperConfiguration {
                 map().getLocation().setLongitude(source.getLongitude());
             }
         };
-        TypeMap<BoatDto, Boat> boatDtoToBoat = modelMapper.createTypeMap(BoatDto.class, Boat.class);
-        boatDtoToBoat.addMappings(boatDtoToBoatPropertyMap);
+        TypeMap<BoatDto, Boat> newBoatDtoToBoat = modelMapper.createTypeMap(BoatDto.class, Boat.class);
+        newBoatDtoToBoat.addMappings(boatDtoToBoatPropertyMap);
+
+        PropertyMap<Boat, BoatGetDto> boatToBoatDtoPropertyMap = new PropertyMap<Boat, BoatGetDto>(){
+            protected void configure(){
+
+            }
+        };
+        TypeMap<Boat, BoatGetDto> boatToBoatDto= modelMapper.createTypeMap(Boat.class, BoatGetDto.class);
+        boatToBoatDto.addMappings(boatToBoatDtoPropertyMap);
 
         //NewBoatReservationDto
 

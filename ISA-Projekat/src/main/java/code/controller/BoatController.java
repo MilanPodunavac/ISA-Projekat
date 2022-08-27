@@ -7,6 +7,9 @@ import code.dto.entities.boat.BoatDto;
 import code.dto.entities.boat.NewBoatActionDto;
 import code.dto.entities.boat.NewBoatReservationDto;
 import code.exceptions.entities.*;
+import code.dto.entities.boat.BoatGetDto;
+import code.dto.entities.boat.BoatDto;
+import code.exceptions.entities.EntityNotFoundException;
 import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.base.AvailabilityPeriod;
@@ -21,6 +24,7 @@ import code.repository.UserRepository;
 import code.service.BoatService;
 import code.utils.TokenUtils;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,6 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/boat")
@@ -46,6 +51,23 @@ public class BoatController extends BaseController {
         _boatRepository = boatRepository;
         _boatOwnerRepository = boatOwnerRepository;
         _userRepository = userRepository;
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<Object>> get(){
+        return ResponseEntity.ok(_mapper.map(_boatService.getAllBoats(), new TypeToken<List<BoatGetDto>>() {}.getType()));
+    }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<Object> get(@PathVariable Integer id){
+        try{
+            Boat boat = _boatService.getBoat(id);
+            BoatGetDto boatDto = _mapper.map(boat, BoatGetDto.class);
+            return ResponseEntity.ok(boatDto);
+        }catch(Exception ex){
+            if(ex instanceof EntityNotFoundException) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Boat not found");
+            return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
+        }
     }
 
     @PostMapping()

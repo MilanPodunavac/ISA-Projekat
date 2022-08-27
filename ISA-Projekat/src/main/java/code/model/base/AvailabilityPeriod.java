@@ -3,6 +3,8 @@ package code.model.base;
 
 import code.exceptions.entities.ClientCancelledThisPeriodException;
 import code.model.wrappers.DateRange;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,10 +27,13 @@ public class AvailabilityPeriod {
     private DateRange range;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "saleEntity_id")
+    @JsonBackReference
     private SaleEntity saleEntity;
     @OneToMany(mappedBy = "availabilityPeriod", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private Set<Reservation> reservations;
     @OneToMany(mappedBy = "availabilityPeriod", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Set<Action> actions;
 
     public boolean isAvailable(DateRange range){

@@ -4,6 +4,7 @@ import code.model.LoyaltyProgramProvider;
 import code.model.User;
 import code.model.boat.Boat;
 import code.model.cottage.Cottage;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ public class BoatOwner extends User {
    @Column
    private String reasonForRegistration;
    @OneToMany(mappedBy = "boatOwner", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+   @JsonManagedReference
    private Set<Boat> boat;
    @Column
    private double loyaltyPoints;

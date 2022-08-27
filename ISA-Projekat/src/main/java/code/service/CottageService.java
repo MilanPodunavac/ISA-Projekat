@@ -5,12 +5,14 @@ import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.base.AvailabilityPeriod;
 import code.model.base.OwnerCommentary;
+import code.model.boat.Boat;
 import code.model.cottage.Cottage;
 import code.model.cottage.CottageAction;
 import code.model.cottage.CottageReservation;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface CottageService {
     void addCottage(String email, Cottage cottage) throws UserNotFoundException, UnauthorizedAccessException;
@@ -25,4 +27,6 @@ public interface CottageService {
     void updateCottage(int id, Cottage updateCottage, String email) throws EntityNotFoundException, EntityNotOwnedException, EntityNotUpdateableException;
     void addReservationCommentary(int id, int resId, String email, OwnerCommentary commentary) throws EntityNotFoundException, EntityNotOwnedException, ReservationOrActionNotFinishedException, ReservationOrActionAlreadyCommented;
     void addActionCommentary(int id, int actId, String email, OwnerCommentary commentary) throws EntityNotFoundException, EntityNotOwnedException, ReservationOrActionNotFinishedException, ReservationOrActionAlreadyCommented;
+    List<Cottage> getAllCottages();
+    Cottage getCottage(Integer id) throws EntityNotFoundException;
 }

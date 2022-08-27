@@ -42,10 +42,10 @@ public class DateRange {
     public boolean overlapsWith(DateRange dateRange){
         return dateRange.includes(startDate) || includes(dateRange.startDate) || startDate.getTime() == dateRange.startDate.getTime(); //startDate.equals(dateRange.startDate);
     }
-    public boolean isInPast()
+    /*public boolean isInPast()
     {
         return endDate.getTime() < Time.now();
-    }
+    }*/
     public int getDays(){
         return (int)TimeUnit.DAYS.convert(endDate.getTime() - startDate.getTime(), TimeUnit.MILLISECONDS);
     }

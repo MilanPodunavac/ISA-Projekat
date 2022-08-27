@@ -14,6 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+import java.util.List;
+
 public interface BoatService {
     void throwExceptionIfBoatDontExist(Integer id) throws EntityNotFoundException;
     void checkIfBoatDeletable(Integer id) throws EntityNotDeletableException, EntityNotFoundException;
@@ -27,4 +29,6 @@ public interface BoatService {
     void updateBoat(int id, Boat updateBoat) throws EntityNotFoundException, EntityNotOwnedException, EntityNotUpdateableException, UnauthorizedAccessException, UserNotFoundException;
     void addReservationCommentary(int id, int resId, OwnerCommentary commentary) throws EntityNotFoundException, EntityNotOwnedException, ReservationOrActionNotFinishedException, ReservationOrActionAlreadyCommented, UnauthorizedAccessException, UserNotFoundException;
     void addActionCommentary(int id, int actId, OwnerCommentary commentary) throws EntityNotFoundException, EntityNotOwnedException, ReservationOrActionNotFinishedException, ReservationOrActionAlreadyCommented, UnauthorizedAccessException, UserNotFoundException;
+    List<Boat> getAllBoats();
+    Boat getBoat(Integer id) throws EntityNotFoundException;
 }
