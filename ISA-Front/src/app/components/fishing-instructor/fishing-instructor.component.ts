@@ -11,8 +11,9 @@ import { FishingTripService } from 'src/app/service/fishing-trip.service';
 })
 export class FishingInstructorComponent implements OnInit {
     fishingInstructorProfileData: FishingInstructorProfileDataGet;
-    displayedColumnsFishingTrips: string[] = ['name', 'max_people', 'cost_per_day', 'address', 'city', 'country'];
+    displayedColumnsFishingTrips: string[] = ['name', 'max_people', 'cost_per_day', 'address', 'city', 'country', 'grade'];
     dataSourceFishingTrips: FishingInstructorFishingTripTableGet[];
+    clickedRow: FishingInstructorFishingTripTableGet;
 
     constructor(private fishingInstructorService: FishingInstructorService, private fishingTripService: FishingTripService) {
         this.fishingInstructorService.getProfileData().subscribe(data => {
@@ -22,9 +23,18 @@ export class FishingInstructorComponent implements OnInit {
         this.fishingTripService.getFishingInstructorFishingTrips().subscribe(data => {
             this.dataSourceFishingTrips = data;
         });
+
+        this.clickedRow = new FishingInstructorFishingTripTableGet();
     }
 
     ngOnInit(): void {
     }
 
+    public updateClickedRow(row: FishingInstructorFishingTripTableGet): void {
+        if (this.clickedRow.id === row.id) {
+            this.clickedRow = new FishingInstructorFishingTripTableGet(); 
+        } else {
+            this.clickedRow = row;
+        }
+    }   
 }
