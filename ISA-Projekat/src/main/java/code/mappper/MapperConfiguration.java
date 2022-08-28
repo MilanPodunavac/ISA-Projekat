@@ -6,6 +6,7 @@ import code.dto.entities.boat.BoatGetDto;
 import code.dto.entities.boat.BoatDto;
 import code.dto.entities.boat.NewBoatActionDto;
 import code.dto.entities.boat.NewBoatReservationDto;
+import code.dto.entities.cottage.CottageGetDto;
 import code.dto.entities.cottage.NewCottageActionDto;
 import code.dto.entities.cottage.CottageDto;
 import code.dto.entities.cottage.NewCottageReservationDto;
@@ -254,6 +255,22 @@ public class MapperConfiguration {
         //NewBoatActionDto
 
         TypeMap<NewBoatActionDto, BoatAction> newBoatActionDtoBoatActionTypeMap = modelMapper.createTypeMap(NewBoatActionDto.class, BoatAction.class);
+
+        //CottageGetDto
+
+        PropertyMap<Cottage, CottageGetDto> cottageToCottageGetDtoPropMap = new PropertyMap<Cottage, CottageGetDto>() {
+            @Override
+            protected void configure() {
+                map().setLatitude(source.getLocation().getLatitude());
+                map().setLongitude(source.getLocation().getLongitude());
+                map().setStreetName(source.getLocation().getStreetName());
+                map().setCityName(source.getLocation().getCityName());
+                map().setCountryName(source.getLocation().getCountryName());
+            }
+        };
+
+        TypeMap<Cottage, CottageGetDto> cottageToCottageGetDtoTypeMap = modelMapper.createTypeMap(Cottage.class, CottageGetDto.class);
+        cottageToCottageGetDtoTypeMap.addMappings(cottageToCottageGetDtoPropMap);
 
         return modelMapper;
     }

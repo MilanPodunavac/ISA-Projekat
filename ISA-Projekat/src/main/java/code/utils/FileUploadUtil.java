@@ -1,5 +1,6 @@
 package code.utils;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -29,5 +30,10 @@ public class FileUploadUtil {
     public static void deleteFile(String uploadDir, String fileName) {
         File file = new File("src/main/resources/" + uploadDir + "/" + fileName);
         file.delete();
+    }
+
+    public static byte[] convertToBase64(String uploadDir, String fileName) throws IOException {
+        byte[] fileContent = FileUtils.readFileToByteArray(new File("src/main/resources/" + uploadDir + "/" + fileName));
+        return fileContent;
     }
 }

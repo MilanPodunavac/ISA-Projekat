@@ -14,4 +14,15 @@ export class CottageService {
   getCottage(id: number): Observable<any>{
     return this._httpClient.get<any[]>(this._APIUrl+`/cottage/${id}`);
   }
+  updateCottage(id: number, val): Observable<any>{
+    return this._httpClient.put<any>(this._APIUrl+`/cottage/${id}`, val);
+  }
+  removeImage(cottageId: number, picId: number){
+    return this._httpClient.delete<any>(this._APIUrl+`/cottage/${cottageId}/picture/${picId}`);
+  }
+  addImage(cottageId: number, pic: any){
+    const formData = new FormData();
+    formData.append("pictures", pic);
+    return this._httpClient.post<any>(this._APIUrl+`/cottage/${cottageId}/picture`, formData)//, {headers: {"Content-Type": 'multipart/form-data'}})
+  }
 }

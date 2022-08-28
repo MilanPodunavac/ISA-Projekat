@@ -5,6 +5,7 @@ import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.base.AvailabilityPeriod;
 import code.model.base.OwnerCommentary;
+import code.model.base.PictureBase64;
 import code.model.boat.Boat;
 import code.model.cottage.Cottage;
 import code.model.cottage.CottageAction;
@@ -29,4 +30,5 @@ public interface CottageService {
     void addActionCommentary(int id, int actId, String email, OwnerCommentary commentary) throws EntityNotFoundException, EntityNotOwnedException, ReservationOrActionNotFinishedException, ReservationOrActionAlreadyCommented;
     List<Cottage> getAllCottages();
     Cottage getCottage(Integer id) throws EntityNotFoundException;
+    List<PictureBase64> getCottageImagesAsBase64(int id) throws EntityNotFoundException, IOException;
 }

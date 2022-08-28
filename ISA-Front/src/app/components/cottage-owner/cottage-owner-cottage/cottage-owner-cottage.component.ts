@@ -8,6 +8,7 @@ import { OSM } from 'ol/source';
 import TileLayer from 'ol/layer/Tile';
 import * as olProj from 'ol/proj';
 import {useGeographic} from 'ol/proj';
+import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 
 interface AdditionalServiceMap{
   value: string;
@@ -25,8 +26,10 @@ export class CottageOwnerCottageComponent implements OnInit {
   additionalServices: AdditionalServiceMap[] = [];
   selectedNewService: string;
   map: Map
+  imageSrc: SafeStyle  = "./assets/images/no-image.jpg";
+  imageFile: File = null;
 
-  constructor(private _cottageService: CottageService, private router: Router, private _route: ActivatedRoute) { }
+  constructor(private _cottageService: CottageService, private router: Router, private _route: ActivatedRoute, private sanitizer: DomSanitizer) { }
 
   ngOnInit(): void {
     this.additionalServices.push({value:"wiFi", viewValue:"Wi-Fi"});
@@ -38,23 +41,26 @@ export class CottageOwnerCottageComponent implements OnInit {
       next: data => {
         this.cottage = data;
         this.UpdateServicesTable();
+        this.map = new Map({
+          layers: [
+            new TileLayer({
+              source: new OSM(),
+            }),
+          ],
+          target: 'map',
+          view: new View({
+            center: olProj.fromLonLat([this.cottage.longitude, this.cottage.latitude]),
+            zoom: 17, maxZoom: 20,
+          }),
+        });
+        for(let i = 0; i<this.cottage.pictures.length; i++){
+          this.cottage.pictures[i].data = this.sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + this.cottage.pictures[i].data);
+        }
       },
       error: data => {
         console.log(data)
         alert(data.error)
       }
-    });
-    this.map = new Map({
-      layers: [
-        new TileLayer({
-          source: new OSM(),
-        }),
-      ],
-      target: 'map',
-      view: new View({
-        center: olProj.fromLonLat([19.748239679272345, 45.250187083356856]),//center: [45.250187083356856, 19.748239679272345],
-        zoom: 20, maxZoom: 20,
-      }),
     });
   }
   
@@ -63,8 +69,44 @@ export class CottageOwnerCottageComponent implements OnInit {
   }
 
   UpdateCottage(): void {
-    alert('ddasads')
-    window.location.reload();
+    var id = Number(this._route.snapshot.paramMap.get('id'))
+    var body = {
+      additionalServices: this.cottage.additionalServices,
+      bedNumber: this.cottage.bedNumber,
+      roomNumber: this.cottage.roomNumber,
+      cityName: this.cottage.cityName,
+      countryName: this.cottage.countryName,
+      description: this.cottage.description,
+      rules: this.cottage.rules,
+      streetName: this.cottage.streetName,
+      name: this.cottage.name,
+      pricePerDay: this.cottage.pricePerDay,
+      longitude: this.cottage.longitude,
+      latitude: this.cottage.latitude,
+      reservationRefund: this.cottage.reservationRefund
+    }
+    this._cottageService.updateCottage(id, this.cottage).subscribe({
+      next: data => {
+        if(data.status === 200){
+          alert("Cottage updated")
+        }
+        this.router.navigate(['cottage-owner']).then(() => {
+          window.location.reload();
+        });
+      },
+      error: data => {
+        console.log(data)
+        if(data.status === 200){
+          alert(data.error.text)
+          this.router.navigate(['cottage-owner']).then(() => {
+            window.location.reload();
+          });
+        }
+        else{
+          alert(data.error)
+        }     
+      }
+    })
   }
 
   RemoveService(service: any){
@@ -106,15 +148,76 @@ export class CottageOwnerCottageComponent implements OnInit {
   getCoord(event: any){
     var coordinate = this.map.getEventCoordinate(event);
     var lonLatCoords = olProj.toLonLat(coordinate)
-    var data = this.reverseGeocode(lonLatCoords)
+    this.reverseGeocode(lonLatCoords)
  }
   reverseGeocode(coords) {
     fetch('http://nominatim.openstreetmap.org/reverse?format=json&lon=' + coords[0] + '&lat=' + coords[1])
     .then(function(response) {
         return response.json();
-    }).then(function(json) {
-        console.log(json);
-        alert(json.address.house_number)
+    }).then(json => {
+        console.log(this.cottage)
+        this.cottage.longitude = json.lon
+        this.cottage.latitude = json.lat
+        this.cottage.streetName = json.address.road + " " + json.address.house_number
+        this.cottage.cityName = json.address.city;
+        this.cottage.countryName = json.address.country;
     });
+  }
+
+  onFileChange(event) {
+    const reader = new FileReader();
+    
+    if(event.target.files && event.target.files.length) {
+      const [file] = event.target.files;
+      reader.readAsDataURL(file);
+      reader.onload = () => {this.imageSrc = reader.result as string};
+      this.imageFile = file;
+    }
+  }
+
+  RemoveImage(id: number){
+    this._cottageService.removeImage(this.cottage.id, id).subscribe({
+      next: data => {
+        if(data.status === 200){
+          alert("Image removed")
+        }
+        window.location.reload();
+      },
+      error: data => {
+        console.log(data)
+        if(data.status === 200){
+          alert(data.error.text)
+          window.location.reload();
+        }
+        else{
+          alert(data.error)
+        }     
+      }
+    })
+  }
+
+  AddPicture(){
+    if(this.imageFile === null){
+      alert("No image selected!")
+      return
+    }
+    this._cottageService.addImage(this.cottage.id, this.imageFile).subscribe({
+      next: data => {
+        if(data.status === 200){
+          alert("Image added")
+        }
+        window.location.reload();
+      },
+      error: data => {
+        console.log(data)
+        if(data.status === 200){
+          alert(data.error.text)
+          window.location.reload();
+        }
+        else{
+          alert(data.error)
+        }     
+      }
+    })
   }
 }

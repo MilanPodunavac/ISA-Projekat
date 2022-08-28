@@ -23,10 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class CottageServiceImpl implements CottageService {
@@ -378,5 +375,18 @@ public class CottageServiceImpl implements CottageService {
             throw new EntityNotFoundException("Cottage doesn't exist!");
         }
         return cottage;
+    }
+
+    @Override
+    public List<PictureBase64> getCottageImagesAsBase64(int id) throws EntityNotFoundException, IOException {
+        Cottage cottage = _cottageRepository.findById(id).orElse(null);
+        if(cottage == null) {
+            throw new EntityNotFoundException("Cottage doesn't exist!");
+        }
+        List<PictureBase64> pictures = new ArrayList<>();
+        for(Picture pic:cottage.getPictures()){
+            pictures.add(new PictureBase64(FileUploadUtil.convertToBase64(COTTAGE_PICTURE_DIRECTORY, cottage.getId() + "_" + pic.getName()), pic.getId()));
+        }
+        return pictures;
     }
 }
