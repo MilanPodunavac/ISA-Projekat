@@ -1,5 +1,6 @@
 package code.service;
 
+import code.dto.fishing_instructor.FishingInstructorProfileDataGetDto;
 import code.exceptions.entities.EntityNotFoundException;
 import code.exceptions.fishing_instructor.AddAvailablePeriodInPastException;
 import code.exceptions.fishing_instructor.AvailablePeriodOverlappingException;
@@ -18,4 +19,5 @@ public interface FishingInstructorService {
     void changePassword(FishingInstructor fishingInstructor);
     List<FishingInstructor> getAllFishingInstructors();
     FishingInstructor getFishingInstructor(Integer id) throws EntityNotFoundException;
+    FishingInstructorProfileDataGetDto getProfileData();
 }

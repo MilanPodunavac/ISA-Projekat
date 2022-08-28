@@ -1,5 +1,6 @@
 package code.service;
 
+import code.dto.fishing_trip.FishingInstructorFishingTripTableGetDto;
 import code.exceptions.entities.EntityNotFoundException;
 import code.exceptions.entities.EntityNotOwnedException;
 import code.exceptions.entities.ReservationOrActionAlreadyCommented;
@@ -16,6 +17,7 @@ import code.model.base.OwnerCommentary;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface FishingTripService {
     FishingTrip save(FishingTrip fishingTrip);
@@ -26,4 +28,5 @@ public interface FishingTripService {
     void addReservation(Integer fishingTripId, Integer clientId, FishingTripReservation fishingTripReservation) throws FishingTripNotFoundException, AddReservationToAnotherInstructorFishingTripException, EnabledClientDoesntExistException, ReservationStartDateInPastException, FishingTripReservationNumberOfPeopleHigherThanFishingTripMaxPeopleException, FishingTripReservationTagsDontContainReservationTagException, NoAvailablePeriodForReservationException, ClientBannedException, ClientBusyDuringReservationException, InstructorBusyDuringReservationException;
     void addReservationCommentary(Integer reservationId, OwnerCommentary ownerCommentary) throws EntityNotFoundException, EntityNotOwnedException, ReservationOrActionAlreadyCommented, ReservationOrActionNotFinishedException;
     void addQuickReservationCommentary(Integer quickReservationId, OwnerCommentary ownerCommentary) throws EntityNotFoundException, EntityNotOwnedException, ReservationOrActionNotFinishedException, ReservationOrActionAlreadyCommented;
+    List<FishingInstructorFishingTripTableGetDto> getFishingInstructorFishingTrips();
 }

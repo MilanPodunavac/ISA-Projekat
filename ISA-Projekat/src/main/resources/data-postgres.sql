@@ -10,8 +10,8 @@ INSERT INTO LOCATION (city_name, country_name, street_name, longitude, latitude)
 INSERT INTO LOCATION (city_name, country_name, street_name, longitude, latitude) VALUES ('Novi Sad', 'Srbija', 'Alekse Šantića', 0, 0);
 INSERT INTO LOCATION (city_name, country_name, street_name, longitude, latitude) VALUES ('Banja Luka', 'BiH', 'Cara Dušana', 0, 0);
 INSERT INTO LOCATION (city_name, country_name, street_name, longitude, latitude) VALUES ('Beograd', 'Srbija', 'Dositejeva', 0, 0);
-INSERT INTO LOCATION (city_name, country_name, street_name, longitude, latitude) VALUES ('Nis', 'Srbija', 'Nikole Tesle', 0, 0);
-INSERT INTO LOCATION (city_name, country_name, street_name, longitude, latitude) VALUES ('Nis', 'Srbija', 'Vojvode Stepe', 0, 0);
+INSERT INTO LOCATION (city_name, country_name, street_name, longitude, latitude) VALUES ('Niš', 'Srbija', 'Nikole Tesle', 0, 0);
+INSERT INTO LOCATION (city_name, country_name, street_name, longitude, latitude) VALUES ('Niš', 'Srbija', 'Vojvode Stepe', 0, 0);
 INSERT INTO LOCATION (city_name, country_name, street_name, longitude, latitude) VALUES ('Bijeljina', 'BiH', 'Stepe Stepanovića', 0, 0);
 INSERT INTO LOCATION (city_name, country_name, street_name, longitude, latitude) VALUES ('Novi Sad', 'Srbija', 'Vojvode Stepe 14', 0, 0);
 INSERT INTO LOCATION (city_name, country_name, street_name, longitude, latitude) VALUES ('Novi Sad', 'Srbija', 'Vojvode Stepe 16', 0, 0);

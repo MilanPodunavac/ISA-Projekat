@@ -1,5 +1,6 @@
 package code.service.impl;
 
+import code.dto.fishing_trip.FishingInstructorFishingTripTableGetDto;
 import code.exceptions.entities.EntityNotFoundException;
 import code.exceptions.entities.EntityNotOwnedException;
 import code.exceptions.entities.ReservationOrActionAlreadyCommented;
@@ -589,6 +590,17 @@ public class FishingTripServiceImpl implements FishingTripService {
         if (fishingTripQuickReservation.getOwnerCommentary() != null) {
             throw new ReservationOrActionAlreadyCommented("Quick reservation already commented!");
         }
+    }
+
+    @Override
+    public List<FishingInstructorFishingTripTableGetDto> getFishingInstructorFishingTrips() {
+        List<FishingTrip> instructorFishingTrips = _fishingTripRepository.findByFishingInstructorId(getLoggedInFishingInstructor().getId());
+        List<FishingInstructorFishingTripTableGetDto> fishingInstructorFishingTripTableGetDtos = new ArrayList<>();
+        for (FishingTrip fishingTrip : instructorFishingTrips) {
+            fishingInstructorFishingTripTableGetDtos.add(new FishingInstructorFishingTripTableGetDto(fishingTrip.getId(), fishingTrip.getName(), fishingTrip.getMaxPeople(), fishingTrip.getCostPerDay(), fishingTrip.getLocation().getStreetName(), fishingTrip.getLocation().getCityName(), fishingTrip.getLocation().getCountryName()));
+        }
+
+        return fishingInstructorFishingTripTableGetDtos;
     }
 
     @Scheduled(cron="0 0 1 * * *")

@@ -1,5 +1,6 @@
 package code.service.impl;
 
+import code.dto.fishing_instructor.FishingInstructorProfileDataGetDto;
 import code.exceptions.entities.EntityNotFoundException;
 import code.exceptions.fishing_instructor.AddAvailablePeriodInPastException;
 import code.exceptions.fishing_instructor.AvailablePeriodOverlappingException;
@@ -139,5 +140,12 @@ public class FishingInstructorServiceImpl implements FishingInstructorService {
             throw new EntityNotFoundException("Fishing instructor doesn't exist!");
         }
         return fishingInstructor;
+    }
+
+    @Override
+    public FishingInstructorProfileDataGetDto getProfileData() {
+        FishingInstructor loggedInFishingInstructor = getLoggedInFishingInstructor();
+        FishingInstructorProfileDataGetDto fishingInstructorProfileDataGetDto = new FishingInstructorProfileDataGetDto(loggedInFishingInstructor.getFirstName(), loggedInFishingInstructor.getLastName(), loggedInFishingInstructor.getEmail(), loggedInFishingInstructor.getPhoneNumber(), loggedInFishingInstructor.getLocation().getStreetName(), loggedInFishingInstructor.getLocation().getCityName(), loggedInFishingInstructor.getLocation().getCountryName());
+        return fishingInstructorProfileDataGetDto;
     }
 }

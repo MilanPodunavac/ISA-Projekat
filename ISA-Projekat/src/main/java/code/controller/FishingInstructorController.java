@@ -6,6 +6,7 @@ import code.dto.admin.PersonalData;
 import code.dto.entities.boat.BoatGetDto;
 import code.dto.entities.cottage.CottageGetDto;
 import code.dto.fishing_instructor.FishingInstructorGetDto;
+import code.dto.fishing_instructor.FishingInstructorProfileDataGetDto;
 import code.dto.fishing_instructor.NewAvailablePeriod;
 import code.exceptions.admin.ChangedPasswordException;
 import code.exceptions.admin.ModifyAnotherUserDataException;
@@ -96,5 +97,11 @@ public class FishingInstructorController extends BaseController {
 
         _fishingInstructorService.changePassword(_mapper.map(dto, FishingInstructor.class));
         return ResponseEntity.ok("Password changed!");
+    }
+
+    @GetMapping(value = "/profileData")
+    @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
+    public ResponseEntity<FishingInstructorProfileDataGetDto> getProfileData() {
+        return ResponseEntity.ok(_fishingInstructorService.getProfileData());
     }
 }

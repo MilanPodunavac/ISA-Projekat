@@ -2,10 +2,7 @@ package code.controller;
 
 import code.controller.base.BaseController;
 import code.dto.entities.NewOwnerCommentaryDto;
-import code.dto.fishing_trip.EditFishingTrip;
-import code.dto.fishing_trip.NewFishingTrip;
-import code.dto.fishing_trip.NewQuickReservation;
-import code.dto.fishing_trip.NewReservation;
+import code.dto.fishing_trip.*;
 import code.exceptions.entities.EntityNotFoundException;
 import code.exceptions.entities.EntityNotOwnedException;
 import code.exceptions.entities.ReservationOrActionAlreadyCommented;
@@ -33,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/fishing-trip")
@@ -178,5 +176,11 @@ public class FishingTripController extends BaseController {
         } catch (EntityNotOwnedException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
+    }
+
+    @GetMapping(value = "/fishingInstructorFishingTrips")
+    @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
+    public ResponseEntity<List<FishingInstructorFishingTripTableGetDto>> getFishingInstructorFishingTrips() {
+        return ResponseEntity.ok(_fishingTripService.getFishingInstructorFishingTrips());
     }
 }

@@ -6,13 +6,13 @@ import { Observable } from 'rxjs';
  	providedIn: 'root'
 })
 export class UserService {
-  	private roleUrl: string;
+  	private apiUrl: string;
 
 	constructor(private http: HttpClient) {
-		this.roleUrl = 'http://localhost:8080/ISA/api/users/role';
+		this.apiUrl = 'http://localhost:8080/ISA/api/users';
 	}
 
 	public loggedInRole(): Observable<string> {
-		return this.http.get(this.roleUrl, { responseType: 'text'});
+		return this.http.get(this.apiUrl + '/role', { responseType: 'text'});
 	}
 }

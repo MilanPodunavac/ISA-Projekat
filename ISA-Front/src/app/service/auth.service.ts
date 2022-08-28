@@ -7,14 +7,14 @@ import { LoginUser } from '../model/login-user';
   providedIn: 'root'
 })
 export class AuthService {
-  private loginUrl: string;
+  private apiUrl: string;
 
   constructor(private http: HttpClient) {
-    this.loginUrl = 'http://localhost:8080/ISA/auth/login';
+    this.apiUrl = 'http://localhost:8080/ISA/auth';
   }
 
   public login(user: LoginUser): Observable<any> {
-    return this.http.post<any>(this.loginUrl, user);
+    return this.http.post<any>(this.apiUrl + '/login', user);
   }
 
   tokenIsPresent() {

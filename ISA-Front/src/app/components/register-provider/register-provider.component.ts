@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { RegisterProvider } from 'src/app/model/register-provider';
-import { FishingInstructorService } from 'src/app/service/fishing-instructor.service';
+import { RegistrationService } from 'src/app/service/registration.service';
 
 @Component({
     selector: 'app-register-provider',
@@ -12,7 +12,7 @@ export class RegisterProviderComponent implements OnInit {
     registrationForm: FormGroup;
     errorMessage: string;
 
-    constructor(formBuilder: FormBuilder, private fishingInstructorService: FishingInstructorService) {
+    constructor(formBuilder: FormBuilder, private registrationService: RegistrationService) {
         this.registrationForm = formBuilder.group({
             firstName: ['', [Validators.required]],
             lastName: ['', [Validators.required]],
@@ -47,7 +47,7 @@ export class RegisterProviderComponent implements OnInit {
         registrationRequest.reasonForRegistration = this.registrationForm.get('reasonForRegistration').value;
         registrationRequest.biography = this.registrationForm.get('biography').value;
 
-        this.fishingInstructorService.register(registrationRequest).subscribe({
+        this.registrationService.register(registrationRequest).subscribe({
             next: data => {
                 alert(data);
             },
