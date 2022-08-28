@@ -34,6 +34,8 @@ import { FishingInstructorComponent } from './components/fishing-instructor/fish
 import { CottageOwnerComponent } from './components/cottage-owner/cottage-owner.component';
 import { CottageOwnerCottageComponent } from './components/cottage-owner/cottage-owner-cottage/cottage-owner-cottage.component';
 import { HomePageComponent } from './home-page/home-page.component';
+import { CottageListComponent } from './cottage-list/cottage-list.component';
+import { BoatListComponent } from './boat-list/boat-list.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +47,8 @@ import { HomePageComponent } from './home-page/home-page.component';
     CottageOwnerComponent,
     CottageOwnerCottageComponent,
     HomePageComponent,
+    CottageListComponent,
+    BoatListComponent,
   ],
   imports: [
     BrowserModule,

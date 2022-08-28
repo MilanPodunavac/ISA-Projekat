@@ -11,6 +11,10 @@ export class CottageService {
 
   constructor(private _httpClient: HttpClient) { }
 
+  getAllCottages(): Observable<any[]>{
+    return this._httpClient.get<any[]>(this._APIUrl+`/cottage`);
+  }
+
   getCottage(id: number): Observable<any>{
     return this._httpClient.get<any[]>(this._APIUrl+`/cottage/${id}`);
   }
