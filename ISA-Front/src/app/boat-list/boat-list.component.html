@@ -1,1 +1,28 @@
-<p>boat-list works!</p>
+<div class="panel panel-primary m-1">
+    <div class="panel-heading m-3">
+        <h2>Boat list</h2>
+    </div>
+    <div class="form-control form-control-lg  m-1">
+        <input class="m-1" [(ngModel)]="SearchString" (keyup)="FilterFn()" placeholder="Filter">
+    </div>
+    <div *ngIf="boats?.length" class="table-responsive m-1">
+        <table class="table table-bordered table-striped table-hover" id="boatsTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Address</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor='let boat of boats' (dblclick)="doubleClickFunction(boat.id)">
+                    <td>{{boat.name}}</td>
+                    <td>{{boat.location.streetName}}, {{boat.location.cityName}}, {{boat.location.countryName}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="!boats?.length">
+        No boats registered
+    </div>
+
+</div>

@@ -1,5 +1,6 @@
 package code.dto.entities.boat;
 
+import code.model.Location;
 import code.model.boat.BoatOwner;
 import code.model.boat.BoatReservationTag;
 import code.model.boat.NavigationalEquipment;
@@ -18,35 +19,17 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BoatGetDto {
-    @NotBlank(message = "Id is required")
     private Integer id;
-    @NotBlank(message = "Name is required")
     private String name;
-    @NotBlank(message = "Description name is required")
     private String description;
-    @NotBlank(message = "Rules are required")
     private String rules;
-    private double longitude;
-    private double latitude;
-    @NotBlank(message = "Street Name is required")
-    private String streetName;
-    @NotBlank(message = "City Name is required")
-    private String cityName;
-    @NotBlank(message = "Country Name is required")
-    private String countryName;
-    @Min(value = 1, message = "Price per day must be greater than 0")
+    private Location location;
     private int pricePerDay;
-    @Min(value = 1, message = "Length must be greater than 0")
     private double length;
-    @NotBlank
     private String type;
-    @NotNull
     private int engineNumber;
-    @NotNull
     private int enginePower;
-    @NotNull
     private int maxSpeed;
-    @Min(value = 1, message = "Maximum number of people must be greater than 0")
     private int maxPeople;
     private NavigationalEquipment navigationalEquipment;
     private String fishingEquipment;

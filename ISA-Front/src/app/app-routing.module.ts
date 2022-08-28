@@ -7,6 +7,7 @@ import { CottageOwnerComponent } from './components/cottage-owner/cottage-owner.
 import { CottageOwnerCottageComponent } from './components/cottage-owner/cottage-owner-cottage/cottage-owner-cottage.component';
 import { HomePageComponent } from './home-page/home-page.component';
 import { CottageListComponent } from './cottage-list/cottage-list.component';
+import { BoatListComponent } from './boat-list/boat-list.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -15,7 +16,8 @@ const routes: Routes = [
   { path: 'fishing-instructor', component: FishingInstructorComponent },
   { path:'cottage-owner', component: CottageOwnerComponent },
   { path:'cottage-owner/cottage/:id', component: CottageOwnerCottageComponent },
-  { path:'cottages', component: CottageListComponent}
+  { path:'cottages', component: CottageListComponent},
+  { path:'boat', component: BoatListComponent}
 ];
 
 @NgModule({
