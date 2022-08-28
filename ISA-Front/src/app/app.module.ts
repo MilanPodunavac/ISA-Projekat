@@ -33,6 +33,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { FishingInstructorComponent } from './components/fishing-instructor/fishing-instructor.component';
 import { CottageOwnerComponent } from './components/cottage-owner/cottage-owner.component';
 import { CottageOwnerCottageComponent } from './components/cottage-owner/cottage-owner-cottage/cottage-owner-cottage.component';
+import { HomePageComponent } from './home-page/home-page.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { CottageOwnerCottageComponent } from './components/cottage-owner/cottage
     FishingInstructorComponent,
     CottageOwnerComponent,
     CottageOwnerCottageComponent,
+    HomePageComponent,
   ],
   imports: [
     BrowserModule,
@@ -66,7 +68,7 @@ import { CottageOwnerCottageComponent } from './components/cottage-owner/cottage
     MaterialModule,
     FormsModule,
     HttpClientModule,
-    ReactiveFormsModule,
+    ReactiveFormsModule
   ],
   providers: [
     {

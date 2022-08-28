@@ -5,8 +5,10 @@ import { LoginComponent } from './components/login/login.component';
 import { RegisterProviderComponent } from './components/register-provider/register-provider.component';
 import { CottageOwnerComponent } from './components/cottage-owner/cottage-owner.component';
 import { CottageOwnerCottageComponent } from './components/cottage-owner/cottage-owner-cottage/cottage-owner-cottage.component';
+import { HomePageComponent } from './home-page/home-page.component';
 
 const routes: Routes = [
+  { path: '', component: HomePageComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register-provider', component: RegisterProviderComponent },
   { path: 'fishing-instructor', component: FishingInstructorComponent },
