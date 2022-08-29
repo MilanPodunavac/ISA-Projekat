@@ -145,7 +145,7 @@ public class FishingInstructorServiceImpl implements FishingInstructorService {
     @Override
     public FishingInstructorProfileDataGetDto getProfileData() {
         FishingInstructor loggedInFishingInstructor = getLoggedInFishingInstructor();
-        FishingInstructorProfileDataGetDto fishingInstructorProfileDataGetDto = new FishingInstructorProfileDataGetDto(loggedInFishingInstructor.getFirstName(), loggedInFishingInstructor.getLastName(), loggedInFishingInstructor.getEmail(), loggedInFishingInstructor.getPhoneNumber(), loggedInFishingInstructor.getLocation().getStreetName(), loggedInFishingInstructor.getLocation().getCityName(), loggedInFishingInstructor.getLocation().getCountryName());
+        FishingInstructorProfileDataGetDto fishingInstructorProfileDataGetDto = new FishingInstructorProfileDataGetDto(loggedInFishingInstructor.getFirstName(), loggedInFishingInstructor.getLastName(), loggedInFishingInstructor.getEmail(), loggedInFishingInstructor.getPhoneNumber(), loggedInFishingInstructor.getLocation().getStreetName(), loggedInFishingInstructor.getLocation().getCityName(), loggedInFishingInstructor.getLocation().getCountryName(), loggedInFishingInstructor.getLoyaltyPoints(), loggedInFishingInstructor.getCategory().getCategory().toString());
         return fishingInstructorProfileDataGetDto;
     }
 }

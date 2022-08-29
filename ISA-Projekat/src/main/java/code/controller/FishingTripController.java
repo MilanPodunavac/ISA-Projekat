@@ -183,4 +183,16 @@ public class FishingTripController extends BaseController {
     public ResponseEntity<List<FishingInstructorFishingTripTableGetDto>> getFishingInstructorFishingTrips() {
         return ResponseEntity.ok(_fishingTripService.getFishingInstructorFishingTrips());
     }
+
+    @GetMapping(value = "/searchInstructorFishingTrips")
+    @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
+    public ResponseEntity<List<FishingInstructorFishingTripTableGetDto>> getSearchedFishingTrips(@RequestParam("searchText") String searchText) {
+        return ResponseEntity.ok(_fishingTripService.getSearchedFishingTrips(searchText));
+    }
+
+    @GetMapping(value = "/fishingInstructorReservations")
+    @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
+    public ResponseEntity<List<FishingInstructorReservationTableGetDto>> getFishingInstructorReservations() {
+        return ResponseEntity.ok(_fishingTripService.getFishingInstructorReservations());
+    }
 }
