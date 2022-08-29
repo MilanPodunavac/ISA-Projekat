@@ -85,6 +85,52 @@ export class CottageOwnerCottageComponent implements OnInit {
       latitude: this.cottage.latitude,
       reservationRefund: this.cottage.reservationRefund
     }
+    var errors = "";
+    var notValid = false;
+    if((isNaN(body.bedNumber)) || body.bedNumber <= 0){
+      errors += "Beds per room must be greater than 0!\n"
+      notValid = true;
+    }
+    if(body.cityName == ""){
+      errors += "City name is required!\n"
+      notValid = true;
+    }
+    if(body.countryName == ""){
+      errors += "Country name is required!\n"
+      notValid = true;
+    }
+    if(body.description == ""){
+      errors += "Description is required!\n"
+      notValid = true;
+    }
+    if(body.name == ""){
+      errors += "Name is required!\n"
+      notValid = true;
+    }
+    if(isNaN(Number(body.pricePerDay)) || body.pricePerDay <= 0){
+      errors += "Price per day must be greater than 0\n"
+      notValid = true;
+    }
+    if(isNaN(Number(body.reservationRefund)) || body.reservationRefund < 0 || body.reservationRefund > 50){
+      errors += "Reservation refund must be between 0 and 50\n"
+      notValid = true;
+    }
+    if(isNaN(Number(body.roomNumber)) || body.roomNumber <= 0){
+      errors += "Room number must be greater than 0\n"
+      notValid = true;
+    }
+    if(body.rules == ""){
+      errors += "Rules must not be empty\n"
+      notValid = true
+    }
+    if(body.streetName == ""){
+      errors += "Street name must not be empty\n"
+      notValid = true;
+    }
+    if(notValid){
+      alert(errors)
+      return;
+    }
     this._cottageService.updateCottage(id, this.cottage).subscribe({
       next: data => {
         if(data.status === 200){
@@ -128,6 +174,7 @@ export class CottageOwnerCottageComponent implements OnInit {
     this.UpdateServicesTable();
   }
   AddService(){
+    if(this.selectedNewService == undefined)return;
     let exists = false;
     for(let i=0;i<this.cottage.additionalServices.length;i++){
       if(this.selectedNewService === this.cottage.additionalServices[i])exists = true;

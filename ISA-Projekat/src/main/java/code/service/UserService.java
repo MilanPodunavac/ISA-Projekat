@@ -39,4 +39,5 @@ public interface UserService {
     void unlinkReferencesClient(Client client);
     void throwExceptionIfEnabledClientDoesntExist(Integer clientId) throws EnabledClientDoesntExistException;
     String getLoggedInUserRole();
+    List<Client> findAllClients();
 }

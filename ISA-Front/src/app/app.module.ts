@@ -33,6 +33,10 @@ import { HeaderComponent } from './components/header/header.component';
 import { FishingInstructorComponent } from './components/fishing-instructor/fishing-instructor.component';
 import { CottageOwnerComponent } from './components/cottage-owner/cottage-owner.component';
 import { CottageOwnerCottageComponent } from './components/cottage-owner/cottage-owner-cottage/cottage-owner-cottage.component';
+import { NewCottageComponent } from './components/cottage-owner/new-cottage/new-cottage.component';
+import { NewCottageAvailabilityPeriodComponent } from './components/cottage-owner/new-cottage-availability-period/new-cottage-availability-period.component';
+import { NewCottageActionComponent } from './components/cottage-owner/new-cottage-action/new-cottage-action.component';
+import { NewCottageReservationComponent } from './components/cottage-owner/new-cottage-reservation/new-cottage-reservation.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +47,10 @@ import { CottageOwnerCottageComponent } from './components/cottage-owner/cottage
     FishingInstructorComponent,
     CottageOwnerComponent,
     CottageOwnerCottageComponent,
+    NewCottageComponent,
+    NewCottageAvailabilityPeriodComponent,
+    NewCottageActionComponent,
+    NewCottageReservationComponent,
   ],
   imports: [
     BrowserModule,
