@@ -1,6 +1,7 @@
 package code.dto.entities.boat;
 
 import code.model.Location;
+import code.model.base.PictureBase64;
 import code.model.boat.BoatOwner;
 import code.model.boat.BoatReservationTag;
 import code.model.boat.NavigationalEquipment;
@@ -12,6 +13,7 @@ import lombok.Setter;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -35,4 +37,5 @@ public class BoatGetDto {
     private String fishingEquipment;
     private Set<BoatReservationTag> additionalServices;
     private BoatOwner boatOwner;
+    private List<PictureBase64> pictures;
 }

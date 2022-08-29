@@ -1,8 +1,6 @@
 package code.dto.fishing_instructor;
 
-import code.model.Client;
-import code.model.FishingInstructorAvailablePeriod;
-import code.model.FishingTrip;
+import code.model.*;
 import code.model.cottage.CottageReservationTag;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,6 +26,7 @@ public class FishingInstructorGetDto {
     private boolean enabled;
     private String reasonForRegistration;
     private String biography;
+    private Location location;
     private Set<FishingTrip> fishingTrips;
     private Set<FishingInstructorAvailablePeriod> fishingInstructorAvailablePeriods;
     private Set<Client> subscribers;
