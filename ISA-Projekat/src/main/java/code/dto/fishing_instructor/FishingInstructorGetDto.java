@@ -20,12 +20,10 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FishingInstructorGetDto {
-    @NotBlank(message = "Id is required")
     private Integer id;
     private String firstName;
     private String lastName;
     private String email;
-    private String password;
     private String phoneNumber;
     private boolean enabled;
     private String reasonForRegistration;

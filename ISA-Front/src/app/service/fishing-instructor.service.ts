@@ -10,11 +10,19 @@ import { RegisterProvider } from '../model/register-provider';
 export class FishingInstructorService {
     private apiUrl: string;
 
-    constructor(private http: HttpClient) {
-        this.apiUrl = 'http://localhost:8080/ISA/api/fishing-instructor';
+    constructor(private _httpClient: HttpClient) {
+        this.apiUrl = 'http://localhost:8080/ISA/api';
+    }
+
+    getAllFishingInstructors(): Observable<any[]>{
+        return this._httpClient.get<any[]>(this.apiUrl+`/fishing-instructor`);
+    }
+    
+    getFishingInstructor(id: number): Observable<any>{
+        return this._httpClient.get<any[]>(this.apiUrl+`/fishing-instructor/${id}`);
     }
 
     public getProfileData(): Observable<FishingInstructorProfileDataGet> {
-		return this.http.get<FishingInstructorProfileDataGet>(this.apiUrl + '/profileData');
+		return this._httpClient.get<FishingInstructorProfileDataGet>(this.apiUrl + '/fishing-instructor/profileData');
 	}
 }

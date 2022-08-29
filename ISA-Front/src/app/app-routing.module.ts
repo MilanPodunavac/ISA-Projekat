@@ -8,16 +8,18 @@ import { CottageOwnerCottageComponent } from './components/cottage-owner/cottage
 import { HomePageComponent } from './home-page/home-page.component';
 import { CottageListComponent } from './cottage-list/cottage-list.component';
 import { BoatListComponent } from './boat-list/boat-list.component';
+import { FishingInstructorListComponent } from './fishing-instructor-list/fishing-instructor-list.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register-provider', component: RegisterProviderComponent },
-  { path: 'fishing-instructor', component: FishingInstructorComponent },
-  { path:'cottage-owner', component: CottageOwnerComponent },
-  { path:'cottage-owner/cottage/:id', component: CottageOwnerCottageComponent },
-  { path:'cottages', component: CottageListComponent},
-  { path:'boat', component: BoatListComponent}
+  { path: 'fishing-instructor-profile', component: FishingInstructorComponent },
+  { path: 'cottage-owner', component: CottageOwnerComponent },
+  { path: 'cottage-owner/cottage/:id', component: CottageOwnerCottageComponent },
+  { path: 'cottages', component: CottageListComponent},
+  { path: 'boat', component: BoatListComponent},
+  { path: 'fishing-instructor', component: FishingInstructorListComponent },
 ];
 
 @NgModule({
