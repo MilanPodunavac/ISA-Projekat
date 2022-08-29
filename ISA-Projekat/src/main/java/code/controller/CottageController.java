@@ -25,12 +25,14 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.print.attribute.standard.Media;
 import javax.validation.Valid;
 import java.util.Calendar;
 import java.util.Date;
@@ -57,11 +59,12 @@ public class CottageController extends BaseController {
         return ResponseEntity.ok(_mapper.map(_cottageService.getAllCottages(), new TypeToken<List<CottageGetDto>>() {}.getType()));
     }
 
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> get(@PathVariable Integer id){
         try{
             Cottage cottage = _cottageService.getCottage(id);
             CottageGetDto cottageDto = _mapper.map(cottage, CottageGetDto.class);
+            cottageDto.setPictures(_cottageService.getCottageImagesAsBase64(cottage.getId()));
             return ResponseEntity.ok(cottageDto);
         }catch(Exception ex){
             if(ex instanceof EntityNotFoundException) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cottage not found");
@@ -196,7 +199,10 @@ public class CottageController extends BaseController {
 
     @PutMapping(value="/{id}")
     @PreAuthorize("hasRole('ROLE_COTTAGE_OWNER')")
-    public ResponseEntity<String> updateCottage(@PathVariable Integer id, @RequestBody CottageDto dto, @RequestHeader(HttpHeaders.AUTHORIZATION) String auth){
+    public ResponseEntity<String> updateCottage(@PathVariable Integer id, @Valid @RequestBody CottageDto dto, BindingResult result, @RequestHeader(HttpHeaders.AUTHORIZATION) String auth){
+        if(result.hasErrors()){
+            return formatErrorResponse(result);//400
+        }
         try{
             String email = _tokenUtils.getEmailFromToken(auth.substring(7));
             _cottageService.updateCottage(id, _mapper.map(dto, Cottage.class), email);

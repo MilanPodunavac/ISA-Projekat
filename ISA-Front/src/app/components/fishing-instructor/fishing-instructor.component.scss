@@ -14,3 +14,21 @@ h1 {
     padding: 15px 35px 15px 35px;
     text-align: center;
 }
+
+.mat-row .mat-cell {
+    cursor: pointer;
+}
+
+.demo-row-is-clicked {
+    background-color: lightgray;
+}
+
+table {
+    text-align: center;
+}
+
+.search-div {
+    padding: 30px;
+    text-align: center;
+    font-size: large;
+}

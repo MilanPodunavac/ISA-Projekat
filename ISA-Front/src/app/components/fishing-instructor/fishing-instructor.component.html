@@ -34,39 +34,55 @@
                 <div class="col-12">
                     <div class="card shadow-1-strong" style="border-radius: 1rem;">
                         <h1>Fishing trips</h1>
+                        <div class="search-div">
+                            <input style="margin-right: 20px;" type="text" placeholder="Name" />
+                            <button mat-raised-button color="primary">
+                                <mat-icon>search</mat-icon>
+                            </button>
+                        </div>
                         <table mat-table [dataSource]="dataSourceFishingTrips" class="mat-elevation-z8">
                             <ng-container matColumnDef="name">
-                            <th mat-header-cell *matHeaderCellDef> Name </th>
-                            <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                                <th class="text-center" mat-header-cell *matHeaderCellDef> Name </th>
+                                <td mat-cell *matCellDef="let element"> {{element.name}} </td>
                             </ng-container>
                         
                             <ng-container matColumnDef="max_people">
-                            <th mat-header-cell *matHeaderCellDef> Max people </th>
-                            <td mat-cell *matCellDef="let element"> {{element.maxPeople}} </td>
+                                <th class="text-center" mat-header-cell *matHeaderCellDef> Max people </th>
+                                <td mat-cell *matCellDef="let element"> {{element.maxPeople}} </td>
                             </ng-container>
                         
                             <ng-container matColumnDef="cost_per_day">
-                            <th mat-header-cell *matHeaderCellDef> Cost per day </th>
-                            <td mat-cell *matCellDef="let element"> {{element.costPerDay}} </td>
+                                <th class="text-center" mat-header-cell *matHeaderCellDef> Cost per day </th>
+                                <td mat-cell *matCellDef="let element"> {{element.costPerDay}} </td>
                             </ng-container>
                         
                             <ng-container matColumnDef="address">
-                            <th mat-header-cell *matHeaderCellDef> Address </th>
-                            <td mat-cell *matCellDef="let element"> {{element.address}} </td>
+                                <th class="text-center" mat-header-cell *matHeaderCellDef> Address </th>
+                                <td mat-cell *matCellDef="let element"> {{element.address}} </td>
                             </ng-container>
 
                             <ng-container matColumnDef="city">
-                            <th mat-header-cell *matHeaderCellDef> City </th>
-                            <td mat-cell *matCellDef="let element"> {{element.city}} </td>
+                                <th class="text-center" mat-header-cell *matHeaderCellDef> City </th>
+                                <td mat-cell *matCellDef="let element"> {{element.city}} </td>
                             </ng-container>
 
                             <ng-container matColumnDef="country">
-                            <th mat-header-cell *matHeaderCellDef> Country </th>
-                            <td mat-cell *matCellDef="let element"> {{element.country}} </td>
+                                <th class="text-center" mat-header-cell *matHeaderCellDef> Country </th>
+                                <td mat-cell *matCellDef="let element"> {{element.country}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="grade">
+                                <th class="text-center" mat-header-cell *matHeaderCellDef> Grade </th>
+                                <td mat-cell *matCellDef="let element"> - </td>
                             </ng-container>
                         
                             <tr mat-header-row *matHeaderRowDef="displayedColumnsFishingTrips"></tr>
-                            <tr mat-row *matRowDef="let row; columns: displayedColumnsFishingTrips;"></tr>
+                            <tr
+                                mat-row
+                                (click)="updateClickedRow(row)"
+                                [class.demo-row-is-clicked]="clickedRow.id === row.id"
+                                *matRowDef="let row; columns: displayedColumnsFishingTrips;"
+                            ></tr>
                         </table>
                     </div>
                 </div>

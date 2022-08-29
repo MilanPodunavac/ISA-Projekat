@@ -1,6 +1,7 @@
 package code.dto.entities.cottage;
 
 import code.model.Location;
+import code.model.base.PictureBase64;
 import code.model.cottage.CottageOwner;
 import code.model.cottage.CottageReservationTag;
 import lombok.AllArgsConstructor;
@@ -27,4 +28,5 @@ public class CottageGetDto {
     private int pricePerDay;
     private List<CottageReservationTag> additionalServices;
     private CottageOwner cottageOwner;
+    private List<PictureBase64> pictures;
 }

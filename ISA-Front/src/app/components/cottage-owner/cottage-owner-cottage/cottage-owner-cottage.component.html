@@ -13,15 +13,15 @@
     </div>
     <div class="form-group mb-3">
         <label class="form-label">Room number:</label>
-        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.roomNumber" id="name">
+        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.roomNumber" id="roomNumber">
     </div>
     <div class="form-group mb-3">
         <label class="form-label">Beds per room:</label>
-        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.bedNumber" id="name">
+        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.bedNumber" id="bedPerRoom">
     </div>
     <div class="form-group mb-3">
         <label class="form-label">Price per day:</label>
-        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.bedNumber" id="name">
+        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.pricePerDay" id="price">
     </div>
     <div *ngIf="cottage.additionalServices?.length" class="table-responsive m-1">
         <div class="panel-heading m-3">
@@ -55,23 +55,23 @@
     </div>
     <div class="form-group mb-3">
         <label class="form-label">Longitude:</label>
-        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.longitude" id="name">
+        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.longitude" id="long">
     </div>
     <div class="form-group mb-3">
         <label class="form-label">Latitude:</label>
-        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.latitude" id="name">
+        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.latitude" id="lat">
     </div>
     <div class="form-group mb-3">
         <label class="form-label">Street name and number:</label>
-        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.streetName" id="name">
+        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.streetName" id="street">
     </div>
     <div class="form-group mb-3">
         <label class="form-label">City:</label>
-        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.city" id="name">
+        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.cityName" id="city">
     </div>
     <div class="form-group mb-3">
         <label class="form-label">Country:</label>
-        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.country" id="name">
+        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.countryName" id="country">
     </div>
 </div>
 <div id="map" name="map" class="map" (click)="getCoord($event)"></div>
@@ -79,4 +79,31 @@
     <button (click)="UpdateCottage()" id="updateButton" class="btn btn-primary">
         <strong>Update cottage</strong>
     </button>
+</div>
+<div class="container mb-3">
+    <div *ngIf="cottage.pictures?.length" class="table-responsive m-1">
+        <div class="panel-heading m-3">
+            <h2>Pictures</h2>
+        </div>
+        <table class="table table-bordered table-striped table-hover" id="additionalServicesTable">
+            <tbody>
+                <tr *ngFor='let picture of cottage.pictures'>
+                    <td><img [src]="picture.data" class="text-center mb-3" style="max-width: 700px;max-height: 700px;" alt="..."></td>
+                    <td><button (click)="RemoveImage(picture.id)" id="removeImageBtn" class="btn btn-primary"><strong>Remove</strong></button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <img [src]="imageSrc" class="text-center mb-3" style="height: 200px; width:200px" alt="...">
+    </div>
+    <div class="media-body ml-4">
+        <label class="form-label">Add picture</label>
+        <input type="file" (change)="onFileChange($event)" class="form-control">
+    </div>
+    <div *ngIf="imageFile" class="container mb-3">
+        <button (click)="AddPicture()" id="addPictureButton" class="btn btn-primary">
+            <strong>Add picture</strong>
+        </button>
+    </div>
 </div>
