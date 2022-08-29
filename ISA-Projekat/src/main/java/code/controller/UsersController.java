@@ -11,6 +11,7 @@ import code.exceptions.entities.EntityNotDeletableException;
 import code.exceptions.entities.LoggedInUserAlreadySubmittedAccountDeletionRequestException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.AccountDeletionRequest;
+import code.model.Client;
 import code.model.cottage.CottageOwner;
 import code.model.User;
 import code.service.UserService;
@@ -25,6 +26,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @RestController
@@ -130,5 +133,19 @@ public class UsersController extends BaseController {
     @PreAuthorize("hasAnyRole('CLIENT','FISHING_INSTRUCTOR','COTTAGE_OWNER','BOAT_OWNER', 'ADMIN')")
     public ResponseEntity<String> getLoggedInUserRole(){
         return ResponseEntity.ok(_userService.getLoggedInUserRole());
+    }
+
+    @GetMapping("/client/fullNameAndEmail")
+    public ResponseEntity<Object> getAllClientNamesAndEmails(){
+        try{
+            List<String> retVal = new ArrayList<>();
+            List<Client> clients = _userService.findAllClients();
+            for(Client client : clients){
+                retVal.add(client.getFirstName() + " " + client.getLastName() + ", " + client.getEmail());
+            }
+            return ResponseEntity.ok(retVal);
+        }catch (Exception ex){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Oops, something went wrong");
+        }
     }
 }

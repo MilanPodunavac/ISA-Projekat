@@ -29,6 +29,7 @@ public class CottageGetDto {
     private int roomNumber;
     private int bedNumber;
     private int pricePerDay;
+    private double reservationRefund;
     private List<CottageReservationTag> additionalServices;
     private CottageOwner cottageOwner;
     private List<PictureBase64> pictures;

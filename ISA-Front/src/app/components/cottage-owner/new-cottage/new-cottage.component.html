@@ -1,0 +1,91 @@
+<div class="panel panel-primary">
+    <div class="panel-heading m-3">
+        <h2>New cottage</h2>
+    </div>
+</div>
+<div class="container mb-3">
+    <div class="form-group mb-3">
+        <label for="name" class="form-label">Name:</label>
+        <input type="text" class="form-control" id="name" placeholder="Cottage name" [(ngModel)]="name" required>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Description:</label>
+        <textarea type="text" class="form-control" id="description" placeholder="Cottage description" [(ngModel)]="description" rows="5" required></textarea>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Rules:</label>
+        <textarea type="text" class="form-control" id="description" placeholder="Cottage rules" [(ngModel)]="rules" rows="5" required></textarea>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Room number:</label>
+        <input type="text" class="form-control mb-1" id="roomNumber" [(ngModel)]="roomNumber" placeholder="3" required>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Beds per room:</label>
+        <input type="text" class="form-control mb-1" id="bedPerRoom" [(ngModel)]="bedPerRoom" placeholder="2" required>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Price per day:</label>
+        <input type="text" class="form-control mb-1" id="price" [(ngModel)]="pricePerDay" placeholder="100" required>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Reservation refund:</label>
+        <input type="text" class="form-control mb-1" id="reservationRef" [(ngModel)]="reservationRefund" placeholder="0" required>
+    </div>
+    <div *ngIf="newCottageServices?.length" class="table-responsive m-1">
+        <div class="panel-heading m-3">
+            <h2>Additional Services List</h2>
+        </div>
+        <table class="table table-bordered table-striped table-hover" id="additionalServicesTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor='let service of additionalServicesTableMap'>
+                    <td>{{service}}</td>
+                    <td><button (click)="RemoveService(service)" id="removeServiceBtn" class="btn btn-primary"><strong>remove</strong></button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="form-group mb-3">
+        <label>Add additional service</label>
+        <mat-form-field appearance="fill" class="form-control mb-2">
+            <mat-select [(value)] = "selectedNewService">
+              <mat-option *ngFor="let service of additionalServices" [value]="service.value">
+                {{service.viewValue}}
+              </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <button (click)="AddService()" class="btn btn-primary">Add</button>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Longitude:</label>
+        <input type="text" class="form-control mb-1" [(ngModel)]="longitude" id="long" required>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Latitude:</label>
+        <input type="text" class="form-control mb-1" [(ngModel)]="latitude" id="lat" required>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Street name and number:</label>
+        <input type="text" class="form-control mb-1" [(ngModel)]="streetName" id="street" required>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">City:</label>
+        <input type="text" class="form-control mb-1" [(ngModel)]="cityName" id="city" required>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Country:</label>
+        <input type="text" class="form-control mb-1" [(ngModel)]="countryName" id="country" required>
+    </div>
+</div>
+<div id="map" name="map" class="map" (click)="getCoord($event)"></div>
+<div class="container mb-3">
+    <button (click)="submit()"  class="btn btn-primary" id="submitButton">
+          <strong>Submit</strong>
+    </button>
+</div>

@@ -475,7 +475,7 @@ public class UserServiceImpl implements UserService {
         for(Boat boat : copy)if(boat.hasFutureReservationsOrActions())throw new EntityNotDeletableException("Boat cannot be deleted, it has reservations or actions in the future");
         for(Boat boat : copy){
             for(Picture pic : boat.getPictures()){
-                FileUploadUtil.deleteFile(COTTAGE_PICTURE_DIRECTORY, boat.getId() + "_" + pic.getName());
+                FileUploadUtil.deleteFile(BOAT_PICTURE_DIRECTORY, boat.getId() + "_" + pic.getName());
             }
             _boatRepository.delete(boat);
         }
@@ -537,5 +537,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public String getLoggedInUserRole() {
         return getLoggedInUser().getRole().getName();
+    }
+
+    @Override
+    public List<Client> findAllClients() {
+        return new ArrayList<>(_clientRepository.findAll());
     }
 }
