@@ -10,13 +10,15 @@
             <thead>
                 <tr>
                     <th>Name</th>
-                    <th>Address</th>
+                    <th>eMail</th>
+                    <th>Phone number</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor='let fishingInstructor of fishingInstructors' (dblclick)="doubleClickFunction(fishingInstructor.id)">
                     <td>{{fishingInstructor.firstName}} {{fishingInstructor.lastName}}</td>
                     <td>{{fishingInstructor.email}}</td>
+                    <td>{{fishingInstructor.phoneNumber}}</td>
                 </tr>
             </tbody>
         </table>

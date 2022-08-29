@@ -11,12 +11,22 @@
                 <tr>
                     <th>Name</th>
                     <th>Address</th>
+                    <th>Max people</th>
+                    <th>Price per day</th>
+                    <th>Type</th>
+                    <th>Owner</th>
+                    <th>Additional services</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor='let boat of boats' (dblclick)="doubleClickFunction(boat.id)">
                     <td>{{boat.name}}</td>
                     <td>{{boat.location.streetName}}, {{boat.location.cityName}}, {{boat.location.countryName}}</td>
+                    <td>{{boat.maxPeople}}</td>
+                    <td>{{boat.pricePerDay}}</td>
+                    <td>{{boat.type}}</td>
+                    <td>{{boat.boatOwner.firstName}} {{boat.boatOwner.lastName}}</td>
+                    <td>{{boat.additionalServices}}</td>
                 </tr>
             </tbody>
         </table>
