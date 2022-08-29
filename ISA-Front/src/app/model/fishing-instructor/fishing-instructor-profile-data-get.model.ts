@@ -6,4 +6,6 @@ export class FishingInstructorProfileDataGet {
     phoneNumber: string;
     city: string;
     country: string;
+    loyaltyPoints: number;
+    category: string;
 }

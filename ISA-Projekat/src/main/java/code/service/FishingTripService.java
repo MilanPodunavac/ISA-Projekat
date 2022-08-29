@@ -1,6 +1,7 @@
 package code.service;
 
 import code.dto.fishing_trip.FishingInstructorFishingTripTableGetDto;
+import code.dto.fishing_trip.FishingInstructorReservationTableGetDto;
 import code.exceptions.entities.EntityNotFoundException;
 import code.exceptions.entities.EntityNotOwnedException;
 import code.exceptions.entities.ReservationOrActionAlreadyCommented;
@@ -29,4 +30,6 @@ public interface FishingTripService {
     void addReservationCommentary(Integer reservationId, OwnerCommentary ownerCommentary) throws EntityNotFoundException, EntityNotOwnedException, ReservationOrActionAlreadyCommented, ReservationOrActionNotFinishedException;
     void addQuickReservationCommentary(Integer quickReservationId, OwnerCommentary ownerCommentary) throws EntityNotFoundException, EntityNotOwnedException, ReservationOrActionNotFinishedException, ReservationOrActionAlreadyCommented;
     List<FishingInstructorFishingTripTableGetDto> getFishingInstructorFishingTrips();
+    List<FishingInstructorFishingTripTableGetDto>  getSearchedFishingTrips(String searchText);
+    List<FishingInstructorReservationTableGetDto> getFishingInstructorReservations();
 }

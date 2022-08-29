@@ -13,6 +13,14 @@
                             <p>City:&ensp;{{fishingInstructorProfileData.city}}</p>
                             <p>Country:&ensp;{{fishingInstructorProfileData.country}}</p>
                             <p>Phone number:&ensp;{{fishingInstructorProfileData.phoneNumber}}</p>
+                            <p>Loyalty points:&ensp;{{fishingInstructorProfileData.loyaltyPoints}}</p>
+                            <p>Category:&ensp;{{fishingInstructorProfileData.category}}</p>
+                        </div>
+                        <div class="profile-buttons">
+                            <button mat-raised-button color="primary">Add availability period</button>
+                        </div>
+                        <div class="profile-buttons">
+                            <button mat-raised-button color="primary">Generate business report</button>
                         </div>
                         <div class="profile-buttons">
                             <button mat-raised-button color="primary">Change personal data</button>
@@ -35,12 +43,12 @@
                     <div class="card shadow-1-strong" style="border-radius: 1rem;">
                         <h1>Fishing trips</h1>
                         <div class="search-div">
-                            <input style="margin-right: 20px;" type="text" placeholder="Name" />
-                            <button mat-raised-button color="primary">
+                            <input style="margin-right: 20px;" type="text" placeholder="Name" [(ngModel)]="searchText" />
+                            <button mat-raised-button color="primary" (click)="searchFishingTrips()">
                                 <mat-icon>search</mat-icon>
                             </button>
                         </div>
-                        <table mat-table [dataSource]="dataSourceFishingTrips" class="mat-elevation-z8">
+                        <table mat-table [dataSource]="dataSourceFishingTrips" class="mat-elevation-z4">
                             <ng-container matColumnDef="name">
                                 <th class="text-center" mat-header-cell *matHeaderCellDef> Name </th>
                                 <td mat-cell *matCellDef="let element"> {{element.name}} </td>
@@ -70,20 +78,89 @@
                                 <th class="text-center" mat-header-cell *matHeaderCellDef> Country </th>
                                 <td mat-cell *matCellDef="let element"> {{element.country}} </td>
                             </ng-container>
-
-                            <ng-container matColumnDef="grade">
-                                <th class="text-center" mat-header-cell *matHeaderCellDef> Grade </th>
-                                <td mat-cell *matCellDef="let element"> - </td>
-                            </ng-container>
                         
                             <tr mat-header-row *matHeaderRowDef="displayedColumnsFishingTrips"></tr>
                             <tr
                                 mat-row
-                                (click)="updateClickedRow(row)"
-                                [class.demo-row-is-clicked]="clickedRow.id === row.id"
+                                (click)="updateClickedRowFishingTrips(row)"
+                                [class.demo-row-is-clicked]="clickedRowFishingTrips.id === row.id"
                                 *matRowDef="let row; columns: displayedColumnsFishingTrips;"
                             ></tr>
                         </table>
+                        <div class="fishing-trip-buttons">
+                            <button style="margin-right: 20px;" mat-raised-button color="primary">Add fishing trip</button>
+                            <button style="margin-right: 20px;" mat-raised-button color="primary" [disabled]="clickedRowFishingTrips.id === undefined">Edit fishing trip info</button>
+                            <button mat-raised-button color="primary" [disabled]="clickedRowFishingTrips.id === undefined">Delete fishing trip</button>
+                        </div>
+                        <div class="fishing-trip-buttons">
+                            <button mat-raised-button color="primary" [disabled]="clickedRowFishingTrips.id === undefined">Edit fishing trip pictures</button>
+                        </div>
+                        <div class="fishing-trip-buttons">
+                            <button style="margin-right: 20px;" mat-raised-button color="primary" [disabled]="clickedRowFishingTrips.id === undefined">Add reservation</button>
+                            <button mat-raised-button color="primary" [disabled]="clickedRowFishingTrips.id === undefined">Add action</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top: 50px;" class="container">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-12">
+                    <div class="card shadow-1-strong" style="border-radius: 1rem;">
+                        <h1 style="padding: 30px;">Reservations</h1>
+                        <table mat-table [dataSource]="dataSourceReservations" class="mat-elevation-z4">
+                            <ng-container matColumnDef="start">
+                                <th class="text-center" mat-header-cell *matHeaderCellDef> Start </th>
+                                <td mat-cell *matCellDef="let element"> {{element.start | date:'dd.MM.yyyy.'}} </td>
+                            </ng-container>
+                        
+                            <ng-container matColumnDef="end">
+                                <th class="text-center" mat-header-cell *matHeaderCellDef> End </th>
+                                <td mat-cell *matCellDef="let element"> {{element.end | date:'dd.MM.yyyy.'}} </td>
+                            </ng-container>
+                        
+                            <ng-container matColumnDef="number_of_people">
+                                <th class="text-center" mat-header-cell *matHeaderCellDef> Number of people </th>
+                                <td mat-cell *matCellDef="let element"> {{element.numberOfPeople}} </td>
+                            </ng-container>
+                        
+                            <ng-container matColumnDef="price">
+                                <th class="text-center" mat-header-cell *matHeaderCellDef> Price </th>
+                                <td mat-cell *matCellDef="let element"> {{element.price}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="system_tax">
+                                <th class="text-center" mat-header-cell *matHeaderCellDef> System tax </th>
+                                <td mat-cell *matCellDef="let element"> {{element.systemTax}}% </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="reservation_tags">
+                                <th class="text-center" mat-header-cell *matHeaderCellDef> Reservation tags </th>
+                                <td mat-cell *matCellDef="let element"> {{element.reservationTags.join()}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="fishing_trip">
+                                <th class="text-center" mat-header-cell *matHeaderCellDef> Fishing trip </th>
+                                <td mat-cell *matCellDef="let element"> {{element.fishingTripName}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="client">
+                                <th class="text-center" mat-header-cell *matHeaderCellDef> Client </th>
+                                <td mat-cell *matCellDef="let element"> {{element.clientFirstName}} {{element.clientLastName}} </td>
+                            </ng-container>
+                        
+                            <tr mat-header-row *matHeaderRowDef="displayedColumnsReservations"></tr>
+                            <tr
+                                mat-row
+                                (click)="updateClickedRowReservations(row)"
+                                [class.demo-row-is-clicked]="clickedRowReservations.id === row.id"
+                                *matRowDef="let row; columns: displayedColumnsReservations;"
+                            ></tr>
+                        </table>
+                        <div class="fishing-trip-buttons">
+                            <button style="margin-right: 20px;" mat-raised-button color="primary" [disabled]="clickedRowReservations.id === undefined">Add reservation report</button>
+                            <button mat-raised-button color="primary" [disabled]="clickedRowReservations.id === undefined">Go to client profile</button>
+                        </div>
                     </div>
                 </div>
             </div>

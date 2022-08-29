@@ -17,4 +17,6 @@ public class FishingInstructorProfileDataGetDto {
     private String address;
     private String city;
     private String country;
+    private double loyaltyPoints;
+    private String category;
 }

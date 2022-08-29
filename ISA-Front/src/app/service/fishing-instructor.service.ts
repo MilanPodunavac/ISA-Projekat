@@ -1,8 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { FishingInstructorProfileDataGet } from '../model/fishing-instructor-profile-data-get.model';
-import { RegisterProvider } from '../model/register-provider';
+import { FishingInstructorProfileDataGet } from '../model/fishing-instructor/fishing-instructor-profile-data-get.model';
 
 @Injectable({
     providedIn: 'root'
