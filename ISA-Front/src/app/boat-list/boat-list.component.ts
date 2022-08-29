@@ -44,8 +44,9 @@ export class BoatListComponent implements OnInit {
     this.boats = [];
     for(var i = 0; i < this.unfilteredBoats.length; i++){
         if(this.unfilteredBoats[i].name.toLowerCase().includes(searchString) ||
-        (this.unfilteredBoats[i].streetName + " " + this.unfilteredBoats[i].streetNumber + " " + 
-        this.unfilteredBoats[i].city.name + " " + this.unfilteredBoats[i].city.country.name).toLowerCase().includes(searchString)){
+            (this.unfilteredBoats[i].streetName + " " + this.unfilteredBoats[i].streetNumber + " " + this.unfilteredBoats[i].city.name + " " + this.unfilteredBoats[i].city.country.name).toLowerCase().includes(searchString) ||
+            this.unfilteredBoats[i].type.toLowerCase().includes(searchString) ||
+            this.unfilteredBoats[i].additionalServices.toLowerCase().includes(searchString)){
           this.boats.push(this.unfilteredBoats[i]);
         }
     }

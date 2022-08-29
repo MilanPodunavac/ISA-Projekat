@@ -43,9 +43,8 @@ export class FishingInstructorListComponent implements OnInit {
 
     this.fishingInstructors = [];
     for(var i = 0; i < this.unfilteredFishingInstructors.length; i++){
-        if(this.unfilteredFishingInstructors[i].name.toLowerCase().includes(searchString) ||
-        (this.unfilteredFishingInstructors[i].streetName + " " + this.unfilteredFishingInstructors[i].streetNumber + " " + 
-        this.unfilteredFishingInstructors[i].city.name + " " + this.unfilteredFishingInstructors[i].city.country.name).toLowerCase().includes(searchString)){
+        if((this.unfilteredFishingInstructors[i].firstName + " " + this.unfilteredFishingInstructors[i].lastName).toLowerCase().includes(searchString) ||
+            this.unfilteredFishingInstructors[i].email.toLowerCase().includes(searchString)){
           this.fishingInstructors.push(this.unfilteredFishingInstructors[i]);
         }
     }
