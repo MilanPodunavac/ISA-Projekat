@@ -17,6 +17,9 @@
                             <p>Owner's name:&ensp;{{cottage.cottageOwner.firstName}} {{cottage.cottageOwner.lastName}}</p>
                             <p>Owner's eMail:&ensp;{{cottage.cottageOwner.email}}</p>
                             <p>Owner's phone number:&ensp;{{cottage.cottageOwner.phoneNumber}}</p>
+                            <button *ngIf="role==='ROLE_COTTAGE_OWNER'" id="updateButton" class="btn btn-primary">
+                                <strong>Update cottage</strong>
+                            </button>
                         </div>
                     </div>
                 </div>

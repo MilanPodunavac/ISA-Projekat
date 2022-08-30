@@ -12,7 +12,7 @@ export class CottageService {
   constructor(private _httpClient: HttpClient) { }
 
   getAllCottages(): Observable<any[]>{
-    return this._httpClient.get<any[]>(this._APIUrl+`/cottage`);
+    return this._httpClient.get<any[]>(this._APIUrl+``);
   }
 
   getCottage(id: number): Observable<any>{
@@ -22,7 +22,7 @@ export class CottageService {
     return this._httpClient.put<any>(this._APIUrl+`/${id}`, val);
   }
   removeImage(cottageId: number, picId: number): Observable<any>{
-    return this._httpClient.delete<any>(this._APIUrl+`/cottage/${cottageId}/picture/${picId}`);
+    return this._httpClient.delete<any>(this._APIUrl+`/${cottageId}/picture/${picId}`);
   }
   addImage(cottageId: number, pic: any){
     const formData = new FormData();

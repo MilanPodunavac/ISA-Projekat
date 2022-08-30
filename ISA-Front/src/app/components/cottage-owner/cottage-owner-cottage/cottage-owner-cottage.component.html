@@ -59,23 +59,23 @@
     </div>
     <div class="form-group mb-3">
         <label class="form-label">Longitude:</label>
-        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.longitude" id="long">
+        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.location.longitude" id="long">
     </div>
     <div class="form-group mb-3">
         <label class="form-label">Latitude:</label>
-        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.latitude" id="lat">
+        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.location.latitude" id="lat">
     </div>
     <div class="form-group mb-3">
         <label class="form-label">Street name and number:</label>
-        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.streetName" id="street">
+        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.location.streetName" id="street">
     </div>
     <div class="form-group mb-3">
         <label class="form-label">City:</label>
-        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.cityName" id="city">
+        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.location.cityName" id="city">
     </div>
     <div class="form-group mb-3">
         <label class="form-label">Country:</label>
-        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.countryName" id="country">
+        <input type="text" class="form-control mb-1" [(ngModel)]="cottage.location.countryName" id="country">
     </div>
 </div>
 <div id="map" name="map" class="map" (click)="getCoord($event)"></div>

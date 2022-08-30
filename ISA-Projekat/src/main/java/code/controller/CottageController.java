@@ -35,6 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.print.attribute.standard.Media;
 import javax.validation.Valid;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -56,7 +57,9 @@ public class CottageController extends BaseController {
 
     @GetMapping()
     public ResponseEntity<List<Object>> get(){
-        return ResponseEntity.ok(_mapper.map(_cottageService.getAllCottages(), new TypeToken<List<CottageGetDto>>() {}.getType()));
+        List<Cottage> cottages = _cottageService.getAllCottages();
+        cottages.sort(Comparator.comparing(Cottage::getId));
+        return ResponseEntity.ok(_mapper.map(cottages, new TypeToken<List<CottageGetDto>>() {}.getType()));
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

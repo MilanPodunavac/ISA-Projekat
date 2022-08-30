@@ -43,7 +43,7 @@ export class LoginComponent implements OnInit {
                         });;
                     }
                     if (data === "ROLE_COTTAGE_OWNER") {
-                        this.router.navigate(['cottage-owner']).then(() => {
+                        this.router.navigate(['']).then(() => {
                             window.location.reload();
                         });;
                     }
