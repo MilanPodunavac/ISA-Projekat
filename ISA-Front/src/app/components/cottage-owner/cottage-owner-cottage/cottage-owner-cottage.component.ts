@@ -49,7 +49,7 @@ export class CottageOwnerCottageComponent implements OnInit {
           ],
           target: 'map',
           view: new View({
-            center: olProj.fromLonLat([this.cottage.longitude, this.cottage.latitude]),
+            center: olProj.fromLonLat([this.cottage.location.longitude, this.cottage.location.latitude]),
             zoom: 17, maxZoom: 20,
           }),
         });
@@ -74,15 +74,15 @@ export class CottageOwnerCottageComponent implements OnInit {
       additionalServices: this.cottage.additionalServices,
       bedNumber: this.cottage.bedNumber,
       roomNumber: this.cottage.roomNumber,
-      cityName: this.cottage.cityName,
-      countryName: this.cottage.countryName,
+      cityName: this.cottage.location.cityName,
+      countryName: this.cottage.location.countryName,
       description: this.cottage.description,
       rules: this.cottage.rules,
-      streetName: this.cottage.streetName,
+      streetName: this.cottage.location.streetName,
       name: this.cottage.name,
       pricePerDay: this.cottage.pricePerDay,
-      longitude: this.cottage.longitude,
-      latitude: this.cottage.latitude,
+      longitude: this.cottage.location.longitude,
+      latitude: this.cottage.location.latitude,
       reservationRefund: this.cottage.reservationRefund
     }
     var errors = "";
@@ -131,12 +131,12 @@ export class CottageOwnerCottageComponent implements OnInit {
       alert(errors)
       return;
     }
-    this._cottageService.updateCottage(id, this.cottage).subscribe({
+    this._cottageService.updateCottage(id, body).subscribe({
       next: data => {
         if(data.status === 200){
           alert("Cottage updated")
         }
-        this.router.navigate(['cottage-owner']).then(() => {
+        this.router.navigate(['/cottage/', id]).then(() => {
           window.location.reload();
         });
       },
@@ -144,7 +144,7 @@ export class CottageOwnerCottageComponent implements OnInit {
         console.log(data)
         if(data.status === 200){
           alert(data.error.text)
-          this.router.navigate(['cottage-owner']).then(() => {
+          this.router.navigate(['/cottage/', id]).then(() => {
             window.location.reload();
           });
         }
@@ -203,11 +203,11 @@ export class CottageOwnerCottageComponent implements OnInit {
         return response.json();
     }).then(json => {
         console.log(this.cottage)
-        this.cottage.longitude = json.lon
-        this.cottage.latitude = json.lat
-        this.cottage.streetName = json.address.road + " " + json.address.house_number
-        this.cottage.cityName = json.address.city;
-        this.cottage.countryName = json.address.country;
+        this.cottage.location.longitude = json.lon
+        this.cottage.location.latitude = json.lat
+        this.cottage.location.streetName = json.address.road + " " + json.address.house_number
+        this.cottage.location.cityName = json.address.city;
+        this.cottage.location.countryName = json.address.country;
     });
   }
 
