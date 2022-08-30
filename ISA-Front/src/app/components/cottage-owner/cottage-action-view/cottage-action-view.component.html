@@ -1,0 +1,48 @@
+<div class="container mb-3">
+    <div class="form-group mb-3">
+        <label class="form-label">Start date:</label>
+        <p type="text" class="form-control mb-1">{{action.startDate}}</p>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">End date:</label>
+        <p type="text" class="form-control mb-1">{{action.endDate}}</p>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Valid until and including:</label>
+        <p type="text" class="form-control mb-1">{{action.validUntilAndIncluding}}</p>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Client name:</label>
+        <p type="text" class="form-control mb-1" *ngIf="action.clientFullName"><a [routerLink]="['../../../']">{{action.clientFullName}}</a></p><!--izmeniti-->
+        <p type="text" class="form-control mb-1" *ngIf="!action.clientFullName">No client</p>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Reserved?:</label>
+        <p type="text" class="form-control mb-1">{{action.reserved}}</p>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Number of people:</label>
+        <p type="text" class="form-control mb-1">{{action.numberOfPeople}}</p>
+    </div>
+    <div class="form-group mb-3" *ngIf="action.additionalServices?.length">
+        <label class="form-label">Additional services:</label>
+        <p type="text" class="form-control mb-1">{{action.additionalServices}}</p>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Price:</label>
+        <p type="text" class="form-control mb-1">{{action.price}}</p>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Discount:</label>
+        <p type="text" class="form-control mb-1">{{action.discount}}%</p>
+    </div>
+    <div *ngIf="action.commentary" class="form-group mb-3">
+        <label class="form-label">Commentary:</label>
+        <p type="text" class="form-control mb-1">{{action.commentary}}</p>
+    </div>
+    <div *ngIf="action.ownerCommentable" class="form-group mb-3">
+        <button (click)="routeToOwnerCommentary()"  class="btn btn-primary" id="submitButton">
+            <strong>Add commentary</strong>
+        </button>
+    </div>
+</div>

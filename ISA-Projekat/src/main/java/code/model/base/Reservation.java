@@ -53,4 +53,7 @@ public abstract class Reservation {
    @Column
    protected boolean loyaltyPointsGiven;
 
+   public boolean checkIfReservationCommentable(){
+      return dateRange.DateRangeInPast() && ownerCommentary == null && reservationStatus != ReservationStatus.cancelled;
+   }
 }

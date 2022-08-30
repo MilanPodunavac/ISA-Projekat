@@ -1,12 +1,14 @@
 package code.controller;
 
 import code.controller.base.BaseController;
+import code.dto.entities.cottage.CottageGetDto;
 import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.cottage.Cottage;
 import code.service.CottageOwnerService;
 import code.utils.TokenUtils;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -39,6 +41,6 @@ public class CottageOwnerController extends BaseController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Oops, something went wrong, try again");
         }
         ownerCottages.sort(Comparator.comparing(Cottage::getId));
-        return ResponseEntity.ok(ownerCottages);
+        return ResponseEntity.ok(_mapper.map(ownerCottages, new TypeToken<List<CottageGetDto>>() {}.getType()));
     }
 }

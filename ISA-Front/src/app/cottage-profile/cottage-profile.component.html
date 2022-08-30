@@ -17,7 +17,7 @@
                             <p>Owner's name:&ensp;{{cottage.cottageOwner.firstName}} {{cottage.cottageOwner.lastName}}</p>
                             <p>Owner's eMail:&ensp;{{cottage.cottageOwner.email}}</p>
                             <p>Owner's phone number:&ensp;{{cottage.cottageOwner.phoneNumber}}</p>
-                            <button *ngIf="role==='ROLE_COTTAGE_OWNER'" id="updateButton" class="btn btn-primary">
+                            <button *ngIf="role==='ROLE_COTTAGE_OWNER'" id="updateButton" class="btn btn-primary" (click)="updateCottage()">
                                 <strong>Update cottage</strong>
                             </button>
                         </div>
@@ -40,5 +40,107 @@
             </table>
         </div>
         <h3 *ngIf="!cottage.pictures?.length">No pictures recorded</h3>
+    </div>
+    <div class="container mb-3" >
+        <div *ngIf="cottage.availabilityPeriods?.length" class="table-responsive m-1">
+            <div class="panel-heading m-3">
+                <h2>Availability periods</h2>
+            </div>
+            <table class="table table-bordered table-striped table-hover" id="picturesTable">
+                <thead>
+                    <tr>
+                        <th>Start</th>
+                        <th>End</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor='let period of cottage.availabilityPeriods'>
+                        <td>{{period.startDate}}</td>
+                        <td>{{period.endDate}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <h3 *ngIf="!cottage.availabilityPeriods?.length">
+            This cottage has no availability periods
+        </h3>
+        <button *ngIf="role==='ROLE_COTTAGE_OWNER'" id="updateButton" class="btn btn-primary" (click)="addAvailabiltiyPeriod()">
+            <strong>Add new availability period</strong>
+        </button>
+    </div>
+    <div class="container mb-3" >
+        <div *ngIf="cottage.cottageReservations?.length" class="table-responsive m-1">
+            <div class="panel-heading m-3">
+                <h2>Reservations</h2>
+            </div>
+            <table class="table table-bordered table-striped table-hover" id="picturesTable">
+                <thead>
+                    <tr>
+                        <th>Start</th>
+                        <th>End</th>
+                        <th *ngIf="role==='ROLE_COTTAGE_OWNER'">Client name</th>
+                        <th *ngIf="role==='ROLE_COTTAGE_OWNER'">Number of people</th>
+                        <th *ngIf="role==='ROLE_COTTAGE_OWNER'">Additional services</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor='let res of cottage.cottageReservations' (dblclick)="doubleClickResFunction(res.id)">
+                        <td>{{res.startDate}}</td>
+                        <td>{{res.endDate}}</td>
+                        <td *ngIf="role==='ROLE_COTTAGE_OWNER'"><a [routerLink]="['../../cottage/',res.clientId,'new-cottage-action']">{{res.clientFullName}}</a></td><!--izmeniti-->
+                        <td *ngIf="role==='ROLE_COTTAGE_OWNER'">{{res.numberOfPeople}}</td>
+                        <td *ngIf="role==='ROLE_COTTAGE_OWNER'">{{res.cottageReservationTag}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <h3 *ngIf="!cottage.cottageReservations?.length">
+            This cottage has no reservations
+        </h3>
+        <button *ngIf="role==='ROLE_COTTAGE_OWNER'" id="updateButton" class="btn btn-primary" (click)="addReservation()">
+            <strong>Add new reservation</strong>
+        </button>
+    </div>
+    <div class="container mb-3" >
+        <div *ngIf="cottage.cottageActions?.length" class="table-responsive m-1">
+            <div class="panel-heading m-3">
+                <h2>Actions</h2>
+            </div>
+            <table class="table table-bordered table-striped table-hover" id="picturesTable">
+                <thead>
+                    <tr>
+                        <th>Start</th>
+                        <th>End</th>
+                        <th>Valid until and including</th>
+                        <th>Discount</th>
+                        <th>Price</th>
+                        <th>Reserved?</th>
+                        <th *ngIf="role==='ROLE_COTTAGE_OWNER'">Client name</th>
+                        <th *ngIf="role==='ROLE_COTTAGE_OWNER'">Number of people</th>
+                        <th *ngIf="role==='ROLE_COTTAGE_OWNER'">Additional services</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor='let act of cottage.cottageActions' (dblclick)="doubleClickActFunction(act.id)">
+                        <td>{{act.startDate}}</td>
+                        <td>{{act.endDate}}</td>
+                        <td>{{act.validUntilAndIncluding}}</td>
+                        <td>{{act.discount}}</td>
+                        <td>{{act.price}}</td>
+                        <td>{{act.reserved}}</td>
+                        <td *ngIf="role==='ROLE_COTTAGE_OWNER'&&act.reserved"><a [routerLink]="['../../cottage/',act.clientId,'new-cottage-action']">{{act.clientFullName}}</a></td><!--izmeniti-->
+                        <td *ngIf="role==='ROLE_COTTAGE_OWNER'&&!act.reserved">No client</td>
+                        <td *ngIf="role==='ROLE_COTTAGE_OWNER'">{{act.numberOfPeople}}</td>
+                        <td *ngIf="role==='ROLE_COTTAGE_OWNER'">{{act.additionalServices}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <h3 *ngIf="!cottage.cottageReservations?.length">
+            This cottage has no actions
+        </h3>
+        <button *ngIf="role==='ROLE_COTTAGE_OWNER'" class="btn btn-primary" (click)="addAction()">
+            <strong>Add new action</strong>
+        </button>
     </div>
 </div>

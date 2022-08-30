@@ -46,6 +46,10 @@ import { BoatProfileComponent } from './boat-profile/boat-profile.component';
 import { CottageProfileComponent } from './cottage-profile/cottage-profile.component';
 import { FishingTripProfileComponent } from './fishing-trip-profile/fishing-trip-profile.component';
 import { ProfileComponent } from './components/profile/profile.component';
+import { CottageReservationViewComponent } from './components/cottage-owner/cottage-reservation-view/cottage-reservation-view.component';
+import { CottageReservationOwnerCommentaryComponent } from './components/cottage-owner/cottage-reservation-owner-commentary/cottage-reservation-owner-commentary.component';
+import { CottageActionOwnerCommentaryComponent } from './components/cottage-owner/cottage-action-owner-commentary/cottage-action-owner-commentary.component';
+import { CottageActionViewComponent } from './components/cottage-owner/cottage-action-view/cottage-action-view.component';
 
 @NgModule({
   declarations: [
@@ -69,6 +73,10 @@ import { ProfileComponent } from './components/profile/profile.component';
     CottageProfileComponent,
     FishingTripProfileComponent,
     ProfileComponent,
+    CottageReservationViewComponent,
+    CottageReservationOwnerCommentaryComponent,
+    CottageActionOwnerCommentaryComponent,
+    CottageActionViewComponent,
   ],
   imports: [
     BrowserModule,

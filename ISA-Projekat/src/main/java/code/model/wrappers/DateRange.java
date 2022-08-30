@@ -3,7 +3,6 @@ package code.model.wrappers;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.tomcat.jni.Time;
 
 import javax.persistence.Column;
 import java.util.Date;
@@ -44,7 +43,8 @@ public class DateRange {
     }
     public boolean DateRangeInPast()
     {
-        return endDate.getTime() < Time.now();
+        long now = System.currentTimeMillis();
+        return endDate.getTime() < now;
     }
     public int durationInDays(){
         return (int)TimeUnit.DAYS.convert(endDate.getTime() - startDate.getTime(), TimeUnit.MILLISECONDS);

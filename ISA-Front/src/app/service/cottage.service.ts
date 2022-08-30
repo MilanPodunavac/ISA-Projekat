@@ -41,4 +41,16 @@ export class CottageService {
   addReservation(body: any): Observable<any>{
     return this._httpClient.post<any>(this._APIUrl+`/reservation`, body);
   }
+  getReservation(cottageId: number, resId: number): Observable<any>{
+    return this._httpClient.get<any>(this._APIUrl+`/${cottageId}/reservation/${resId}`);
+  }
+  addReservationCommentary(id: number, resId: number, body: any): Observable<any>{
+    return this._httpClient.post<any>(this._APIUrl+`/${id}/reservation/${resId}/commentary`, body);
+  }
+  addActionCommentary(id: number, actId: number, body: any): Observable<any>{
+    return this._httpClient.post<any>(this._APIUrl+`/${id}/action/${actId}/commentary`, body);
+  }
+  getAction(cottageId: number, actId: number): Observable<any>{
+    return this._httpClient.get<any>(this._APIUrl+`/${cottageId}/action/${actId}`);
+  }
 }

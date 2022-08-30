@@ -1,5 +1,7 @@
 package code.dto.entities.cottage;
 
+import code.dto.entities.AvailabilityPeriodGetDto;
+import code.dto.entities.NewAvailabilityPeriodDto;
 import code.model.Location;
 import code.model.base.PictureBase64;
 import code.model.cottage.CottageOwner;
@@ -30,4 +32,7 @@ public class CottageGetDto {
     private List<CottageReservationTag> additionalServices;
     private CottageOwner cottageOwner;
     private List<PictureBase64> pictures;
+    private List<AvailabilityPeriodGetDto> availabilityPeriods;
+    private List<CottageReservationGetDto> cottageReservations;
+    private List<CottageActionGetDto> cottageActions;
 }

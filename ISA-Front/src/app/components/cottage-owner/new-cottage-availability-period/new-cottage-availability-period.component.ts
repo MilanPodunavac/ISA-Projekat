@@ -62,7 +62,7 @@ export class NewCottageAvailabilityPeriodComponent implements OnInit {
         if(data.status === 200){
           alert("Availability period added")
         }
-        this.router.navigate(['cottage-owner/cottage/' + id]).then(() => {
+        this.router.navigate(['cottage', id]).then(() => {
           window.location.reload();
         });
       },
@@ -70,7 +70,7 @@ export class NewCottageAvailabilityPeriodComponent implements OnInit {
         console.log(data)
         if(data.status === 200){
           alert(data.error.text)
-          this.router.navigate(['cottage-owner/cottage/' + id]).then(() => {
+          this.router.navigate(['cottage', id]).then(() => {
             window.location.reload();
           });
         }

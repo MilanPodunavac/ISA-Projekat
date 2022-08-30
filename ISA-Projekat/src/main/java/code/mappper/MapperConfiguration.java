@@ -6,10 +6,7 @@ import code.dto.entities.boat.BoatGetDto;
 import code.dto.entities.boat.BoatDto;
 import code.dto.entities.boat.NewBoatActionDto;
 import code.dto.entities.boat.NewBoatReservationDto;
-import code.dto.entities.cottage.CottageGetDto;
-import code.dto.entities.cottage.NewCottageActionDto;
-import code.dto.entities.cottage.CottageDto;
-import code.dto.entities.cottage.NewCottageReservationDto;
+import code.dto.entities.cottage.*;
 import code.dto.entities.NewOwnerCommentaryDto;
 import code.dto.fishing_trip.EditFishingTrip;
 import code.dto.fishing_trip.NewFishingTrip;
@@ -27,11 +24,16 @@ import code.model.cottage.Cottage;
 import code.model.cottage.CottageAction;
 import code.model.cottage.CottageOwner;
 import code.model.cottage.CottageReservation;
+import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.modelmapper.TypeMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 public class MapperConfiguration {
@@ -267,6 +269,39 @@ public class MapperConfiguration {
 
         TypeMap<Cottage, CottageGetDto> cottageToCottageGetDtoTypeMap = modelMapper.createTypeMap(Cottage.class, CottageGetDto.class);
         cottageToCottageGetDtoTypeMap.addMappings(cottageToCottageGetDtoPropMap);
+
+        //CottageReservationGetDto
+
+        PropertyMap<CottageReservation, CottageReservationGetDto> cottageReservationToGetDtoPropMap = new PropertyMap<CottageReservation, CottageReservationGetDto>() {
+            @Override
+            protected void configure() {
+                map().setOwnerCommentable(source.checkIfReservationCommentable());
+                map().setStartDate(source.getDateRange().getStartDate());
+                map().setEndDate(source.getDateRange().getEndDate());
+                map().setReservationStatus(source.getReservationStatus());
+                map().setNumberOfPeople(source.getNumberOfPeople());
+                map().setClientId(source.getClient().getId());
+            }
+        };
+
+        TypeMap<CottageReservation, CottageReservationGetDto> cottageReservationToGetDtoTypeMap = modelMapper.createTypeMap(CottageReservation.class, CottageReservationGetDto.class);
+        cottageReservationToGetDtoTypeMap.addMappings(cottageReservationToGetDtoPropMap);
+
+        //CottageActionGetDto
+
+        PropertyMap<CottageAction, CottageActionGetDto> cottageActionToGetDtoPropMap = new PropertyMap<CottageAction, CottageActionGetDto>() {
+            @Override
+            protected void configure() {
+                map().setOwnerCommentable(source.checkIfActionCommentable());
+                map().setStartDate(source.getRange().getStartDate());
+                map().setEndDate(source.getRange().getEndDate());
+                map().setReserved(source.isReserved());
+                map().setNumberOfPeople(source.getNumberOfPeople());
+            }
+        };
+
+        TypeMap<CottageAction, CottageActionGetDto> cottageActionToGetDtoTypeMap = modelMapper.createTypeMap(CottageAction.class, CottageActionGetDto.class);
+        cottageActionToGetDtoTypeMap.addMappings(cottageActionToGetDtoPropMap);
 
         return modelMapper;
     }

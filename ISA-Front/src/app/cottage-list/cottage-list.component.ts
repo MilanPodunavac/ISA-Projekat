@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CottageService } from 'src/app/service/cottage.service';
 import { Router } from '@angular/router';
+import { CottageOwnerService } from '../service/cottage-owner.service';
 
 @Component({
   selector: 'app-cottage-list',
@@ -11,11 +12,29 @@ export class CottageListComponent implements OnInit {
   cottages: any[] = [];
   unFilteredCottages: any[] = [];
   SearchString: string = "";
+  role: string;
 
-  constructor(private _cottageService: CottageService, private router: Router) {}
+  constructor(private _cottageService: CottageService, private router: Router, private _cottageOwnerService: CottageOwnerService) {this.role = localStorage.getItem('role');}
 
 
   ngOnInit(): void {
+    if(this.role === "ROLE_COTTAGE_OWNER"){
+        this._cottageOwnerService.getOwnersCottages().subscribe(
+        {next: data => {
+          this.cottages = data;
+        },
+        error: data => {
+          console.log(data)
+          alert(data.error)
+        }
+      });
+      this._cottageOwnerService.getOwnersCottages().subscribe(
+        {next: data => {
+          this.unFilteredCottages = data;
+        }
+      });
+      return;
+    }
     this._cottageService.getAllCottages().subscribe(
       {next: data => {
         this.cottages = data;

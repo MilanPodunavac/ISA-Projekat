@@ -18,6 +18,10 @@ import { CottageProfileComponent } from './cottage-profile/cottage-profile.compo
 import { BoatProfileComponent } from './boat-profile/boat-profile.component';
 import { FishingTripProfileComponent } from './fishing-trip-profile/fishing-trip-profile.component';
 import { ProfileComponent } from './components/profile/profile.component';
+import { CottageReservationViewComponent } from './components/cottage-owner/cottage-reservation-view/cottage-reservation-view.component';
+import { CottageReservationOwnerCommentaryComponent } from './components/cottage-owner/cottage-reservation-owner-commentary/cottage-reservation-owner-commentary.component';
+import { CottageActionOwnerCommentaryComponent } from './components/cottage-owner/cottage-action-owner-commentary/cottage-action-owner-commentary.component';
+import { CottageActionViewComponent } from './components/cottage-owner/cottage-action-view/cottage-action-view.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -40,6 +44,10 @@ const routes: Routes = [
   { path: 'fishing-instructor', component: FishingInstructorListComponent },
   { path: 'fishing-instructor/:id', component: FishingInstructorProfileComponent },
   { path: 'fishing-trip/:id', component: FishingTripProfileComponent },
+  { path: 'cottage/:id/reservation/:resId', component: CottageReservationViewComponent },
+  { path: 'cottage/:id/reservation/:resId/new-commentary', component: CottageReservationOwnerCommentaryComponent },
+  { path: 'cottage/:id/action/:actId/new-commentary', component: CottageActionOwnerCommentaryComponent },
+  { path: 'cottage/:id/action/:actId', component: CottageActionViewComponent },
 ];
 
 @NgModule({

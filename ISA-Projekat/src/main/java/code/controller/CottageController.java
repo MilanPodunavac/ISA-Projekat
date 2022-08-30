@@ -3,15 +3,14 @@ package code.controller;
 import code.controller.base.BaseController;
 import code.dto.entities.*;
 import code.dto.entities.boat.BoatGetDto;
-import code.dto.entities.cottage.CottageDto;
-import code.dto.entities.cottage.CottageGetDto;
-import code.dto.entities.cottage.NewCottageActionDto;
-import code.dto.entities.cottage.NewCottageReservationDto;
+import code.dto.entities.cottage.*;
 import code.exceptions.entities.*;
 import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
+import code.model.base.Action;
 import code.model.base.AvailabilityPeriod;
 import code.model.base.OwnerCommentary;
+import code.model.base.Reservation;
 import code.model.cottage.Cottage;
 import code.model.cottage.CottageAction;
 import code.model.cottage.CottageReservation;
@@ -34,10 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.print.attribute.standard.Media;
 import javax.validation.Valid;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/cottage")
@@ -67,6 +63,33 @@ public class CottageController extends BaseController {
         try{
             Cottage cottage = _cottageService.getCottage(id);
             CottageGetDto cottageDto = _mapper.map(cottage, CottageGetDto.class);
+            cottageDto.setAvailabilityPeriods(new ArrayList<>());
+            cottageDto.setCottageReservations(new ArrayList<>());
+            cottageDto.setCottageActions(new ArrayList<>());
+            for (AvailabilityPeriod period: cottage.getAvailabilityPeriods()) {
+                cottageDto.getAvailabilityPeriods().add(new AvailabilityPeriodGetDto(period.getRange().getStartDate(), period.getRange().getEndDate()));
+                for(Reservation res: period.getReservations()){
+                    CottageReservationGetDto dto = _mapper.map(res, CottageReservationGetDto.class);
+                    if(res.getOwnerCommentary() != null){
+                        dto.setCommentary(res.getOwnerCommentary().getCommentary());
+                    }
+                    dto.setClientFullName(res.getClient().getFirstName() + " " + res.getClient().getLastName());
+                    cottageDto.getCottageReservations().add(dto);
+                }
+                for(Action act: period.getActions()){
+                    CottageActionGetDto dto = _mapper.map(act, CottageActionGetDto.class);
+                    if(act.getOwnerCommentary() != null){
+                        dto.setCommentary(act.getOwnerCommentary().getCommentary());
+                    }
+                    if(act.getClient() != null){
+                        dto.setClientFullName(act.getClient().getFirstName() + " " + act.getClient().getLastName());
+                    }
+                    cottageDto.getCottageActions().add(dto);
+                }
+            }
+            cottageDto.getAvailabilityPeriods().sort(Comparator.comparing(AvailabilityPeriodGetDto::getStartDate));
+            cottageDto.getCottageReservations().sort(Comparator.comparing(CottageReservationGetDto::getStartDate));
+            cottageDto.getCottageActions().sort(Comparator.comparing(CottageActionGetDto::getStartDate));
             cottageDto.setPictures(_cottageService.getCottageImagesAsBase64(cottage.getId()));
             return ResponseEntity.ok(cottageDto);
         }catch(Exception ex){
@@ -74,6 +97,42 @@ public class CottageController extends BaseController {
             return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
         }
     }
+
+    @GetMapping(value = "/{id}/reservation/{resId}")
+    public ResponseEntity<Object> getReservation(@PathVariable Integer id, @PathVariable Integer resId){
+        try{
+            CottageReservation reservation = _cottageService.getCottageReservation(id, resId);
+            CottageReservationGetDto dto = _mapper.map(reservation, CottageReservationGetDto.class);
+            if(reservation.getOwnerCommentary() != null){
+                dto.setCommentary(reservation.getOwnerCommentary().getCommentary());
+            }
+            dto.setClientFullName(reservation.getClient().getFirstName() + " " + reservation.getClient().getLastName());
+            return ResponseEntity.ok(dto);
+        }catch(Exception ex){
+            if(ex instanceof EntityNotFoundException) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+            return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
+        }
+    }
+
+    @GetMapping(value = "/{id}/action/{actId}")
+    public ResponseEntity<Object> getAction(@PathVariable Integer id, @PathVariable Integer actId){
+        try{
+            CottageAction action = _cottageService.getCottageAction(id, actId);
+            CottageActionGetDto dto = _mapper.map(action, CottageActionGetDto.class);
+            if(action.getOwnerCommentary() != null){
+                dto.setCommentary(action.getOwnerCommentary().getCommentary());
+            }
+            if(action.getClient() != null){
+                dto.setClientFullName(action.getClient().getFirstName() + " " + action.getClient().getLastName());
+                dto.setClientId(action.getClient().getId());
+            }
+            return ResponseEntity.ok(dto);
+        }catch(Exception ex){
+            if(ex instanceof EntityNotFoundException) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+            return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
+        }
+    }
+
     @PostMapping()
     @PreAuthorize("hasRole('ROLE_COTTAGE_OWNER')")
     public ResponseEntity<String> addCottage(@Valid @RequestBody CottageDto dto, BindingResult result, @RequestHeader(HttpHeaders.AUTHORIZATION) String auth){

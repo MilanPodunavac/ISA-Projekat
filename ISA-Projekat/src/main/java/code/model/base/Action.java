@@ -56,4 +56,8 @@ public abstract class Action {
     public boolean overlapsWith(DateRange range){
         return this.range.overlapsWith(range);
     }
+
+    public boolean checkIfActionCommentable(){
+        return range.DateRangeInPast() && ownerCommentary == null && reserved;
+    }
 }

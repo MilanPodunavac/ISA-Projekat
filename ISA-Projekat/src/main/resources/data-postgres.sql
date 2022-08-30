@@ -66,6 +66,9 @@ INSERT INTO AVAILABILITY_PERIOD (id, end_date, start_date, sale_entity_id) VALUE
 
 INSERT INTO COTTAGE_RESERVATION (id, end_date, start_date, number_of_people, price, reservation_refund, reservation_status, system_charge, availability_period_id, client_id, cottage_id, loyalty_points_given) VALUES (1, '2022-04-10 00:00:00', '2022-04-1 00:00:00', 4, 6, 10, 1, 3, 1, 2, 1, false);
 
+INSERT INTO COTTAGE_ACTION (id, end_date, start_date, action_refund, discount, price, client_id, reserved, system_charge, valid_until_and_including, availability_period_id, number_of_people, cottage_id, loyalty_points_given) VALUES (1, '2022-04-12 00:00:00', '2022-04-10 00:00:00', 10, 10, 100, null, false, 20, '2022-04-09 00:00:00', 1, 4, 1, false);
+INSERT INTO COTTAGE_ACTION (id, end_date, start_date, action_refund, discount, price, client_id, reserved, system_charge, valid_until_and_including, availability_period_id, number_of_people, cottage_id, loyalty_points_given) VALUES (2, '2022-04-14 00:00:00', '2022-04-12 00:00:00', 10, 10, 100, 8, true, 20, '2022-04-10 00:00:00', 1, 4, 1, false);
+
 INSERT INTO COTTAGE_RESERVATION_TAGS (cottage_reservation_id, tags) VALUES (1, 1);
 
 INSERT INTO CLIENT_SALE_ENTITY (client_id, sale_entity_id) VALUES(2, 1);

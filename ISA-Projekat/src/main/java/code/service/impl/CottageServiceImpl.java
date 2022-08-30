@@ -288,15 +288,15 @@ public class CottageServiceImpl implements CottageService {
         Cottage cottage = optionalCottage.get();
         if(!cottage.getCottageOwner().getEmail().equals(email))throw new EntityNotOwnedException("Cottage not owned by given user");
         Optional<Action> optAct = _actionRepository.findById(actId);
-        if(!optAct.isPresent())throw new EntityNotFoundException("Reservation not found");
+        if(!optAct.isPresent())throw new EntityNotFoundException("Action not found");
         CottageAction act;
         try{
             act = (CottageAction) optAct.get();
         }catch(ClassCastException ex){
-            throw new EntityNotFoundException("Reservation is not a cottage reservation");
+            throw new EntityNotFoundException("Action is not a cottage action");
         }
         if(act.getOwnerCommentary() != null) throw new ReservationOrActionAlreadyCommented("You have already commented on this action");
-        if(act.getCottage().getId().intValue() != cottage.getId().intValue())throw new EntityNotFoundException("Reservation not found in given cottage");
+        if(act.getCottage().getId().intValue() != cottage.getId().intValue())throw new EntityNotFoundException("Action not found in given cottage");
         if(act.getRange().getEndDate().getTime() > System.currentTimeMillis()) throw new ReservationOrActionNotFinishedException("Action is not finished");
         if(act.getClient() == null)throw new ReservationOrActionNotFinishedException("This action was not activated");
         commentary.setPenaltyGiven(!commentary.isClientCame());
@@ -388,5 +388,31 @@ public class CottageServiceImpl implements CottageService {
             pictures.add(new PictureBase64(FileUploadUtil.convertToBase64(COTTAGE_PICTURE_DIRECTORY, cottage.getId() + "_" + pic.getName()), pic.getId()));
         }
         return pictures;
+    }
+
+    @Override
+    public CottageReservation getCottageReservation(int cottageId, int resId) throws EntityNotFoundException {
+        Optional<Cottage> optionalCottage = _cottageRepository.findById(cottageId);
+        if(!optionalCottage.isPresent())throw new EntityNotFoundException("Cottage not found");
+        Cottage cottage = optionalCottage.get();
+        for(AvailabilityPeriod period:cottage.getAvailabilityPeriods()){
+            for(Reservation res:period.getReservations()){
+                if(res.getId() == resId)return (CottageReservation) res;
+            }
+        }
+        throw new EntityNotFoundException("Reservation not found");
+    }
+
+    @Override
+    public CottageAction getCottageAction(Integer id, Integer actId) throws EntityNotFoundException {
+        Optional<Cottage> optionalCottage = _cottageRepository.findById(id);
+        if(!optionalCottage.isPresent())throw new EntityNotFoundException("Cottage not found");
+        Cottage cottage = optionalCottage.get();
+        for(AvailabilityPeriod period:cottage.getAvailabilityPeriods()){
+            for(Action act:period.getActions()){
+                if(act.getId() == actId)return (CottageAction) act;
+            }
+        }
+        throw new EntityNotFoundException("Action not found");
     }
 }

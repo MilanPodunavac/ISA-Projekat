@@ -12,5 +12,8 @@ export class CottageGet {
     additionalServices : any[];
     cottageOwner : any;
     pictures : any[];
+    availabilityPeriods: any[];
+    cottageReservations: any[];
+    cottageActions: any[];
 
 }

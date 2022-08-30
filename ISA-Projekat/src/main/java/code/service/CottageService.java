@@ -31,4 +31,7 @@ public interface CottageService {
     List<Cottage> getAllCottages();
     Cottage getCottage(Integer id) throws EntityNotFoundException;
     List<PictureBase64> getCottageImagesAsBase64(int id) throws EntityNotFoundException, IOException;
+    CottageReservation getCottageReservation(int cottageId, int resId) throws EntityNotFoundException;
+
+    CottageAction getCottageAction(Integer id, Integer actId) throws EntityNotFoundException;
 }
