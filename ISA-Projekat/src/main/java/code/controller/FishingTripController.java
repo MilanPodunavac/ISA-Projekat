@@ -4,6 +4,7 @@ import code.controller.base.BaseController;
 import code.dto.entities.NewOwnerCommentaryDto;
 import code.dto.fishing_instructor.FishingInstructorGetDto;
 import code.dto.fishing_trip.*;
+import code.dto.provider_registration.ProviderDTO;
 import code.exceptions.entities.EntityNotFoundException;
 import code.exceptions.entities.EntityNotOwnedException;
 import code.exceptions.entities.ReservationOrActionAlreadyCommented;
@@ -33,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/fishing-trip")
@@ -197,19 +199,25 @@ public class FishingTripController extends BaseController {
 
     @GetMapping(value = "/fishingInstructorFishingTrips")
     @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
-    public ResponseEntity<List<FishingInstructorFishingTripTableGetDto>> getFishingInstructorFishingTrips() {
-        return ResponseEntity.ok(_fishingTripService.getFishingInstructorFishingTrips());
+    public ResponseEntity<List<FishingTripGetDto>> getFishingInstructorFishingTrips() {
+        return ResponseEntity.ok(_fishingTripService.getFishingInstructorFishingTrips().stream()
+                .map(entity -> _mapper.map(entity, FishingTripGetDto.class))
+                .collect(Collectors.toList()));
     }
 
     @GetMapping(value = "/searchInstructorFishingTrips")
     @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
-    public ResponseEntity<List<FishingInstructorFishingTripTableGetDto>> getSearchedFishingTrips(@RequestParam("searchText") String searchText) {
-        return ResponseEntity.ok(_fishingTripService.getSearchedFishingTrips(searchText));
+    public ResponseEntity<List<FishingTripGetDto>> getSearchedFishingTrips(@RequestParam("searchText") String searchText) {
+        return ResponseEntity.ok(_fishingTripService.getSearchedFishingTrips(searchText).stream()
+                .map(entity -> _mapper.map(entity, FishingTripGetDto.class))
+                .collect(Collectors.toList()));
     }
 
     @GetMapping(value = "/fishingInstructorReservations")
     @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
-    public ResponseEntity<List<FishingInstructorReservationTableGetDto>> getFishingInstructorReservations() {
-        return ResponseEntity.ok(_fishingTripService.getFishingInstructorReservations());
+    public ResponseEntity<List<FishingReservationGetDto>> getFishingInstructorReservations() {
+        return ResponseEntity.ok(_fishingTripService.getFishingInstructorReservations().stream()
+                .map(entity -> _mapper.map(entity, FishingReservationGetDto.class))
+                .collect(Collectors.toList()));
     }
 }

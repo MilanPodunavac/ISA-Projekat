@@ -1,7 +1,5 @@
 package code.service.impl;
 
-import code.dto.fishing_trip.FishingInstructorFishingTripTableGetDto;
-import code.dto.fishing_trip.FishingInstructorReservationTableGetDto;
 import code.exceptions.entities.EntityNotFoundException;
 import code.exceptions.entities.EntityNotOwnedException;
 import code.exceptions.entities.ReservationOrActionAlreadyCommented;
@@ -11,12 +9,10 @@ import code.exceptions.fishing_trip.quick_reservation.*;
 import code.exceptions.fishing_trip.reservation.*;
 import code.model.*;
 import code.model.base.*;
-import code.model.cottage.Cottage;
 import code.repository.*;
 import code.service.FishingTripService;
 import code.service.UserService;
 import code.utils.FileUploadUtil;
-import com.google.common.collect.Lists;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -605,23 +601,17 @@ public class FishingTripServiceImpl implements FishingTripService {
     }
 
     @Override
-    public List<FishingInstructorFishingTripTableGetDto> getFishingInstructorFishingTrips() {
-        List<FishingTrip> instructorFishingTrips = _fishingTripRepository.findByFishingInstructorId(getLoggedInFishingInstructor().getId());
-        List<FishingInstructorFishingTripTableGetDto> fishingInstructorFishingTripTableGetDtos = new ArrayList<>();
-        for (FishingTrip fishingTrip : instructorFishingTrips) {
-            fishingInstructorFishingTripTableGetDtos.add(new FishingInstructorFishingTripTableGetDto(fishingTrip.getId(), fishingTrip.getName(), fishingTrip.getMaxPeople(), fishingTrip.getCostPerDay(), fishingTrip.getLocation().getStreetName(), fishingTrip.getLocation().getCityName(), fishingTrip.getLocation().getCountryName()));
-        }
-
-        return fishingInstructorFishingTripTableGetDtos;
+    public List<FishingTrip> getFishingInstructorFishingTrips() {
+        return _fishingTripRepository.findByFishingInstructorId(getLoggedInFishingInstructor().getId());
     }
 
     @Override
-    public List<FishingInstructorFishingTripTableGetDto> getSearchedFishingTrips(String searchText) {
+    public List<FishingTrip> getSearchedFishingTrips(String searchText) {
         List<FishingTrip> instructorFishingTrips = _fishingTripRepository.findByFishingInstructorId(getLoggedInFishingInstructor().getId());
-        List<FishingInstructorFishingTripTableGetDto> searchedInstructorFishingTrips = new ArrayList<>();
+        List<FishingTrip> searchedInstructorFishingTrips = new ArrayList<>();
         for (FishingTrip fishingTrip : instructorFishingTrips) {
             if (fishingTrip.getName().toUpperCase().startsWith(searchText.toUpperCase())) {
-                searchedInstructorFishingTrips.add(new FishingInstructorFishingTripTableGetDto(fishingTrip.getId(), fishingTrip.getName(), fishingTrip.getMaxPeople(), fishingTrip.getCostPerDay(), fishingTrip.getLocation().getStreetName(), fishingTrip.getLocation().getCityName(), fishingTrip.getLocation().getCountryName()));
+                searchedInstructorFishingTrips.add(fishingTrip);
             }
         }
 
@@ -629,24 +619,12 @@ public class FishingTripServiceImpl implements FishingTripService {
     }
 
     @Override
-    public List<FishingInstructorReservationTableGetDto> getFishingInstructorReservations() {
+    public List<FishingTripReservation> getFishingInstructorReservations() {
         List<Integer> instructorFishingTripIds = _fishingTripRepository.findByFishingInstructor(getLoggedInFishingInstructor().getId());
         List<FishingTripReservation> instructorFishingTripReservations = _fishingTripReservationRepository.findByFishingTripIdIn(instructorFishingTripIds);
-        List<FishingTripQuickReservation> instructorFishingTripQuickReservations = _fishingTripQuickReservationRepository.findByFishingTripIdIn(instructorFishingTripIds);
-        List<FishingInstructorReservationTableGetDto> fishingInstructorReservationTableGetDtos = new ArrayList<>();
 
-        for (FishingTripReservation fishingTripReservation : instructorFishingTripReservations) {
-            fishingInstructorReservationTableGetDtos.add(new FishingInstructorReservationTableGetDto(fishingTripReservation.getStart(), fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays() - 1), fishingTripReservation.getNumberOfPeople(), fishingTripReservation.getPrice(), fishingTripReservation.getSystemTaxPercentage(), Lists.newArrayList(fishingTripReservation.getFishingTripReservationTags()), fishingTripReservation.getFishingTrip().getName(), fishingTripReservation.getClient().getId(), fishingTripReservation.getClient().getFirstName(), fishingTripReservation.getClient().getLastName()));
-        }
-
-        for (FishingTripQuickReservation fishingTripQuickReservation : instructorFishingTripQuickReservations) {
-            if (fishingTripQuickReservation.getClient() != null) {
-                fishingInstructorReservationTableGetDtos.add(new FishingInstructorReservationTableGetDto(fishingTripQuickReservation.getStart(), fishingTripQuickReservation.getStart().plusDays(fishingTripQuickReservation.getDurationInDays() - 1), fishingTripQuickReservation.getMaxPeople(), fishingTripQuickReservation.getPrice(), fishingTripQuickReservation.getSystemTaxPercentage(), Lists.newArrayList(fishingTripQuickReservation.getFishingTripReservationTags()), fishingTripQuickReservation.getFishingTrip().getName(), fishingTripQuickReservation.getClient().getId(), fishingTripQuickReservation.getClient().getFirstName(), fishingTripQuickReservation.getClient().getLastName()));
-            }
-        }
-
-        Collections.sort(fishingInstructorReservationTableGetDtos, Comparator.comparing(FishingInstructorReservationTableGetDto::getStart));
-        return fishingInstructorReservationTableGetDtos;
+        Collections.sort(instructorFishingTripReservations, Comparator.comparing(FishingTripReservation::getStart));
+        return instructorFishingTripReservations;
     }
 
     @Scheduled(cron="0 0 1 * * *")

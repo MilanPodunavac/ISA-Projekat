@@ -1,13 +1,11 @@
 package code.service.impl;
 
-import code.dto.fishing_instructor.FishingInstructorProfileDataGetDto;
 import code.exceptions.entities.EntityNotFoundException;
 import code.exceptions.fishing_instructor.AddAvailablePeriodInPastException;
 import code.exceptions.fishing_instructor.AvailablePeriodOverlappingException;
 import code.exceptions.fishing_instructor.AvailablePeriodStartAfterEndDateException;
 import code.exceptions.provider_registration.EmailTakenException;
 import code.model.*;
-import code.model.cottage.Cottage;
 import code.repository.FishingInstructorAvailablePeriodRepository;
 import code.repository.FishingInstructorRepository;
 import code.repository.LoyaltyProgramProviderRepository;
@@ -19,7 +17,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.io.Console;
 import java.time.LocalDate;
 import java.util.List;
 
