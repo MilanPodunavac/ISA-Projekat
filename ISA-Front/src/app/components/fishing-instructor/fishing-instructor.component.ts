@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { FishingInstructorGet } from 'src/app/model/fishing-instructor-get';
 import { FishingInstructorFishingTripTableGet } from 'src/app/model/fishing-instructor/fishing-instructor-fishing-trip-table-get.model';
 import { FishingInstructorProfileDataGet } from 'src/app/model/fishing-instructor/fishing-instructor-profile-data-get.model';
 import { ReservationTableGet } from 'src/app/model/fishing-instructor/reservation-table-get.model';
+import { LoyaltyProgramProvider } from 'src/app/model/loyalty-program-provider.model';
 import { FishingInstructorService } from 'src/app/service/fishing-instructor.service';
 import { FishingTripService } from 'src/app/service/fishing-trip.service';
+import { LoyaltyProgramService } from 'src/app/service/loyalty-program.service';
 
 @Component({
   selector: 'app-fishing-instructor',
@@ -11,7 +15,8 @@ import { FishingTripService } from 'src/app/service/fishing-trip.service';
   styleUrls: ['./fishing-instructor.component.scss']
 })
 export class FishingInstructorComponent implements OnInit {
-    fishingInstructorProfileData: FishingInstructorProfileDataGet;
+    fishingInstructorData: FishingInstructorGet;
+    loyaltyProgramCategoryAboveInstructor: LoyaltyProgramProvider;
     displayedColumnsFishingTrips: string[] = ['name', 'max_people', 'cost_per_day', 'address', 'city', 'country'];
     allInstructorFishingTrips: FishingInstructorFishingTripTableGet[];
     dataSourceFishingTrips: FishingInstructorFishingTripTableGet[];
@@ -22,11 +27,15 @@ export class FishingInstructorComponent implements OnInit {
     dataSourceReservations: ReservationTableGet[];
     clickedRowReservations: ReservationTableGet;
 
-    constructor(private fishingInstructorService: FishingInstructorService, private fishingTripService: FishingTripService) {
-        this.fishingInstructorService.getProfileData().subscribe(data => {
-            this.fishingInstructorProfileData = data;
-        });
+    constructor(private fishingInstructorService: FishingInstructorService, private loyaltyProgramService: LoyaltyProgramService, private fishingTripService: FishingTripService, private _route: ActivatedRoute) {
+        this.fishingInstructorService.getLoggedInInstructor().subscribe(data => {
+            this.fishingInstructorData = data;
 
+            this.loyaltyProgramService.getOneHigherLoyaltyProviderCategory(this.fishingInstructorData.category.id).subscribe(data => {
+                this.loyaltyProgramCategoryAboveInstructor = data;
+            });
+        });
+        
         this.fishingTripService.getFishingInstructorFishingTrips().subscribe(data => {
             this.allInstructorFishingTrips = data;
             this.dataSourceFishingTrips = data;

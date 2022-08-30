@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoginUser } from 'src/app/model/login-user';
 import { AuthService } from 'src/app/service/auth.service';
+import { FishingInstructorService } from 'src/app/service/fishing-instructor.service';
 import { UserService } from 'src/app/service/user.service';
 
 @Component({
@@ -14,7 +15,7 @@ export class LoginComponent implements OnInit {
     loginForm: FormGroup;
     errorMessage: string;
 
-    constructor(formBuilder: FormBuilder, private router: Router, private authService: AuthService, private userService: UserService) {
+    constructor(formBuilder: FormBuilder, private router: Router, private authService: AuthService, private userService: UserService, private fishingInstructorService: FishingInstructorService) {
         this.loginForm = formBuilder.group({
             email: [''],
             password: ['']
@@ -38,14 +39,14 @@ export class LoginComponent implements OnInit {
                     localStorage.setItem("role", data);
                     
                     if (data === "ROLE_FISHING_INSTRUCTOR") {
-                        this.router.navigate(['fishing-instructor']).then(() => {
+                        this.router.navigate(['fishing-instructor-home']).then(() => {
                             window.location.reload();
-                        });;
+                        });
                     }
                     if (data === "ROLE_COTTAGE_OWNER") {
                         this.router.navigate(['cottage-owner']).then(() => {
                             window.location.reload();
-                        });;
+                        });
                     }
                 });
             },

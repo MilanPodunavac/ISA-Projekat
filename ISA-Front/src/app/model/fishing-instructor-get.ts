@@ -1,4 +1,5 @@
 import { LocationGet } from "./location-get";
+import { LoyaltyProgramProvider } from "./loyalty-program-provider.model";
 
 export class FishingInstructorGet {
     id : number;
@@ -13,4 +14,6 @@ export class FishingInstructorGet {
     fishingTrips : any[];
     fishingInstructorAvailablePeriods : any[];
     subscribers : any[];
+    loyaltyPoints : number;
+    category : LoyaltyProgramProvider;
 }

@@ -19,5 +19,5 @@ public interface FishingInstructorService {
     void changePassword(FishingInstructor fishingInstructor);
     List<FishingInstructor> getAllFishingInstructors();
     FishingInstructor getFishingInstructor(Integer id) throws EntityNotFoundException;
-    FishingInstructorProfileDataGetDto getProfileData();
+    FishingInstructor getLoggedInInstructor();
 }

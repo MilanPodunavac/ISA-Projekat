@@ -13,7 +13,7 @@
         <button mat-menu-item [routerLink]="['specifications']">Medicine specification</button>
     </mat-menu>
 
-    <button *ngIf="role === 'ROLE_FISHING_INSTRUCTOR'" mat-button [routerLink]="['fishing-instructor']">Home</button>
+    <button *ngIf="role === 'ROLE_FISHING_INSTRUCTOR'" mat-button [routerLink]="['fishing-instructor-home']">Home</button>
 
     <button *ngIf="role === 'ROLE_ADMIN'" mat-button id="facility" [matMenuTriggerFor]="facility">Our Facility</button>
     <mat-menu #facility="matMenu">

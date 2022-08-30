@@ -3,23 +3,15 @@ package code.controller;
 import code.controller.base.BaseController;
 import code.dto.admin.PasswordDTO;
 import code.dto.admin.PersonalData;
-import code.dto.entities.boat.BoatGetDto;
-import code.dto.entities.cottage.CottageGetDto;
 import code.dto.fishing_instructor.FishingInstructorGetDto;
-import code.dto.fishing_instructor.FishingInstructorProfileDataGetDto;
 import code.dto.fishing_instructor.NewAvailablePeriod;
-import code.exceptions.admin.ChangedPasswordException;
-import code.exceptions.admin.ModifyAnotherUserDataException;
-import code.exceptions.admin.NotChangedPasswordException;
+import code.dto.loyalty_program.LoyaltyProgramProviderGetDto;
 import code.exceptions.entities.EntityNotFoundException;
 import code.exceptions.fishing_instructor.AddAvailablePeriodInPastException;
 import code.exceptions.fishing_instructor.AvailablePeriodOverlappingException;
 import code.exceptions.fishing_instructor.AvailablePeriodStartAfterEndDateException;
-import code.exceptions.provider_registration.UserNotFoundException;
-import code.model.Admin;
 import code.model.FishingInstructor;
 import code.model.FishingInstructorAvailablePeriod;
-import code.model.cottage.Cottage;
 import code.service.FishingInstructorService;
 import code.utils.TokenUtils;
 import org.modelmapper.ModelMapper;
@@ -99,9 +91,9 @@ public class FishingInstructorController extends BaseController {
         return ResponseEntity.ok("Password changed!");
     }
 
-    @GetMapping(value = "/profileData")
+    @GetMapping(value = "/getLoggedInInstructor")
     @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
-    public ResponseEntity<FishingInstructorProfileDataGetDto> getProfileData() {
-        return ResponseEntity.ok(_fishingInstructorService.getProfileData());
+    public ResponseEntity<FishingInstructorGetDto> getLoggedInInstructor() {
+        return ResponseEntity.ok(_mapper.map(_fishingInstructorService.getLoggedInInstructor(), FishingInstructorGetDto.class));
     }
 }

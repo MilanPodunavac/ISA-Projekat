@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { RegisterProvider } from 'src/app/model/register-provider';
 import { RegistrationService } from 'src/app/service/registration.service';
 
@@ -12,7 +13,7 @@ export class RegisterProviderComponent implements OnInit {
     registrationForm: FormGroup;
     errorMessage: string;
 
-    constructor(formBuilder: FormBuilder, private registrationService: RegistrationService) {
+    constructor(formBuilder: FormBuilder, private router: Router, private registrationService: RegistrationService) {
         this.registrationForm = formBuilder.group({
             firstName: ['', [Validators.required]],
             lastName: ['', [Validators.required]],
@@ -49,6 +50,7 @@ export class RegisterProviderComponent implements OnInit {
 
         this.registrationService.register(registrationRequest).subscribe({
             next: data => {
+                this.router.navigate([''])
                 alert(data);
             },
             error: error => {

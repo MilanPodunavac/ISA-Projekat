@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { FishingInstructorGet } from '../model/fishing-instructor-get';
 import { FishingInstructorProfileDataGet } from '../model/fishing-instructor/fishing-instructor-profile-data-get.model';
 
 @Injectable({
@@ -17,11 +18,11 @@ export class FishingInstructorService {
         return this._httpClient.get<any[]>(this.apiUrl+`/fishing-instructor`);
     }
     
-    getFishingInstructor(id: number): Observable<any>{
-        return this._httpClient.get<any[]>(this.apiUrl+`/fishing-instructor/${id}`);
+    public getFishingInstructor(id: number): Observable<FishingInstructorGet>{
+        return this._httpClient.get<FishingInstructorGet>(this.apiUrl + '/fishing-instructor/' + id);
     }
 
-    public getProfileData(): Observable<FishingInstructorProfileDataGet> {
-		return this._httpClient.get<FishingInstructorProfileDataGet>(this.apiUrl + '/fishing-instructor/profileData');
+    public getLoggedInInstructor(): Observable<FishingInstructorGet> {
+		return this._httpClient.get<FishingInstructorGet>(this.apiUrl + '/fishing-instructor/getLoggedInInstructor');
 	}
 }

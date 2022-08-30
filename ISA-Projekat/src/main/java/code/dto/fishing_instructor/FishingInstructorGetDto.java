@@ -30,4 +30,6 @@ public class FishingInstructorGetDto {
     private Set<FishingTrip> fishingTrips;
     private Set<FishingInstructorAvailablePeriod> fishingInstructorAvailablePeriods;
     private Set<Client> subscribers;
+    private double loyaltyPoints;
+    private LoyaltyProgramProvider category;
 }

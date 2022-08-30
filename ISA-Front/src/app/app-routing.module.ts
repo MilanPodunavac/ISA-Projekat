@@ -17,19 +17,20 @@ import { FishingInstructorProfileComponent } from './fishing-instructor-profile/
 import { CottageProfileComponent } from './cottage-profile/cottage-profile.component';
 import { BoatProfileComponent } from './boat-profile/boat-profile.component';
 import { FishingTripProfileComponent } from './fishing-trip-profile/fishing-trip-profile.component';
+import { ProfileComponent } from './components/profile/profile.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register-provider', component: RegisterProviderComponent },
-  { path: 'fishing-instructor', component: FishingInstructorComponent },
+  { path: 'fishing-instructor-home', component: FishingInstructorComponent },
   { path:'cottage-owner', component: CottageOwnerComponent },
   { path:'cottage-owner/cottage/:id', component: CottageOwnerCottageComponent },
   { path: 'new-cottage', component: NewCottageComponent },
   { path: 'cottage/:id/new-availability-period', component: NewCottageAvailabilityPeriodComponent },
   { path: 'cottage/:id/new-cottage-action', component: NewCottageActionComponent },
   { path: 'cottage/:id/new-cottage-reservation', component: NewCottageReservationComponent },
-  { path: 'fishing-instructor-profile', component: FishingInstructorComponent },
+  { path: 'profile', component: ProfileComponent },
   { path: 'cottage-owner', component: CottageOwnerComponent },
   { path: 'cottage-owner/cottage/:id', component: CottageOwnerCottageComponent },
   { path: 'cottage', component: CottageListComponent},
