@@ -734,7 +734,7 @@ public class FishingTripServiceImpl implements FishingTripService {
             throw new EntityNotFoundException("Fishing trip doesn't exist!");
         }
         List<PictureBase64> pictures = new ArrayList<>();
-        for(Picture pic: fishingTrip.getPictures()){
+        for(FishingTripPicture pic: fishingTrip.getPictures()){
             pictures.add(new PictureBase64(FileUploadUtil.convertToBase64(FISHING_TRIP_PICTURE_DIRECTORY, fishingTrip.getId() + "_" + pic.getName()), pic.getId()));
         }
         return pictures;
