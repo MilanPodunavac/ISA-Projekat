@@ -1,6 +1,5 @@
 package code.repository;
 
-import code.dto.fishing_trip.FishingInstructorFishingTripTableGetDto;
 import code.model.FishingTrip;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

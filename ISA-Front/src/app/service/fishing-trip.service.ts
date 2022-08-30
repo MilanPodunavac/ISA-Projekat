@@ -1,8 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { FishingInstructorFishingTripTableGet } from '../model/fishing-instructor/fishing-instructor-fishing-trip-table-get.model';
-import { ReservationTableGet } from '../model/fishing-instructor/reservation-table-get.model';
+import { FishingReservationGet } from '../model/fishing-reservation-get.model';
 import { FishingTripGet } from '../model/fishing-trip-get';
 
 @Injectable({
@@ -19,18 +18,18 @@ export class FishingTripService {
 		return this.http.get<FishingTripGet>(this.apiUrl + '/' + id);
 	}
 
-    public getFishingInstructorFishingTrips(): Observable<FishingInstructorFishingTripTableGet[]> {
-		return this.http.get<FishingInstructorFishingTripTableGet[]>(this.apiUrl + '/fishingInstructorFishingTrips');
+    public getFishingInstructorFishingTrips(): Observable<FishingTripGet[]> {
+		return this.http.get<FishingTripGet[]>(this.apiUrl + '/fishingInstructorFishingTrips');
 	}
 
-    public getFishingInstructorReservations(): Observable<ReservationTableGet[]> {
-		return this.http.get<ReservationTableGet[]>(this.apiUrl + '/fishingInstructorReservations');
+    public getFishingInstructorReservations(): Observable<FishingReservationGet[]> {
+		return this.http.get<FishingReservationGet[]>(this.apiUrl + '/fishingInstructorReservations');
 	}
 
-    public getSearchedFishingTrips(searchText: string): Observable<FishingInstructorFishingTripTableGet[]> {
+    public getSearchedFishingTrips(searchText: string): Observable<FishingTripGet[]> {
         let queryParams = new HttpParams();
         queryParams = queryParams.append("searchText", searchText);
         
-		return this.http.get<FishingInstructorFishingTripTableGet[]>(this.apiUrl + '/searchInstructorFishingTrips', {params: queryParams});
+		return this.http.get<FishingTripGet[]>(this.apiUrl + '/searchInstructorFishingTrips', {params: queryParams});
 	}
 }

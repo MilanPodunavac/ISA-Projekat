@@ -1,6 +1,5 @@
 package code.service;
 
-import code.dto.fishing_instructor.FishingInstructorProfileDataGetDto;
 import code.exceptions.entities.EntityNotFoundException;
 import code.exceptions.fishing_instructor.AddAvailablePeriodInPastException;
 import code.exceptions.fishing_instructor.AvailablePeriodOverlappingException;
@@ -8,7 +7,6 @@ import code.exceptions.fishing_instructor.AvailablePeriodStartAfterEndDateExcept
 import code.exceptions.provider_registration.EmailTakenException;
 import code.model.FishingInstructor;
 import code.model.FishingInstructorAvailablePeriod;
-import code.model.cottage.Cottage;
 
 import java.util.List;
 
