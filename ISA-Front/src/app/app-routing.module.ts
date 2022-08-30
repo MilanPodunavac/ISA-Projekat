@@ -12,6 +12,7 @@ import { FishingInstructorListComponent } from './fishing-instructor-list/fishin
 import { FishingInstructorProfileComponent } from './fishing-instructor-profile/fishing-instructor-profile.component';
 import { CottageProfileComponent } from './cottage-profile/cottage-profile.component';
 import { BoatProfileComponent } from './boat-profile/boat-profile.component';
+import { FishingTripProfileComponent } from './fishing-trip-profile/fishing-trip-profile.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -26,6 +27,7 @@ const routes: Routes = [
   { path: 'boat/:id', component: BoatProfileComponent },
   { path: 'fishing-instructor', component: FishingInstructorListComponent },
   { path: 'fishing-instructor/:id', component: FishingInstructorProfileComponent },
+  { path: 'fishing-trip/:id', component: FishingTripProfileComponent },
 ];
 
 @NgModule({

@@ -14,6 +14,7 @@ import code.model.FishingTrip;
 import code.model.FishingTripQuickReservation;
 import code.model.FishingTripReservation;
 import code.model.base.OwnerCommentary;
+import code.model.base.PictureBase64;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -21,6 +22,7 @@ import java.util.List;
 
 public interface FishingTripService {
     FishingTrip save(FishingTrip fishingTrip);
+    FishingTrip getFishingTrip(Integer id) throws EntityNotFoundException;
     FishingTrip edit(FishingTrip fishingTrip) throws FishingTripNotFoundException, EditAnotherInstructorFishingTripException, FishingTripHasQuickReservationWithClientException, FishingTripHasReservationException;
     void editPictures(Integer id, MultipartFile[] pictures) throws FishingTripNotFoundException, EditAnotherInstructorFishingTripException, IOException, FishingTripHasQuickReservationWithClientException, FishingTripHasReservationException;
     void addQuickReservation(Integer id, FishingTripQuickReservation fishingTripQuickReservation) throws AddReservationToAnotherInstructorFishingTripException, FishingTripQuickReservationMaxPeopleHigherThanFishingTripMaxPeopleException, ReservationStartDateInPastException, ValidUntilAndIncludingDateInPastOrAfterOrEqualToStartDateException, FishingTripReservationTagsDontContainReservationTagException, NoAvailablePeriodForReservationException, FishingTripNotFoundException, InstructorBusyDuringReservationException;
@@ -29,4 +31,5 @@ public interface FishingTripService {
     void addReservationCommentary(Integer reservationId, OwnerCommentary ownerCommentary) throws EntityNotFoundException, EntityNotOwnedException, ReservationOrActionAlreadyCommented, ReservationOrActionNotFinishedException;
     void addQuickReservationCommentary(Integer quickReservationId, OwnerCommentary ownerCommentary) throws EntityNotFoundException, EntityNotOwnedException, ReservationOrActionNotFinishedException, ReservationOrActionAlreadyCommented;
     List<FishingInstructorFishingTripTableGetDto> getFishingInstructorFishingTrips();
+    List<PictureBase64> getFishingTripImagesAsBase64(int id) throws EntityNotFoundException, IOException;
 }

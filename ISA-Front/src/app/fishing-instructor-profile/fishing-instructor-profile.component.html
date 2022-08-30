@@ -35,7 +35,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor='let fishingTrip of fishingInstructor.fishingTrips'>
+                <tr *ngFor='let fishingTrip of fishingInstructor.fishingTrips' (dblclick)="doubleClickFunction(fishingTrip.id)">
                     <td>{{fishingTrip.name}}</td>
                     <td>{{fishingTrip.description}}</td>
                     <td>{{fishingTrip.rules}}</td>

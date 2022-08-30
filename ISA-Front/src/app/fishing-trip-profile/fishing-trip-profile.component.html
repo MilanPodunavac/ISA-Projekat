@@ -1,0 +1,41 @@
+<div class="row">
+    <div class="col-5">
+        <div class="container">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-12">
+                    <div class="card shadow-1-strong" style="border-radius: 1rem;">
+                        <h1>Fishing trip</h1>
+                        <div class="profile">
+                            <p>Name:&ensp;{{fishingTrip.name}}</p>
+                            <p>Description:&ensp;{{fishingTrip.description}}</p>
+                            <p>Rules:&ensp;{{fishingTrip.rules}}</p>
+                            <p>Equipment:&ensp;{{fishingTrip.equipment}}</p>
+                            <p>Max people:&ensp;{{fishingTrip.maxPeople}}</p>
+                            <p>Cost per day:&ensp;{{fishingTrip.costPerDay}}</p>
+                            <p>Cancelation fee:&ensp;{{fishingTrip.percentageInstructorKeepsIfReservationCancelled}}</p>
+                            <p>Address:&ensp;{{fishingTrip.location.streetName}}, {{fishingTrip.location.cityName}}, {{fishingTrip.location.countryName}}</p>
+                            <p>Instructor's name:&ensp;{{fishingTrip.fishingInstructor.firstName}} {{fishingTrip.fishingInstructor.lastName}}</p>
+                            <p>Instructor's eMail:&ensp;{{fishingTrip.fishingInstructor.email}}</p>
+                            <p>Instructor's phone number:&ensp;{{fishingTrip.fishingInstructor.phoneNumber}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container mb-3">
+        <div *ngIf="fishingTrip.pictures?.length" class="table-responsive m-1">
+            <div class="panel-heading m-3">
+                <h2>Pictures</h2>
+            </div>
+            <table class="table table-bordered table-striped table-hover" id="picturesTable">
+                <tbody>
+                    <tr *ngFor='let picture of cottage.pictures'>
+                        <td><img [src]="picture.data" class="text-center mb-3" style="max-width: 700px;max-height: 700px;" alt="..."></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <h3 *ngIf="!fishingTrip.pictures?.length">No pictures recorded</h3>
+    </div>
+</div>

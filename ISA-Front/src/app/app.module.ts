@@ -40,6 +40,7 @@ import { FishingInstructorListComponent } from './fishing-instructor-list/fishin
 import { FishingInstructorProfileComponent } from './fishing-instructor-profile/fishing-instructor-profile.component';
 import { BoatProfileComponent } from './boat-profile/boat-profile.component';
 import { CottageProfileComponent } from './cottage-profile/cottage-profile.component';
+import { FishingTripProfileComponent } from './fishing-trip-profile/fishing-trip-profile.component';
 
 @NgModule({
   declarations: [
@@ -57,6 +58,7 @@ import { CottageProfileComponent } from './cottage-profile/cottage-profile.compo
     FishingInstructorProfileComponent,
     BoatProfileComponent,
     CottageProfileComponent,
+    FishingTripProfileComponent,
   ],
   imports: [
     BrowserModule,

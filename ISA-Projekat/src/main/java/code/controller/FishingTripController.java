@@ -2,6 +2,7 @@ package code.controller;
 
 import code.controller.base.BaseController;
 import code.dto.entities.NewOwnerCommentaryDto;
+import code.dto.fishing_instructor.FishingInstructorGetDto;
 import code.dto.fishing_trip.*;
 import code.exceptions.entities.EntityNotFoundException;
 import code.exceptions.entities.EntityNotOwnedException;
@@ -13,6 +14,7 @@ import code.exceptions.fishing_trip.FishingTripHasReservationException;
 import code.exceptions.fishing_trip.FishingTripNotFoundException;
 import code.exceptions.fishing_trip.quick_reservation.*;
 import code.exceptions.fishing_trip.reservation.*;
+import code.model.FishingInstructor;
 import code.model.FishingTrip;
 import code.model.FishingTripQuickReservation;
 import code.model.FishingTripReservation;
@@ -42,6 +44,19 @@ public class FishingTripController extends BaseController {
         this._fishingTripService = fishingTripService;
     }
 
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<Object> get(@PathVariable Integer id){
+        try{
+            FishingTrip fishingTrip = _fishingTripService.getFishingTrip(id);
+            FishingTripGetDto fishingTripGetDto = _mapper.map(fishingTrip, FishingTripGetDto.class);
+            fishingTripGetDto.setPictures(_fishingTripService.getFishingTripImagesAsBase64(fishingTrip.getId()));
+            return ResponseEntity.ok(fishingTripGetDto);
+        }catch(Exception ex){
+            if(ex instanceof EntityNotFoundException) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Fishing trip not found");
+            return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
+        }
+    }
+
     @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
     public ResponseEntity<String> addFishingTrip(@Valid @RequestBody NewFishingTrip dto, BindingResult result) {
@@ -52,6 +67,8 @@ public class FishingTripController extends BaseController {
         _fishingTripService.save(_mapper.map(dto, FishingTrip.class));
         return ResponseEntity.ok("Fishing trip added!");
     }
+
+
 
     @PutMapping(value = "/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
@@ -183,4 +200,6 @@ public class FishingTripController extends BaseController {
     public ResponseEntity<List<FishingInstructorFishingTripTableGetDto>> getFishingInstructorFishingTrips() {
         return ResponseEntity.ok(_fishingTripService.getFishingInstructorFishingTrips());
     }
+
+
 }
