@@ -1,0 +1,30 @@
+<div class="panel panel-primary m-1">
+    <div class="panel-heading m-3">
+        <h2>Fishing instructor list</h2>
+    </div>
+    <div class="form-control form-control-lg  m-1">
+        <input class="m-1" [(ngModel)]="SearchString" (keyup)="FilterFn()" placeholder="Filter">
+    </div>
+    <div *ngIf="fishingInstructors?.length" class="table-responsive m-1">
+        <table class="table table-bordered table-striped table-hover" id="cottagesTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>eMail</th>
+                    <th>Phone number</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor='let fishingInstructor of fishingInstructors' (dblclick)="doubleClickFunction(fishingInstructor.id)">
+                    <td>{{fishingInstructor.firstName}} {{fishingInstructor.lastName}}</td>
+                    <td>{{fishingInstructor.email}}</td>
+                    <td>{{fishingInstructor.phoneNumber}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="!fishingInstructors?.length">
+        No fishing instructors registered
+    </div>
+
+</div>

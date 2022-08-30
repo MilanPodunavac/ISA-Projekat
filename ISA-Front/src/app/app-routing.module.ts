@@ -9,8 +9,17 @@ import { NewCottageComponent } from './components/cottage-owner/new-cottage/new-
 import { NewCottageAvailabilityPeriodComponent } from './components/cottage-owner/new-cottage-availability-period/new-cottage-availability-period.component';
 import { NewCottageActionComponent } from './components/cottage-owner/new-cottage-action/new-cottage-action.component'
 import { NewCottageReservationComponent } from './components/cottage-owner/new-cottage-reservation/new-cottage-reservation.component'
+import { HomePageComponent } from './home-page/home-page.component';
+import { CottageListComponent } from './cottage-list/cottage-list.component';
+import { BoatListComponent } from './boat-list/boat-list.component';
+import { FishingInstructorListComponent } from './fishing-instructor-list/fishing-instructor-list.component';
+import { FishingInstructorProfileComponent } from './fishing-instructor-profile/fishing-instructor-profile.component';
+import { CottageProfileComponent } from './cottage-profile/cottage-profile.component';
+import { BoatProfileComponent } from './boat-profile/boat-profile.component';
+import { FishingTripProfileComponent } from './fishing-trip-profile/fishing-trip-profile.component';
 
 const routes: Routes = [
+  { path: '', component: HomePageComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register-provider', component: RegisterProviderComponent },
   { path: 'fishing-instructor', component: FishingInstructorComponent },
@@ -19,7 +28,17 @@ const routes: Routes = [
   { path: 'new-cottage', component: NewCottageComponent },
   { path: 'cottage/:id/new-availability-period', component: NewCottageAvailabilityPeriodComponent },
   { path: 'cottage/:id/new-cottage-action', component: NewCottageActionComponent },
-  { path: 'cottage/:id/new-cottage-reservation', component: NewCottageReservationComponent }
+  { path: 'cottage/:id/new-cottage-reservation', component: NewCottageReservationComponent },
+  { path: 'fishing-instructor-profile', component: FishingInstructorComponent },
+  { path: 'cottage-owner', component: CottageOwnerComponent },
+  { path: 'cottage-owner/cottage/:id', component: CottageOwnerCottageComponent },
+  { path: 'cottage', component: CottageListComponent},
+  { path: 'cottage/:id', component: CottageProfileComponent },
+  { path: 'boat', component: BoatListComponent},
+  { path: 'boat/:id', component: BoatProfileComponent },
+  { path: 'fishing-instructor', component: FishingInstructorListComponent },
+  { path: 'fishing-instructor/:id', component: FishingInstructorProfileComponent },
+  { path: 'fishing-trip/:id', component: FishingTripProfileComponent },
 ];
 
 @NgModule({

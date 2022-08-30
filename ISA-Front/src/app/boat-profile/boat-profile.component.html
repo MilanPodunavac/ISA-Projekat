@@ -1,0 +1,39 @@
+<div class="row">
+    <div class="col-5">
+        <div class="container">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-12">
+                    <div class="card shadow-1-strong" style="border-radius: 1rem;">
+                        <h1>Boat</h1>
+                        <div class="profile">
+                            <p>Name:&ensp;{{boat.name}}</p>
+                            <p>Description:&ensp;{{boat.description}}</p>
+                            <p>Rules:&ensp;{{boat.rules}}</p>
+                            <p>Price per day:&ensp;{{boat.pricePerDay}}</p>
+                            <p>Location:&ensp;{{boat.location.streetName}}, {{boat.location.cityName}}, {{boat.location.countryName}}</p>
+                            <p>Additional services:&ensp;{{boat.additionalServices}}</p>
+                            <p>Owner's name:&ensp;{{boat.boatOwner.firstName}} {{boat.boatOwner.lastName}}</p>
+                            <p>Owner's eMail:&ensp;{{boat.boatOwner.email}}</p>
+                            <p>Owner's phone number:&ensp;{{boat.boatOwner.phoneNumber}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container mb-3">
+        <div *ngIf="boat.pictures?.length" class="table-responsive m-1">
+            <div class="panel-heading m-3">
+                <h2>Pictures</h2>
+            </div>
+            <table class="table table-bordered table-striped table-hover" id="additionalServicesTable">
+                <tbody>
+                    <tr *ngFor='let picture of boat.pictures'>
+                        <td><img [src]="picture.data" class="text-center mb-3" style="max-width: 700px;max-height: 700px;" alt="..."></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <h3 *ngIf="!boat.pictures?.length">No pictures recorded</h3>
+    </div>
+</div>

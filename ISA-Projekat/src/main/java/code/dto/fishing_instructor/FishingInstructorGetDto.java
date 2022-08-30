@@ -1,8 +1,6 @@
 package code.dto.fishing_instructor;
 
-import code.model.Client;
-import code.model.FishingInstructorAvailablePeriod;
-import code.model.FishingTrip;
+import code.model.*;
 import code.model.cottage.CottageReservationTag;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,16 +18,15 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FishingInstructorGetDto {
-    @NotBlank(message = "Id is required")
     private Integer id;
     private String firstName;
     private String lastName;
     private String email;
-    private String password;
     private String phoneNumber;
     private boolean enabled;
     private String reasonForRegistration;
     private String biography;
+    private Location location;
     private Set<FishingTrip> fishingTrips;
     private Set<FishingInstructorAvailablePeriod> fishingInstructorAvailablePeriods;
     private Set<Client> subscribers;

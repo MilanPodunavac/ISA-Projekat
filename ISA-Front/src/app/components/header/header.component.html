@@ -1,4 +1,18 @@
 <mat-toolbar color="warn" class="navbar">
+    <div *ngIf="role === null">
+        <button mat-button id="base" [routerLink]="['']">Home</button>
+        <button mat-button id="base" [routerLink]="['cottage']">Cottages</button>
+        <button mat-button id="base" [routerLink]="['boat']">Boats</button>
+        <button mat-button id="base" [routerLink]="['fishing-instructor']">Fishing instructors</button>
+    </div>
+    
+    <mat-menu #base="matMenu">
+        <button mat-menu-item [routerLink]="['']">Home</button>
+        <button mat-menu-item [routerLink]="['pharmacy-profiles']">All pharmacies</button>
+        <button mat-menu-item [routerLink]="['promotions']">Promotions</button>
+        <button mat-menu-item [routerLink]="['specifications']">Medicine specification</button>
+    </mat-menu>
+
     <button *ngIf="role === 'ROLE_FISHING_INSTRUCTOR'" mat-button [routerLink]="['fishing-instructor']">Home</button>
 
     <button *ngIf="role === 'ROLE_ADMIN'" mat-button id="facility" [matMenuTriggerFor]="facility">Our Facility</button>
@@ -21,5 +35,7 @@
     <span class="example-spacer-notification"></span>
 
     <button *ngIf="role === null" mat-button [routerLink]="['login']">Log in</button>
+    <button *ngIf="role === null" mat-button [routerLink]="['register-provider']">Register</button>
+    <button *ngIf="role !== null" mat-button [routerLink]="['profile']">My profile</button>
     <button *ngIf="role !== null" mat-button (click)="logout()">Log out</button>
 </mat-toolbar>

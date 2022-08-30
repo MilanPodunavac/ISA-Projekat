@@ -37,6 +37,14 @@ import { NewCottageComponent } from './components/cottage-owner/new-cottage/new-
 import { NewCottageAvailabilityPeriodComponent } from './components/cottage-owner/new-cottage-availability-period/new-cottage-availability-period.component';
 import { NewCottageActionComponent } from './components/cottage-owner/new-cottage-action/new-cottage-action.component';
 import { NewCottageReservationComponent } from './components/cottage-owner/new-cottage-reservation/new-cottage-reservation.component';
+import { HomePageComponent } from './home-page/home-page.component';
+import { CottageListComponent } from './cottage-list/cottage-list.component';
+import { BoatListComponent } from './boat-list/boat-list.component';
+import { FishingInstructorListComponent } from './fishing-instructor-list/fishing-instructor-list.component';
+import { FishingInstructorProfileComponent } from './fishing-instructor-profile/fishing-instructor-profile.component';
+import { BoatProfileComponent } from './boat-profile/boat-profile.component';
+import { CottageProfileComponent } from './cottage-profile/cottage-profile.component';
+import { FishingTripProfileComponent } from './fishing-trip-profile/fishing-trip-profile.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +59,14 @@ import { NewCottageReservationComponent } from './components/cottage-owner/new-c
     NewCottageAvailabilityPeriodComponent,
     NewCottageActionComponent,
     NewCottageReservationComponent,
+    HomePageComponent,
+    CottageListComponent,
+    BoatListComponent,
+    FishingInstructorListComponent,
+    FishingInstructorProfileComponent,
+    BoatProfileComponent,
+    CottageProfileComponent,
+    FishingTripProfileComponent,
   ],
   imports: [
     BrowserModule,
@@ -74,7 +90,7 @@ import { NewCottageReservationComponent } from './components/cottage-owner/new-c
     MaterialModule,
     FormsModule,
     HttpClientModule,
-    ReactiveFormsModule,
+    ReactiveFormsModule
   ],
   providers: [
     {

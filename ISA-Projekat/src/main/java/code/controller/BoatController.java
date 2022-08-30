@@ -128,6 +128,8 @@ public class BoatController extends BaseController {
         return ResponseEntity.ok("Reservation added");
     }
 
+    @PutMapping(value = "{boatId}/reservation/{userId}")
+
     @PostMapping(value = "{id}/action")
     @PreAuthorize("hasRole('ROLE_BOAT_OWNER')")
     public ResponseEntity<String> addAction(@Valid @RequestBody NewBoatActionDto dto, @PathVariable Integer id, BindingResult  result){

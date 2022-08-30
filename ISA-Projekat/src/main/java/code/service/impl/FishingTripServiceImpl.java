@@ -10,9 +10,8 @@ import code.exceptions.fishing_trip.*;
 import code.exceptions.fishing_trip.quick_reservation.*;
 import code.exceptions.fishing_trip.reservation.*;
 import code.model.*;
-import code.model.base.Action;
-import code.model.base.OwnerCommentary;
-import code.model.base.Reservation;
+import code.model.base.*;
+import code.model.cottage.Cottage;
 import code.repository.*;
 import code.service.FishingTripService;
 import code.service.UserService;
@@ -35,6 +34,8 @@ import java.util.*;
 
 @Service
 public class FishingTripServiceImpl implements FishingTripService {
+    private final String FISHING_TRIP_PICTURE_DIRECTORY = "fishing_trip_images";
+
     private final FishingInstructorRepository _fishingInstructorRepository;
     private final FishingTripRepository _fishingTripRepository;
     private final FishingTripPictureRepository _fishingTripPictureRepository;
@@ -77,6 +78,15 @@ public class FishingTripServiceImpl implements FishingTripService {
     public FishingTrip save(FishingTrip fishingTrip) {
         setInstructor(fishingTrip);
         return _fishingTripRepository.save(fishingTrip);
+    }
+
+    @Override
+    public FishingTrip getFishingTrip(Integer id) throws EntityNotFoundException {
+        FishingTrip fishingTrip = _fishingTripRepository.findById(id).orElse(null);
+        if(fishingTrip == null) {
+            throw new EntityNotFoundException("Fishing trip doesn't exist!");
+        }
+        return fishingTrip;
     }
 
     @Transactional
@@ -715,5 +725,18 @@ public class FishingTripServiceImpl implements FishingTripService {
                 _fishingTripQuickReservationRepository.save(fishingTripQuickReservation);
             }
         }
+    }
+
+    @Override
+    public List<PictureBase64> getFishingTripImagesAsBase64(int id) throws EntityNotFoundException, IOException {
+        FishingTrip fishingTrip = _fishingTripRepository.findById(id).orElse(null);
+        if(fishingTrip == null) {
+            throw new EntityNotFoundException("Fishing trip doesn't exist!");
+        }
+        List<PictureBase64> pictures = new ArrayList<>();
+        for(Picture pic: fishingTrip.getPictures()){
+            pictures.add(new PictureBase64(FileUploadUtil.convertToBase64(FISHING_TRIP_PICTURE_DIRECTORY, fishingTrip.getId() + "_" + pic.getName()), pic.getId()));
+        }
+        return pictures;
     }
 }

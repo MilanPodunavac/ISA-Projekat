@@ -1,0 +1,50 @@
+<div class="row">
+    <div class="col-5">
+        <div class="container">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-12">
+                    <div class="card shadow-1-strong" style="border-radius: 1rem;">
+                        <h1>Fishing instructor</h1>
+                        <div class="profile">
+                            <p>First name:&ensp;{{fishingInstructor.firstName}}</p>
+                            <p>Last name:&ensp;{{fishingInstructor.lastName}}</p>
+                            <p>Email:&ensp;{{fishingInstructor.email}}</p>
+                            <p>Street address:&ensp;{{fishingInstructor.location.streetName}}</p>
+                            <p>City:&ensp;{{fishingInstructor.location.cityName}}</p>
+                            <p>Country:&ensp;{{fishingInstructor.location.countryName}}</p>
+                            <p>Phone number:&ensp;{{fishingInstructor.phoneNumber}}</p>
+                            <p>Biography:&ensp;{{fishingInstructor.biography}}</p>
+                            <p>Subscriber number:&ensp;{{fishingInstructor.subscribers.length}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="fishingInstructor.fishingTrips?.length" class="table-responsive m-1">
+        <table class="table table-bordered table-striped table-hover" id="fishingTripsTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Rules</th>
+                    <th>Equipment</th>
+                    <th>Max people</th>
+                    <th>Cost per day</th>
+                    <th>Location</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor='let fishingTrip of fishingInstructor.fishingTrips' (dblclick)="doubleClickFunction(fishingTrip.id)">
+                    <td>{{fishingTrip.name}}</td>
+                    <td>{{fishingTrip.description}}</td>
+                    <td>{{fishingTrip.rules}}</td>
+                    <td>{{fishingTrip.equipment}}</td>
+                    <td>{{fishingTrip.maxPeople}}</td>
+                    <td>{{fishingTrip.costPerDay}}</td>
+                    <td>{{fishingTrip.location.streetName}}, {{fishingTrip.location.cityName}}, {{fishingTrip.location.countryName}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

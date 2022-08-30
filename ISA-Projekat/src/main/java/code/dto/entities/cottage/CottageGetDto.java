@@ -1,5 +1,6 @@
 package code.dto.entities.cottage;
 
+import code.model.Location;
 import code.model.base.PictureBase64;
 import code.model.cottage.CottageOwner;
 import code.model.cottage.CottageReservationTag;
@@ -21,11 +22,7 @@ public class CottageGetDto {
     private String name;
     private String description;
     private String rules;
-    private double longitude;
-    private double latitude;
-    private String streetName;
-    private String cityName;
-    private String countryName;
+    private Location location;
     private int roomNumber;
     private int bedNumber;
     private int pricePerDay;

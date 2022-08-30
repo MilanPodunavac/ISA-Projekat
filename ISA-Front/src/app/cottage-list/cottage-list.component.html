@@ -1,0 +1,39 @@
+<div class="panel panel-primary m-1">
+    <div class="panel-heading m-3">
+        <h2>Cottage list</h2>
+    </div>
+    <div class="form-control form-control-lg  m-1">
+        <input class="m-1" [(ngModel)]="SearchString" (keyup)="FilterFn()" placeholder="Filter">
+    </div>
+    <div *ngIf="cottages?.length" class="table-responsive m-1">
+        <table class="table table-bordered table-striped table-hover" id="cottagesTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Room number</th>
+                    <th>Bed number</th>
+                    <th>Price per day</th>
+                    <th>Owner</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor='let cottage of cottages' (dblclick)="doubleClickFunction(cottage.id)">
+                    <td>{{cottage.name}}</td>
+                    <td>{{cottage.location.streetName}}, {{cottage.location.cityName}}, {{cottage.location.countryName}}</td>
+                    <td>{{cottage.roomNumber}}</td>
+                    <td>{{cottage.bedNumber}}</td>
+                    <td>{{cottage.pricePerDay}}</td>
+                    <td>{{cottage.cottageOwner.firstName}} {{cottage.cottageOwner.lastName}}</td>
+                    <td>{{cottage.description}}</td>
+                    <td>{{cottage.additionalServices}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="!cottages?.length">
+        No cottages registered
+    </div>
+
+</div>

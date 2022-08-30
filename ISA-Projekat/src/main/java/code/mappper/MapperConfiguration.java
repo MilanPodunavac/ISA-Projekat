@@ -261,11 +261,11 @@ public class MapperConfiguration {
         PropertyMap<Cottage, CottageGetDto> cottageToCottageGetDtoPropMap = new PropertyMap<Cottage, CottageGetDto>() {
             @Override
             protected void configure() {
-                map().setLatitude(source.getLocation().getLatitude());
-                map().setLongitude(source.getLocation().getLongitude());
-                map().setStreetName(source.getLocation().getStreetName());
-                map().setCityName(source.getLocation().getCityName());
-                map().setCountryName(source.getLocation().getCountryName());
+                //map().setLatitude(source.getLocation().getLatitude());
+                //map().setLongitude(source.getLocation().getLongitude());
+                //map().setStreetName(source.getLocation().getStreetName());
+                //map().setCityName(source.getLocation().getCityName());
+                //map().setCountryName(source.getLocation().getCountryName());
             }
         };
 
