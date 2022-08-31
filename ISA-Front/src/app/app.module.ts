@@ -51,6 +51,8 @@ import { CottageReservationOwnerCommentaryComponent } from './components/cottage
 import { CottageActionOwnerCommentaryComponent } from './components/cottage-owner/cottage-action-owner-commentary/cottage-action-owner-commentary.component';
 import { CottageActionViewComponent } from './components/cottage-owner/cottage-action-view/cottage-action-view.component';
 import { ProfitGraphComponent } from './components/profit-graph/profit-graph.component';
+import { ChangePersonalDataComponent } from './components/change-personal-data/change-personal-data.component';
+import { ChangePasswordComponent } from './components/change-password/change-password.component';
 
 @NgModule({
   declarations: [
@@ -79,6 +81,8 @@ import { ProfitGraphComponent } from './components/profit-graph/profit-graph.com
     CottageActionOwnerCommentaryComponent,
     CottageActionViewComponent,
     ProfitGraphComponent,
+    ChangePersonalDataComponent,
+    ChangePasswordComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ClientGet } from 'src/app/model/client-get';
 import { FishingInstructorAvailablePeriodGet } from 'src/app/model/fishing-instructor-available-period-get.model';
 import { FishingInstructorGet } from 'src/app/model/fishing-instructor-get';
@@ -22,7 +23,7 @@ export class ProfileComponent implements OnInit {
     dataSourceFishingInstructorAvailablePeriods: FishingInstructorAvailablePeriodGet[];
     user: any;
     
-    constructor(private fishingInstructorService: FishingInstructorService, private clientService: ClientService, private loyaltyProgramService: LoyaltyProgramService, private _usersService: UserService) {
+    constructor(private fishingInstructorService: FishingInstructorService, private clientService: ClientService, private loyaltyProgramService: LoyaltyProgramService, private _usersService: UserService, private router: Router,) {
         
         this.role = localStorage.getItem('role');        
         
@@ -64,4 +65,15 @@ export class ProfileComponent implements OnInit {
     ngOnInit(): void {
     }
 
+    public goToChangePersonalData(): void {
+        this.router.navigate(['change-personal-data']).then(() => {
+            window.location.reload();
+        });
+    }
+
+    public goToChangePassword(): void {
+        this.router.navigate(['change-password']).then(() => {
+            window.location.reload();
+        });
+    }
 }
