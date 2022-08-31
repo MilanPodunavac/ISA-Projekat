@@ -22,6 +22,8 @@ import { CottageReservationViewComponent } from './components/cottage-owner/cott
 import { CottageReservationOwnerCommentaryComponent } from './components/cottage-owner/cottage-reservation-owner-commentary/cottage-reservation-owner-commentary.component';
 import { CottageActionOwnerCommentaryComponent } from './components/cottage-owner/cottage-action-owner-commentary/cottage-action-owner-commentary.component';
 import { CottageActionViewComponent } from './components/cottage-owner/cottage-action-view/cottage-action-view.component';
+import { ChangePersonalDataComponent } from './components/change-personal-data/change-personal-data.component';
+import { ChangePasswordComponent } from './components/change-password/change-password.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -48,6 +50,8 @@ const routes: Routes = [
   { path: 'cottage/:id/reservation/:resId/new-commentary', component: CottageReservationOwnerCommentaryComponent },
   { path: 'cottage/:id/action/:actId/new-commentary', component: CottageActionOwnerCommentaryComponent },
   { path: 'cottage/:id/action/:actId', component: CottageActionViewComponent },
+  { path: 'change-personal-data', component: ChangePersonalDataComponent },
+  { path: 'change-password', component: ChangePasswordComponent },
 ];
 
 @NgModule({
