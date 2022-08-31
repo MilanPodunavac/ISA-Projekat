@@ -48,6 +48,11 @@ export class LoginComponent implements OnInit {
                             window.location.reload();
                         });
                     }
+                    if (data === "ROLE_CLIENT") {
+                        this.router.navigate(['']).then(() => {
+                            window.location.reload();
+                        });
+                    }
                 });
             },
             error: () => {

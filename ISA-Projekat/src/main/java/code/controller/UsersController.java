@@ -41,6 +41,8 @@ public class UsersController extends BaseController {
         _userService = userService;
     }
 
+
+
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updateUserPersonalInfo(@Valid @RequestBody UpdateUserPersonalInfoDto dto, BindingResult result, @RequestHeader(HttpHeaders.AUTHORIZATION) String auth){
         if(result.hasErrors()){

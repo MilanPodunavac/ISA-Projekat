@@ -6,6 +6,13 @@
         <button mat-button id="base" [routerLink]="['fishing-instructor']">Fishing instructors</button>
     </div>
 
+    <div *ngIf="role === 'ROLE_CLIENT'">
+        <button mat-button id="base" [routerLink]="['']">Home</button>
+        <button mat-button id="base" [routerLink]="['cottage']">Cottages</button>
+        <button mat-button id="base" [routerLink]="['boat']">Boats</button>
+        <button mat-button id="base" [routerLink]="['fishing-instructor']">Fishing instructors</button>
+    </div>
+
     <div *ngIf="role === 'ROLE_COTTAGE_OWNER'">
         <button mat-button id="base" [routerLink]="['']">Home</button>
         <button mat-button id="base" [routerLink]="['cottage']">My Cottages</button>
