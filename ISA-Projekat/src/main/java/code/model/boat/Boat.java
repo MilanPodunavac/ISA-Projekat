@@ -105,6 +105,9 @@ public class Boat extends SaleEntity {
       for(Client client : client){
          client.getSaleEntity().remove(this);
       }
+      for(Review rev : review){
+         rev.setSaleEntity(null);
+      }
       client.clear();
       review.clear();
       additionalServices.clear();
