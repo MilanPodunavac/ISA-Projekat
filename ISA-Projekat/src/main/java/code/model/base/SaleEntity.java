@@ -107,4 +107,13 @@ public abstract class SaleEntity {
       }
       return false;
    }
+
+   public double calculateAverageGrade(){
+      if(review == null || review.size() == 0)return -1;
+      double sum = 0;
+      for(Review rev: review){
+         sum += rev.getGrade();
+      }
+      return sum/review.size();
+   }
 }

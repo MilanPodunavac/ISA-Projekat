@@ -22,6 +22,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,8 +42,6 @@ public class UsersController extends BaseController {
         super(mapper, tokenUtils);
         _userService = userService;
     }
-
-
 
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updateUserPersonalInfo(@Valid @RequestBody UpdateUserPersonalInfoDto dto, BindingResult result, @RequestHeader(HttpHeaders.AUTHORIZATION) String auth){
@@ -148,6 +148,16 @@ public class UsersController extends BaseController {
             return ResponseEntity.ok(retVal);
         }catch (Exception ex){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Oops, something went wrong");
+        }
+    }
+
+    @GetMapping()
+    public ResponseEntity<Object> getLoggedInUser(){
+        try{
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            return ResponseEntity.ok(auth.getPrincipal());
+        }catch (Exception ex){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Log in please");
         }
     }
 }

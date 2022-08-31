@@ -264,6 +264,7 @@ public class MapperConfiguration {
             @Override
             protected void configure() {
                 //map().setLocation(destination.getLocation());
+                map().setGrade(source.calculateAverageGrade());
             }
         };
 

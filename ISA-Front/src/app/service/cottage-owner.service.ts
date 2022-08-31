@@ -16,4 +16,7 @@ export class CottageOwnerService {
     headers = headers.set('Authorization', 'Bearer ' + localStorage.getItem("jwt"));
     return this._httpClient.get<any[]>(this._APIUrl + "/cottageOwner/cottages", {headers: headers})
   }
+  getProfit(): Observable<any>{
+    return this._httpClient.get<any>(this._APIUrl+`/cottageOwner/profit`);
+  }
 }

@@ -35,4 +35,5 @@ public class CottageGetDto {
     private List<AvailabilityPeriodGetDto> availabilityPeriods;
     private List<CottageReservationGetDto> cottageReservations;
     private List<CottageActionGetDto> cottageActions;
+    private double grade;
 }

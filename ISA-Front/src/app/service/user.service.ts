@@ -15,4 +15,8 @@ export class UserService {
 	public loggedInRole(): Observable<string> {
 		return this.http.get(this.apiUrl + '/role', { responseType: 'text'});
 	}
+
+	getLoggedInUser(): Observable<any>{
+		return this.http.get<any>(this.apiUrl);
+	}
 }

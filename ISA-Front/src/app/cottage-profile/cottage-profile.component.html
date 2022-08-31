@@ -7,6 +7,8 @@
                         <h1>Cottage</h1>
                         <div class="profile">
                             <p>Name:&ensp;{{cottage.name}}</p>
+                            <p *ngIf="cottage.grade !== -1">Average grade:&ensp;{{cottage.grade}}</p>
+                            <p *ngIf="cottage.grade === -1">Average grade:&ensp;No reviews</p>
                             <p>Description:&ensp;{{cottage.description}}</p>
                             <p>Rules:&ensp;{{cottage.rules}}</p>
                             <p>Room number:&ensp;{{cottage.roomNumber}}</p>

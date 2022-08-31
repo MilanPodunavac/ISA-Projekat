@@ -15,5 +15,5 @@ export class CottageGet {
     availabilityPeriods: any[];
     cottageReservations: any[];
     cottageActions: any[];
-
+    grade: any;
 }

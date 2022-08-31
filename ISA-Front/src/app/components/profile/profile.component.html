@@ -83,3 +83,30 @@
         </div>
     </div>
 </div>
+<div *ngIf="role === 'ROLE_COTTAGE_OWNER'" class="container">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-6">
+            <div class="card shadow-1-strong" style="border-radius: 1rem;">
+                <h1>Profile</h1>
+                <div class="profile">
+                    <p>Name:&ensp;{{user.firstName}} {{user.lastName}}</p>
+                    <p>Address:&ensp;{{user.location.streetName}}, {{user.location.cityName}}, {{user.location.countryName}}</p>
+                    <p>Email:&ensp;{{user.email}}</p>
+                    <p>Phone number:&ensp;{{user.phoneNumber}}</p>
+                    <p>Loyalty points:&ensp;{{user.loyaltyPoints}}/{{loyaltyProgramCategoryAboveInstructor.pointsNeeded}}</p>
+                    <p>Category:&ensp;{{user.category.category}}</p>
+                    <p>System tax lesser by:&ensp;{{user.category.lesserSystemTaxPercentage}}%</p>
+                </div>
+                <div class="profile-buttons">
+                    <button mat-raised-button color="primary">Change personal data</button>
+                </div>
+                <div class="profile-buttons">
+                    <button mat-raised-button color="primary">Change password</button>
+                </div>
+                <div class="profile-buttons">
+                    <button mat-raised-button color="primary">Send account deletion request</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

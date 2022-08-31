@@ -50,6 +50,7 @@ import { CottageReservationViewComponent } from './components/cottage-owner/cott
 import { CottageReservationOwnerCommentaryComponent } from './components/cottage-owner/cottage-reservation-owner-commentary/cottage-reservation-owner-commentary.component';
 import { CottageActionOwnerCommentaryComponent } from './components/cottage-owner/cottage-action-owner-commentary/cottage-action-owner-commentary.component';
 import { CottageActionViewComponent } from './components/cottage-owner/cottage-action-view/cottage-action-view.component';
+import { ProfitGraphComponent } from './components/profit-graph/profit-graph.component';
 
 @NgModule({
   declarations: [
@@ -77,6 +78,7 @@ import { CottageActionViewComponent } from './components/cottage-owner/cottage-a
     CottageReservationOwnerCommentaryComponent,
     CottageActionOwnerCommentaryComponent,
     CottageActionViewComponent,
+    ProfitGraphComponent,
   ],
   imports: [
     BrowserModule,
@@ -112,4 +114,5 @@ import { CottageActionViewComponent } from './components/cottage-owner/cottage-a
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

@@ -22,14 +22,15 @@ import { CottageReservationViewComponent } from './components/cottage-owner/cott
 import { CottageReservationOwnerCommentaryComponent } from './components/cottage-owner/cottage-reservation-owner-commentary/cottage-reservation-owner-commentary.component';
 import { CottageActionOwnerCommentaryComponent } from './components/cottage-owner/cottage-action-owner-commentary/cottage-action-owner-commentary.component';
 import { CottageActionViewComponent } from './components/cottage-owner/cottage-action-view/cottage-action-view.component';
+import { ProfitGraphComponent } from './components/profit-graph/profit-graph.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register-provider', component: RegisterProviderComponent },
   { path: 'fishing-instructor-home', component: FishingInstructorComponent },
-  { path:'cottage-owner', component: CottageOwnerComponent },
-  { path:'cottage-owner/cottage/:id', component: CottageOwnerCottageComponent },
+  { path: 'cottage-owner', component: CottageOwnerComponent },
+  { path: 'cottage-owner/cottage/:id', component: CottageOwnerCottageComponent },
   { path: 'new-cottage', component: NewCottageComponent },
   { path: 'cottage/:id/new-availability-period', component: NewCottageAvailabilityPeriodComponent },
   { path: 'cottage/:id/new-cottage-action', component: NewCottageActionComponent },
@@ -48,6 +49,7 @@ const routes: Routes = [
   { path: 'cottage/:id/reservation/:resId/new-commentary', component: CottageReservationOwnerCommentaryComponent },
   { path: 'cottage/:id/action/:actId/new-commentary', component: CottageActionOwnerCommentaryComponent },
   { path: 'cottage/:id/action/:actId', component: CottageActionViewComponent },
+  { path: 'profit', component: ProfitGraphComponent },
 ];
 
 @NgModule({
