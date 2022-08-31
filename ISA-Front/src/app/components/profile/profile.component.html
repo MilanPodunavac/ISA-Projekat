@@ -5,7 +5,7 @@
                 <h1>Profile</h1>
                 <div class="profile">
                     <p>Name:&ensp;{{fishingInstructorData.firstName}} {{fishingInstructorData.lastName}}</p>
-                    <p>Location:&ensp;{{fishingInstructorData.location.streetName}}, {{fishingInstructorData.location.cityName}}, {{fishingInstructorData.location.countryName}}</p>
+                    <p>Address:&ensp;{{fishingInstructorData.location.streetName}}, {{fishingInstructorData.location.cityName}}, {{fishingInstructorData.location.countryName}}</p>
                     <p>Email:&ensp;{{fishingInstructorData.email}}</p>
                     <p>Phone number:&ensp;{{fishingInstructorData.phoneNumber}}</p>
                     <p>Biography:&ensp;{{fishingInstructorData.biography}}</p>
@@ -14,9 +14,6 @@
                     <p>Loyalty points:&ensp;{{fishingInstructorData.loyaltyPoints}}/{{loyaltyProgramCategoryAboveInstructor.pointsNeeded}}</p>
                     <p>Category:&ensp;{{fishingInstructorData.category.category}}</p>
                     <p>System tax lesser by:&ensp;{{fishingInstructorData.category.lesserSystemTaxPercentage}}%</p>
-                </div>
-                <div class="profile-buttons">
-                    <button mat-raised-button color="primary">Add availability period</button>
                 </div>
                 <div class="profile-buttons">
                     <button mat-raised-button color="primary">Generate business report</button>
@@ -29,6 +26,32 @@
                 </div>
                 <div class="profile-buttons">
                     <button mat-raised-button color="primary">Send account deletion request</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="role === 'ROLE_FISHING_INSTRUCTOR'" style="margin-top: 50px;" class="container">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-6">
+            <div class="card shadow-1-strong" style="border-radius: 1rem;">
+                <h1 style="padding: 30px;">Available periods</h1>
+                <table mat-table [dataSource]="dataSourceFishingInstructorAvailablePeriods" class="mat-elevation-z4">
+                    <ng-container matColumnDef="available_from">
+                        <th class="text-center" mat-header-cell *matHeaderCellDef> Available from </th>
+                        <td mat-cell *matCellDef="let element"> {{element.availableFrom | date:'dd.MM.yyyy.'}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="available_to">
+                        <th class="text-center" mat-header-cell *matHeaderCellDef> Available to </th>
+                        <td mat-cell *matCellDef="let element"> {{element.availableTo | date:'dd.MM.yyyy.'}} </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumnsFishingInstructorAvailablePeriods"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsFishingInstructorAvailablePeriods;"></tr>
+                </table>
+                <div class="profile-buttons">
+                    <button style="margin-right: 20px;" mat-raised-button color="primary">Add availability period</button>
                 </div>
             </div>
         </div>

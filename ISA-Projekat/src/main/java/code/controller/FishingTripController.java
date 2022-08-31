@@ -220,4 +220,24 @@ public class FishingTripController extends BaseController {
                 .map(entity -> _mapper.map(entity, FishingReservationGetDto.class))
                 .collect(Collectors.toList()));
     }
+
+    @GetMapping(value = "/fishingInstructorQuickReservations")
+    @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
+    public ResponseEntity<List<FishingQuickReservationGetDto>> getFishingInstructorQuickReservations() {
+        return ResponseEntity.ok(_fishingTripService.getFishingInstructorQuickReservations().stream()
+                .map(entity -> _mapper.map(entity, FishingQuickReservationGetDto.class))
+                .collect(Collectors.toList()));
+    }
+
+    @GetMapping(value = "/{id}/freeQuickReservations")
+    @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
+    public ResponseEntity<List<FishingQuickReservationGetDto>> getFishingTripFreeQuickReservations(@PathVariable Integer id) {
+        try {
+            return ResponseEntity.ok(_fishingTripService.getFishingTripFreeQuickReservations(id).stream()
+                    .map(entity -> _mapper.map(entity, FishingQuickReservationGetDto.class))
+                    .collect(Collectors.toList()));
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ClientGet } from 'src/app/model/client-get';
+import { FishingInstructorAvailablePeriodGet } from 'src/app/model/fishing-instructor-available-period-get.model';
 import { FishingInstructorGet } from 'src/app/model/fishing-instructor-get';
 import { LoyaltyProgramProvider } from 'src/app/model/loyalty-program-provider.model';
 import { ClientService } from 'src/app/service/client.service';
@@ -16,6 +17,8 @@ export class ProfileComponent implements OnInit {
     fishingInstructorData: FishingInstructorGet;
     clientData: ClientGet;
     loyaltyProgramCategoryAboveInstructor: LoyaltyProgramProvider;
+    displayedColumnsFishingInstructorAvailablePeriods: string[] = ['available_from', 'available_to'];
+    dataSourceFishingInstructorAvailablePeriods: FishingInstructorAvailablePeriodGet[];
     
     constructor(private fishingInstructorService: FishingInstructorService, private clientService: ClientService, private loyaltyProgramService: LoyaltyProgramService) {
         
@@ -28,6 +31,10 @@ export class ProfileComponent implements OnInit {
                 this.loyaltyProgramService.getOneHigherLoyaltyProviderCategory(this.fishingInstructorData.category.id).subscribe(data => {
                     this.loyaltyProgramCategoryAboveInstructor = data;
                 });
+            });
+
+            this.fishingInstructorService.getFishingInstructorAvailablePeriods().subscribe(data => {
+                this.dataSourceFishingInstructorAvailablePeriods = data;
             });
         }
         if(this.role === 'ROLE_CLIENT'){

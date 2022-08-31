@@ -1,5 +1,6 @@
 package code.service;
 
+import code.dto.fishing_trip.FishingQuickReservationGetDto;
 import code.exceptions.entities.EntityNotFoundException;
 import code.exceptions.entities.EntityNotOwnedException;
 import code.exceptions.entities.ReservationOrActionAlreadyCommented;
@@ -15,6 +16,7 @@ import code.model.base.PictureBase64;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 public interface FishingTripService {
@@ -31,4 +33,6 @@ public interface FishingTripService {
     List<FishingTrip> getSearchedFishingTrips(String searchText);
     List<FishingTripReservation> getFishingInstructorReservations();
     List<PictureBase64> getFishingTripImagesAsBase64(int id) throws EntityNotFoundException, IOException;
+    List<FishingTripQuickReservation> getFishingInstructorQuickReservations();
+    List<FishingTripQuickReservation> getFishingTripFreeQuickReservations(Integer id) throws EntityNotFoundException;
 }

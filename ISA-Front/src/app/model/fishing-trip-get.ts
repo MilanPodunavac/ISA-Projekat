@@ -1,3 +1,5 @@
+import { FishingActionGet } from "./fishing-action-get.model";
+import { FishingInstructorGet } from "./fishing-instructor-get";
 import { LocationGet } from "./location-get";
 
 export class FishingTripGet {
@@ -10,8 +12,8 @@ export class FishingTripGet {
     costPerDay: number;
     percentageInstructorKeepsIfReservationCancelled: number;
     location: LocationGet;
-    fishingInstructor: any;
+    fishingInstructor: FishingInstructorGet;
     pictures: any[];
-    fishingTripQuickReservations: any[];
-    fishingTripReservationTags: any[];
+    fishingTripQuickReservations: FishingActionGet[];
+    fishingTripReservationTags: string[];
 }

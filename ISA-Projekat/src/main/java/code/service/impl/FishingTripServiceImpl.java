@@ -30,7 +30,7 @@ import java.util.*;
 
 @Service
 public class FishingTripServiceImpl implements FishingTripService {
-    private final String FISHING_TRIP_PICTURE_DIRECTORY = "fishing_trip_images";
+    private final String FISHING_TRIP_PICTURE_DIRECTORY = "fishing_trip_pictures";
 
     private final FishingInstructorRepository _fishingInstructorRepository;
     private final FishingTripRepository _fishingTripRepository;
@@ -627,6 +627,46 @@ public class FishingTripServiceImpl implements FishingTripService {
         return instructorFishingTripReservations;
     }
 
+    @Override
+    public List<PictureBase64> getFishingTripImagesAsBase64(int id) throws EntityNotFoundException, IOException {
+        FishingTrip fishingTrip = _fishingTripRepository.findById(id).orElse(null);
+        if(fishingTrip == null) {
+            throw new EntityNotFoundException("Fishing trip doesn't exist!");
+        }
+        List<PictureBase64> pictures = new ArrayList<>();
+        for(FishingTripPicture pic: fishingTrip.getPictures()){
+            pictures.add(new PictureBase64(FileUploadUtil.convertToBase64(FISHING_TRIP_PICTURE_DIRECTORY, pic.getId() + "_" + pic.getName()), pic.getId()));
+        }
+        return pictures;
+    }
+
+    @Override
+    public List<FishingTripQuickReservation> getFishingInstructorQuickReservations() {
+        List<Integer> instructorFishingTripIds = _fishingTripRepository.findByFishingInstructor(getLoggedInFishingInstructor().getId());
+        List<FishingTripQuickReservation> instructorFishingTripQuickReservations = _fishingTripQuickReservationRepository.findByFishingTripIdIn(instructorFishingTripIds);
+
+        Collections.sort(instructorFishingTripQuickReservations, Comparator.comparing(FishingTripQuickReservation::getStart));
+        return instructorFishingTripQuickReservations;
+    }
+
+    @Override
+    public List<FishingTripQuickReservation> getFishingTripFreeQuickReservations(Integer id) throws EntityNotFoundException {
+        Optional<FishingTrip> fishingTrip = _fishingTripRepository.findById(id);
+        if(!fishingTrip.isPresent()) {
+            throw new EntityNotFoundException("Fishing trip doesn't exist!");
+        }
+
+        List<FishingTripQuickReservation> fishingTripQuickReservations = _fishingTripQuickReservationRepository.findByFishingTripId(id);
+        List<FishingTripQuickReservation> fishingTripFreeQuickReservations = new ArrayList<>();
+        for (FishingTripQuickReservation fishingTripQuickReservation : fishingTripQuickReservations) {
+            if (fishingTripQuickReservation.getClient() == null) {
+                fishingTripFreeQuickReservations.add(fishingTripQuickReservation);
+            }
+        }
+
+        return fishingTripFreeQuickReservations;
+    }
+
     @Scheduled(cron="0 0 1 * * *")
     @Transactional
     public void deleteNonValidQuickReservations() {
@@ -703,18 +743,5 @@ public class FishingTripServiceImpl implements FishingTripService {
                 _fishingTripQuickReservationRepository.save(fishingTripQuickReservation);
             }
         }
-    }
-
-    @Override
-    public List<PictureBase64> getFishingTripImagesAsBase64(int id) throws EntityNotFoundException, IOException {
-        FishingTrip fishingTrip = _fishingTripRepository.findById(id).orElse(null);
-        if(fishingTrip == null) {
-            throw new EntityNotFoundException("Fishing trip doesn't exist!");
-        }
-        List<PictureBase64> pictures = new ArrayList<>();
-        for(FishingTripPicture pic: fishingTrip.getPictures()){
-            pictures.add(new PictureBase64(FileUploadUtil.convertToBase64(FISHING_TRIP_PICTURE_DIRECTORY, fishingTrip.getId() + "_" + pic.getName()), pic.getId()));
-        }
-        return pictures;
     }
 }

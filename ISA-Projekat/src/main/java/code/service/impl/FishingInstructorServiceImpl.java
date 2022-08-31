@@ -143,4 +143,9 @@ public class FishingInstructorServiceImpl implements FishingInstructorService {
     public FishingInstructor getLoggedInInstructor() {
         return getLoggedInFishingInstructor();
     }
+
+    @Override
+    public List<FishingInstructorAvailablePeriod> getFishingInstructorAvailablePeriods() {
+        return _fishingInstructorAvailablePeriodRepository.findByFishingInstructor(getLoggedInFishingInstructor().getId());
+    }
 }

@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { FishingInstructorAvailablePeriodGet } from '../model/fishing-instructor-available-period-get.model';
 import { FishingInstructorGet } from '../model/fishing-instructor-get';
 
 @Injectable({
@@ -23,5 +24,9 @@ export class FishingInstructorService {
 
     public getLoggedInInstructor(): Observable<FishingInstructorGet> {
 		return this._httpClient.get<FishingInstructorGet>(this.apiUrl + '/fishing-instructor/getLoggedInInstructor');
+	}
+
+    public getFishingInstructorAvailablePeriods(): Observable<FishingInstructorAvailablePeriodGet[]> {
+		return this._httpClient.get<FishingInstructorAvailablePeriodGet[]>(this.apiUrl + '/fishing-instructor/fishingInstructorAvailablePeriods');
 	}
 }

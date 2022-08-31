@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FishingActionGet } from 'src/app/model/fishing-action-get.model';
 import { FishingInstructorGet } from 'src/app/model/fishing-instructor-get';
 import { FishingReservationGet } from 'src/app/model/fishing-reservation-get.model';
 import { FishingTripGet } from 'src/app/model/fishing-trip-get';
@@ -19,12 +20,14 @@ export class FishingInstructorComponent implements OnInit {
     dataSourceFishingTrips: FishingTripGet[];
     clickedRowFishingTrips: FishingTripGet;
     searchText: string;
-    displayedColumnsReservations: string[] = ['start', 'end', 'number_of_people', 'price', 'system_tax'];
-    allInstructorReservations: FishingReservationGet[];
+    displayedColumnsReservations: string[] = ['start', 'end', 'number_of_people', 'price', 'system_tax', 'reservation_tags', 'fishing_trip', 'client', 'client_came'];
     dataSourceReservations: FishingReservationGet[];
     clickedRowReservations: FishingReservationGet;
+    displayedColumnsActions: string[] = ['start', 'end', 'valid_until', 'max_people', 'price', 'system_tax', 'location', 'action_tags', 'fishing_trip', 'client', 'client_came'];
+    dataSourceActions: FishingActionGet[];
+    clickedRowActions: FishingActionGet;
 
-    constructor(private fishingTripService: FishingTripService) {
+    constructor(private router: Router, private fishingTripService: FishingTripService) {
         this.fishingTripService.getFishingInstructorFishingTrips().subscribe(data => {
             this.allInstructorFishingTrips = data;
             this.dataSourceFishingTrips = data;
@@ -33,19 +36,30 @@ export class FishingInstructorComponent implements OnInit {
         this.clickedRowFishingTrips = new FishingTripGet();
 
         this.fishingTripService.getFishingInstructorReservations().subscribe(data => {
-            this.allInstructorReservations = data;
-            this.allInstructorReservations.forEach(function (instructorReservation) {
+            this.dataSourceReservations = data;
+            this.dataSourceReservations.forEach(function (instructorReservation) {
                 instructorReservation.end = new Date();
                 instructorReservation.end.setDate(new Date(instructorReservation.start).getDate());
                 instructorReservation.end.setMonth(new Date(instructorReservation.start).getMonth());
                 instructorReservation.end.setFullYear(new Date(instructorReservation.start).getFullYear());
                 instructorReservation.end.setDate(instructorReservation.end.getDate() + instructorReservation.durationInDays - 1);
             }); 
-
-            this.dataSourceReservations = this.allInstructorReservations;
         });
 
         this.clickedRowReservations = new FishingReservationGet();
+
+        this.fishingTripService.getFishingInstructorActions().subscribe(data => {
+            this.dataSourceActions = data;
+            this.dataSourceActions.forEach(function (instructorAction) {
+                instructorAction.end = new Date();
+                instructorAction.end.setDate(new Date(instructorAction.start).getDate());
+                instructorAction.end.setMonth(new Date(instructorAction.start).getMonth());
+                instructorAction.end.setFullYear(new Date(instructorAction.start).getFullYear());
+                instructorAction.end.setDate(instructorAction.end.getDate() + instructorAction.durationInDays - 1);
+            }); 
+        });
+
+        this.clickedRowActions = new FishingActionGet();
     }
 
     ngOnInit(): void {
@@ -77,5 +91,19 @@ export class FishingInstructorComponent implements OnInit {
         } else {
             this.clickedRowReservations = row;
         }
+    }
+
+    public updateClickedRowActions(row: FishingActionGet): void {
+        if (this.clickedRowActions.id === row.id) {
+            this.clickedRowActions = new FishingActionGet(); 
+        } else {
+            this.clickedRowActions = row;
+        }
+    }
+
+    public goToFishingTrip(row: FishingTripGet): void {
+        this.router.navigate(['fishing-trip/' + row.id]).then(() => {
+            window.location.reload();
+        });
     }
 }

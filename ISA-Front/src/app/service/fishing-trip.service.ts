@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { FishingActionGet } from '../model/fishing-action-get.model';
 import { FishingReservationGet } from '../model/fishing-reservation-get.model';
 import { FishingTripGet } from '../model/fishing-trip-get';
 
@@ -24,6 +25,14 @@ export class FishingTripService {
 
     public getFishingInstructorReservations(): Observable<FishingReservationGet[]> {
 		return this.http.get<FishingReservationGet[]>(this.apiUrl + '/fishingInstructorReservations');
+	}
+
+    public getFishingInstructorActions(): Observable<FishingActionGet[]> {
+		return this.http.get<FishingActionGet[]>(this.apiUrl + '/fishingInstructorQuickReservations');
+	}
+
+    public getFishingTripFreeActions(id: number): Observable<FishingActionGet[]> {
+		return this.http.get<FishingActionGet[]>(this.apiUrl + '/' + id + '/freeQuickReservations');
 	}
 
     public getSearchedFishingTrips(searchText: string): Observable<FishingTripGet[]> {

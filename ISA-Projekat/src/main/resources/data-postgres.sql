@@ -82,8 +82,8 @@ INSERT INTO FISHING_TRIP_TAGS (fishing_trip_id, tags) VALUES (2, 0);
 INSERT INTO FISHING_TRIP_TAGS (fishing_trip_id, tags) VALUES (2, 1);
 INSERT INTO FISHING_TRIP_TAGS (fishing_trip_id, tags) VALUES (3, 3);
 
-INSERT INTO FISHING_TRIP_PICTURE (name, fishing_trip_id) VALUES ('fishing_trip_2.jpg', 1);
 INSERT INTO FISHING_TRIP_PICTURE (name, fishing_trip_id) VALUES ('fishing_trip_1.jpg', 1);
+INSERT INTO FISHING_TRIP_PICTURE (name, fishing_trip_id) VALUES ('fishing_trip_2.jpg', 1);
 INSERT INTO FISHING_TRIP_PICTURE (name, fishing_trip_id) VALUES ('fishing_trip_3.jpg', 2);
 INSERT INTO FISHING_TRIP_PICTURE (name, fishing_trip_id) VALUES ('fishing_trip_1.jpg', 3);
 

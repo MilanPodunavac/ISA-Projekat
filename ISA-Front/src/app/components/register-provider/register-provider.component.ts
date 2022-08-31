@@ -50,7 +50,9 @@ export class RegisterProviderComponent implements OnInit {
 
         this.registrationService.register(registrationRequest).subscribe({
             next: data => {
-                this.router.navigate([''])
+                this.router.navigate(['']).then(() => {
+                    window.location.reload();
+                });
                 alert(data);
             },
             error: error => {

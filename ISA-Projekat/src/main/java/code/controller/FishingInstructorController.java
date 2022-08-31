@@ -3,8 +3,10 @@ package code.controller;
 import code.controller.base.BaseController;
 import code.dto.admin.PasswordDTO;
 import code.dto.admin.PersonalData;
+import code.dto.fishing_instructor.FishingInstructorAvailablePeriodGetDto;
 import code.dto.fishing_instructor.FishingInstructorGetDto;
 import code.dto.fishing_instructor.NewAvailablePeriod;
+import code.dto.fishing_trip.FishingQuickReservationGetDto;
 import code.dto.loyalty_program.LoyaltyProgramProviderGetDto;
 import code.exceptions.entities.EntityNotFoundException;
 import code.exceptions.fishing_instructor.AddAvailablePeriodInPastException;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/fishing-instructor")
@@ -95,5 +98,13 @@ public class FishingInstructorController extends BaseController {
     @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
     public ResponseEntity<FishingInstructorGetDto> getLoggedInInstructor() {
         return ResponseEntity.ok(_mapper.map(_fishingInstructorService.getLoggedInInstructor(), FishingInstructorGetDto.class));
+    }
+
+    @GetMapping(value = "/fishingInstructorAvailablePeriods")
+    @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
+    public ResponseEntity<List<FishingInstructorAvailablePeriodGetDto>> getFishingInstructorAvailablePeriods() {
+        return ResponseEntity.ok(_fishingInstructorService.getFishingInstructorAvailablePeriods().stream()
+                .map(entity -> _mapper.map(entity, FishingInstructorAvailablePeriodGetDto.class))
+                .collect(Collectors.toList()));
     }
 }

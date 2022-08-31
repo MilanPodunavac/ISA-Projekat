@@ -8,6 +8,7 @@ import code.exceptions.provider_registration.EmailTakenException;
 import code.model.FishingInstructor;
 import code.model.FishingInstructorAvailablePeriod;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface FishingInstructorService {
@@ -18,4 +19,5 @@ public interface FishingInstructorService {
     List<FishingInstructor> getAllFishingInstructors();
     FishingInstructor getFishingInstructor(Integer id) throws EntityNotFoundException;
     FishingInstructor getLoggedInInstructor();
+    List<FishingInstructorAvailablePeriod> getFishingInstructorAvailablePeriods();
 }

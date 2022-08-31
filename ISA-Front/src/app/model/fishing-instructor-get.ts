@@ -1,3 +1,6 @@
+import { ClientGet } from "./client-get";
+import { FishingInstructorAvailablePeriodGet } from "./fishing-instructor-available-period-get.model";
+import { FishingTripGet } from "./fishing-trip-get";
 import { LocationGet } from "./location-get";
 import { LoyaltyProgramProvider } from "./loyalty-program-provider.model";
 
@@ -11,9 +14,9 @@ export class FishingInstructorGet {
     reasonForRegistration : string;
     biography : string;
     location: LocationGet;
-    fishingTrips : any[];
-    fishingInstructorAvailablePeriods : any[];
-    subscribers : any[];
+    fishingTrips : FishingTripGet[];
+    fishingInstructorAvailablePeriods : FishingInstructorAvailablePeriodGet[];
+    subscribers : ClientGet[];
     loyaltyPoints : number;
     category : LoyaltyProgramProvider;
 }
