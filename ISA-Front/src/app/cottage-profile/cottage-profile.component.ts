@@ -32,22 +32,22 @@ export class CottageProfileComponent implements OnInit {
       for(let i = 0; i<this.cottage.availabilityPeriods.length; i++){
         var tempStart = new Date(this.cottage.availabilityPeriods[i].startDate)
         var tempEnd = new Date(this.cottage.availabilityPeriods[i].endDate)
-        this.cottage.availabilityPeriods[i].startDate = tempStart.getFullYear() + "-" + (tempStart.getMonth() + 1) + "-" + tempStart.getDate() + ":" + tempStart.getHours()
-        this.cottage.availabilityPeriods[i].endDate = tempEnd.getFullYear() + "-" + (tempEnd.getMonth() + 1) + "-" + tempEnd.getDate() + ":" + tempEnd.getHours()
+        this.cottage.availabilityPeriods[i].startDate = tempStart.getFullYear() + "-" + (tempStart.getMonth() + 1) + "-" + tempStart.getDate()// + ":" + tempStart.getHours()
+        this.cottage.availabilityPeriods[i].endDate = tempEnd.getFullYear() + "-" + (tempEnd.getMonth() + 1) + "-" + tempEnd.getDate()// + ":" + tempEnd.getHours()
       }
       for(let i = 0; i<this.cottage.cottageReservations.length; i++){
         var tempStart = new Date(this.cottage.cottageReservations[i].startDate)
         var tempEnd = new Date(this.cottage.cottageReservations[i].endDate)
-        this.cottage.cottageReservations[i].startDate = tempStart.getFullYear() + "-" + (tempStart.getMonth() + 1) + "-" + tempStart.getDate() + ":" + tempStart.getHours()
-        this.cottage.cottageReservations[i].endDate = tempEnd.getFullYear() + "-" + (tempEnd.getMonth() + 1) + "-" + tempEnd.getDate() + ":" + tempEnd.getHours()
+        this.cottage.cottageReservations[i].startDate = tempStart.getFullYear() + "-" + (tempStart.getMonth() + 1) + "-" + tempStart.getDate()// + ":" + tempStart.getHours()
+        this.cottage.cottageReservations[i].endDate = tempEnd.getFullYear() + "-" + (tempEnd.getMonth() + 1) + "-" + tempEnd.getDate()// + ":" + tempEnd.getHours()
       }
       for(let i = 0; i<this.cottage.cottageActions.length; i++){
         var tempStart = new Date(this.cottage.cottageActions[i].startDate)
         var tempEnd = new Date(this.cottage.cottageActions[i].endDate)
         var tempValid = new Date(this.cottage.cottageActions[i].validUntilAndIncluding)
-        this.cottage.cottageActions[i].startDate = tempStart.getFullYear() + "-" + (tempStart.getMonth() + 1) + "-" + tempStart.getDate() + ":" + tempStart.getHours()
-        this.cottage.cottageActions[i].endDate = tempEnd.getFullYear() + "-" + (tempEnd.getMonth() + 1) + "-" + tempEnd.getDate() + ":" + tempEnd.getHours()
-        this.cottage.cottageActions[i].validUntilAndIncluding = tempValid.getFullYear() + "-" + (tempValid.getMonth() + 1) + "-" + tempValid.getDate() + ":" + tempValid.getHours()
+        this.cottage.cottageActions[i].startDate = tempStart.getFullYear() + "-" + (tempStart.getMonth() + 1) + "-" + tempStart.getDate()// + ":" + tempStart.getHours()
+        this.cottage.cottageActions[i].endDate = tempEnd.getFullYear() + "-" + (tempEnd.getMonth() + 1) + "-" + tempEnd.getDate()// + ":" + tempEnd.getHours()
+        this.cottage.cottageActions[i].validUntilAndIncluding = tempValid.getFullYear() + "-" + (tempValid.getMonth() + 1)// + "-" + tempValid.getDate() + ":" + tempValid.getHours()
       }
       this.map = new Map({
         layers: [
