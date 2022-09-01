@@ -24,4 +24,10 @@ export class UserService {
 	public sendAccountDeletionRequest(accountDeletionRequest: AccountDeletionRequestGet): Observable<string> {
 		return this.http.post(this.apiUrl + '/accountDeletionRequest', accountDeletionRequest, { responseType: 'text'});
 	}
+	updatePersonalInfo(body: any): Observable<string> {
+		return this.http.put(this.apiUrl, body, { responseType: 'text'});
+	}
+	updatePassword(body: any): Observable<string> {
+		return this.http.put(this.apiUrl+`/password`, body, { responseType: 'text'});
+	}
 }

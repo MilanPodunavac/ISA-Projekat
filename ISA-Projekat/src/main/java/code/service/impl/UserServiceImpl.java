@@ -502,6 +502,7 @@ public class UserServiceImpl implements UserService {
         }
         cottageOwner.setCategory(null);
         cottageOwner.setLocation(null);
+        unlinkAccountDeletionRequest(cottageOwner.getId());
 
     }
 
@@ -524,6 +525,7 @@ public class UserServiceImpl implements UserService {
         }
         boatOwner.setCategory(null);
         boatOwner.setLocation(null);
+        unlinkAccountDeletionRequest(boatOwner.getId());
     }
 
     @Override

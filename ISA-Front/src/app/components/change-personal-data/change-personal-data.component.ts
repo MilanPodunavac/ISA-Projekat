@@ -44,7 +44,6 @@ export class ChangePersonalDataComponent implements OnInit {
       });
     }
     if (this.role === "ROLE_COTTAGE_OWNER" || this.role === "ROLE_BOAT_OWNER") {
-      alert("hihi")
       this._userService.getLoggedInUser().subscribe(data => {
         this.userPersonalData = data;
 
@@ -55,6 +54,8 @@ export class ChangePersonalDataComponent implements OnInit {
           city: [this.userPersonalData.location.cityName, [Validators.required]],
           country: [this.userPersonalData.location.countryName, [Validators.required]],
           phoneNumber: [this.userPersonalData.phoneNumber, [Validators.required, Validators.pattern("[0-9]{6,12}")]],
+          longitude: [this.userPersonalData.location.longitude],
+          latitude: [this.userPersonalData.location.latitude],
         });
         this.initMap()
       });
@@ -80,23 +81,43 @@ export class ChangePersonalDataComponent implements OnInit {
   }
   public onSubmit(): void {
     let changePersonalDataRequest = new PersonalData();
-    changePersonalDataRequest.firstName = this.personalDataForm.get('firstName').value;
-    changePersonalDataRequest.lastName = this.personalDataForm.get('lastName').value;
-    changePersonalDataRequest.address = this.personalDataForm.get('streetAddress').value;
-    changePersonalDataRequest.city = this.personalDataForm.get('city').value;
-    changePersonalDataRequest.country = this.personalDataForm.get('country').value;
-    changePersonalDataRequest.longitude = this.personalDataForm.get('longitude').value;
-    changePersonalDataRequest.latitude = this.personalDataForm.get('latitude').value;
-    changePersonalDataRequest.phoneNumber = this.personalDataForm.get('phoneNumber').value;
-    changePersonalDataRequest.biography = this.personalDataForm.get('biography').value;
-
-
-    this.fishingInstructorService.changePersonalData(changePersonalDataRequest).subscribe(data => {
-      this.router.navigate(['profile']).then(() => {
-        window.location.reload();
+    if(this.role === "ROLE_FISHING_INSTRUCTOR"){
+      changePersonalDataRequest.firstName = this.personalDataForm.get('firstName').value;
+      changePersonalDataRequest.lastName = this.personalDataForm.get('lastName').value;
+      changePersonalDataRequest.address = this.personalDataForm.get('streetAddress').value;
+      changePersonalDataRequest.city = this.personalDataForm.get('city').value;
+      changePersonalDataRequest.country = this.personalDataForm.get('country').value;
+      changePersonalDataRequest.longitude = this.personalDataForm.get('longitude').value;
+      changePersonalDataRequest.latitude = this.personalDataForm.get('latitude').value;
+      changePersonalDataRequest.phoneNumber = this.personalDataForm.get('phoneNumber').value;
+      changePersonalDataRequest.biography = this.personalDataForm.get('biography').value;
+  
+  
+      this.fishingInstructorService.changePersonalData(changePersonalDataRequest).subscribe(data => {
+        this.router.navigate(['profile']).then(() => {
+          window.location.reload();
+        });
+        alert(data);
       });
-      alert(data);
-    });
+    }
+    if (this.role === "ROLE_COTTAGE_OWNER" || this.role === "ROLE_BOAT_OWNER") {
+      var body = {
+        firstName: this.personalDataForm.get('firstName').value,
+        lastName: this.personalDataForm.get('lastName').value,
+        phoneNumber: this.personalDataForm.get('phoneNumber').value,
+        streetName: this.personalDataForm.get('streetAddress').value,
+        cityName: this.personalDataForm.get('city').value,
+        countryName: this.personalDataForm.get('country').value,
+        longitude: this.personalDataForm.get('longitude').value,
+        latitude: this.personalDataForm.get('latitude').value,
+      }
+      this._userService.updatePersonalInfo(body).subscribe(data => {
+        this.router.navigate(['profile']).then(() => {
+          window.location.reload();
+        });
+        alert(data);
+      })
+    }
   }
   getCoord(event: any) {
     alert("sdads")

@@ -77,7 +77,7 @@ public class UsersController extends BaseController {
             }
             return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
         }
-        return ResponseEntity.ok("asd");
+        return ResponseEntity.ok("Password changed");
     }
 
     @PostMapping(value = "/accountDeletionRequest", consumes = MediaType.APPLICATION_JSON_VALUE)
