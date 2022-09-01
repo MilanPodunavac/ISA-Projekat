@@ -3,6 +3,7 @@ package code.service.impl;
 import code.exceptions.admin.*;
 import code.exceptions.entities.*;
 import code.exceptions.provider_registration.EmailTakenException;
+import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.*;
 import code.model.base.Action;
@@ -233,7 +234,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Transactional
     @Override
-    public void deleteCottage(Integer id) throws NotChangedPasswordException, EntityNotFoundException, EntityNotDeletableException {
+    public void deleteCottage(Integer id) throws NotChangedPasswordException, EntityNotFoundException, EntityNotDeletableException, UserNotFoundException, UnauthorizedAccessException, EntityNotOwnedException {
         _cottageService.throwExceptionIfCottageDontExist(id);
         throwExceptionIfAdminDidntChangePassword(getLoggedInAdmin());
 
@@ -243,7 +244,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Transactional
     @Override
-    public void deleteBoat(Integer id) throws NotChangedPasswordException, EntityNotFoundException, EntityNotDeletableException {
+    public void deleteBoat(Integer id) throws NotChangedPasswordException, EntityNotFoundException, EntityNotDeletableException, UserNotFoundException, UnauthorizedAccessException, EntityNotOwnedException {
         _boatService.throwExceptionIfBoatDontExist(id);
         throwExceptionIfAdminDidntChangePassword(getLoggedInAdmin());
 

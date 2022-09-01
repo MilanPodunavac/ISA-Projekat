@@ -57,7 +57,7 @@ INSERT INTO INCOME_RECORD (date_of_entry, provider_income, percentage_provider_k
 INSERT INTO INCOME_RECORD (date_of_entry, provider_income, percentage_provider_keeps_if_reservation_cancelled, reservation_end, reservation_price, reservation_start, reserved, system_income, system_tax_percentage, reservation_provider_id) VALUES ('2022-04-09', 160, 10, '2022-04-14', 200, '2022-04-12', true, 40, 20, 7);
 
 INSERT INTO COTTAGE (id, description, name, rules, location_id, bed_number, room_number, cottage_owner_id, price_per_day, reservation_refund, version, schedule_changed) VALUES (1, 'cottage', 'cottage', 'rules', 16, 2, 2, 7, 100, 10, 0, 0);
-INSERT INTO COTTAGE (id, description, name, rules, location_id, bed_number, room_number, cottage_owner_id, price_per_day, reservation_refund, version, schedule_changed) VALUES (2, 'cottage', 'cottage', 'rules', 17, 2, 2, 7, 100, 10, 0, 0);
+INSERT INTO COTTAGE (id, description, name, rules, location_id, bed_number, room_number, cottage_owner_id, price_per_day, reservation_refund, version, schedule_changed) VALUES (2, 'cottage', 'vikendica', 'rules', 17, 2, 2, 7, 100, 10, 0, 0);
 
 INSERT INTO COTTAGE_ADDITIONAL_SERVICES (cottage_id, tags) VALUES (1, 0);
 INSERT INTO COTTAGE_ADDITIONAL_SERVICES (cottage_id, tags) VALUES (1, 3);

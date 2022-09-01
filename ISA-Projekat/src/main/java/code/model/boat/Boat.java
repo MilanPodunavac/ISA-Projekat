@@ -82,7 +82,7 @@ public class Boat extends SaleEntity {
             res.setAvailabilityPeriod(null);
          }
          for(Action act : period.getActions()){
-            act.getClient().getActions().remove(act);
+            if(act.getClient() != null)act.getClient().getActions().remove(act);
             ((BoatAction)act).setBoat(null);
             ((BoatAction)act).getAdditionalServices().clear();
             act.setClient(null);

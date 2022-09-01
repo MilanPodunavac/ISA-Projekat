@@ -22,12 +22,22 @@
                             <button *ngIf="role==='ROLE_COTTAGE_OWNER'" id="updateButton" class="btn btn-primary" (click)="updateCottage()">
                                 <strong>Update cottage</strong>
                             </button>
+                            <button *ngIf="role==='ROLE_COTTAGE_OWNER'" id="viewVisitReportButton" class="btn btn-primary" [routerLink]="['../../visit-report/', cottage.id]" style="margin-left: 50px;">
+                                <strong>View visit report</strong>
+                            </button>
+                            <button *ngIf="role==='ROLE_COTTAGE_OWNER'" id="viewVisitReportButton" class="btn btn-primary" (click)="deleteCottage()" style="margin-left: 50px;">
+                                <strong>Delete cottage</strong>
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+<p>Location on map</p>
+<div id="map" name="map" class="map"></div>
+<div class="row">
     <div class="container mb-3">
         <div *ngIf="cottage.pictures?.length" class="table-responsive m-1">
             <div class="panel-heading m-3">

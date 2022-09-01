@@ -22,7 +22,7 @@ public interface CottageService {
     void addReservation(String clientEmail, int cottageId, CottageReservation reservation, String email) throws EntityNotFoundException, UserNotFoundException, InvalidReservationException, EntityNotOwnedException, EntityNotAvailableException, UnauthorizedAccessException, ClientCancelledThisPeriodException;
     void throwExceptionIfCottageDontExist(Integer id) throws EntityNotFoundException;
     void checkIfCottageDeletable(Integer id) throws EntityNotDeletableException, EntityNotFoundException;
-    void unlinkReferencesAndDeleteCottage(Integer id) throws EntityNotFoundException, EntityNotDeletableException;
+    void unlinkReferencesAndDeleteCottage(Integer id) throws EntityNotFoundException, EntityNotDeletableException, UnauthorizedAccessException, UserNotFoundException, EntityNotOwnedException;
     void addAction(String ownerEmail, int cottageId, CottageAction action) throws UnauthorizedAccessException, EntityNotFoundException, EntityNotOwnedException, EntityNotAvailableException, InvalidReservationException;
     void addPicture(int id, MultipartFile picture, String email) throws EntityNotFoundException, EntityNotOwnedException, IOException;
     void deletePicture(int id, int pic, String email) throws EntityNotOwnedException, EntityNotFoundException;

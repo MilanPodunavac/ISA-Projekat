@@ -27,6 +27,7 @@ import { ChangePersonalDataComponent } from './components/change-personal-data/c
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
 import { AccountDeletionRequestComponent } from './components/account-deletion-request/account-deletion-request.component';
 import { AvailablePeriodComponent } from './components/available-period/available-period.component';
+import { VisitReportComponent } from './components/visit-report/visit-report.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -58,6 +59,7 @@ const routes: Routes = [
   { path: 'change-password', component: ChangePasswordComponent },
   { path: 'account-deletion-request', component: AccountDeletionRequestComponent },
   { path: 'add-availability-period', component: AvailablePeriodComponent },
+  { path: 'visit-report/:id', component: VisitReportComponent },
 ];
 
 @NgModule({

@@ -53,4 +53,10 @@ export class CottageService {
   getAction(cottageId: number, actId: number): Observable<any>{
     return this._httpClient.get<any>(this._APIUrl+`/${cottageId}/action/${actId}`);
   }
+  getVisitReport(id: number): Observable<any>{
+    return this._httpClient.get<any>(this._APIUrl+`/${id}/visit-report`)
+  }
+  deleteCottage(id: number): Observable<any>{
+    return this._httpClient.delete<any>(this._APIUrl+`/${id}`);
+  }
 }

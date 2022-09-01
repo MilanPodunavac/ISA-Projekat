@@ -62,8 +62,8 @@ export class CottageListComponent implements OnInit {
     this.cottages = [];
     for(var i = 0; i < this.unFilteredCottages.length; i++){
         if(this.unFilteredCottages[i].name.toLowerCase().includes(searchString) ||
-        (this.unFilteredCottages[i].streetName + " " + this.unFilteredCottages[i].streetNumber + " " + 
-        this.unFilteredCottages[i].city.name + " " + this.unFilteredCottages[i].city.country.name).toLowerCase().includes(searchString)){
+        (this.unFilteredCottages[i].location.streetName + 
+        this.unFilteredCottages[i].location.cityName + " " + this.unFilteredCottages[i].location.countryName).toLowerCase().includes(searchString)){
           this.cottages.push(this.unFilteredCottages[i]);
         }
     }

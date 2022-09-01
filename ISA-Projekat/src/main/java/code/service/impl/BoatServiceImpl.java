@@ -12,6 +12,8 @@ import code.model.boat.Boat;
 import code.model.boat.BoatAction;
 import code.model.boat.BoatOwner;
 import code.model.boat.BoatReservation;
+import code.model.cottage.Cottage;
+import code.model.cottage.CottageOwner;
 import code.repository.*;
 import code.service.BoatService;
 import code.utils.FileUploadUtil;
@@ -85,11 +87,28 @@ public class BoatServiceImpl  implements BoatService {
 
     @Override
     @Transactional
-    public void unlinkReferencesAndDeleteBoat(Integer id) throws EntityNotFoundException, EntityNotDeletableException {
-        checkIfBoatDeletable(id);
+    public void unlinkReferencesAndDeleteBoat(Integer id) throws EntityNotFoundException, EntityNotDeletableException, UnauthorizedAccessException, UserNotFoundException, EntityNotOwnedException {
+
+        Authentication auth;
+        try{
+            auth = SecurityContextHolder.getContext().getAuthentication();
+        }catch(Exception ex){
+            throw new UnauthorizedAccessException("Unauthorized");
+        }
+        CottageOwner owner;
+        try{
+            owner = (CottageOwner) auth.getPrincipal();
+        }
+        catch(ClassCastException ex){
+            throw new UnauthorizedAccessException("User is not a boat owner");
+        }
+        if(owner == null) throw new UserNotFoundException("Boat owner not found");
         Optional<Boat> optionalBoat = _boatRepository.findById(id);
-        if(!optionalBoat.isPresent())throw new EntityNotFoundException("Cottage not found");
+        if(!optionalBoat.isPresent())throw new EntityNotFoundException("Boat not found");
         Boat boat = optionalBoat.get();
+        if(boat.getBoatOwner().getId() != owner.getId())throw new EntityNotOwnedException("Boat not owned by given user");
+
+        checkIfBoatDeletable(id);
         for(Picture pic : boat.getPictures()){
             FileUploadUtil.deleteFile(BOAT_PICTURE_DIRECTORY, boat.getId() + "_" + pic.getName());
         }
