@@ -10,6 +10,7 @@ import code.model.boat.Boat;
 import code.model.cottage.Cottage;
 import code.model.cottage.CottageAction;
 import code.model.cottage.CottageReservation;
+import code.model.report.VisitReport;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -34,4 +35,5 @@ public interface CottageService {
     CottageReservation getCottageReservation(int cottageId, int resId) throws EntityNotFoundException;
 
     CottageAction getCottageAction(Integer id, Integer actId) throws EntityNotFoundException;
+    VisitReport generateVisitReport(int id) throws EntityNotOwnedException, EntityNotFoundException, UnauthorizedAccessException, UserNotFoundException;
 }

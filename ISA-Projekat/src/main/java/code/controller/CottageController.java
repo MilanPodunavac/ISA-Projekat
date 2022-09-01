@@ -20,6 +20,7 @@ import code.repository.CottageRepository;
 import code.repository.UserRepository;
 import code.service.CottageService;
 import code.utils.TokenUtils;
+import io.swagger.models.Response;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.http.HttpHeaders;
@@ -305,6 +306,18 @@ public class CottageController extends BaseController {
             return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
         }
         return ResponseEntity.ok("Commentary added");
+    }
+
+    @GetMapping("/{id}/visit-report")
+    @PreAuthorize("hasRole('ROLE_COTTAGE_OWNER')")
+    public ResponseEntity<Object> getVisitReport(@PathVariable Integer id){
+        try{
+            return ResponseEntity.ok(_cottageService.generateVisitReport(id));
+        }catch(Exception ex){
+            if(ex instanceof UnauthorizedAccessException || ex instanceof EntityNotOwnedException) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+            if(ex instanceof EntityNotFoundException || ex instanceof UserNotFoundException) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Oops, something went wrong, try again later!");
+        }
     }
 
 }
