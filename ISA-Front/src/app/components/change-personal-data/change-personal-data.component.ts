@@ -34,22 +34,23 @@ export class ChangePersonalDataComponent implements OnInit {
                 phoneNumber: [this.loggedInFishingInstructor.phoneNumber, [Validators.required, Validators.pattern("[0-9]{6,12}")]],
                 biography: [this.loggedInFishingInstructor.biography]
             });
+            this.map = new Map({
+                layers: [
+                  new TileLayer({
+                    source: new OSM(),
+                  }),
+                ],
+                target: 'map',
+                view: new View({
+                  center: olProj.fromLonLat([19.8366829, 45.25282]),
+                  zoom: 14, maxZoom: 20,
+                }),
+              });
         });
     }
 
     ngOnInit(): void {
-        this.map = new Map({
-            layers: [
-              new TileLayer({
-                source: new OSM(),
-              }),
-            ],
-            target: 'map',
-            view: new View({
-              center: olProj.fromLonLat([19.8366829, 45.25282]),
-              zoom: 14, maxZoom: 20,
-            }),
-          });
+        
     }
 
     public onSubmit(): void {
@@ -70,6 +71,7 @@ export class ChangePersonalDataComponent implements OnInit {
         });
     }
     getCoord(event: any){
+        alert("sdads")
         var coordinate = this.map.getEventCoordinate(event);
         var lonLatCoords = olProj.toLonLat(coordinate)
         this.reverseGeocode(lonLatCoords)
