@@ -385,4 +385,82 @@ public class AdminController extends BaseController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
     }
+
+    @DeleteMapping(value = "/respondToComplaint/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> respondToComplaint(@PathVariable Integer id, @Valid @RequestBody ComplaintResponse complaintResponse, BindingResult result) {
+        if(result.hasErrors()){
+            return formatErrorResponse(result);
+        }
+
+        try {
+            _adminService.respondToComplaint(id, complaintResponse);
+            return ResponseEntity.ok("Responded to the complaint!");
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping(value = "/respondToComplaintFishingInstructor/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> respondToComplaintFishingInstructor(@PathVariable Integer id, @Valid @RequestBody ComplaintResponse complaintResponse, BindingResult result) {
+        if(result.hasErrors()){
+            return formatErrorResponse(result);
+        }
+
+        try {
+            _adminService.respondToComplaintFishingInstructor(id, complaintResponse);
+            return ResponseEntity.ok("Responded to the complaint!");
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping(value = "/acceptReview/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> acceptReview(@PathVariable Integer id) {
+        try {
+            _adminService.acceptReview(id);
+            return ResponseEntity.ok("Review accepted!");
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (EntityNotUpdateableException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
+    }
+
+    @PutMapping(value = "/acceptReviewFishingTrip/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> acceptReviewFishingTrip(@PathVariable Integer id) {
+        try {
+            _adminService.acceptReviewFishingTrip(id);
+            return ResponseEntity.ok("Review accepted!");
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (EntityNotUpdateableException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
+    }
+
+    @DeleteMapping(value = "/declineReview/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> declineReview(@PathVariable Integer id) {
+        try {
+            _adminService.declineReview(id);
+            return ResponseEntity.ok("Review declined!");
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping(value = "/declineReviewFishingTrip/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> declineReviewFishingTrip(@PathVariable Integer id) {
+        try {
+            _adminService.declineReviewFishingTrip(id);
+            return ResponseEntity.ok("Review declined!");
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
 }

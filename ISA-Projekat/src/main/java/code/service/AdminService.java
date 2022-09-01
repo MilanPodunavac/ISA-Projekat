@@ -1,5 +1,6 @@
 package code.service;
 
+import code.dto.admin.ComplaintResponse;
 import code.exceptions.admin.*;
 import code.exceptions.entities.*;
 import code.exceptions.provider_registration.EmailTakenException;
@@ -29,4 +30,10 @@ public interface AdminService {
     void currentPointsProviderGetsAfterReservation(CurrentPointsProviderGetsAfterReservation currentPointsProviderGetsAfterReservation) throws NotChangedPasswordException;
     void changeClientPointsNeededForLoyaltyProgramCategory(Integer id, LoyaltyProgramClient loyaltyProgramClient) throws NotChangedPasswordException, EntityNotUpdateableException;
     void changeProviderPointsNeededForLoyaltyProgramCategory(Integer id, LoyaltyProgramProvider loyaltyProgramProvider) throws NotChangedPasswordException, EntityNotUpdateableException;
+    void respondToComplaint(Integer id, ComplaintResponse complaintResponse) throws EntityNotFoundException;
+    void respondToComplaintFishingInstructor(Integer id, ComplaintResponse complaintResponse) throws EntityNotFoundException;
+    void acceptReview(Integer id) throws EntityNotFoundException, EntityNotUpdateableException;
+    void acceptReviewFishingTrip(Integer id) throws EntityNotFoundException, EntityNotUpdateableException;
+    void declineReview(Integer id) throws EntityNotFoundException;
+    void declineReviewFishingTrip(Integer id) throws EntityNotFoundException;
 }
