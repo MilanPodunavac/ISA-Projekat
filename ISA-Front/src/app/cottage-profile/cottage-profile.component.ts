@@ -61,8 +61,8 @@ export class CottageProfileComponent implements OnInit {
           zoom: 14, maxZoom: 20,
         }),
       });
+      console.log(this.cottage)
     });
-
   }
   updateCottage(){
     this.router.navigate(['/cottage-owner/cottage/', this.cottage.id]).then(() => {

@@ -16,4 +16,5 @@ export class CottageGet {
     cottageReservations: any[];
     cottageActions: any[];
     grade: any;
+    deletable: boolean;
 }

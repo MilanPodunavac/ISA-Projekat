@@ -281,6 +281,7 @@ public class MapperConfiguration {
             protected void configure() {
                 //map().setLocation(destination.getLocation());
                 map().setGrade(source.calculateAverageGrade());
+                map().setDeletable(source.hasFutureReservationsOrActions());
             }
         };
 

@@ -65,6 +65,7 @@ public class CottageController extends BaseController {
         try{
             Cottage cottage = _cottageService.getCottage(id);
             CottageGetDto cottageDto = _mapper.map(cottage, CottageGetDto.class);
+            cottageDto.setDeletable(!cottage.hasFutureReservationsOrActions());
             cottageDto.setAvailabilityPeriods(new ArrayList<>());
             cottageDto.setCottageReservations(new ArrayList<>());
             cottageDto.setCottageActions(new ArrayList<>());
