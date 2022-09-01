@@ -22,12 +22,14 @@ import { CottageReservationViewComponent } from './components/cottage-owner/cott
 import { CottageReservationOwnerCommentaryComponent } from './components/cottage-owner/cottage-reservation-owner-commentary/cottage-reservation-owner-commentary.component';
 import { CottageActionOwnerCommentaryComponent } from './components/cottage-owner/cottage-action-owner-commentary/cottage-action-owner-commentary.component';
 import { CottageActionViewComponent } from './components/cottage-owner/cottage-action-view/cottage-action-view.component';
+import { CottageReservationComponent } from './cottage-reservation/cottage-reservation.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register-provider', component: RegisterProviderComponent },
   { path: 'fishing-instructor-home', component: FishingInstructorComponent },
+  { path: 'cottage/reservation', component: CottageReservationComponent},
   { path:'cottage-owner', component: CottageOwnerComponent },
   { path:'cottage-owner/cottage/:id', component: CottageOwnerCottageComponent },
   { path: 'new-cottage', component: NewCottageComponent },

@@ -98,6 +98,7 @@ public class CottageController extends BaseController {
         }
     }
 
+
     @GetMapping(value = "/{id}/reservation/{resId}")
     public ResponseEntity<Object> getReservation(@PathVariable Integer id, @PathVariable Integer resId){
         try{
@@ -171,7 +172,7 @@ public class CottageController extends BaseController {
     }
 
     @PostMapping(value = "/reservation")
-    @PreAuthorize("hasRole('ROLE_COTTAGE_OWNER')")
+    @PreAuthorize("hasAnyRole('ROLE_COTTAGE_OWNER', 'CLIENT')")
     public ResponseEntity<String> addReservation(@Valid @RequestBody NewCottageReservationDto dto, BindingResult result, @RequestHeader(HttpHeaders.AUTHORIZATION) String auth){
         if(result.hasErrors()){
             return formatErrorResponse(result);//400

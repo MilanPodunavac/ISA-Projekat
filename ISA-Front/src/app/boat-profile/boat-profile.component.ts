@@ -12,7 +12,9 @@ export class BoatProfileComponent implements OnInit {
 
   boat: BoatGet;
 
-  constructor(private _route: ActivatedRoute, private boatService: BoatService) {}
+  constructor(private _route: ActivatedRoute, private boatService: BoatService) {
+    
+  }
 
   ngOnInit(): void {
     let id = Number(this._route.snapshot.paramMap.get('id'));

@@ -12,8 +12,11 @@ export class BoatListComponent implements OnInit {
   boats: any[] = [];
   unfilteredBoats: any[] = [];
   SearchString: string = "";
+  role: string;
 
-  constructor(private _boatService: BoatService, private router: Router) {}
+  constructor(private _boatService: BoatService, private router: Router) {
+    this.role = localStorage.getItem('role');
+  }
 
 
   ngOnInit(): void {

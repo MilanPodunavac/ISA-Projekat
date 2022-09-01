@@ -37,6 +37,7 @@ export class LoginComponent implements OnInit {
                 localStorage.setItem("jwt", data.accessToken);
                 this.userService.loggedInRole().subscribe(data => {
                     localStorage.setItem("role", data);
+                    localStorage.setItem("email", loginUser.email)
                     
                     if (data === "ROLE_FISHING_INSTRUCTOR") {
                         this.router.navigate(['fishing-instructor-home']).then(() => {

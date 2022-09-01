@@ -2,6 +2,7 @@ package code.mappper;
 
 import code.dto.admin.AdminRegistration;
 import code.dto.admin.PersonalData;
+import code.dto.entities.AvailabilityPeriodGetDto;
 import code.dto.entities.boat.BoatGetDto;
 import code.dto.entities.boat.BoatDto;
 import code.dto.entities.boat.NewBoatActionDto;
@@ -15,6 +16,7 @@ import code.dto.provider_registration.ProviderDTO;
 import code.dto.provider_registration.ProviderRegistrationRequest;
 import code.dto.user.UpdateUserPersonalInfoDto;
 import code.model.*;
+import code.model.base.AvailabilityPeriod;
 import code.model.base.OwnerCommentary;
 import code.model.boat.Boat;
 import code.model.boat.BoatAction;
@@ -269,6 +271,17 @@ public class MapperConfiguration {
 
         TypeMap<Cottage, CottageGetDto> cottageToCottageGetDtoTypeMap = modelMapper.createTypeMap(Cottage.class, CottageGetDto.class);
         cottageToCottageGetDtoTypeMap.addMappings(cottageToCottageGetDtoPropMap);
+
+        PropertyMap<AvailabilityPeriod, AvailabilityPeriodGetDto> availabilityPeriodAvailabilityPeriodGetDtoPropertyMap = new PropertyMap<AvailabilityPeriod, AvailabilityPeriodGetDto>() {
+            @Override
+            protected void configure() {
+                map().setStartDate(source.getRange().getStartDate());
+                map().setEndDate(source.getRange().getEndDate());
+            }
+        };
+
+        TypeMap<AvailabilityPeriod, AvailabilityPeriodGetDto> availabilityPeriodAvailabilityPeriodGetDtoTypeMap = modelMapper.createTypeMap(AvailabilityPeriod.class, AvailabilityPeriodGetDto.class);
+        availabilityPeriodAvailabilityPeriodGetDtoTypeMap.addMappings(availabilityPeriodAvailabilityPeriodGetDtoPropertyMap);
 
         //CottageReservationGetDto
 
