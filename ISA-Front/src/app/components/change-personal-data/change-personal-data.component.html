@@ -28,7 +28,7 @@
                             <input type="text" placeholder="Phone number *" formControlName="phoneNumber"> 
                         </div>
 
-                        <div class="input-field">
+                        <div class="input-field" *ngIf="role==='ROLE_FISHING_INSTRUCTOR'">
                             <input type="text" placeholder="Biography" formControlName="biography">
                         </div>
                     </div>
