@@ -5,6 +5,7 @@ import code.exceptions.entities.InvalidReservationException;
 import code.model.Client;
 import code.model.Review;
 import code.model.base.*;
+import code.model.wrappers.DateRange;
 import code.utils.FileUploadUtil;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
@@ -42,6 +43,27 @@ public class Cottage extends SaleEntity {
          if(!additionalServices.contains(tag))throw new InvalidReservationException("Additional service not supported");
       }
       if(reservation.getNumberOfPeople() > roomNumber * bedNumber) throw new InvalidReservationException("Not enough beds");
+      AvailabilityPeriod periodToRemove = null;
+      for(AvailabilityPeriod period : this.getAvailabilityPeriods()){
+         if(period.getRange().includes(reservation.getDateRange())){
+            periodToRemove = period;
+            break;
+         }
+      }
+      if(periodToRemove == null)throw new InvalidReservationException("Availability period not found");
+      this.getAvailabilityPeriods().remove(periodToRemove);
+      if(periodToRemove.getRange().getStartDate() != reservation.getDateRange().getStartDate()){
+         AvailabilityPeriod newAvailabilityPeriod = new AvailabilityPeriod();
+         newAvailabilityPeriod.setRange(new DateRange(periodToRemove.getRange().getStartDate(),reservation.getDateRange().getStartDate()));
+         newAvailabilityPeriod.setSaleEntity(this);
+         this.getAvailabilityPeriods().add(newAvailabilityPeriod);
+      }
+      if(periodToRemove.getRange().getEndDate() != reservation.getDateRange().getEndDate()){
+         AvailabilityPeriod newAvailabilityPeriod = new AvailabilityPeriod();
+         newAvailabilityPeriod.setRange(new DateRange(periodToRemove.getRange().getEndDate(),reservation.getDateRange().getEndDate()));
+         newAvailabilityPeriod.setSaleEntity(this);
+         this.getAvailabilityPeriods().add(newAvailabilityPeriod);
+      }
       reservation.setCottage(this);
       reservation.setSystemCharge(reservation.getSystemCharge() - cottageOwner.getCategory().getLesserSystemTaxPercentage());
       //OVDE UVESTI DODATNO RACUNANJE POPUSTA ZA KLIJENTA I PROFITA ZA VLASNIKA
