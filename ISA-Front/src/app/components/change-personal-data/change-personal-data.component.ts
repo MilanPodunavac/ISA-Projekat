@@ -29,13 +29,14 @@ export class ChangePersonalDataComponent implements OnInit {
     if (this.role === "ROLE_FISHING_INSTRUCTOR") {
       this.fishingInstructorService.getLoggedInInstructor().subscribe(data => {
         this.loggedInFishingInstructor = data;
-
         this.personalDataForm = formBuilder.group({
           firstName: [this.loggedInFishingInstructor.firstName, [Validators.required]],
           lastName: [this.loggedInFishingInstructor.lastName, [Validators.required]],
           streetAddress: [this.loggedInFishingInstructor.location.streetName, [Validators.required]],
           city: [this.loggedInFishingInstructor.location.cityName, [Validators.required]],
           country: [this.loggedInFishingInstructor.location.countryName, [Validators.required]],
+          longitude: [this.loggedInFishingInstructor.location.longitude],
+          latitude: [this.loggedInFishingInstructor.location.latitude],
           phoneNumber: [this.loggedInFishingInstructor.phoneNumber, [Validators.required, Validators.pattern("[0-9]{6,12}")]],
           biography: [this.loggedInFishingInstructor.biography]
         });
@@ -44,7 +45,7 @@ export class ChangePersonalDataComponent implements OnInit {
     }
     if (this.role === "ROLE_COTTAGE_OWNER" || this.role === "ROLE_BOAT_OWNER") {
       alert("hihi")
-      _userService.getLoggedInUser().subscribe(data => {
+      this._userService.getLoggedInUser().subscribe(data => {
         this.userPersonalData = data;
 
         this.personalDataForm = formBuilder.group({
@@ -77,7 +78,6 @@ export class ChangePersonalDataComponent implements OnInit {
   ngOnInit(): void {
 
   }
-
   public onSubmit(): void {
     let changePersonalDataRequest = new PersonalData();
     changePersonalDataRequest.firstName = this.personalDataForm.get('firstName').value;
@@ -85,8 +85,11 @@ export class ChangePersonalDataComponent implements OnInit {
     changePersonalDataRequest.address = this.personalDataForm.get('streetAddress').value;
     changePersonalDataRequest.city = this.personalDataForm.get('city').value;
     changePersonalDataRequest.country = this.personalDataForm.get('country').value;
+    changePersonalDataRequest.longitude = this.personalDataForm.get('longitude').value;
+    changePersonalDataRequest.latitude = this.personalDataForm.get('latitude').value;
     changePersonalDataRequest.phoneNumber = this.personalDataForm.get('phoneNumber').value;
     changePersonalDataRequest.biography = this.personalDataForm.get('biography').value;
+
 
     this.fishingInstructorService.changePersonalData(changePersonalDataRequest).subscribe(data => {
       this.router.navigate(['profile']).then(() => {

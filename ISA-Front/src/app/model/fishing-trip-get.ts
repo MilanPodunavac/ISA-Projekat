@@ -16,4 +16,5 @@ export class FishingTripGet {
     pictures: any[];
     fishingTripQuickReservations: FishingActionGet[];
     fishingTripReservationTags: string[];
+    fishingTripReviews: any[];
 }

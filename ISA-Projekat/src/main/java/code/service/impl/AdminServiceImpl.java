@@ -1,5 +1,6 @@
 package code.service.impl;
 
+import code.dto.admin.ComplaintResponse;
 import code.exceptions.admin.*;
 import code.exceptions.entities.*;
 import code.exceptions.provider_registration.EmailTakenException;
@@ -8,9 +9,11 @@ import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.*;
 import code.model.base.Action;
 import code.model.base.Reservation;
+import code.model.boat.Boat;
 import code.model.boat.BoatAction;
 import code.model.boat.BoatOwner;
 import code.model.boat.BoatReservation;
+import code.model.cottage.Cottage;
 import code.model.cottage.CottageAction;
 import code.model.cottage.CottageOwner;
 import code.model.cottage.CottageReservation;
@@ -53,8 +56,12 @@ public class AdminServiceImpl implements AdminService {
     private final JavaMailSender _mailSender;
     private final CottageOwnerRepository _cottageOwnerRepository;
     private final BoatOwnerRepository _boatOwnerRepository;
+    private final ReviewRepository _reviewRepository;
+    private final ReviewFishingTripRepository _reviewFishingTripRepository;
+    private final ComplaintRepository _complaintRepository;
+    private final ComplaintFishingInstructorRepository _complaintFishingInstructorRepository;
 
-    public AdminServiceImpl(AdminRepository adminRepository, PasswordEncoder passwordEncoder, RoleService roleService, UserService userService, UserRepository userRepository, CottageService cottageService, BoatService boatService, ClientRepository clientRepository, FishingInstructorRepository fishingInstructorRepository, FishingTripReservationRepository fishingTripReservationRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, ReservationRepository reservationRepository, ActionRepository actionRepository, CurrentSystemTaxPercentageRepository currentSystemTaxPercentageRepository, CurrentPointsClientGetsAfterReservationRepository currentPointsClientGetsAfterReservationRepository, CurrentPointsProviderGetsAfterReservationRepository currentPointsProviderGetsAfterReservationRepository, LoyaltyProgramClientRepository loyaltyProgramClientRepository, LoyaltyProgramProviderRepository loyaltyProgramProviderRepository, JavaMailSender mailSender, CottageOwnerRepository cottageOwnerRepository, BoatOwnerRepository boatOwnerRepository) {
+    public AdminServiceImpl(AdminRepository adminRepository, PasswordEncoder passwordEncoder, RoleService roleService, UserService userService, UserRepository userRepository, CottageService cottageService, BoatService boatService, ClientRepository clientRepository, FishingInstructorRepository fishingInstructorRepository, FishingTripReservationRepository fishingTripReservationRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, ReservationRepository reservationRepository, ActionRepository actionRepository, CurrentSystemTaxPercentageRepository currentSystemTaxPercentageRepository, CurrentPointsClientGetsAfterReservationRepository currentPointsClientGetsAfterReservationRepository, CurrentPointsProviderGetsAfterReservationRepository currentPointsProviderGetsAfterReservationRepository, LoyaltyProgramClientRepository loyaltyProgramClientRepository, LoyaltyProgramProviderRepository loyaltyProgramProviderRepository, JavaMailSender mailSender, CottageOwnerRepository cottageOwnerRepository, BoatOwnerRepository boatOwnerRepository, ReviewRepository reviewRepository, ReviewFishingTripRepository reviewFishingTripRepository, ComplaintRepository complaintRepository, ComplaintFishingInstructorRepository complaintFishingInstructorRepository) {
         this._adminRepository = adminRepository;
         this._passwordEncoder = passwordEncoder;
         this._roleService = roleService;
@@ -75,6 +82,10 @@ public class AdminServiceImpl implements AdminService {
         this._loyaltyProgramProviderRepository = loyaltyProgramProviderRepository;
         this._cottageOwnerRepository = cottageOwnerRepository;
         this._boatOwnerRepository = boatOwnerRepository;
+        this._reviewRepository = reviewRepository;
+        this._reviewFishingTripRepository = reviewFishingTripRepository;
+        this._complaintRepository = complaintRepository;
+        this._complaintFishingInstructorRepository = complaintFishingInstructorRepository;
         this._mailSender = mailSender;
     }
 
@@ -133,6 +144,8 @@ public class AdminServiceImpl implements AdminService {
         loggedInAdmin.getLocation().setCountryName(admin.getLocation().getCountryName());
         loggedInAdmin.getLocation().setCityName(admin.getLocation().getCityName());
         loggedInAdmin.getLocation().setStreetName(admin.getLocation().getStreetName());
+        loggedInAdmin.getLocation().setLongitude(admin.getLocation().getLongitude());
+        loggedInAdmin.getLocation().setLatitude(admin.getLocation().getLatitude());
         return _adminRepository.save(loggedInAdmin);
     }
 
@@ -650,6 +663,156 @@ public class AdminServiceImpl implements AdminService {
         if ((id == 2 && loyaltyProgramProvider.getPointsNeeded() >= _loyaltyProgramProviderRepository.getById(3).getPointsNeeded()) || (id == 3 && loyaltyProgramProvider.getPointsNeeded() <= _loyaltyProgramProviderRepository.getById(2).getPointsNeeded())) {
             throw new EntityNotUpdateableException("Silver loyalty program category can't have higher points needed requirement than gold category!");
         }
+    }
+
+    @Transactional
+    @Override
+    public void respondToComplaint(Integer id, ComplaintResponse complaintResponse) throws EntityNotFoundException {
+        throwExceptionIfComplaintDoesntExist(id);
+
+        Complaint complaint = _complaintRepository.getById(id);
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("marko76589@gmail.com");
+        message.setTo(complaint.getClient().getEmail());
+        message.setSubject("Complaint response");
+        message.setText(complaintResponse.getResponseToClient());
+        _mailSender.send(message);
+
+        SimpleMailMessage message2 = new SimpleMailMessage();
+        message2.setFrom("marko76589@gmail.com");
+        if (complaint.getSaleEntity() instanceof Cottage) {
+            message2.setTo(((Cottage) complaint.getSaleEntity()).getCottageOwner().getEmail());
+        } else if (complaint.getSaleEntity() instanceof Boat) {
+            message2.setTo(((Boat) complaint.getSaleEntity()).getBoatOwner().getEmail());
+        }
+        message2.setSubject("Complaint response");
+        message2.setText(complaintResponse.getResponseToProvider());
+        _mailSender.send(message2);
+
+        _complaintRepository.delete(complaint);
+    }
+
+    private void throwExceptionIfComplaintDoesntExist(Integer id) throws EntityNotFoundException {
+        Optional<Complaint> complaint = _complaintRepository.findById(id);
+        if (!complaint.isPresent()) {
+            throw new EntityNotFoundException("Complaint doesn't exist!");
+        }
+    }
+
+    @Transactional
+    @Override
+    public void respondToComplaintFishingInstructor(Integer id, ComplaintResponse complaintResponse) throws EntityNotFoundException {
+        throwExceptionIfComplaintFishingInstructorDoesntExist(id);
+
+        ComplaintFishingInstructor complaint = _complaintFishingInstructorRepository.getById(id);
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("marko76589@gmail.com");
+        message.setTo(complaint.getClient().getEmail());
+        message.setSubject("Complaint response");
+        message.setText(complaintResponse.getResponseToClient());
+        _mailSender.send(message);
+
+        SimpleMailMessage message2 = new SimpleMailMessage();
+        message2.setFrom("marko76589@gmail.com");
+        message2.setTo(complaint.getFishingInstructor().getEmail());
+        message2.setSubject("Complaint response");
+        message2.setText(complaintResponse.getResponseToProvider());
+        _mailSender.send(message2);
+
+        _complaintFishingInstructorRepository.delete(complaint);
+    }
+
+    private void throwExceptionIfComplaintFishingInstructorDoesntExist(Integer id) throws EntityNotFoundException {
+        Optional<ComplaintFishingInstructor> complaint = _complaintFishingInstructorRepository.findById(id);
+        if (!complaint.isPresent()) {
+            throw new EntityNotFoundException("Complaint doesn't exist!");
+        }
+    }
+
+    @Transactional
+    @Override
+    public void acceptReview(Integer id) throws EntityNotFoundException, EntityNotUpdateableException {
+        throwExceptionIfReviewDoesntExist(id);
+        throwExceptionIfReviewAlreadyApproved(id);
+
+        Review review = _reviewRepository.getById(id);
+        review.setApproved(true);
+        _reviewRepository.save(review);
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("marko76589@gmail.com");
+        if (review.getSaleEntity() instanceof Cottage) {
+            message.setTo(((Cottage) review.getSaleEntity()).getCottageOwner().getEmail());
+        } else if (review.getSaleEntity() instanceof Boat) {
+            message.setTo(((Boat) review.getSaleEntity()).getBoatOwner().getEmail());
+        }
+        message.setSubject("Review added");
+        message.setText("You have a new review for: " + review.getSaleEntity().getName());
+        _mailSender.send(message);
+    }
+
+    private void throwExceptionIfReviewDoesntExist(Integer id) throws EntityNotFoundException {
+        Optional<Review> review = _reviewRepository.findById(id);
+        if (!review.isPresent()) {
+            throw new EntityNotFoundException("Review doesn't exist!");
+        }
+    }
+
+    private void throwExceptionIfReviewAlreadyApproved(Integer id) throws EntityNotUpdateableException {
+        Review review = _reviewRepository.getById(id);
+        if (review.isApproved()) {
+            throw new EntityNotUpdateableException("Review already approved!");
+        }
+    }
+
+    @Transactional
+    @Override
+    public void acceptReviewFishingTrip(Integer id) throws EntityNotFoundException, EntityNotUpdateableException {
+        throwExceptionIfReviewFishingTripDoesntExist(id);
+        throwExceptionIfReviewFishingTripAlreadyApproved(id);
+
+        ReviewFishingTrip review = _reviewFishingTripRepository.getById(id);
+        review.setApproved(true);
+        _reviewFishingTripRepository.save(review);
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("marko76589@gmail.com");
+        message.setTo(review.getFishingTrip().getFishingInstructor().getEmail());
+        message.setSubject("Review added");
+        message.setText("You have a new review for fishing trip: " + review.getFishingTrip().getName());
+        _mailSender.send(message);
+    }
+
+    private void throwExceptionIfReviewFishingTripDoesntExist(Integer id) throws EntityNotFoundException {
+        Optional<ReviewFishingTrip> review = _reviewFishingTripRepository.findById(id);
+        if (!review.isPresent()) {
+            throw new EntityNotFoundException("Review doesn't exist!");
+        }
+    }
+
+    private void throwExceptionIfReviewFishingTripAlreadyApproved(Integer id) throws EntityNotUpdateableException {
+        ReviewFishingTrip review = _reviewFishingTripRepository.getById(id);
+        if (review.isApproved()) {
+            throw new EntityNotUpdateableException("Review already approved!");
+        }
+    }
+
+    @Transactional
+    @Override
+    public void declineReview(Integer id) throws EntityNotFoundException {
+        throwExceptionIfReviewDoesntExist(id);
+
+        _reviewRepository.delete(_reviewRepository.getById(id));
+    }
+
+    @Transactional
+    @Override
+    public void declineReviewFishingTrip(Integer id) throws EntityNotFoundException {
+        throwExceptionIfReviewFishingTripDoesntExist(id);
+
+        _reviewFishingTripRepository.delete(_reviewFishingTripRepository.getById(id));
     }
 
     @Scheduled(cron="0 0 0 1 1/1 *")

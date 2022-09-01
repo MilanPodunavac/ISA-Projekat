@@ -111,6 +111,8 @@ public class FishingInstructorServiceImpl implements FishingInstructorService {
         loggedInFishingInstructor.getLocation().setCountryName(fishingInstructor.getLocation().getCountryName());
         loggedInFishingInstructor.getLocation().setCityName(fishingInstructor.getLocation().getCityName());
         loggedInFishingInstructor.getLocation().setStreetName(fishingInstructor.getLocation().getStreetName());
+        loggedInFishingInstructor.getLocation().setLongitude(fishingInstructor.getLocation().getLongitude());
+        loggedInFishingInstructor.getLocation().setLatitude(fishingInstructor.getLocation().getLatitude());
         loggedInFishingInstructor.setBiography(fishingInstructor.getBiography());
         _fishingInstructorRepository.save(loggedInFishingInstructor);
     }

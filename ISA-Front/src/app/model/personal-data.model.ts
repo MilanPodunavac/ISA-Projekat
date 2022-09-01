@@ -6,4 +6,6 @@ export class PersonalData {
     address: string;
     city: string;
     country: string;
+    longitude: number;
+    latitude: number;
 }

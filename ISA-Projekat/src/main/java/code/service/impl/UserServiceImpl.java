@@ -53,8 +53,9 @@ public class UserServiceImpl implements UserService {
     private final JavaMailSender _mailSender;
     private final PasswordEncoder _passwordEncoder;
     private final BoatReservationRepository _boatReservationRepository;
+    private final ComplaintFishingInstructorRepository _complaintFishingInstructorRepository;
 
-    public UserServiceImpl(UserRepository userRepository, ClientRepository clientRepository, AvailabilityPeriodRepository availabilityPeriodRepository, CottageRepository cottageRepository, BoatRepository boatRepository, CottageReservationRepository cottageReservationRepository, FishingTripPictureRepository fishingTripPictureRepository, FishingTripRepository fishingTripRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, FishingTripReservationRepository fishingTripReservationRepository, AccountDeletionRequestRepository accountDeletionRequestRepository, IncomeRecordRepository incomeRecordRepository, JavaMailSender mailSender, PasswordEncoder encoder, BoatReservationRepository boatReservationRepository) {
+    public UserServiceImpl(UserRepository userRepository, ClientRepository clientRepository, AvailabilityPeriodRepository availabilityPeriodRepository, CottageRepository cottageRepository, BoatRepository boatRepository, CottageReservationRepository cottageReservationRepository, FishingTripPictureRepository fishingTripPictureRepository, FishingTripRepository fishingTripRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, FishingTripReservationRepository fishingTripReservationRepository, AccountDeletionRequestRepository accountDeletionRequestRepository, IncomeRecordRepository incomeRecordRepository, JavaMailSender mailSender, PasswordEncoder encoder, BoatReservationRepository boatReservationRepository, ComplaintFishingInstructorRepository complaintFishingInstructorRepository) {
         this._userRepository = userRepository;
         this._clientRepository = clientRepository;
         this._availabilityPeriodRepository = availabilityPeriodRepository;
@@ -67,6 +68,7 @@ public class UserServiceImpl implements UserService {
         this._fishingTripReservationRepository = fishingTripReservationRepository;
         this._accountDeletionRequestRepository = accountDeletionRequestRepository;
         this._incomeRecordRepository = incomeRecordRepository;
+        this._complaintFishingInstructorRepository = complaintFishingInstructorRepository;
         this._mailSender = mailSender;
         _passwordEncoder = encoder;
         _boatReservationRepository = boatReservationRepository;
@@ -380,6 +382,8 @@ public class UserServiceImpl implements UserService {
         unlinkFishingTripQuickReservations(fishingInstructor.getId());
         deleteSubscribers(fishingInstructor);
         unlinkIncomeRecords(fishingInstructor.getId());
+        unlinkComplaintsFishingInstructor(fishingInstructor.getId());
+        unlinkAccountDeletionRequest(fishingInstructor.getId());
         deleteFishingTripPictures(fishingInstructor);
     }
 
@@ -423,6 +427,20 @@ public class UserServiceImpl implements UserService {
             incomeRecord.setReservationProvider(null);
             _incomeRecordRepository.save(incomeRecord);
         }
+    }
+
+    private void unlinkComplaintsFishingInstructor(Integer id) {
+        List<ComplaintFishingInstructor> instructorComplaints = _complaintFishingInstructorRepository.findByFishingInstructorId(id);
+        for (ComplaintFishingInstructor complaintFishingInstructor : instructorComplaints) {
+            complaintFishingInstructor.setFishingInstructor(null);
+            _complaintFishingInstructorRepository.delete(complaintFishingInstructor);
+        }
+    }
+
+    private void unlinkAccountDeletionRequest(Integer id) {
+        AccountDeletionRequest accountDeletionRequest = _accountDeletionRequestRepository.findByUserId(id);
+        accountDeletionRequest.setUser(null);
+        _accountDeletionRequestRepository.delete(accountDeletionRequest);
     }
 
     private void deleteFishingTripPictures(FishingInstructor fishingInstructor) {

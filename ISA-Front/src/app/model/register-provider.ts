@@ -7,6 +7,8 @@ export class RegisterProvider {
     phoneNumber: string;
     city: string;
     country: string;
+    longitude: string;
+    latitude: string;
     reasonForRegistration: string;
     biography: string;
     providerType: string;

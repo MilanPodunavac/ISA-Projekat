@@ -33,6 +33,8 @@ public class ProviderRegistrationRequest {
     private String city;
     @NotBlank(message = "Country is required")
     private String country;
+    private double longitude;
+    private double latitude;
     @NotBlank(message = "Reason for registration is required")
     private String reasonForRegistration;
     private String biography;
