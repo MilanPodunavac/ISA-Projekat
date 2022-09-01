@@ -76,4 +76,16 @@ export class ProfileComponent implements OnInit {
             window.location.reload();
         });
     }
+
+    public goToAccountDeletion(): void {
+        this.router.navigate(['account-deletion-request']).then(() => {
+            window.location.reload();
+        });
+    }
+
+    public goToAddAvailabilityPeriod(): void {
+        this.router.navigate(['add-availability-period']).then(() => {
+            window.location.reload();
+        });
+    }
 }

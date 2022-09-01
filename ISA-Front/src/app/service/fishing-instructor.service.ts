@@ -39,4 +39,8 @@ export class FishingInstructorService {
     public changePassword(password: Password): Observable<string> {
 		return this._httpClient.put(this.apiUrl + '/fishing-instructor/changePassword', password, { responseType: 'text'});
     }
+
+    public addAvailabilityPeriod(availabilityPeriod: FishingInstructorAvailablePeriodGet): Observable<string> {
+		return this._httpClient.post(this.apiUrl + '/fishing-instructor/addAvailablePeriod', availabilityPeriod, { responseType: 'text'});
+    }
 }

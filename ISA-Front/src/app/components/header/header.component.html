@@ -18,32 +18,12 @@
         <button mat-button id="base" [routerLink]="['cottage']">My Cottages</button>
         <button mat-button id="base" [routerLink]="['profit']">My profit</button>
     </div>
-    
-    <mat-menu #base="matMenu">
-        <button mat-menu-item [routerLink]="['']">Home</button>
-        <button mat-menu-item [routerLink]="['pharmacy-profiles']">All pharmacies</button>
-        <button mat-menu-item [routerLink]="['promotions']">Promotions</button>
-        <button mat-menu-item [routerLink]="['specifications']">Medicine specification</button>
-    </mat-menu>
 
-    <button *ngIf="role === 'ROLE_FISHING_INSTRUCTOR'" mat-button [routerLink]="['fishing-instructor-home']">Home</button>
-
-    <button *ngIf="role === 'ROLE_ADMIN'" mat-button id="facility" [matMenuTriggerFor]="facility">Our Facility</button>
-    <mat-menu #facility="matMenu">
-        <button mat-menu-item [routerLink]="['hospital-map']">Hospital map</button>
-        <button mat-menu-item [routerLink]="['moving-equipment']">Move equipment</button>
-        <button mat-menu-item [routerLink]="['renovation']">Renovation</button>
-        <button mat-menu-item [routerLink]="['shifts']">Shifts</button>
-        <button mat-menu-item [routerLink]="['doctors']">Doctors</button>
-    </mat-menu>
-    
-    <button *ngIf="role === 'a'" mat-button [matMenuTriggerFor]="pharmacies">Pharmacies</button>
-    <mat-menu #pharmacies="matMenu">
-        <button mat-menu-item [routerLink]="['registration']">Register pharmacy</button>
-        <button mat-menu-item [routerLink]="['pharmacy-profiles']">All pharmacies</button>
-        <button mat-menu-item [routerLink]="['promotions']">Promotions</button>
-        <button mat-menu-item [routerLink]="['specifications']">Medicine specification</button>
-    </mat-menu>
+    <div *ngIf="role === 'ROLE_FISHING_INSTRUCTOR'">
+        <button mat-button [routerLink]="['fishing-instructor-home']">Home</button>
+        <button mat-button>Add fishing trip</button>
+        <button mat-button [routerLink]="['add-availability-period']">Add available period</button>
+    </div>
 
     <span class="example-spacer-notification"></span>
 

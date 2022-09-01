@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { AccountDeletionRequestGet } from '../model/account-deletion-request-get.model';
 
 @Injectable({
  	providedIn: 'root'
@@ -18,5 +19,9 @@ export class UserService {
 
 	getLoggedInUser(): Observable<any>{
 		return this.http.get<any>(this.apiUrl);
+	}
+
+	public sendAccountDeletionRequest(accountDeletionRequest: AccountDeletionRequestGet): Observable<string> {
+		return this.http.post(this.apiUrl + '/accountDeletionRequest', accountDeletionRequest, { responseType: 'text'});
 	}
 }

@@ -25,6 +25,8 @@ import { CottageActionViewComponent } from './components/cottage-owner/cottage-a
 import { ProfitGraphComponent } from './components/profit-graph/profit-graph.component';
 import { ChangePersonalDataComponent } from './components/change-personal-data/change-personal-data.component';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
+import { AccountDeletionRequestComponent } from './components/account-deletion-request/account-deletion-request.component';
+import { AvailablePeriodComponent } from './components/available-period/available-period.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -54,6 +56,8 @@ const routes: Routes = [
   { path: 'profit', component: ProfitGraphComponent },
   { path: 'change-personal-data', component: ChangePersonalDataComponent },
   { path: 'change-password', component: ChangePasswordComponent },
+  { path: 'account-deletion-request', component: AccountDeletionRequestComponent },
+  { path: 'add-availability-period', component: AvailablePeriodComponent },
 ];
 
 @NgModule({

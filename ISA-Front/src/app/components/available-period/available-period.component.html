@@ -1,0 +1,26 @@
+<div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-6">
+            <div class="card shadow-1-strong" style="border-radius: 1rem;">
+                <form [formGroup]="availablePeriodForm" (submit)="onSubmit()">
+                    <h2>Add availability period</h2>
+
+                    <div class="content">
+                        <div class="input-field">
+                            <input type="date" placeholder="Available from *" formControlName="availableFrom"> 
+                        </div>
+
+                        <div class="input-field">
+                            <input type="date" placeholder="Available to *" formControlName="availableTo">
+                        </div>
+
+                        <p style="padding: 20px 0px 0px 0px; color: red; font-size: large;">{{errorMessage}}</p>
+                    </div>
+                    <div class="action">
+                        <button type="submit" [disabled]="!availablePeriodForm.valid">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

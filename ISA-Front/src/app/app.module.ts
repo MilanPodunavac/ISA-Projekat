@@ -53,6 +53,8 @@ import { CottageActionViewComponent } from './components/cottage-owner/cottage-a
 import { ProfitGraphComponent } from './components/profit-graph/profit-graph.component';
 import { ChangePersonalDataComponent } from './components/change-personal-data/change-personal-data.component';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
+import { AccountDeletionRequestComponent } from './components/account-deletion-request/account-deletion-request.component';
+import { AvailablePeriodComponent } from './components/available-period/available-period.component';
 
 @NgModule({
   declarations: [
@@ -83,6 +85,8 @@ import { ChangePasswordComponent } from './components/change-password/change-pas
     ProfitGraphComponent,
     ChangePersonalDataComponent,
     ChangePasswordComponent,
+    AccountDeletionRequestComponent,
+    AvailablePeriodComponent,
   ],
   imports: [
     BrowserModule,
