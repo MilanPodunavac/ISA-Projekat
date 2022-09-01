@@ -124,3 +124,11 @@ INSERT INTO BOAT_RESERVATION (id, end_date, start_date, number_of_people, price,
 INSERT INTO CURRENT_POINTS_CLIENT_GETS_AFTER_RESERVATION (current_points_client_gets_after_reservation) VALUES (200);
 
 INSERT INTO CURRENT_POINTS_PROVIDER_GETS_AFTER_RESERVATION (current_points_provider_gets_after_reservation) VALUES (100);
+
+INSERT INTO REVIEW (grade, description, approved, client_id, sale_entity_id) VALUES (7, 'odlično iskustvo!', false, 2, 1);
+
+INSERT INTO REVIEW_FISHING_TRIP (grade, description, approved, client_id, fishing_trip_id) VALUES (8, 'super!', false, 2, 1);
+
+INSERT INTO COMPLAINT (description, client_id, sale_entity_id) VALUES ('nije kao u opisu usluge', 2, 1);
+
+INSERT INTO COMPLAINT_FISHING_INSTRUCTOR (description, client_id, fishing_instructor_id) VALUES ('loš odnos prema klijentu', 2, 5);

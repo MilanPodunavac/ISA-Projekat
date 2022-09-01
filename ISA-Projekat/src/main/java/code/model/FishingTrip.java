@@ -55,4 +55,7 @@ public class FishingTrip {
    @Column(name="tags")
    @Fetch(value = FetchMode.JOIN)
    private Set<FishingTripReservationTag> fishingTripReservationTags;
+   @OneToMany(mappedBy = "fishingTrip", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+   @JsonManagedReference
+   private Set<ReviewFishingTrip> review;
 }
