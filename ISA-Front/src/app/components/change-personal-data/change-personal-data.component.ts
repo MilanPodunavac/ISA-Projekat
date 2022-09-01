@@ -82,7 +82,6 @@ export class ChangePersonalDataComponent implements OnInit {
             return response.json();
         }).then(json => {
             console.log(json)
-            this.personalDataForm.setValue({city : json.address.city})
             alert(this.personalDataForm.get('city').value)
         });
       }
