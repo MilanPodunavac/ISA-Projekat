@@ -38,6 +38,7 @@ import { NewBoatAvailabilityPeriodComponent } from './components/boat-owner/new-
 import { NewBoatReservationComponent } from './components/boat-owner/new-boat-reservation/new-boat-reservation.component';
 import { BusinessReportComponent } from './components/business-report/business-report.component';
 import { BoatOwnerBoatComponent } from './components/boat-owner/boat-owner-boat/boat-owner-boat.component';
+import { EditFishingTripPicturesComponent } from './components/edit-fishing-trip-pictures/edit-fishing-trip-pictures.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -80,7 +81,8 @@ const routes: Routes = [
   { path: 'new-boat', component: NewBoatComponent },
   { path: 'business-report', component: BusinessReportComponent },
   { path: 'boat-owner/boat/:id', component: BoatOwnerBoatComponent },
-  
+  { path: 'business-report', component: BusinessReportComponent },
+  { path: 'edit-fishing-trip-pictures/:id', component: EditFishingTripPicturesComponent }
 ];
 
 @NgModule({
