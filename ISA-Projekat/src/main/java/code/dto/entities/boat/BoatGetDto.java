@@ -28,6 +28,7 @@ public class BoatGetDto {
     private String rules;
     private Location location;
     private int pricePerDay;
+    private double reservationRefund;
     private double length;
     private String type;
     private int engineNumber;

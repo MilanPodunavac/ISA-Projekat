@@ -1,1 +1,140 @@
-<p>boat-owner-boat works!</p>
+<div *ngIf="boat" class="container mb-3">
+    <div class="form-group mb-3">
+        <label class="form-label">Boat Name:</label>
+        <input type="text" class="form-control mb-1" [(ngModel)]="boat.name" id="name">
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Description:</label>
+        <textarea type="text" class="form-control" id="description" [(ngModel)]="boat.description" rows="5"></textarea>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Type:</label>
+        <input type="text" class="form-control" id="description" [(ngModel)]="boat.type">
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Length:</label>
+        <input type="text" class="form-control" id="description" [(ngModel)]="boat.length">
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Engine number:</label>
+        <input type="text" class="form-control" id="description" [(ngModel)]="boat.engineNumber">
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Engine power:</label>
+        <input type="text" class="form-control" id="description" [(ngModel)]="boat.enginePower">
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Maximum speed:</label>
+        <input type="text" class="form-control" id="description" [(ngModel)]="boat.maxSpeed">
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Maximum people:</label>
+        <input type="text" class="form-control" id="description" [(ngModel)]="boat.maxPeople">
+    </div>
+    <div class="form-group mb-3">
+        <label>Select navigational equipment</label>
+        <mat-form-field appearance="fill" class="form-control mb-2">
+            <mat-select [(value)] = "boat.navigationalEquipment">
+              <mat-option *ngFor="let equipment of navigationalEquipment" [value]="equipment.value">
+                {{equipment.viewValue}}
+              </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Fishing equipment:</label>
+        <input type="text" class="form-control" id="description" [(ngModel)]="boat.fishingEquipment">
+    </div>
+
+    <div class="form-group mb-3">
+        <label class="form-label">Rules:</label>
+        <textarea type="text" class="form-control" id="description" [(ngModel)]="boat.rules" rows="5"></textarea>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Price per day:</label>
+        <input type="text" class="form-control mb-1" [(ngModel)]="boat.pricePerDay" id="price">
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Reservation refund:</label>
+        <input type="text" class="form-control mb-1" id="reservationRef" [(ngModel)]="boat.reservationRefund">
+    </div>
+    <div *ngIf="boat.additionalServices?.length" class="table-responsive m-1">
+        <div class="panel-heading m-3">
+            <h2>Additional Services List</h2>
+        </div>
+        <table class="table table-bordered table-striped table-hover" id="additionalServicesTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor='let service of additionalServicesTableMap'>
+                    <td>{{service}}</td>
+                    <td><button (click)="RemoveService(service)" id="removeServiceBtn" class="btn btn-primary"><strong>remove</strong></button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="form-group mb-3">
+        <label>Add additional service</label>
+        <mat-form-field appearance="fill" class="form-control mb-2">
+            <mat-select [(value)] = "selectedNewService">
+              <mat-option *ngFor="let service of additionalServices" [value]="service.value">
+                {{service.viewValue}}
+              </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <button (click)="AddService()" class="btn btn-primary">Add</button>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Longitude:</label>
+        <input type="text" class="form-control mb-1" [(ngModel)]="boat.location.longitude" id="long">
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Latitude:</label>
+        <input type="text" class="form-control mb-1" [(ngModel)]="boat.location.latitude" id="lat">
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">City:</label>
+        <input type="text" class="form-control mb-1" [(ngModel)]="boat.location.cityName" id="city">
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Country:</label>
+        <input type="text" class="form-control mb-1" [(ngModel)]="boat.location.countryName" id="country">
+    </div>
+</div>
+<div id="map" name="map" class="map" (click)="getCoord($event)"></div>
+<div class="container mb-3">
+    <button (click)="UpdateBoat()" id="updateButton" class="btn btn-primary">
+        <strong>Update boat</strong>
+    </button>
+</div>
+<div class="container mb-3">
+    <div *ngIf="boat.pictures?.length" class="table-responsive m-1">
+        <div class="panel-heading m-3">
+            <h2>Pictures</h2>
+        </div>
+        <table class="table table-bordered table-striped table-hover" id="additionalServicesTable">
+            <tbody>
+                <tr *ngFor='let picture of boat.pictures'>
+                    <td><img [src]="picture.data" class="text-center mb-3" style="max-width: 700px;max-height: 700px;" alt="..."></td>
+                    <td><button (click)="RemoveImage(picture.id)" id="removeImageBtn" class="btn btn-primary"><strong>Remove</strong></button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <img [src]="imageSrc" class="text-center mb-3" style="height: 200px; width:200px" alt="...">
+    </div>
+    <div class="media-body ml-4">
+        <label class="form-label">Add picture</label>
+        <input type="file" (change)="onFileChange($event)" class="form-control">
+    </div>
+    <div *ngIf="imageFile" class="container mb-3">
+        <button (click)="AddPicture()" id="addPictureButton" class="btn btn-primary">
+            <strong>Add picture</strong>
+        </button>
+    </div>
+</div>

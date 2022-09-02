@@ -21,6 +21,7 @@ export class BoatGet {
     availabilityPeriods: any[];
     boatReservations: any[];
     boatActions: any[];
+    reservationRefund: number;
     grade: any;
     deletable: boolean;
 }

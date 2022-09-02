@@ -37,5 +37,8 @@
     <div *ngIf="!boats?.length">
         No boats registered
     </div>
+    <button *ngIf="role==='ROLE_BOAT_OWNER'" class="btn btn-primary" [routerLink]="['../','new-boat']">
+        <strong>Create new boat</strong>
+    </button>
 
 </div>

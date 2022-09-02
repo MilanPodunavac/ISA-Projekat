@@ -33,9 +33,9 @@ public class BoatOwnerController extends BaseController {
         _boatOwnerService = boatOwnerService;
     }
 
-    @GetMapping(value = "cottages")
+    @GetMapping(value = "boats")
     @PreAuthorize("hasRole('ROLE_BOAT_OWNER')")
-    public ResponseEntity<Object> getOwnerCottages(){
+    public ResponseEntity<Object> getOwnerBoats(){
         List<Boat> ownerBoats;
         try{
             ownerBoats = _boatOwnerService.getBoatOwnerBoats();
