@@ -28,7 +28,16 @@ import { ChangePasswordComponent } from './components/change-password/change-pas
 import { AccountDeletionRequestComponent } from './components/account-deletion-request/account-deletion-request.component';
 import { AvailablePeriodComponent } from './components/available-period/available-period.component';
 import { VisitReportComponent } from './components/visit-report/visit-report.component';
+import { BoatActionOwnerCommentaryComponent } from './components/boat-owner/boat-action-owner-commentary/boat-action-owner-commentary.component';
+import { BoatActionViewComponent } from './components/boat-owner/boat-action-view/boat-action-view.component';
+import { BoatReservationOwnerCommentaryComponent } from './components/boat-owner/boat-reservation-owner-commentary/boat-reservation-owner-commentary.component';
+import { BoatReservationViewComponent } from './components/boat-owner/boat-reservation-view/boat-reservation-view.component';
+import { NewBoatComponent } from './components/boat-owner/new-boat/new-boat.component';
+import { NewBoatActionComponent } from './components/boat-owner/new-boat-action/new-boat-action.component';
+import { NewBoatAvailabilityPeriodComponent } from './components/boat-owner/new-boat-availability-period/new-boat-availability-period.component';
+import { NewBoatReservationComponent } from './components/boat-owner/new-boat-reservation/new-boat-reservation.component';
 import { BusinessReportComponent } from './components/business-report/business-report.component';
+import { BoatOwnerBoatComponent } from './components/boat-owner/boat-owner-boat/boat-owner-boat.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -61,7 +70,17 @@ const routes: Routes = [
   { path: 'account-deletion-request', component: AccountDeletionRequestComponent },
   { path: 'add-availability-period', component: AvailablePeriodComponent },
   { path: 'visit-report/:id', component: VisitReportComponent },
-  { path: 'business-report', component: BusinessReportComponent }
+  { path: 'boat/:id/action/:actId/new-commentary', component: BoatActionOwnerCommentaryComponent },
+  { path: 'boat/:id/action/:actId', component: BoatActionViewComponent },
+  { path: 'boat/:id/reservation/:resId', component: BoatReservationViewComponent },
+  { path: 'boat/:id/reservation/:resId/new-commentary', component: BoatReservationOwnerCommentaryComponent },
+  { path: 'boat/:id/new-availability-period', component: NewBoatAvailabilityPeriodComponent },
+  { path: 'boat/:id/new-boat-reservation', component: NewBoatReservationComponent },
+  { path: 'boat/:id/new-boat-action', component: NewBoatActionComponent },
+  { path: 'new-boat', component: NewBoatComponent },
+  { path: 'business-report', component: BusinessReportComponent },
+  { path: 'boat-owner/boat/:id', component: BoatOwnerBoatComponent },
+  
 ];
 
 @NgModule({

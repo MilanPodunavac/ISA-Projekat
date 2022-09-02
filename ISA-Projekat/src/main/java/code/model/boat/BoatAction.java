@@ -1,6 +1,7 @@
 package code.model.boat;
 
 import code.model.base.Action;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.Set;
 public class BoatAction extends Action {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "boat_id")
+    @JsonBackReference
     private Boat boat;
     @ElementCollection(targetClass= BoatReservationTag.class)
     @Enumerated(EnumType.ORDINAL)

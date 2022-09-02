@@ -95,9 +95,9 @@ public class BoatServiceImpl  implements BoatService {
         }catch(Exception ex){
             throw new UnauthorizedAccessException("Unauthorized");
         }
-        CottageOwner owner;
+        BoatOwner owner;
         try{
-            owner = (CottageOwner) auth.getPrincipal();
+            owner = (BoatOwner) auth.getPrincipal();
         }
         catch(ClassCastException ex){
             throw new UnauthorizedAccessException("User is not a boat owner");
