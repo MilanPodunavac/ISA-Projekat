@@ -48,9 +48,10 @@ public class FishingTripServiceImpl implements FishingTripService {
     private final CurrentPointsProviderGetsAfterReservationRepository _currentPointsProviderGetsAfterReservationRepository;
     private final LoyaltyProgramClientRepository _loyaltyProgramClientRepository;
     private final LoyaltyProgramProviderRepository _loyaltyProgramProviderRepository;
+    private final ReviewFishingTripRepository _reviewFishingTripRepository;
     private final JavaMailSender _mailSender;
 
-    public FishingTripServiceImpl(FishingInstructorRepository fishingInstructorRepository, FishingTripPictureRepository fishingTripPictureRepository, FishingTripRepository fishingTripRepository, FishingInstructorAvailablePeriodRepository fishingInstructorAvailablePeriodRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, FishingTripReservationRepository fishingTripReservationRepository, ClientRepository clientRepository, UserService userService, ReservationRepository reservationRepository, ActionRepository actionRepository, CurrentSystemTaxPercentageRepository currentSystemTaxPercentageRepository, IncomeRecordRepository incomeRecordRepository, CurrentPointsClientGetsAfterReservationRepository currentPointsClientGetsAfterReservationRepository, CurrentPointsProviderGetsAfterReservationRepository currentPointsProviderGetsAfterReservationRepository, LoyaltyProgramClientRepository loyaltyProgramClientRepository, LoyaltyProgramProviderRepository loyaltyProgramProviderRepository, JavaMailSender mailSender) {
+    public FishingTripServiceImpl(FishingInstructorRepository fishingInstructorRepository, FishingTripPictureRepository fishingTripPictureRepository, FishingTripRepository fishingTripRepository, FishingInstructorAvailablePeriodRepository fishingInstructorAvailablePeriodRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, FishingTripReservationRepository fishingTripReservationRepository, ClientRepository clientRepository, UserService userService, ReservationRepository reservationRepository, ActionRepository actionRepository, CurrentSystemTaxPercentageRepository currentSystemTaxPercentageRepository, IncomeRecordRepository incomeRecordRepository, CurrentPointsClientGetsAfterReservationRepository currentPointsClientGetsAfterReservationRepository, CurrentPointsProviderGetsAfterReservationRepository currentPointsProviderGetsAfterReservationRepository, LoyaltyProgramClientRepository loyaltyProgramClientRepository, LoyaltyProgramProviderRepository loyaltyProgramProviderRepository, ReviewFishingTripRepository reviewFishingTripRepository, JavaMailSender mailSender) {
         this._fishingInstructorRepository = fishingInstructorRepository;
         this._fishingTripPictureRepository = fishingTripPictureRepository;
         this._fishingTripRepository = fishingTripRepository;
@@ -67,6 +68,7 @@ public class FishingTripServiceImpl implements FishingTripService {
         this._currentPointsProviderGetsAfterReservationRepository = currentPointsProviderGetsAfterReservationRepository;
         this._loyaltyProgramClientRepository = loyaltyProgramClientRepository;
         this._loyaltyProgramProviderRepository = loyaltyProgramProviderRepository;
+        this._reviewFishingTripRepository = reviewFishingTripRepository;
         this._mailSender = mailSender;
     }
 
@@ -665,6 +667,16 @@ public class FishingTripServiceImpl implements FishingTripService {
         }
 
         return fishingTripFreeQuickReservations;
+    }
+
+    @Override
+    public List<ReviewFishingTrip> getFishingTripApprovedReviews(Integer id) throws EntityNotFoundException {
+        Optional<FishingTrip> fishingTrip = _fishingTripRepository.findById(id);
+        if(!fishingTrip.isPresent()) {
+            throw new EntityNotFoundException("Fishing trip doesn't exist!");
+        }
+
+        return _reviewFishingTripRepository.findByFishingTripIdAndApproved(id, true);
     }
 
     @Scheduled(cron="0 0 1 * * *")

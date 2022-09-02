@@ -2,16 +2,11 @@ package code.dto.fishing_trip;
 
 import code.model.*;
 import code.model.base.PictureBase64;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
-import javax.persistence.*;
 import java.util.List;
 import java.util.Set;
 
@@ -33,5 +28,5 @@ public class FishingTripGetDto {
     private List<PictureBase64> pictures;
     private Set<FishingTripQuickReservation> fishingTripQuickReservations;
     private Set<FishingTripReservationTag> fishingTripReservationTags;
-    private Set<ReviewFishingTrip> fishingTripReviews;
+    private Set<ReviewFishingTrip> reviews;
 }

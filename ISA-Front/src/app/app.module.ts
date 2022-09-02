@@ -64,6 +64,7 @@ import { NewBoatComponent } from './components/boat-owner/new-boat/new-boat.comp
 import { NewBoatActionComponent } from './components/boat-owner/new-boat-action/new-boat-action.component';
 import { NewBoatAvailabilityPeriodComponent } from './components/boat-owner/new-boat-availability-period/new-boat-availability-period.component';
 import { NewBoatReservationComponent } from './components/boat-owner/new-boat-reservation/new-boat-reservation.component';
+import { BusinessReportComponent } from './components/business-report/business-report.component';
 
 @NgModule({
   declarations: [
@@ -105,6 +106,7 @@ import { NewBoatReservationComponent } from './components/boat-owner/new-boat-re
     NewBoatActionComponent,
     NewBoatAvailabilityPeriodComponent,
     NewBoatReservationComponent,
+    BusinessReportComponent,
   ],
   imports: [
     BrowserModule,

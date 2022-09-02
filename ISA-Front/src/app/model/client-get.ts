@@ -21,5 +21,4 @@ export class ClientGet {
     instructorsSubscribedTo: any[];
     loyaltyPoints: number;
     category: any;
-    deletable: boolean;
 }
