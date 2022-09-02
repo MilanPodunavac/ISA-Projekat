@@ -15,7 +15,7 @@ import { LoyaltyProgramService } from 'src/app/service/loyalty-program.service';
   styleUrls: ['./fishing-instructor.component.scss']
 })
 export class FishingInstructorComponent implements OnInit {
-    displayedColumnsFishingTrips: string[] = ['name', 'equipment', 'max_people', 'cost_per_day', 'price_kept_if_reservation_cancelled', 'location', 'reservation_tags'];
+    displayedColumnsFishingTrips: string[] = ['name', 'equipment', 'max_people', 'cost_per_day', 'price_kept_if_reservation_cancelled', 'location', 'reservation_tags', 'grade'];
     allInstructorFishingTrips: FishingTripGet[];
     dataSourceFishingTrips: FishingTripGet[];
     clickedRowFishingTrips: FishingTripGet;
@@ -30,7 +30,21 @@ export class FishingInstructorComponent implements OnInit {
     constructor(private router: Router, private fishingTripService: FishingTripService) {
         this.fishingTripService.getFishingInstructorFishingTrips().subscribe(data => {
             this.allInstructorFishingTrips = data;
-            this.dataSourceFishingTrips = data;
+            this.allInstructorFishingTrips.forEach(function (fishingTrip) {
+                for (let i = 0; i < fishingTrip.reviews.length; i++) {
+                    if (!fishingTrip.reviews[i].approved) {
+                        fishingTrip.reviews.splice(i, 1);
+                    }
+                }
+
+                fishingTrip.grade = 0;
+                for (let i = 0; i < fishingTrip.reviews.length; i++) {
+                    fishingTrip.grade += fishingTrip.reviews[i].grade;
+                }
+                fishingTrip.grade /= fishingTrip.reviews.length;
+            });
+
+            this.dataSourceFishingTrips = this.allInstructorFishingTrips;
         });
 
         this.clickedRowFishingTrips = new FishingTripGet();

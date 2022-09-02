@@ -88,4 +88,10 @@ export class ProfileComponent implements OnInit {
             window.location.reload();
         });
     }
+
+    public goToBusinessReport(): void {
+        this.router.navigate(['business-report']).then(() => {
+            window.location.reload();
+        });
+    }
 }

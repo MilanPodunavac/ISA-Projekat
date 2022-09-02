@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { FishingActionGet } from '../model/fishing-action-get.model';
 import { FishingReservationGet } from '../model/fishing-reservation-get.model';
 import { FishingTripGet } from '../model/fishing-trip-get';
+import { ReviewFishingTripGet } from '../model/review-fishing-trip-get.model';
 
 @Injectable({
     providedIn: 'root'
@@ -33,6 +34,10 @@ export class FishingTripService {
 
     public getFishingTripFreeActions(id: number): Observable<FishingActionGet[]> {
 		return this.http.get<FishingActionGet[]>(this.apiUrl + '/' + id + '/freeQuickReservations');
+	}
+
+    public getFishingTripReviews(id: number): Observable<ReviewFishingTripGet[]> {
+		return this.http.get<ReviewFishingTripGet[]>(this.apiUrl + '/' + id + '/approvedReviews');
 	}
 
     public getSearchedFishingTrips(searchText: string): Observable<FishingTripGet[]> {

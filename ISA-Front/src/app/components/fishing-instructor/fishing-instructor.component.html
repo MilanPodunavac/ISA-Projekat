@@ -44,6 +44,18 @@
                         <th class="text-center" mat-header-cell *matHeaderCellDef> Fishing trip tags </th>
                         <td mat-cell *matCellDef="let element"> {{element.fishingTripReservationTags.join(', ')}} </td>
                     </ng-container>
+
+                    <ng-container matColumnDef="grade">
+                        <th class="text-center" mat-header-cell *matHeaderCellDef> Grade </th>
+                        <td mat-cell *matCellDef="let element"> 
+                            <div *ngIf="element.reviews.length === 0">
+                                -
+                            </div>
+                            <div *ngIf="element.reviews.length !== 0">
+                                {{element.grade}}
+                            </div>
+                        </td>
+                    </ng-container>
                 
                     <tr mat-header-row *matHeaderRowDef="displayedColumnsFishingTrips"></tr>
                     <tr
@@ -128,7 +140,7 @@
                             <div *ngIf="element.ownerCommentary !== null && element.ownerCommentary.clientCame === false">
                                 no
                             </div>
-                         </td>
+                        </td>
                     </ng-container>
 
                     <tr mat-header-row *matHeaderRowDef="displayedColumnsReservations"></tr>
