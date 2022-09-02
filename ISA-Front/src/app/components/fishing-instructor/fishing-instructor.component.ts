@@ -120,4 +120,10 @@ export class FishingInstructorComponent implements OnInit {
             window.location.reload();
         });
     }
+
+    public goToEditFishingTripPictures(): void {
+        this.router.navigate(['edit-fishing-trip-pictures/' + this.clickedRowFishingTrips.id]).then(() => {
+            window.location.reload();
+        });
+    }
 }

@@ -102,13 +102,13 @@ INSERT INTO FISHING_TRIP_QUICK_RESERVATION_TAGS (fishing_trip_quick_reservation_
 INSERT INTO FISHING_TRIP_QUICK_RESERVATION_TAGS (fishing_trip_quick_reservation_id, tags) VALUES (2, 0);
 INSERT INTO FISHING_TRIP_QUICK_RESERVATION_TAGS (fishing_trip_quick_reservation_id, tags) VALUES (3, 3);
 
-INSERT INTO FISHING_TRIP_RESERVATION (duration_in_days, number_of_people, price, system_tax_percentage, start, loyalty_points_given, client_id, fishing_trip_id) VALUES(5, 3, 500, 10, '2023-10-10', false, 2, 1);
-INSERT INTO FISHING_TRIP_RESERVATION (duration_in_days, number_of_people, price, system_tax_percentage, start, loyalty_points_given, client_id, fishing_trip_id) VALUES(2, 9, 400, 20, '2023-10-15', false, 8, 2);
-INSERT INTO FISHING_TRIP_RESERVATION (duration_in_days, number_of_people, price, system_tax_percentage, start, loyalty_points_given, client_id, fishing_trip_id) VALUES(8, 2, 1200, 15, '2023-10-15', false, 2, 3);
+--INSERT INTO FISHING_TRIP_RESERVATION (duration_in_days, number_of_people, price, system_tax_percentage, start, loyalty_points_given, client_id, fishing_trip_id) VALUES(5, 3, 500, 10, '2023-10-10', false, 2, 1);
+--INSERT INTO FISHING_TRIP_RESERVATION (duration_in_days, number_of_people, price, system_tax_percentage, start, loyalty_points_given, client_id, fishing_trip_id) VALUES(2, 9, 400, 20, '2023-10-15', false, 8, 2);
+--INSERT INTO FISHING_TRIP_RESERVATION (duration_in_days, number_of_people, price, system_tax_percentage, start, loyalty_points_given, client_id, fishing_trip_id) VALUES(8, 2, 1200, 15, '2023-10-15', false, 2, 3);
 
-INSERT INTO FISHING_TRIP_RESERVATION_TAGS (fishing_trip_reservation_id, tags) VALUES (1, 2);
-INSERT INTO FISHING_TRIP_RESERVATION_TAGS (fishing_trip_reservation_id, tags) VALUES (2, 1);
-INSERT INTO FISHING_TRIP_RESERVATION_TAGS (fishing_trip_reservation_id, tags) VALUES (3, 3);
+--INSERT INTO FISHING_TRIP_RESERVATION_TAGS (fishing_trip_reservation_id, tags) VALUES (1, 2);
+--INSERT INTO FISHING_TRIP_RESERVATION_TAGS (fishing_trip_reservation_id, tags) VALUES (2, 1);
+--INSERT INTO FISHING_TRIP_RESERVATION_TAGS (fishing_trip_reservation_id, tags) VALUES (3, 3);
 
 INSERT INTO SUBSCRIBER_FISHING_INSTRUCTOR (client_id, instructor_id) VALUES (2, 5);
 INSERT INTO SUBSCRIBER_FISHING_INSTRUCTOR (client_id, instructor_id) VALUES (2, 9);
