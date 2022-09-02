@@ -43,7 +43,7 @@ export class LoginComponent implements OnInit {
                             window.location.reload();
                         });
                     }
-                    if (data === "ROLE_COTTAGE_OWNER") {
+                    if (data === "ROLE_COTTAGE_OWNER" || data === "ROLE_BOAT_OWNER") {
                         this.router.navigate(['']).then(() => {
                             window.location.reload();
                         });

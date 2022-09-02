@@ -116,10 +116,16 @@ INSERT INTO SUBSCRIBER_FISHING_INSTRUCTOR (client_id, instructor_id) VALUES (8, 
 
 INSERT INTO BOAT (id, description, name, price_per_day, rules, location_id, engine_number, engine_power, fishing_equipment, length, max_people, max_speed, navigational_equipment, type, user_id, reservation_refund, version, schedule_changed) VALUES (10, 'Ovo je camac', 'Camac', 100, 'pravila pravila da bi me udavila ili kicmu savila il skroz osasavila', 18, 2, 100, 'Stap za pecanje', 5, 4, 150, 0, 'camac', 4, 10, 0, 0);
 
+INSERT INTO BOAT_ADDITIONAL_SERVICES (boat_id, tags) VALUES (10, 0);
+INSERT INTO BOAT_ADDITIONAL_SERVICES (boat_id, tags) VALUES (10, 2);
+INSERT INTO BOAT_ADDITIONAL_SERVICES (boat_id, tags) VALUES (10, 1);
+
 INSERT INTO AVAILABILITY_PERIOD (id, end_date, start_date, sale_entity_id) VALUES(3, '2022-04-30 00:00:00', '2022-04-1 00:00:00', 10);
 INSERT INTO AVAILABILITY_PERIOD (id, end_date, start_date, sale_entity_id) VALUES(4, '2022-10-30 00:00:00', '2022-10-1 00:00:00', 10);
 
 INSERT INTO BOAT_RESERVATION (id, end_date, start_date, number_of_people, price, reservation_refund, reservation_status, system_charge, availability_period_id, client_id, boat_id, loyalty_points_given) VALUES (14, '2022-04-12 00:00:00', '2022-04-11 00:00:00', 2, 6, 2, 1, 3, 3, 10, 10, false);
+
+INSERT INTO BOAT_RESERVATION_TAGS (boat_reservation_id, tags) VALUES (14, 1);
 
 INSERT INTO CURRENT_POINTS_CLIENT_GETS_AFTER_RESERVATION (current_points_client_gets_after_reservation) VALUES (200);
 

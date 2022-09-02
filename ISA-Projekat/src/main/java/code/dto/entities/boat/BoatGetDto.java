@@ -1,5 +1,6 @@
 package code.dto.entities.boat;
 
+import code.dto.entities.AvailabilityPeriodGetDto;
 import code.model.Location;
 import code.model.base.PictureBase64;
 import code.model.boat.BoatOwner;
@@ -38,4 +39,9 @@ public class BoatGetDto {
     private Set<BoatReservationTag> additionalServices;
     private BoatOwner boatOwner;
     private List<PictureBase64> pictures;
+    private List<AvailabilityPeriodGetDto> availabilityPeriods;
+    private List<BoatReservationGetDto> boatReservations;
+    private List<BoatActionGetDto> boatActions;
+    private double grade;
+    private boolean deletable;
 }
