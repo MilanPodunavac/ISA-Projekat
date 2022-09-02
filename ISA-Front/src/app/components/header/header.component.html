@@ -19,6 +19,12 @@
         <button mat-button id="base" [routerLink]="['profit']">My profit</button>
     </div>
 
+    <div *ngIf="role === 'ROLE_BOAT_OWNER'">
+        <button mat-button id="base" [routerLink]="['']">Home</button>
+        <button mat-button id="base" [routerLink]="['boat']">My Boats</button>
+        <button mat-button id="base" [routerLink]="['profit']">My profit</button>
+    </div>
+
     <div *ngIf="role === 'ROLE_FISHING_INSTRUCTOR'">
         <button mat-button [routerLink]="['fishing-instructor-home']">Home</button>
         <button mat-button>Add fishing trip</button>

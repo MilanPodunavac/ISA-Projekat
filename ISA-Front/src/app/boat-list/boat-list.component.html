@@ -11,6 +11,7 @@
                 <tr>
                     <th>Name</th>
                     <th>Address</th>
+                    <td>Average grade</td>
                     <th>Max people</th>
                     <th>Price per day</th>
                     <th>Type</th>
@@ -22,6 +23,8 @@
                 <tr *ngFor='let boat of boats' (dblclick)="doubleClickFunction(boat.id)">
                     <td>{{boat.name}}</td>
                     <td>{{boat.location.streetName}}, {{boat.location.cityName}}, {{boat.location.countryName}}</td>
+                    <td *ngIf="boat.grade !== -1">{{cottage.grade}}</td>
+                    <td *ngIf="boat.grade === -1">No reviews</td>
                     <td>{{boat.maxPeople}}</td>
                     <td>{{boat.pricePerDay}}</td>
                     <td>{{boat.type}}</td>

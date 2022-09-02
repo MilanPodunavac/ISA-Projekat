@@ -1,22 +1,28 @@
 package code.controller;
 
 import code.controller.base.BaseController;
+import code.dto.entities.AvailabilityPeriodGetDto;
 import code.dto.entities.NewAvailabilityPeriodDto;
 import code.dto.entities.NewOwnerCommentaryDto;
-import code.dto.entities.boat.BoatDto;
-import code.dto.entities.boat.NewBoatActionDto;
-import code.dto.entities.boat.NewBoatReservationDto;
+import code.dto.entities.boat.*;
+import code.dto.entities.cottage.CottageActionGetDto;
+import code.dto.entities.cottage.CottageGetDto;
+import code.dto.entities.cottage.CottageReservationGetDto;
 import code.exceptions.entities.*;
-import code.dto.entities.boat.BoatGetDto;
 import code.dto.entities.boat.BoatDto;
 import code.exceptions.entities.EntityNotFoundException;
 import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
+import code.model.base.Action;
 import code.model.base.AvailabilityPeriod;
 import code.model.base.OwnerCommentary;
+import code.model.base.Reservation;
 import code.model.boat.Boat;
 import code.model.boat.BoatAction;
 import code.model.boat.BoatReservation;
+import code.model.cottage.Cottage;
+import code.model.cottage.CottageAction;
+import code.model.cottage.CottageReservation;
 import code.model.wrappers.DateRange;
 import code.repository.BoatOwnerRepository;
 import code.repository.BoatRepository;
@@ -33,9 +39,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/boat")
@@ -55,7 +59,9 @@ public class BoatController extends BaseController {
 
     @GetMapping()
     public ResponseEntity<List<Object>> get(){
-        return ResponseEntity.ok(_mapper.map(_boatService.getAllBoats(), new TypeToken<List<BoatGetDto>>() {}.getType()));
+        List<Boat> boats = _boatService.getAllBoats();
+        boats.sort(Comparator.comparing(Boat::getId));
+        return ResponseEntity.ok(_mapper.map(boats, new TypeToken<List<BoatGetDto>>() {}.getType()));
     }
 
     @GetMapping(value = "/{id}")
@@ -63,9 +69,75 @@ public class BoatController extends BaseController {
         try{
             Boat boat = _boatService.getBoat(id);
             BoatGetDto boatDto = _mapper.map(boat, BoatGetDto.class);
+            boatDto.setDeletable(!boat.hasFutureReservationsOrActions());
+            boatDto.setAvailabilityPeriods(new ArrayList<>());
+            boatDto.setBoatReservations(new ArrayList<>());
+            boatDto.setBoatActions(new ArrayList<>());
+            for (AvailabilityPeriod period: boat.getAvailabilityPeriods()) {
+                boatDto.getAvailabilityPeriods().add(new AvailabilityPeriodGetDto(period.getRange().getStartDate(), period.getRange().getEndDate()));
+                for(Reservation res: period.getReservations()){
+                    BoatReservationGetDto dto = _mapper.map(res, BoatReservationGetDto.class);
+                    if(res.getOwnerCommentary() != null){
+                        dto.setCommentary(res.getOwnerCommentary().getCommentary());
+                    }
+                    //dto.setClientFullName(res.getClient().getFirstName() + " " + res.getClient().getLastName());
+                    boatDto.getBoatReservations().add(dto);
+                }
+                for(Action act: period.getActions()){
+                    BoatActionGetDto dto = _mapper.map(act, BoatActionGetDto.class);
+                    if(act.getOwnerCommentary() != null){
+                        dto.setCommentary(act.getOwnerCommentary().getCommentary());
+                    }
+                    if(act.getClient() != null){
+                        //dto.setClientFullName(act.getClient().getFirstName() + " " + act.getClient().getLastName());
+                        dto.setClientFirstName(act.getClient().getFirstName());
+                        dto.setClientLastName(act.getClient().getLastName());
+                    }
+                    boatDto.getBoatActions().add(dto);
+                }
+            }
+            boatDto.getAvailabilityPeriods().sort(Comparator.comparing(AvailabilityPeriodGetDto::getStartDate));
+            boatDto.getBoatReservations().sort(Comparator.comparing(BoatReservationGetDto::getStartDate));
+            boatDto.getBoatActions().sort(Comparator.comparing(BoatActionGetDto::getStartDate));
+            boatDto.setPictures(_boatService.getBoatImagesAsBase64(boat.getId()));
             return ResponseEntity.ok(boatDto);
         }catch(Exception ex){
             if(ex instanceof EntityNotFoundException) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Boat not found");
+            return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
+        }
+    }
+
+    @GetMapping(value = "/{id}/reservation/{resId}")
+    public ResponseEntity<Object> getReservation(@PathVariable Integer id, @PathVariable Integer resId){
+        try{
+            BoatReservation reservation = _boatService.getBoatReservation(id, resId);
+            BoatReservationGetDto dto = _mapper.map(reservation, BoatReservationGetDto.class);
+            if(reservation.getOwnerCommentary() != null){
+                dto.setCommentary(reservation.getOwnerCommentary().getCommentary());
+            }
+            return ResponseEntity.ok(dto);
+        }catch(Exception ex){
+            if(ex instanceof EntityNotFoundException) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+            return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
+        }
+    }
+
+    @GetMapping(value = "/{id}/action/{actId}")
+    public ResponseEntity<Object> getAction(@PathVariable Integer id, @PathVariable Integer actId){
+        try{
+            BoatAction action = _boatService.getBoatAction(id, actId);
+            BoatActionGetDto dto = _mapper.map(action, BoatActionGetDto.class);
+            if(action.getOwnerCommentary() != null){
+                dto.setCommentary(action.getOwnerCommentary().getCommentary());
+            }
+            if(action.getClient() != null){
+                dto.setClientFirstName(action.getClient().getFirstName());
+                dto.setClientLastName(action.getClient().getLastName());
+                dto.setClientId(action.getClient().getId());
+            }
+            return ResponseEntity.ok(dto);
+        }catch(Exception ex){
+            if(ex instanceof EntityNotFoundException) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
             return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
         }
     }
@@ -236,5 +308,17 @@ public class BoatController extends BaseController {
             return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
         }
         return ResponseEntity.ok("Boat deleted");
+    }
+
+    @GetMapping("/{id}/visit-report")
+    @PreAuthorize("hasRole('ROLE_BOAT_OWNER')")
+    public ResponseEntity<Object> getVisitReport(@PathVariable Integer id){
+        try{
+            return ResponseEntity.ok(_boatService.generateVisitReport(id));
+        }catch(Exception ex){
+            if(ex instanceof UnauthorizedAccessException || ex instanceof EntityNotOwnedException) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+            if(ex instanceof EntityNotFoundException || ex instanceof UserNotFoundException) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Oops, something went wrong, try again later!");
+        }
     }
 }

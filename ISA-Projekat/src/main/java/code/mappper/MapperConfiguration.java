@@ -2,10 +2,7 @@ package code.mappper;
 
 import code.dto.admin.AdminRegistration;
 import code.dto.admin.PersonalData;
-import code.dto.entities.boat.BoatGetDto;
-import code.dto.entities.boat.BoatDto;
-import code.dto.entities.boat.NewBoatActionDto;
-import code.dto.entities.boat.NewBoatReservationDto;
+import code.dto.entities.boat.*;
 import code.dto.entities.cottage.*;
 import code.dto.entities.NewOwnerCommentaryDto;
 import code.dto.fishing_trip.EditFishingTrip;
@@ -260,7 +257,8 @@ public class MapperConfiguration {
 
         PropertyMap<Boat, BoatGetDto> boatToBoatDtoPropertyMap = new PropertyMap<Boat, BoatGetDto>(){
             protected void configure(){
-
+                map().setGrade(source.calculateAverageGrade());
+                map().setDeletable(source.hasFutureReservationsOrActions());
             }
         };
         TypeMap<Boat, BoatGetDto> boatToBoatDto= modelMapper.createTypeMap(Boat.class, BoatGetDto.class);
@@ -320,6 +318,41 @@ public class MapperConfiguration {
 
         TypeMap<CottageAction, CottageActionGetDto> cottageActionToGetDtoTypeMap = modelMapper.createTypeMap(CottageAction.class, CottageActionGetDto.class);
         cottageActionToGetDtoTypeMap.addMappings(cottageActionToGetDtoPropMap);
+
+        //BoatReservationGetDto
+
+        PropertyMap<BoatReservation, BoatReservationGetDto> boatReservationToGetDtoPropMap = new PropertyMap<BoatReservation, BoatReservationGetDto>() {
+            @Override
+            protected void configure() {
+                map().setOwnerCommentable(source.checkIfReservationCommentable());
+                map().setStartDate(source.getDateRange().getStartDate());
+                map().setEndDate(source.getDateRange().getEndDate());
+                map().setReservationStatus(source.getReservationStatus());
+                map().setNumberOfPeople(source.getNumberOfPeople());
+                map().setClientId(source.getClient().getId());
+                map().setClientFirstName(source.getClient().getFirstName());
+                map().setClientLastName(source.getClient().getLastName());
+            }
+        };
+
+        TypeMap<BoatReservation, BoatReservationGetDto> boatReservationToGetDtoTypeMap = modelMapper.createTypeMap(BoatReservation.class, BoatReservationGetDto.class);
+        boatReservationToGetDtoTypeMap.addMappings(boatReservationToGetDtoPropMap);
+
+        //CottageActionGetDto
+
+        PropertyMap<BoatAction, BoatActionGetDto> boatActionToGetDtoPropMap = new PropertyMap<BoatAction, BoatActionGetDto>() {
+            @Override
+            protected void configure() {
+                map().setOwnerCommentable(source.checkIfActionCommentable());
+                map().setStartDate(source.getRange().getStartDate());
+                map().setEndDate(source.getRange().getEndDate());
+                map().setReserved(source.isReserved());
+                map().setNumberOfPeople(source.getNumberOfPeople());
+            }
+        };
+
+        TypeMap<BoatAction, BoatActionGetDto> boatActionToGetDtoTypeMap = modelMapper.createTypeMap(BoatAction.class, BoatActionGetDto.class);
+        boatActionToGetDtoTypeMap.addMappings(boatActionToGetDtoPropMap);
 
         return modelMapper;
     }

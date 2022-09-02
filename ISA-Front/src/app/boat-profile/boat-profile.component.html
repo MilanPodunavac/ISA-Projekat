@@ -8,6 +8,11 @@
                         <div class="profile">
                             <p>Name:&ensp;{{boat.name}}</p>
                             <p>Description:&ensp;{{boat.description}}</p>
+                            <p>Engine number:&ensp;{{boat.engineNumber}}</p>
+                            <p>Engine power:&ensp;{{boat.enginePower}}</p>
+                            <p>Maximum speed:&ensp;{{boat.maxSpeed}}</p>
+                            <p>Navigational equipment:&ensp;{{boat.navigationalEquipment}}</p>
+                            <p>Fishing equipment:&ensp;{{boat.fishingEquipment}}</p>
                             <p>Rules:&ensp;{{boat.rules}}</p>
                             <p>Price per day:&ensp;{{boat.pricePerDay}}</p>
                             <p>Location:&ensp;{{boat.location.streetName}}, {{boat.location.cityName}}, {{boat.location.countryName}}</p>
@@ -15,6 +20,15 @@
                             <p>Owner's name:&ensp;{{boat.boatOwner.firstName}} {{boat.boatOwner.lastName}}</p>
                             <p>Owner's eMail:&ensp;{{boat.boatOwner.email}}</p>
                             <p>Owner's phone number:&ensp;{{boat.boatOwner.phoneNumber}}</p>
+                            <button *ngIf="role==='ROLE_BOAT_OWNER'" id="updateButton" class="btn btn-primary" (click)="updateBoat()">
+                                <strong>Update boat</strong>
+                            </button>
+                            <button *ngIf="role==='ROLE_BOAT_OWNER'" id="viewVisitReportButton" class="btn btn-primary" [routerLink]="['../../visit-report/', boat.id]" style="margin-left: 50px;">
+                                <strong>View visit report</strong>
+                            </button>
+                            <button *ngIf="role==='ROLE_BOAT_OWNER'" [disabled]="!boat.deletable" id="viewVisitReportButton" class="btn btn-primary" (click)="deleteBoat()" style="margin-left: 50px;">
+                                <strong>Delete boat</strong>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -35,5 +49,126 @@
             </table>
         </div>
         <h3 *ngIf="!boat.pictures?.length">No pictures recorded</h3>
+    </div>
+</div>
+<p>Location on map</p>
+<div id="map" name="map" class="map"></div>
+<div class="row">
+    <div class="container mb-3">
+        <div *ngIf="boat.pictures?.length" class="table-responsive m-1">
+            <div class="panel-heading m-3">
+                <h2>Pictures</h2>
+            </div>
+            <table class="table table-bordered table-striped table-hover" id="picturesTable">
+                <tbody>
+                    <tr *ngFor='let picture of boat.pictures'>
+                        <td><img [src]="picture.data" class="text-center mb-3" style="max-width: 700px;max-height: 700px;" alt="..."></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <h3 *ngIf="!boat.pictures?.length">No pictures recorded</h3>
+    </div>
+    <div class="container mb-3" >
+        <div *ngIf="boat.availabilityPeriods?.length" class="table-responsive m-1">
+            <div class="panel-heading m-3">
+                <h2>Availability periods</h2>
+            </div>
+            <table class="table table-bordered table-striped table-hover" id="picturesTable">
+                <thead>
+                    <tr>
+                        <th>Start</th>
+                        <th>End</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor='let period of boat.availabilityPeriods'>
+                        <td>{{period.startDate}}</td>
+                        <td>{{period.endDate}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <h3 *ngIf="!boat.availabilityPeriods?.length">
+            This boat has no availability periods
+        </h3>
+        <button *ngIf="role==='ROLE_BOAT_OWNER'" id="updateButton" class="btn btn-primary" (click)="addAvailabiltiyPeriod()">
+            <strong>Add new availability period</strong>
+        </button>
+    </div>
+    <div class="container mb-3" >
+        <div *ngIf="boat.boatReservations?.length" class="table-responsive m-1">
+            <div class="panel-heading m-3">
+                <h2>Reservations</h2>
+            </div>
+            <table class="table table-bordered table-striped table-hover" id="picturesTable">
+                <thead>
+                    <tr>
+                        <th>Start</th>
+                        <th>End</th>
+                        <th *ngIf="role==='ROLE_BOAT_OWNER'">Client name</th>
+                        <th *ngIf="role==='ROLE_BOAT_OWNER'">Number of people</th>
+                        <th *ngIf="role==='ROLE_BOAT_OWNER'">Additional services</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor='let res of boat.boatReservations' (dblclick)="doubleClickResFunction(res.id)">
+                        <td>{{res.startDate}}</td>
+                        <td>{{res.endDate}}</td>
+<!--izmeniti-->         <td *ngIf="role==='ROLE_BOAT_OWNER'"><a [routerLink]="['../../boat/',res.clientId,'new-boat-action']">{{res.clientFirstName}} {{res.clientLastName}}</a></td><!--izmeniti-->
+                        <td *ngIf="role==='ROLE_BOAT_OWNER'">{{res.numberOfPeople}}</td>
+                        <td *ngIf="role==='ROLE_BOAT_OWNER'">{{res.boatReservationTag}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <h3 *ngIf="!boat.boatReservations?.length">
+            This boat has no reservations
+        </h3>
+        <button *ngIf="role==='ROLE_BOAT_OWNER'" id="updateButton" class="btn btn-primary" (click)="addReservation()">
+            <strong>Add new reservation</strong>
+        </button>
+    </div>
+    <div class="container mb-3" >
+        <div *ngIf="boat.boatActions?.length" class="table-responsive m-1">
+            <div class="panel-heading m-3">
+                <h2>Actions</h2>
+            </div>
+            <table class="table table-bordered table-striped table-hover" id="picturesTable">
+                <thead>
+                    <tr>
+                        <th>Start</th>
+                        <th>End</th>
+                        <th>Valid until and including</th>
+                        <th>Discount</th>
+                        <th>Price</th>
+                        <th>Reserved?</th>
+                        <th *ngIf="role==='ROLE_BOAT_OWNER'">Client name</th>
+                        <th *ngIf="role==='ROLE_BOAT_OWNER'">Number of people</th>
+                        <th *ngIf="role==='ROLE_BOAT_OWNER'">Additional services</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor='let act of boat.boatActions' (dblclick)="doubleClickActFunction(act.id)">
+                        <td>{{act.startDate}}</td>
+                        <td>{{act.endDate}}</td>
+                        <td>{{act.validUntilAndIncluding}}</td>
+                        <td>{{act.discount}}</td>
+                        <td>{{act.price}}</td>
+                        <td>{{act.reserved}}</td>
+<!--izmeniti-->         <td *ngIf="role==='ROLE_BOAT_OWNER'&&act.reserved"><a [routerLink]="['../../boat/',act.clientId,'new-boat-action']">{{act.clientFirstName}} {{act.clientLastName}}</a></td><!--izmeniti-->
+                        <td *ngIf="role==='ROLE_BOAT_OWNER'&&!act.reserved">No client</td>
+                        <td *ngIf="role==='ROLE_BOAT_OWNER'">{{act.numberOfPeople}}</td>
+                        <td *ngIf="role==='ROLE_BOAT_OWNER'">{{act.additionalServices}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <h3 *ngIf="!boat.boatActions?.length">
+            This boat has no actions
+        </h3>
+        <button *ngIf="role==='ROLE_BOAT_OWNER'" class="btn btn-primary" (click)="addAction()">
+            <strong>Add new action</strong>
+        </button>
     </div>
 </div>

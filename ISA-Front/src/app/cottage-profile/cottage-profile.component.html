@@ -148,7 +148,7 @@
                 </tbody>
             </table>
         </div>
-        <h3 *ngIf="!cottage.cottageReservations?.length">
+        <h3 *ngIf="!cottage.cottageActions?.length">
             This cottage has no actions
         </h3>
         <button *ngIf="role==='ROLE_COTTAGE_OWNER'" class="btn btn-primary" (click)="addAction()">
