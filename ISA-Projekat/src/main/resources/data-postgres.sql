@@ -49,7 +49,7 @@ INSERT INTO ACCOUNT_DELETION_REQUEST (text, user_id) VALUES ('molim te', 5);
 
 INSERT INTO CURRENT_SYSTEM_TAX_PERCENTAGE (current_system_tax_percentage) VALUES (20);
 
-INSERT INTO INCOME_RECORD (date_of_entry, provider_income, percentage_provider_keeps_if_reservation_cancelled, reservation_end, reservation_price, reservation_start, reserved, system_income, system_tax_percentage, reservation_provider_id) VALUES ('2022-08-21', 450, 0, '2023-10-14', 500, '2023-10-10', true, 50, 10, 5);
+INSERT INTO INCOME_RECORD (date_of_entry, provider_income, percentage_provider_keeps_if_reservation_cancelled, reservation_end, reservation_price, reservation_start, reserved, system_income, system_tax_percentage, reservation_provider_id) VALUES ('2022-08-17', 450, 0, '2023-10-14', 500, '2023-10-10', true, 50, 10, 5);
 INSERT INTO INCOME_RECORD (date_of_entry, provider_income, percentage_provider_keeps_if_reservation_cancelled, reservation_end, reservation_price, reservation_start, reserved, system_income, system_tax_percentage, reservation_provider_id) VALUES ('2022-08-21', 320, 30, '2023-10-16', 400, '2023-10-15', true, 80, 20, 5);
 INSERT INTO INCOME_RECORD (date_of_entry, provider_income, percentage_provider_keeps_if_reservation_cancelled, reservation_end, reservation_price, reservation_start, reserved, system_income, system_tax_percentage, reservation_provider_id) VALUES ('2022-08-21', 1020, 20, '2023-10-22', 1200, '2023-10-15', true, 180, 15, 9);
 
@@ -133,7 +133,9 @@ INSERT INTO CURRENT_POINTS_PROVIDER_GETS_AFTER_RESERVATION (current_points_provi
 
 INSERT INTO REVIEW (grade, description, approved, client_id, sale_entity_id) VALUES (7, 'odlično iskustvo!', false, 2, 1);
 
-INSERT INTO REVIEW_FISHING_TRIP (grade, description, approved, client_id, fishing_trip_id) VALUES (8, 'super!', false, 2, 1);
+INSERT INTO REVIEW_FISHING_TRIP (grade, description, approved, client_id, fishing_trip_id) VALUES (8, 'super!', true, 2, 1);
+INSERT INTO REVIEW_FISHING_TRIP (grade, description, approved, client_id, fishing_trip_id) VALUES (6, 'ništa posebno', false, 2, 1);
+INSERT INTO REVIEW_FISHING_TRIP (grade, description, approved, client_id, fishing_trip_id) VALUES (9, 'odlično iskustvo!', true, 8, 1);
 
 INSERT INTO COMPLAINT (description, client_id, sale_entity_id) VALUES ('nije kao u opisu usluge', 2, 1);
 

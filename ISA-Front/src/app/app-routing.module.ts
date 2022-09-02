@@ -28,6 +28,7 @@ import { ChangePasswordComponent } from './components/change-password/change-pas
 import { AccountDeletionRequestComponent } from './components/account-deletion-request/account-deletion-request.component';
 import { AvailablePeriodComponent } from './components/available-period/available-period.component';
 import { VisitReportComponent } from './components/visit-report/visit-report.component';
+import { BusinessReportComponent } from './components/business-report/business-report.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -60,6 +61,7 @@ const routes: Routes = [
   { path: 'account-deletion-request', component: AccountDeletionRequestComponent },
   { path: 'add-availability-period', component: AvailablePeriodComponent },
   { path: 'visit-report/:id', component: VisitReportComponent },
+  { path: 'business-report', component: BusinessReportComponent }
 ];
 
 @NgModule({
