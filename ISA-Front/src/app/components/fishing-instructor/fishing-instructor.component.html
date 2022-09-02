@@ -72,7 +72,7 @@
                     <button mat-raised-button color="primary" [disabled]="clickedRowFishingTrips.id === undefined">Delete fishing trip</button>
                 </div>
                 <div class="fishing-trip-buttons">
-                    <button mat-raised-button color="primary" [disabled]="clickedRowFishingTrips.id === undefined">Edit fishing trip pictures</button>
+                    <button mat-raised-button color="primary" [disabled]="clickedRowFishingTrips.id === undefined" (click)="goToEditFishingTripPictures()">Edit fishing trip pictures</button>
                 </div>
                 <div class="fishing-trip-buttons">
                     <button style="margin-right: 20px;" mat-raised-button color="primary" [disabled]="clickedRowFishingTrips.id === undefined">Add reservation</button>
