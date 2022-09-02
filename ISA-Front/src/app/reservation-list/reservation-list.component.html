@@ -18,7 +18,7 @@
             </thead>
             <tbody>
                 <ng-container *ngFor='let res of client.reservation'>
-                    <tr *ngIf="res.cottage" (dblclick)="doubleClickFunction(res.id)">
+                    <tr *ngIf="res.cottage" (dblclick)="doubleClickFunction(res.cottage.id, res.id)">
                         <td>{{res.dateRange.startDate}}</td>
                         <td>{{res.dateRange.endDate}}</td>
                         <td>{{res.price}}</td>
@@ -51,7 +51,7 @@
             </thead>
             <tbody>
                 <ng-container *ngFor='let res of client.reservation'>
-                    <tr *ngIf="res.boat" (dblclick)="doubleClickFunction(res.id)">
+                    <tr *ngIf="res.boat" (dblclick)="doubleClickFunction(res.cottage.id, res.id)">
                         <td>{{res.dateRange.startDate}}</td>
                         <td>{{res.dateRange.endDate}}</td>
                         <td>{{res.price}}</td>

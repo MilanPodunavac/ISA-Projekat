@@ -32,8 +32,8 @@ export class ReservationListComponent implements OnInit {
     return;
   }
 
-  doubleClickFunction(id: any){
-    this.router.navigate(['/reservation', id])
+  doubleClickFunction(cottageId: any, reservationId: any){
+    this.router.navigate(['/cottage/'+cottageId+'/reservation/'+reservationId])
   }
 
 }
