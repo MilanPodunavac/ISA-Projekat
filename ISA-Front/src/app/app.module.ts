@@ -56,6 +56,14 @@ import { ChangePasswordComponent } from './components/change-password/change-pas
 import { AccountDeletionRequestComponent } from './components/account-deletion-request/account-deletion-request.component';
 import { AvailablePeriodComponent } from './components/available-period/available-period.component';
 import { VisitReportComponent } from './components/visit-report/visit-report.component';
+import { BoatActionOwnerCommentaryComponent } from './components/boat-owner/boat-action-owner-commentary/boat-action-owner-commentary.component';
+import { BoatActionViewComponent } from './components/boat-owner/boat-action-view/boat-action-view.component';
+import { BoatReservationOwnerCommentaryComponent } from './components/boat-owner/boat-reservation-owner-commentary/boat-reservation-owner-commentary.component';
+import { BoatReservationViewComponent } from './components/boat-owner/boat-reservation-view/boat-reservation-view.component';
+import { NewBoatComponent } from './components/boat-owner/new-boat/new-boat.component';
+import { NewBoatActionComponent } from './components/boat-owner/new-boat-action/new-boat-action.component';
+import { NewBoatAvailabilityPeriodComponent } from './components/boat-owner/new-boat-availability-period/new-boat-availability-period.component';
+import { NewBoatReservationComponent } from './components/boat-owner/new-boat-reservation/new-boat-reservation.component';
 
 @NgModule({
   declarations: [
@@ -89,6 +97,14 @@ import { VisitReportComponent } from './components/visit-report/visit-report.com
     AccountDeletionRequestComponent,
     AvailablePeriodComponent,
     VisitReportComponent,
+    BoatActionOwnerCommentaryComponent,
+    BoatActionViewComponent,
+    BoatReservationOwnerCommentaryComponent,
+    BoatReservationViewComponent,
+    NewBoatComponent,
+    NewBoatActionComponent,
+    NewBoatAvailabilityPeriodComponent,
+    NewBoatReservationComponent,
   ],
   imports: [
     BrowserModule,

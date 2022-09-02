@@ -49,18 +49,18 @@ export class BoatProfileComponent implements OnInit {
         this.boat.boatActions[i].endDate = tempEnd.getFullYear() + "-" + (tempEnd.getMonth() + 1) + "-" + tempEnd.getDate()// + ":" + tempEnd.getHours()
         this.boat.boatActions[i].validUntilAndIncluding = tempValid.getFullYear() + "-" + (tempValid.getMonth() + 1)// + "-" + tempValid.getDate() + ":" + tempValid.getHours()
       }
-    });
-    this.map = new Map({
-      layers: [
-        new TileLayer({
-          source: new OSM(),
+      this.map = new Map({
+        layers: [
+          new TileLayer({
+            source: new OSM(),
+          }),
+        ],
+        target: 'map',
+        view: new View({
+          center: olProj.fromLonLat([this.boat.location.longitude, this.boat.location.latitude]),
+          zoom: 14, maxZoom: 20,
         }),
-      ],
-      target: 'map',
-      view: new View({
-        center: olProj.fromLonLat([this.boat.location.longitude, this.boat.location.latitude]),
-        zoom: 14, maxZoom: 20,
-      }),
+      });
     });
     console.log(this.boat)
   }
