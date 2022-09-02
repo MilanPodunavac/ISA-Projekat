@@ -20,6 +20,8 @@ export class RegisterProviderComponent implements OnInit {
             streetAddress: ['', [Validators.required]],
             city: ['', [Validators.required]],
             country: ['', [Validators.required]],
+            longitude: [''],
+            latitude: [''],
             phoneNumber: ['', [Validators.required, Validators.pattern("[0-9]{6,12}")]],
             email: ['', [Validators.required, Validators.email]],
             password: ['', [Validators.required, Validators.minLength(3)]],
@@ -41,6 +43,8 @@ export class RegisterProviderComponent implements OnInit {
         registrationRequest.address = this.registrationForm.get('streetAddress').value;
         registrationRequest.city = this.registrationForm.get('city').value;
         registrationRequest.country = this.registrationForm.get('country').value;
+        registrationRequest.longitude = this.registrationForm.get('longitude').value;
+        registrationRequest.latitude = this.registrationForm.get('latitude').value;
         registrationRequest.phoneNumber = this.registrationForm.get('phoneNumber').value;
         registrationRequest.email = this.registrationForm.get('email').value;
         registrationRequest.password = this.registrationForm.get('password').value;

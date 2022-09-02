@@ -42,6 +42,8 @@ public class NewFishingTrip {
     private String city;
     @NotBlank(message = "Country is required")
     private String country;
+    private double longitude;
+    private double latitude;
     @FishingTripReservationTagValidator(targetClassType = FishingTripReservationTag.class, message = "Fishing trip reservation tags not valid")
     private Set<String> fishingTripReservationTags;
 }

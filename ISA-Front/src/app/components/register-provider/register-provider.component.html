@@ -3,7 +3,7 @@
         <div class="col-12 col-md-8 col-lg-6 col-xl-6">
             <div class="card shadow-1-strong" style="border-radius: 1rem;">
                 <form [formGroup]="registrationForm" (submit)="onSubmit()">
-                    <h1>Register</h1>
+                    <h2>Register</h2>
 
                     <div class="content">
                         <div class="input-field" style="width: 50%; display: inline-block;">
@@ -22,6 +22,13 @@
                         </div>
                         <div class="input-field" style="width: 50%; display: inline-block;">
                             <input type="text" placeholder="Country *" formControlName="country">
+                        </div>
+
+                        <div class="input-field" style="width: 50%; display: inline-block;">
+                            <input type="number" placeholder="Longitude" formControlName="longitude">
+                        </div>
+                        <div class="input-field" style="width: 50%; display: inline-block;">
+                            <input type="number" placeholder="Latitude" formControlName="latitude">
                         </div>
 
                         <div class="input-field">

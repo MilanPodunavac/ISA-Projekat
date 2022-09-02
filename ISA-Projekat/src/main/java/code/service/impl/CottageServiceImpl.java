@@ -9,12 +9,15 @@ import code.model.cottage.Cottage;
 import code.model.cottage.CottageAction;
 import code.model.cottage.CottageOwner;
 import code.model.cottage.CottageReservation;
+import code.model.report.VisitReport;
 import code.repository.*;
 import code.service.CottageService;
 import code.utils.FileUploadUtil;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -169,11 +172,28 @@ public class CottageServiceImpl implements CottageService {
 
     @Override
     @Transactional
-    public void unlinkReferencesAndDeleteCottage(Integer id) throws EntityNotFoundException, EntityNotDeletableException {
-        checkIfCottageDeletable(id);
+    public void unlinkReferencesAndDeleteCottage(Integer id) throws EntityNotFoundException, EntityNotDeletableException, UnauthorizedAccessException, UserNotFoundException, EntityNotOwnedException {
+
+        Authentication auth;
+        try{
+            auth = SecurityContextHolder.getContext().getAuthentication();
+        }catch(Exception ex){
+            throw new UnauthorizedAccessException("Unauthorized");
+        }
+        CottageOwner owner;
+        try{
+            owner = (CottageOwner) auth.getPrincipal();
+        }
+        catch(ClassCastException ex){
+            throw new UnauthorizedAccessException("User is not a cottage owner");
+        }
+        if(owner == null) throw new UserNotFoundException("Cottage owner not found");
         Optional<Cottage> optionalCottage = _cottageRepository.findById(id);
         if(!optionalCottage.isPresent())throw new EntityNotFoundException("Cottage not found");
         Cottage cottage = optionalCottage.get();
+        if(cottage.getCottageOwner().getId() != owner.getId())throw new EntityNotOwnedException("Cottage not owned by given user");
+
+        checkIfCottageDeletable(id);
         for(Picture pic : cottage.getPictures()){
             FileUploadUtil.deleteFile(COTTAGE_PICTURE_DIRECTORY, cottage.getId() + "_" + pic.getName());
         }
@@ -419,5 +439,33 @@ public class CottageServiceImpl implements CottageService {
             }
         }
         throw new EntityNotFoundException("Action not found");
+    }
+
+    @Override
+    public VisitReport generateVisitReport(int id) throws EntityNotOwnedException, EntityNotFoundException, UnauthorizedAccessException, UserNotFoundException {
+        Authentication auth;
+        try{
+            auth = SecurityContextHolder.getContext().getAuthentication();
+        }catch(Exception ex){
+            throw new UnauthorizedAccessException("Unauthorized");
+        }
+        CottageOwner owner;
+        try{
+            owner = (CottageOwner) auth.getPrincipal();
+        }
+        catch(ClassCastException ex){
+            throw new UnauthorizedAccessException("User is not a cottage owner");
+        }
+        if(owner == null) throw new UserNotFoundException("Cottage owner not found");
+        Optional<Cottage> optionalCottage = _cottageRepository.findById(id);
+        if(!optionalCottage.isPresent())throw new EntityNotFoundException("Cottage not found");
+        Cottage cottage = optionalCottage.get();
+        if(cottage.getCottageOwner().getId() != owner.getId())throw new EntityNotOwnedException("Cottage not owned by given user");
+        VisitReport retVal = new VisitReport();
+        for(AvailabilityPeriod period : cottage.getAvailabilityPeriods()){
+            for(Reservation res : period.getReservations())retVal.addVisit(res);
+            for(Action act : period.getActions())retVal.addVisit(act);
+        }
+        return retVal;
     }
 }

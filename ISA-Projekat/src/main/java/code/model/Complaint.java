@@ -20,10 +20,6 @@ public class Complaint {
    private Integer id;
    @Column
    private String description;
-   @Column
-   private String response;
-   @Column
-   private boolean responded;
    @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "client_id")
    @JsonBackReference

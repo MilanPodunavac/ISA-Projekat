@@ -5,6 +5,7 @@ import code.dto.entities.cottage.CottageGetDto;
 import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.cottage.Cottage;
+import code.model.report.YearlyProfitReport;
 import code.service.CottageOwnerService;
 import code.utils.TokenUtils;
 import org.modelmapper.ModelMapper;
@@ -42,5 +43,17 @@ public class CottageOwnerController extends BaseController {
         }
         ownerCottages.sort(Comparator.comparing(Cottage::getId));
         return ResponseEntity.ok(_mapper.map(ownerCottages, new TypeToken<List<CottageGetDto>>() {}.getType()));
+    }
+
+    @GetMapping(value="profit")
+    @PreAuthorize("hasRole('ROLE_COTTAGE_OWNER')")
+    public ResponseEntity<Object> getOwnerProfit(){
+        try{
+            YearlyProfitReport profit = _cottageOwnerService.calculateYearlyProfitReport();
+            return ResponseEntity.ok(profit);
+        } catch (Exception e) {
+            if(e instanceof UnauthorizedAccessException || e instanceof UserNotFoundException)return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Oops, something went wrong, try again");
+        }
     }
 }

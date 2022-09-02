@@ -1,0 +1,50 @@
+<div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-6">
+            <div class="card shadow-1-strong" style="border-radius: 1rem;">
+                <form [formGroup]="personalDataForm" (submit)="onSubmit()">
+                    <h2>Change personal data</h2>
+
+                    <div class="content">
+                        <div class="input-field" style="width: 50%; display: inline-block;">
+                            <input type="text" placeholder="First name *" formControlName="firstName">
+                        </div>
+                        <div class="input-field" style="width: 50%; display: inline-block;">
+                            <input type="text" placeholder="Last name *" formControlName="lastName">
+                        </div>
+
+                        <div class="input-field">
+                            <input type="text" placeholder="Street address *" formControlName="streetAddress">
+                        </div>
+
+                        <div class="input-field" style="width: 50%; display: inline-block;">
+                            <input type="text" placeholder="City *" formControlName="city">
+                        </div>
+                        <div class="input-field" style="width: 50%; display: inline-block;">
+                            <input type="text" placeholder="Country *" formControlName="country">
+                        </div>
+
+                        <div class="input-field" style="width: 50%; display: inline-block;">
+                            <input type="number" placeholder="Longitude" formControlName="longitude">
+                        </div>
+                        <div class="input-field" style="width: 50%; display: inline-block;">
+                            <input type="number" placeholder="Latitude" formControlName="latitude">
+                        </div>
+
+                        <div class="input-field">
+                            <input type="text" placeholder="Phone number *" formControlName="phoneNumber"> 
+                        </div>
+
+                        <div class="input-field" *ngIf="role==='ROLE_FISHING_INSTRUCTOR'">
+                            <input type="text" placeholder="Biography" formControlName="biography">
+                        </div>
+                    </div>
+                    <div class="action">
+                        <button type="submit" [disabled]="!personalDataForm.valid">Change</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="map" name="map" class="map" (click)="getCoord($event)"></div>

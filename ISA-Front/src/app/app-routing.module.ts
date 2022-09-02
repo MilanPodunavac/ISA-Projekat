@@ -24,6 +24,12 @@ import { CottageActionOwnerCommentaryComponent } from './components/cottage-owne
 import { CottageActionViewComponent } from './components/cottage-owner/cottage-action-view/cottage-action-view.component';
 import { CottageReservationComponent } from './cottage-reservation/cottage-reservation.component';
 import { ReservationListComponent } from './reservation-list/reservation-list.component';
+import { ProfitGraphComponent } from './components/profit-graph/profit-graph.component';
+import { ChangePersonalDataComponent } from './components/change-personal-data/change-personal-data.component';
+import { ChangePasswordComponent } from './components/change-password/change-password.component';
+import { AccountDeletionRequestComponent } from './components/account-deletion-request/account-deletion-request.component';
+import { AvailablePeriodComponent } from './components/available-period/available-period.component';
+import { VisitReportComponent } from './components/visit-report/visit-report.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -33,6 +39,8 @@ const routes: Routes = [
   { path: 'cottage/reservation', component: CottageReservationComponent},
   { path:'cottage-owner', component: CottageOwnerComponent },
   { path:'cottage-owner/cottage/:id', component: CottageOwnerCottageComponent },
+  { path: 'cottage-owner', component: CottageOwnerComponent },
+  { path: 'cottage-owner/cottage/:id', component: CottageOwnerCottageComponent },
   { path: 'new-cottage', component: NewCottageComponent },
   { path: 'cottage/:id/new-availability-period', component: NewCottageAvailabilityPeriodComponent },
   { path: 'cottage/:id/new-cottage-action', component: NewCottageActionComponent },
@@ -52,6 +60,12 @@ const routes: Routes = [
   { path: 'cottage/:id/action/:actId/new-commentary', component: CottageActionOwnerCommentaryComponent },
   { path: 'cottage/:id/action/:actId', component: CottageActionViewComponent },
   { path: 'reservations', component: ReservationListComponent },
+  { path: 'profit', component: ProfitGraphComponent },
+  { path: 'change-personal-data', component: ChangePersonalDataComponent },
+  { path: 'change-password', component: ChangePasswordComponent },
+  { path: 'account-deletion-request', component: AccountDeletionRequestComponent },
+  { path: 'add-availability-period', component: AvailablePeriodComponent },
+  { path: 'visit-report/:id', component: VisitReportComponent },
 ];
 
 @NgModule({

@@ -52,6 +52,12 @@ import { CottageActionOwnerCommentaryComponent } from './components/cottage-owne
 import { CottageActionViewComponent } from './components/cottage-owner/cottage-action-view/cottage-action-view.component';
 import { CottageReservationComponent } from './cottage-reservation/cottage-reservation.component';
 import { ReservationListComponent } from './reservation-list/reservation-list.component';
+import { ProfitGraphComponent } from './components/profit-graph/profit-graph.component';
+import { ChangePersonalDataComponent } from './components/change-personal-data/change-personal-data.component';
+import { ChangePasswordComponent } from './components/change-password/change-password.component';
+import { AccountDeletionRequestComponent } from './components/account-deletion-request/account-deletion-request.component';
+import { AvailablePeriodComponent } from './components/available-period/available-period.component';
+import { VisitReportComponent } from './components/visit-report/visit-report.component';
 
 @NgModule({
   declarations: [
@@ -81,6 +87,12 @@ import { ReservationListComponent } from './reservation-list/reservation-list.co
     CottageActionViewComponent,
     CottageReservationComponent,
     ReservationListComponent,
+    ProfitGraphComponent,
+    ChangePersonalDataComponent,
+    ChangePasswordComponent,
+    AccountDeletionRequestComponent,
+    AvailablePeriodComponent,
+    VisitReportComponent,
   ],
   imports: [
     BrowserModule,
@@ -116,4 +128,5 @@ import { ReservationListComponent } from './reservation-list/reservation-list.co
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

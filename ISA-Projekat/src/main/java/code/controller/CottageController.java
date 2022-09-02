@@ -20,6 +20,7 @@ import code.repository.CottageRepository;
 import code.repository.UserRepository;
 import code.service.CottageService;
 import code.utils.TokenUtils;
+import io.swagger.models.Response;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.http.HttpHeaders;
@@ -27,6 +28,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -63,6 +65,7 @@ public class CottageController extends BaseController {
         try{
             Cottage cottage = _cottageService.getCottage(id);
             CottageGetDto cottageDto = _mapper.map(cottage, CottageGetDto.class);
+            cottageDto.setDeletable(!cottage.hasFutureReservationsOrActions());
             cottageDto.setAvailabilityPeriods(new ArrayList<>());
             cottageDto.setCottageReservations(new ArrayList<>());
             cottageDto.setCottageActions(new ArrayList<>());
@@ -248,13 +251,15 @@ public class CottageController extends BaseController {
         }
         return ResponseEntity.ok("Picture deleted");
     }
-    @DeleteMapping()
-    public ResponseEntity<String> deleteCottage(){
+    @DeleteMapping(value="/{id}")
+    @PreAuthorize("hasRole('ROLE_COTTAGE_OWNER')")
+    public ResponseEntity<String> deleteCottage(@PathVariable Integer id){
         try{
-            _cottageService.unlinkReferencesAndDeleteCottage(1);
+            _cottageService.unlinkReferencesAndDeleteCottage(id);
         } catch (Exception ex) {
-            if(ex instanceof EntityNotOwnedException)return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
-            if(ex instanceof EntityNotFoundException)return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+            if(ex instanceof EntityNotOwnedException || ex instanceof UnauthorizedAccessException)return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+            if(ex instanceof EntityNotFoundException || ex instanceof UserNotFoundException)return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+            if(ex instanceof EntityNotDeletableException)return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
             return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
         }
         return ResponseEntity.ok("Cottage deleted");
@@ -306,6 +311,18 @@ public class CottageController extends BaseController {
             return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
         }
         return ResponseEntity.ok("Commentary added");
+    }
+
+    @GetMapping("/{id}/visit-report")
+    @PreAuthorize("hasRole('ROLE_COTTAGE_OWNER')")
+    public ResponseEntity<Object> getVisitReport(@PathVariable Integer id){
+        try{
+            return ResponseEntity.ok(_cottageService.generateVisitReport(id));
+        }catch(Exception ex){
+            if(ex instanceof UnauthorizedAccessException || ex instanceof EntityNotOwnedException) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+            if(ex instanceof EntityNotFoundException || ex instanceof UserNotFoundException) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Oops, something went wrong, try again later!");
+        }
     }
 
 }

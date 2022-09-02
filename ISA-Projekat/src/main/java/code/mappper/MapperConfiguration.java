@@ -74,6 +74,8 @@ public class MapperConfiguration {
                 map().getLocation().setCityName(source.getCity());
                 map().getLocation().setCountryName(source.getCountry());
                 map().getLocation().setStreetName(source.getAddress());
+                map().getLocation().setLongitude(source.getLongitude());
+                map().getLocation().setLatitude(source.getLatitude());
             }
         };
         TypeMap<ProviderRegistrationRequest, User> userRegMap = modelMapper.createTypeMap(ProviderRegistrationRequest.class, User.class);
@@ -89,6 +91,8 @@ public class MapperConfiguration {
                 map().setAddress(source.getLocation().getStreetName());
                 map().setCity(source.getLocation().getCityName());
                 map().setCountry(source.getLocation().getCountryName());
+                map().setLongitude(source.getLocation().getLongitude());
+                map().setLatitude(source.getLocation().getLatitude());
                 map().setProviderType(source.getRole().getName());
             }
         };
@@ -105,6 +109,8 @@ public class MapperConfiguration {
                 map().getLocation().setStreetName(source.getAddress());
                 map().getLocation().setCityName(source.getCity());
                 map().getLocation().setCountryName(source.getCountry());
+                map().getLocation().setLongitude(source.getLongitude());
+                map().getLocation().setLatitude(source.getLatitude());
             }
         };
         TypeMap<PersonalData, Admin> personalDataAdminTypeMap = modelMapper.createTypeMap(PersonalData.class, Admin.class);
@@ -117,6 +123,8 @@ public class MapperConfiguration {
                 map().getLocation().setStreetName(source.getAddress());
                 map().getLocation().setCityName(source.getCity());
                 map().getLocation().setCountryName(source.getCountry());
+                map().getLocation().setLongitude(source.getLongitude());
+                map().getLocation().setLatitude(source.getLatitude());
             }
         };
         TypeMap<AdminRegistration, Admin> adminRegistrationAdminTypeMap = modelMapper.createTypeMap(AdminRegistration.class, Admin.class);
@@ -178,6 +186,8 @@ public class MapperConfiguration {
                 map().getLocation().setStreetName(source.getAddress());
                 map().getLocation().setCityName(source.getCity());
                 map().getLocation().setCountryName(source.getCountry());
+                map().getLocation().setLatitude(source.getLatitude());
+                map().getLocation().setLongitude(source.getLongitude());
             }
         };
         TypeMap<NewFishingTrip, FishingTrip> newFishingTripFishingTripTypeMap = modelMapper.createTypeMap(NewFishingTrip.class, FishingTrip.class);
@@ -190,6 +200,8 @@ public class MapperConfiguration {
                 map().getLocation().setStreetName(source.getAddress());
                 map().getLocation().setCityName(source.getCity());
                 map().getLocation().setCountryName(source.getCountry());
+                map().getLocation().setLatitude(source.getLatitude());
+                map().getLocation().setLongitude(source.getLongitude());
             }
         };
         TypeMap<EditFishingTrip, FishingTrip> editFishingTripFishingTripTypeMap = modelMapper.createTypeMap(EditFishingTrip.class, FishingTrip.class);
@@ -202,6 +214,8 @@ public class MapperConfiguration {
                 map().getLocation().setStreetName(source.getAddress());
                 map().getLocation().setCityName(source.getCity());
                 map().getLocation().setCountryName(source.getCountry());
+                map().getLocation().setLatitude(source.getLatitude());
+                map().getLocation().setLongitude(source.getLongitude());
             }
         };
         TypeMap<NewQuickReservation, FishingTripQuickReservation> newQuickReservationFishingTripQuickReservationTypeMap = modelMapper.createTypeMap(NewQuickReservation.class, FishingTripQuickReservation.class);
@@ -214,6 +228,8 @@ public class MapperConfiguration {
                 map().getLocation().setStreetName(source.getAddress());
                 map().getLocation().setCityName(source.getCity());
                 map().getLocation().setCountryName(source.getCountry());
+                map().getLocation().setLongitude(source.getLongitude());
+                map().getLocation().setLatitude(source.getLatitude());
             }
         };
         TypeMap<PersonalData, FishingInstructor> personalDataFishingInstructorTypeMap = modelMapper.createTypeMap(PersonalData.class, FishingInstructor.class);
@@ -266,6 +282,8 @@ public class MapperConfiguration {
             @Override
             protected void configure() {
                 //map().setLocation(destination.getLocation());
+                map().setGrade(source.calculateAverageGrade());
+                map().setDeletable(source.hasFutureReservationsOrActions());
             }
         };
 

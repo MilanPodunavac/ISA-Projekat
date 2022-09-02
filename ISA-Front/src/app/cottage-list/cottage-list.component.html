@@ -12,6 +12,7 @@
                 <tr>
                     <th>Name</th>
                     <th>Address</th>
+                    <th>Average grade</th>
                     <th>Room number</th>
                     <th>Bed number</th>
                     <th>Price per day</th>
@@ -23,6 +24,8 @@
                 <tr *ngFor='let cottage of cottages' (dblclick)="doubleClickFunction(cottage.id)">
                     <td>{{cottage.name}}</td>
                     <td>{{cottage.location.streetName}}, {{cottage.location.cityName}}, {{cottage.location.countryName}}</td>
+                    <td *ngIf="cottage.grade !== -1">{{cottage.grade}}</td>
+                    <td *ngIf="cottage.grade === -1">No reviews</td>
                     <td>{{cottage.roomNumber}}</td>
                     <td>{{cottage.bedNumber}}</td>
                     <td>{{cottage.pricePerDay}}</td>

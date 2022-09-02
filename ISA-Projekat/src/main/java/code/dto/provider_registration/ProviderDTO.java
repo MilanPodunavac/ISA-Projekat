@@ -19,6 +19,8 @@ public class ProviderDTO {
     private String phoneNumber;
     private String city;
     private String country;
+    private double longitude;
+    private double latitude;
     private String reasonForRegistration;
     private String biography;
     private String providerType;

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ClientGet } from 'src/app/model/client-get';
 import { FishingInstructorAvailablePeriodGet } from 'src/app/model/fishing-instructor-available-period-get.model';
 import { FishingInstructorGet } from 'src/app/model/fishing-instructor-get';
@@ -6,6 +7,7 @@ import { LoyaltyProgramProvider } from 'src/app/model/loyalty-program-provider.m
 import { ClientService } from 'src/app/service/client.service';
 import { FishingInstructorService } from 'src/app/service/fishing-instructor.service';
 import { LoyaltyProgramService } from 'src/app/service/loyalty-program.service';
+import { UserService } from 'src/app/service/user.service';
 
 @Component({
     selector: 'app-profile',
@@ -19,8 +21,9 @@ export class ProfileComponent implements OnInit {
     loyaltyProgramCategoryAboveInstructor: LoyaltyProgramProvider;
     displayedColumnsFishingInstructorAvailablePeriods: string[] = ['available_from', 'available_to'];
     dataSourceFishingInstructorAvailablePeriods: FishingInstructorAvailablePeriodGet[];
+    user: any;
     
-    constructor(private fishingInstructorService: FishingInstructorService, private clientService: ClientService, private loyaltyProgramService: LoyaltyProgramService) {
+    constructor(private fishingInstructorService: FishingInstructorService, private clientService: ClientService, private loyaltyProgramService: LoyaltyProgramService, private _usersService: UserService, private router: Router,) {
         
         this.role = localStorage.getItem('role');        
         
@@ -43,9 +46,46 @@ export class ProfileComponent implements OnInit {
                 this.clientData = data;
             });
         }
+        if(this.role === "ROLE_COTTAGE_OWNER"){
+            this._usersService.getLoggedInUser().subscribe(
+                {next: data => {
+                  this.user = data;
+                  this.loyaltyProgramService.getOneHigherLoyaltyProviderCategory(this.user.category.id).subscribe(data => {
+                    this.loyaltyProgramCategoryAboveInstructor = data;
+                    });
+                },
+                error: data => {
+                  console.log(data)
+                  alert(data.error)
+                }
+            });
+        }
     }
 
     ngOnInit(): void {
     }
 
+    public goToChangePersonalData(): void {
+        this.router.navigate(['change-personal-data']).then(() => {
+            window.location.reload();
+        });
+    }
+
+    public goToChangePassword(): void {
+        this.router.navigate(['change-password']).then(() => {
+            window.location.reload();
+        });
+    }
+
+    public goToAccountDeletion(): void {
+        this.router.navigate(['account-deletion-request']).then(() => {
+            window.location.reload();
+        });
+    }
+
+    public goToAddAvailabilityPeriod(): void {
+        this.router.navigate(['add-availability-period']).then(() => {
+            window.location.reload();
+        });
+    }
 }

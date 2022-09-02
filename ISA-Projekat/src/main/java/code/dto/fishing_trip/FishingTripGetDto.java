@@ -33,4 +33,5 @@ public class FishingTripGetDto {
     private List<PictureBase64> pictures;
     private Set<FishingTripQuickReservation> fishingTripQuickReservations;
     private Set<FishingTripReservationTag> fishingTripReservationTags;
+    private Set<ReviewFishingTrip> fishingTripReviews;
 }

@@ -2,7 +2,7 @@
     <div class="row d-flex justify-content-center align-items-center h-100">
         <div class="col-12">
             <div class="card shadow-1-strong" style="border-radius: 1rem;">
-                <h1>Fishing trips</h1>
+                <h2>Fishing trips</h2>
                 <div class="search-div">
                     <input style="margin-right: 20px;" type="text" placeholder="Name" [(ngModel)]="searchText" />
                     <button mat-raised-button color="primary" (click)="searchFishingTrips()">
@@ -74,7 +74,7 @@
     <div class="row d-flex justify-content-center align-items-center h-100">
         <div class="col-12">
             <div class="card shadow-1-strong" style="border-radius: 1rem;">
-                <h1 style="padding: 30px;">Reservations</h1>
+                <h2 style="padding: 30px;">Reservations</h2>
                 <table mat-table [dataSource]="dataSourceReservations" class="mat-elevation-z4">
                     <ng-container matColumnDef="start">
                         <th class="text-center" mat-header-cell *matHeaderCellDef> Start </th>
@@ -151,7 +151,7 @@
     <div class="row d-flex justify-content-center align-items-center h-100">
         <div class="col-12">
             <div class="card shadow-1-strong" style="border-radius: 1rem;">
-                <h1 style="padding: 30px;">Actions</h1>
+                <h2 style="padding: 30px;">Actions</h2>
                 <table mat-table [dataSource]="dataSourceActions" class="mat-elevation-z4">
                     <ng-container matColumnDef="start">
                         <th class="text-center" mat-header-cell *matHeaderCellDef> Start </th>

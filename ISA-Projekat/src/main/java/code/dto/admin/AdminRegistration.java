@@ -33,4 +33,6 @@ public class AdminRegistration {
     private String city;
     @NotBlank(message = "Country is required")
     private String country;
+    private double longitude;
+    private double latitude;
 }

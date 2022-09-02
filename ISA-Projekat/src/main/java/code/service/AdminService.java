@@ -1,8 +1,10 @@
 package code.service;
 
+import code.dto.admin.ComplaintResponse;
 import code.exceptions.admin.*;
 import code.exceptions.entities.*;
 import code.exceptions.provider_registration.EmailTakenException;
+import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.*;
 
@@ -14,8 +16,8 @@ public interface AdminService {
     void deleteCottageOwner(Integer id) throws NotChangedPasswordException, UserNotFoundException, UnexpectedUserRoleException, EntityNotDeletableException;
     void deleteBoatOwner(Integer id) throws NotChangedPasswordException, UserNotFoundException, UnexpectedUserRoleException, EntityNotDeletableException;
     void deleteClient(Integer id) throws NotChangedPasswordException, UserNotFoundException, UnexpectedUserRoleException, EntityNotDeletableException;
-    void deleteCottage(Integer id) throws NotChangedPasswordException, EntityNotFoundException, UnexpectedUserRoleException, EntityNotDeletableException;
-    void deleteBoat(Integer id) throws NotChangedPasswordException, EntityNotFoundException, UnexpectedUserRoleException, EntityNotDeletableException;
+    void deleteCottage(Integer id) throws NotChangedPasswordException, EntityNotFoundException, UnexpectedUserRoleException, EntityNotDeletableException, UserNotFoundException, UnauthorizedAccessException, EntityNotOwnedException;
+    void deleteBoat(Integer id) throws NotChangedPasswordException, EntityNotFoundException, UnexpectedUserRoleException, EntityNotDeletableException, UserNotFoundException, UnauthorizedAccessException, EntityNotOwnedException;
     void fishingReservationCommentaryAccept(Integer reservationId) throws EntityNotFoundException, NotChangedPasswordException, CommentaryNotApprovableException;
     void fishingReservationCommentaryDecline(Integer reservationId) throws EntityNotFoundException, NotChangedPasswordException, CommentaryNotApprovableException;
     void fishingQuickReservationCommentaryAccept(Integer quickReservationId) throws EntityNotFoundException, NotChangedPasswordException, CommentaryNotApprovableException;
@@ -29,4 +31,10 @@ public interface AdminService {
     void currentPointsProviderGetsAfterReservation(CurrentPointsProviderGetsAfterReservation currentPointsProviderGetsAfterReservation) throws NotChangedPasswordException;
     void changeClientPointsNeededForLoyaltyProgramCategory(Integer id, LoyaltyProgramClient loyaltyProgramClient) throws NotChangedPasswordException, EntityNotUpdateableException;
     void changeProviderPointsNeededForLoyaltyProgramCategory(Integer id, LoyaltyProgramProvider loyaltyProgramProvider) throws NotChangedPasswordException, EntityNotUpdateableException;
+    void respondToComplaint(Integer id, ComplaintResponse complaintResponse) throws EntityNotFoundException;
+    void respondToComplaintFishingInstructor(Integer id, ComplaintResponse complaintResponse) throws EntityNotFoundException;
+    void acceptReview(Integer id) throws EntityNotFoundException, EntityNotUpdateableException;
+    void acceptReviewFishingTrip(Integer id) throws EntityNotFoundException, EntityNotUpdateableException;
+    void declineReview(Integer id) throws EntityNotFoundException;
+    void declineReviewFishingTrip(Integer id) throws EntityNotFoundException;
 }

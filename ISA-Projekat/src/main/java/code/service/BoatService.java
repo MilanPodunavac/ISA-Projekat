@@ -19,7 +19,7 @@ import java.util.List;
 public interface BoatService {
     void throwExceptionIfBoatDontExist(Integer id) throws EntityNotFoundException;
     void checkIfBoatDeletable(Integer id) throws EntityNotDeletableException, EntityNotFoundException;
-    void unlinkReferencesAndDeleteBoat(Integer id) throws EntityNotFoundException, EntityNotDeletableException;
+    void unlinkReferencesAndDeleteBoat(Integer id) throws EntityNotFoundException, EntityNotDeletableException, UnauthorizedAccessException, UserNotFoundException, EntityNotOwnedException;
     void addBoat(Boat boat) throws UnauthorizedAccessException, UserNotFoundException;
     void addAvailabilityPeriod(int boatId, AvailabilityPeriod period) throws AvailabilityPeriodBadRangeException, UserNotFoundException, EntityNotFoundException, EntityNotOwnedException, UnauthorizedAccessException;
     void addReservation(String clientEmail, int boatId, BoatReservation reservation) throws EntityNotFoundException, UserNotFoundException, InvalidReservationException, EntityNotOwnedException, EntityNotAvailableException, UnauthorizedAccessException, ClientCancelledThisPeriodException;

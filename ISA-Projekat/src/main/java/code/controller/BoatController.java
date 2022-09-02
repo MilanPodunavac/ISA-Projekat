@@ -223,4 +223,18 @@ public class BoatController extends BaseController {
         }
         return ResponseEntity.ok("Commentary added");
     }
+
+    @DeleteMapping(value="/{id}")
+    @PreAuthorize("hasRole('ROLE_BOAT_OWNER')")
+    public ResponseEntity<String> deleteBoat(@PathVariable Integer id){
+        try{
+            _boatService.unlinkReferencesAndDeleteBoat(id);
+        } catch (Exception ex) {
+            if(ex instanceof EntityNotOwnedException || ex instanceof UnauthorizedAccessException)return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+            if(ex instanceof EntityNotFoundException || ex instanceof UserNotFoundException)return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+            if(ex instanceof EntityNotDeletableException)return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+            return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
+        }
+        return ResponseEntity.ok("Boat deleted");
+    }
 }
