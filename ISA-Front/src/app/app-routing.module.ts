@@ -23,6 +23,7 @@ import { CottageReservationOwnerCommentaryComponent } from './components/cottage
 import { CottageActionOwnerCommentaryComponent } from './components/cottage-owner/cottage-action-owner-commentary/cottage-action-owner-commentary.component';
 import { CottageActionViewComponent } from './components/cottage-owner/cottage-action-view/cottage-action-view.component';
 import { CottageReservationComponent } from './cottage-reservation/cottage-reservation.component';
+import { ReservationListComponent } from './reservation-list/reservation-list.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -50,6 +51,7 @@ const routes: Routes = [
   { path: 'cottage/:id/reservation/:resId/new-commentary', component: CottageReservationOwnerCommentaryComponent },
   { path: 'cottage/:id/action/:actId/new-commentary', component: CottageActionOwnerCommentaryComponent },
   { path: 'cottage/:id/action/:actId', component: CottageActionViewComponent },
+  { path: 'reservations', component: ReservationListComponent },
 ];
 
 @NgModule({

@@ -51,6 +51,7 @@ import { CottageReservationOwnerCommentaryComponent } from './components/cottage
 import { CottageActionOwnerCommentaryComponent } from './components/cottage-owner/cottage-action-owner-commentary/cottage-action-owner-commentary.component';
 import { CottageActionViewComponent } from './components/cottage-owner/cottage-action-view/cottage-action-view.component';
 import { CottageReservationComponent } from './cottage-reservation/cottage-reservation.component';
+import { ReservationListComponent } from './reservation-list/reservation-list.component';
 
 @NgModule({
   declarations: [
@@ -79,6 +80,7 @@ import { CottageReservationComponent } from './cottage-reservation/cottage-reser
     CottageActionOwnerCommentaryComponent,
     CottageActionViewComponent,
     CottageReservationComponent,
+    ReservationListComponent,
   ],
   imports: [
     BrowserModule,
