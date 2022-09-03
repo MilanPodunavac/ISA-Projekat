@@ -1,61 +1,61 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { toStringHDMS } from 'ol/coordinate';
-import { CottageService } from '../service/cottage.service';
+import { BoatGet } from '../model/boat-get';
+import { BoatService } from '../service/boat.service';
 
 @Component({
-  selector: 'app-cottage-reservation',
-  templateUrl: './cottage-reservation.component.html',
-  styleUrls: ['./cottage-reservation.component.scss']
+  selector: 'app-boat-reservation',
+  templateUrl: './boat-reservation.component.html',
+  styleUrls: ['./boat-reservation.component.scss']
 })
-export class CottageReservationComponent implements OnInit {
+export class BoatReservationComponent implements OnInit {
 
-  cottages: any[] = [];
-  unFilteredCottages: any[] = [];
+  boats: BoatGet[] = [];
+  unfilteredBoats: BoatGet[] = [];
   SearchString: string = "";
   role: string;
   startDate: Date;
   numberOfDays: number;
-  numberOfBeds: number;
+  numberOfPeople: number;
   setStartDate: Date;
   setNumberOfDays: number;
-  setNumberOfBeds: number;
+  setNumberOfPeople: number;
   setEndDate : Date;
 
-  constructor(private _cottageService: CottageService, private router: Router) {
+  constructor(private _boatService: BoatService, private router: Router) {
     this.role = localStorage.getItem('role');
   }
 
 
   ngOnInit(): void {
-    this._cottageService.getAllCottages().subscribe(
+    this._boatService.getAllBoats().subscribe(
       {next: data => {
-        this.unFilteredCottages = data;
+        this.unfilteredBoats = data;
       }
     });
   }
 
-  filterCottages(){
+  filterBoat(){
     this.setStartDate = this.startDate;
     this.setNumberOfDays = this.numberOfDays;
-    this.setNumberOfBeds = this.numberOfBeds;
+    this.setNumberOfPeople = this.numberOfPeople;
     this.setEndDate = new Date(this.setStartDate.getTime()+(this.numberOfDays*24*60*60*1000))
     console.log(this.setStartDate)
     console.log(this.setNumberOfDays)
-    console.log(this.setNumberOfBeds)
+    console.log(this.setNumberOfPeople)
     console.log(this.setEndDate)
     
-    if(this.setStartDate === undefined || this.setNumberOfDays === 0 || this.setNumberOfBeds === 0){
+    if(this.setStartDate === undefined || this.setNumberOfDays === 0 || this.setNumberOfPeople === 0){
       return;
     }
 
-    this.cottages = [];
-    for(var i = 0; i < this.unFilteredCottages.length; i++){
-      console.log(this.unFilteredCottages[i])
+    this.boats = [];
+    for(var i = 0; i < this.unfilteredBoats.length; i++){
+      console.log(this.unfilteredBoats[i])
       //console.log(new Date(this.unFilteredCottages[i].availabilityPeriods[1].startDate))
-        if(this.unFilteredCottages[i].bedNumber >= this.numberOfBeds
-          && this.unFilteredCottages[i].availabilityPeriods.filter(e => new Date(e.startDate) <= this.setStartDate && new Date(e.endDate) > this.setEndDate).length > 0){
-          this.cottages.push(this.unFilteredCottages[i]);
+        if(this.unfilteredBoats[i].maxPeople >= this.numberOfPeople
+          && this.unfilteredBoats[i].availabilityPeriods.filter(e => new Date(e.startDate) <= this.setStartDate && new Date(e.endDate) > this.setEndDate).length > 0){
+          this.boats.push(this.unfilteredBoats[i]);
         }
     }
   }
@@ -72,15 +72,14 @@ export class CottageReservationComponent implements OnInit {
     else startDayString = startDay.toString()
 
     var body = {
-      cottageReservationTag: additionalServices,
-      cottageId: cottageId,
+      boatReservationTag: additionalServices,
       numberOfDays: this.setNumberOfDays,
-      numberOfPeople: this.setNumberOfBeds,
+      numberOfPeople: this.setNumberOfPeople,
       startDate: this.setStartDate.getFullYear() + "-" + startMonthString + "-" + startDayString + "T00:00:00+0" + (-this.setStartDate.getTimezoneOffset()/60) + ":00",
       clientEmail: localStorage.getItem("email")
     }
     console.log(body)
-    this._cottageService.addReservation(body).subscribe({
+    this._boatService.addReservation(body, cottageId).subscribe({
       next: data => {
         if(data.status === 200){
           alert("Action added")
@@ -105,4 +104,3 @@ export class CottageReservationComponent implements OnInit {
   }
 
 }
-

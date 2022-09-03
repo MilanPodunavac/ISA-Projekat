@@ -105,7 +105,7 @@ public class BoatController extends BaseController {
     }
 
     @PostMapping(value = "{id}/reservation")
-    @PreAuthorize("hasRole('ROLE_BOAT_OWNER')")
+    @PreAuthorize("hasAnyRole('ROLE_BOAT_OWNER', 'CLIENT')")
     public ResponseEntity<String> addReservation(@Valid @RequestBody NewBoatReservationDto dto, @PathVariable Integer id, BindingResult result){
         if(result.hasErrors()){
             return formatErrorResponse(result);//400

@@ -18,4 +18,5 @@ export class BoatGet {
     additionalServices : any[];
     boatOwner : any;
     pictures : any[];
+    availabilityPeriods : any[];
 }

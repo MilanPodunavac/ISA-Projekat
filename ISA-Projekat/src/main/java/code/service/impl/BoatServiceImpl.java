@@ -154,18 +154,6 @@ public class BoatServiceImpl  implements BoatService {
     @Transactional()
     public void addReservation(String clientEmail, int boatId, BoatReservation reservation) throws EntityNotFoundException, UserNotFoundException, InvalidReservationException, EntityNotOwnedException, EntityNotAvailableException, UnauthorizedAccessException, ClientCancelledThisPeriodException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        BoatOwner owner;
-        try{
-            owner = (BoatOwner) auth.getPrincipal();
-        }
-        catch(ClassCastException ex){
-            throw new UnauthorizedAccessException("User is not a boat owner");
-        }
-        if(owner == null) throw new UserNotFoundException("Boat owner not found");
-        Optional<Boat> optionalBoat = _boatRepository.findById(boatId);
-        if(!optionalBoat.isPresent())throw new EntityNotFoundException("Boat not found");
-        Boat boat = optionalBoat.get();
-        if(boat.getBoatOwner().getId() != owner.getId()) throw new EntityNotOwnedException("Boat not owned by given user");
         Client client;
         try{
             client = (Client) _userRepository.findByEmail(clientEmail);
@@ -173,6 +161,23 @@ public class BoatServiceImpl  implements BoatService {
             throw new UserNotFoundException("User is not a client");
         }
         if(client == null)throw new UserNotFoundException("Client not found");
+        Optional<Boat> optionalBoat = _boatRepository.findById(boatId);
+        if(!optionalBoat.isPresent())throw new EntityNotFoundException("Boat not found");
+        Boat boat = optionalBoat.get();
+        BoatOwner owner;
+        if(auth.getPrincipal().getClass() == BoatOwner.class){
+            try{
+                owner = (BoatOwner)auth.getPrincipal();
+                if(owner == null) throw new UserNotFoundException("Boat owner not found");
+                if(boat.getBoatOwner().getId() != owner.getId()) throw new EntityNotOwnedException("Boat not owned by given user");
+            }
+            catch(ClassCastException ex){
+                throw new UnauthorizedAccessException("User is not a boat owner");
+            }
+        }
+        else{
+            owner = boat.getBoatOwner();
+        }
         reservation.setClient(client);
         reservation.setSystemCharge(_currentSystemTaxPercentageRepository.findById(1).get().getCurrentSystemTaxPercentage());
         if(!boat.addReservation(reservation))throw new EntityNotAvailableException("Boat is not available at the given time");

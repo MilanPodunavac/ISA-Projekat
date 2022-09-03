@@ -30,6 +30,7 @@ import { ChangePasswordComponent } from './components/change-password/change-pas
 import { AccountDeletionRequestComponent } from './components/account-deletion-request/account-deletion-request.component';
 import { AvailablePeriodComponent } from './components/available-period/available-period.component';
 import { VisitReportComponent } from './components/visit-report/visit-report.component';
+import { BoatReservationComponent } from './boat-reservation/boat-reservation.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -37,6 +38,7 @@ const routes: Routes = [
   { path: 'register-provider', component: RegisterProviderComponent },
   { path: 'fishing-instructor-home', component: FishingInstructorComponent },
   { path: 'cottage/reservation', component: CottageReservationComponent},
+  { path: 'boat/reservation', component: BoatReservationComponent},
   { path:'cottage-owner', component: CottageOwnerComponent },
   { path:'cottage-owner/cottage/:id', component: CottageOwnerCottageComponent },
   { path: 'cottage-owner', component: CottageOwnerComponent },

@@ -58,6 +58,7 @@ import { ChangePasswordComponent } from './components/change-password/change-pas
 import { AccountDeletionRequestComponent } from './components/account-deletion-request/account-deletion-request.component';
 import { AvailablePeriodComponent } from './components/available-period/available-period.component';
 import { VisitReportComponent } from './components/visit-report/visit-report.component';
+import { BoatReservationComponent } from './boat-reservation/boat-reservation.component';
 
 @NgModule({
   declarations: [
@@ -93,6 +94,7 @@ import { VisitReportComponent } from './components/visit-report/visit-report.com
     AccountDeletionRequestComponent,
     AvailablePeriodComponent,
     VisitReportComponent,
+    BoatReservationComponent,
   ],
   imports: [
     BrowserModule,

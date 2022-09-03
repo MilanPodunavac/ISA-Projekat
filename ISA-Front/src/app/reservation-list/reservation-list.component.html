@@ -19,8 +19,8 @@
             <tbody>
                 <ng-container *ngFor='let res of client.reservation'>
                     <tr *ngIf="res.cottage" (dblclick)="doubleClickFunction(res.cottage.id, res.id)">
-                        <td>{{res.dateRange.startDate}}</td>
-                        <td>{{res.dateRange.endDate}}</td>
+                        <td>{{res.dateRange.startDate | date}}</td>
+                        <td>{{res.dateRange.endDate | date}}</td>
                         <td>{{res.price}}</td>
                         <td>{{res.reservationStatus}}</td>
                         <td>{{res.loyaltyPointsGiven}}</td>
@@ -45,20 +45,20 @@
                     <th>Price</th>
                     <th>Status</th>
                     <th>Loyalty points</th>
-                    <th>Cottage</th>
+                    <th>Boat</th>
                     <th>Tags</th>
                 </tr>
             </thead>
             <tbody>
                 <ng-container *ngFor='let res of client.reservation'>
-                    <tr *ngIf="res.boat" (dblclick)="doubleClickFunction(res.cottage.id, res.id)">
-                        <td>{{res.dateRange.startDate}}</td>
-                        <td>{{res.dateRange.endDate}}</td>
+                    <tr *ngIf="res.boat" (dblclick)="doubleClickFunction(res.boat.id, res.id)">
+                        <td>{{res.dateRange.startDate | date}}</td>
+                        <td>{{res.dateRange.endDate | date}}</td>
                         <td>{{res.price}}</td>
                         <td>{{res.reservationStatus}}</td>
                         <td>{{res.loyaltyPointsGiven}}</td>
-                        <td>{{res.cottage.name}}</td>
-                        <td>{{res.cottageReservationTag}}</td>
+                        <td>{{res.boat.name}}</td>
+                        <td>{{res.boatReservationTag}}</td>
                     </tr>
                 </ng-container>
             </tbody>
@@ -84,7 +84,7 @@
             <tbody>
                 <ng-container *ngFor='let res of client.fishingTripReservations'>
                     <tr (dblclick)="doubleClickFunction(res.id)">
-                        <td>{{res.start}}</td>
+                        <td>{{res.start | date:'medium'}}</td>
                         <td>{{res.durationInDays}}</td>
                         <td>{{res.price}}</td>
                         <td>{{res.numberOfPeople}}</td>

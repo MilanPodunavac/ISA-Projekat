@@ -58,4 +58,8 @@ export class BoatListComponent implements OnInit {
   doubleClickFunction(id: any){
     this.router.navigate(['/boat', id])
   }
+
+  makeReservation() {
+    this.router.navigate(['/boat/reservation'])
+  }
 }
