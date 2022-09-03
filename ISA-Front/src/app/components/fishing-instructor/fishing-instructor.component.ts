@@ -174,4 +174,16 @@ export class FishingInstructorComponent implements OnInit {
             window.location.reload();
         });
     }
+
+    public goToAddReservationCommentary(): void {
+        this.router.navigate(['reservation/' + this.clickedRowReservations.id + '/add-commentary']).then(() => {
+            window.location.reload();
+        });
+    }
+
+    public goToAddActionCommentary(): void {
+        this.router.navigate(['action/' + this.clickedRowActions.id + '/add-commentary']).then(() => {
+            window.location.reload();
+        });
+    }
 }

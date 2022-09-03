@@ -71,6 +71,8 @@ import { AddFishingTripComponent } from './components/add-fishing-trip/add-fishi
 import { EditFishingTripComponent } from './components/edit-fishing-trip/edit-fishing-trip.component';
 import { AddFishingReservationComponent } from './components/add-fishing-reservation/add-fishing-reservation.component';
 import { AddFishingActionComponent } from './components/add-fishing-action/add-fishing-action.component';
+import { AddReservationCommentaryComponent } from './components/add-reservation-commentary/add-reservation-commentary.component';
+import { AddActionCommentaryComponent } from './components/add-action-commentary/add-action-commentary.component';
 
 @NgModule({
   declarations: [
@@ -119,6 +121,8 @@ import { AddFishingActionComponent } from './components/add-fishing-action/add-f
     EditFishingTripComponent,
     AddFishingReservationComponent,
     AddFishingActionComponent,
+    AddReservationCommentaryComponent,
+    AddActionCommentaryComponent,
   ],
   imports: [
     BrowserModule,

@@ -166,7 +166,7 @@
                     ></tr>
                 </table>
                 <div class="fishing-trip-buttons">
-                    <button style="margin-right: 20px;" mat-raised-button color="primary" [disabled]="clickedRowReservations.id === undefined">Add reservation report</button>
+                    <button style="margin-right: 20px;" mat-raised-button color="primary" [disabled]="clickedRowReservations.id === undefined || clickedRowReservations.ownerCommentary !== null" (click)="goToAddReservationCommentary()">Add reservation report</button>
                     <button mat-raised-button color="primary" [disabled]="clickedRowReservations.id === undefined" (click)="goToClientProfileFromReservations()">Go to client profile</button>
                 </div>
             </div>
@@ -267,7 +267,7 @@
                     ></tr>
                 </table>
                 <div class="fishing-trip-buttons">
-                    <button style="margin-right: 20px;" mat-raised-button color="primary" [disabled]="clickedRowActions.id === undefined">Add action report</button>
+                    <button style="margin-right: 20px;" mat-raised-button color="primary" [disabled]="clickedRowActions.id === undefined || clickedRowActions.ownerCommentary !== null" (click)="goToAddActionCommentary()">Add action report</button>
                     <button mat-raised-button color="primary" [disabled]="clickedRowActions.id === undefined || clickedRowActions.client === null" (click)="goToClientProfileFromActions()">Go to client profile</button>
                 </div>
             </div>

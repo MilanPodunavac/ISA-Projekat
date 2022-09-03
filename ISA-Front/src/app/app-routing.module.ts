@@ -43,6 +43,8 @@ import { AddFishingTripComponent } from './components/add-fishing-trip/add-fishi
 import { EditFishingTripComponent } from './components/edit-fishing-trip/edit-fishing-trip.component';
 import { AddFishingReservationComponent } from './components/add-fishing-reservation/add-fishing-reservation.component';
 import { AddFishingActionComponent } from './components/add-fishing-action/add-fishing-action.component';
+import { AddReservationCommentaryComponent } from './components/add-reservation-commentary/add-reservation-commentary.component';
+import { AddActionCommentaryComponent } from './components/add-action-commentary/add-action-commentary.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -90,7 +92,9 @@ const routes: Routes = [
   { path: 'add-fishing-trip', component: AddFishingTripComponent },
   { path: 'edit-fishing-trip/:id', component: EditFishingTripComponent },
   { path: ':id/add-fishing-reservation', component: AddFishingReservationComponent },
-  { path: ':id/add-fishing-action', component: AddFishingActionComponent }
+  { path: ':id/add-fishing-action', component: AddFishingActionComponent },
+  { path: 'reservation/:id/add-commentary', component: AddReservationCommentaryComponent },
+  { path: 'action/:id/add-commentary', component: AddActionCommentaryComponent }
 ];
 
 @NgModule({

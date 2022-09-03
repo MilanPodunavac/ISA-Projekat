@@ -97,10 +97,6 @@ export class BusinessReportComponent implements OnInit {
                 labels.push(this.dataSourceMonthly[i].start)
                 visits.push(this.dataSourceMonthly[i].numOfReservations)
             }
-            visits[0] = 52
-            visits[1] = 32
-            visits[2] = 150
-            visits[3] = 3
             this.monthChart = new Chart("monthChartCanv", {
                 type: 'line',
                 data: {
