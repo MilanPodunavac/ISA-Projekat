@@ -35,30 +35,30 @@ export class FishingInstructorService {
     }
 
     public changePersonalData(personalData: PersonalData): Observable<string> {
-		return this._httpClient.put(this.apiUrl + '/fishing-instructor/changePersonalData', personalData, { responseType: 'text'});
+		  return this._httpClient.put(this.apiUrl + '/fishing-instructor/changePersonalData', personalData, { responseType: 'text'});
     }
 
     public changePassword(password: Password): Observable<string> {
-		return this._httpClient.put(this.apiUrl + '/fishing-instructor/changePassword', password, { responseType: 'text'});
+		  return this._httpClient.put(this.apiUrl + '/fishing-instructor/changePassword', password, { responseType: 'text'});
     }
 
     public addAvailabilityPeriod(availabilityPeriod: FishingInstructorAvailablePeriodGet): Observable<string> {
-		return this._httpClient.post(this.apiUrl + '/fishing-instructor/addAvailablePeriod', availabilityPeriod, { responseType: 'text'});
+		  return this._httpClient.post(this.apiUrl + '/fishing-instructor/addAvailablePeriod', availabilityPeriod, { responseType: 'text'});
     }
 
     public incomeInTimeInterval(profitInInterval: ProfitInInterval): Observable<string> {
-		return this._httpClient.post(this.apiUrl + '/fishing-instructor/incomeInTimeInterval', profitInInterval, { responseType: 'text'});
+		  return this._httpClient.post(this.apiUrl + '/fishing-instructor/incomeInTimeInterval', profitInInterval, { responseType: 'text'});
     }
 
     public weeklyReservations(): Observable<PeriodicalReservationsGet[]> {
-		return this._httpClient.get<PeriodicalReservationsGet[]>(this.apiUrl + '/fishing-instructor/weeklyReservations');
+		  return this._httpClient.get<PeriodicalReservationsGet[]>(this.apiUrl + '/fishing-instructor/weeklyReservations');
     }
 
     public monthlyReservations(): Observable<PeriodicalReservationsGet[]> {
-		return this._httpClient.get<PeriodicalReservationsGet[]>(this.apiUrl + '/fishing-instructor/monthlyReservations');
+		  return this._httpClient.get<PeriodicalReservationsGet[]>(this.apiUrl + '/fishing-instructor/monthlyReservations');
     }
 
     public yearlyReservations(): Observable<PeriodicalReservationsGet[]> {
-		return this._httpClient.get<PeriodicalReservationsGet[]>(this.apiUrl + '/fishing-instructor/yearlyReservations');
+		  return this._httpClient.get<PeriodicalReservationsGet[]>(this.apiUrl + '/fishing-instructor/yearlyReservations');
     }
 }

@@ -8,7 +8,8 @@
                     <p>Address:&ensp;{{fishingInstructorData.location.streetName}}, {{fishingInstructorData.location.cityName}}, {{fishingInstructorData.location.countryName}}</p>
                     <p>Email:&ensp;{{fishingInstructorData.email}}</p>
                     <p>Phone number:&ensp;{{fishingInstructorData.phoneNumber}}</p>
-                    <p>Biography:&ensp;{{fishingInstructorData.biography}}</p>
+                    <p *ngIf="fishingInstructorData.biography">Biography:&ensp;{{fishingInstructorData.biography}}</p>
+                    <p *ngIf="!fishingInstructorData.biography">Biography:&ensp;-</p>
                     <p>Number of fishing trips:&ensp;{{fishingInstructorData.fishingTrips.length}}</p>
                     <p>Number of subscribers:&ensp;{{fishingInstructorData.subscribers.length}}</p>
                     <p>Loyalty points:&ensp;{{fishingInstructorData.loyaltyPoints}}/{{loyaltyProgramCategoryAboveInstructor.pointsNeeded}}</p>

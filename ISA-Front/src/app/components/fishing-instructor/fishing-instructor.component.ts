@@ -126,4 +126,52 @@ export class FishingInstructorComponent implements OnInit {
             window.location.reload();
         });
     }
+
+    public goToAddFishingTrip(): void {
+        this.router.navigate(['add-fishing-trip']).then(() => {
+            window.location.reload();
+        });
+    }
+
+    public goToEditFishingTrip(): void {
+        this.router.navigate(['edit-fishing-trip/' + this.clickedRowFishingTrips.id]).then(() => {
+            window.location.reload();
+        });
+    }
+
+    public deleteFishingTrip(): void {
+        this.fishingTripService.deleteFishingTrip(this.clickedRowFishingTrips.id).subscribe({
+            next: data => {
+                window.location.reload();
+                alert(data);
+            },
+            error: error => {
+                alert(error.error);
+            }
+        });
+    }
+
+    public goToAddReservation(): void {
+        this.router.navigate([this.clickedRowFishingTrips.id + '/add-fishing-reservation']).then(() => {
+            window.location.reload();
+        });
+    }
+
+    public goToClientProfileFromReservations(): void {
+        this.router.navigate(['client/' + this.clickedRowReservations.client.id]).then(() => {
+            window.location.reload();
+        });
+    }
+
+    public goToClientProfileFromActions(): void {
+        this.router.navigate(['client/' + this.clickedRowActions.client.id]).then(() => {
+            window.location.reload();
+        });
+    }
+
+    public goToAddAction(): void {
+        this.router.navigate([this.clickedRowFishingTrips.id + '/add-fishing-action']).then(() => {
+            window.location.reload();
+        });
+    }
 }

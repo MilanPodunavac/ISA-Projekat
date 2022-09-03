@@ -1,0 +1,63 @@
+<div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-6">
+            <div class="card shadow-1-strong" style="border-radius: 1rem;">
+                <form [formGroup]="addActionForm" (submit)="onSubmit()">
+                    <h2>Add action</h2>
+
+                    <div class="content">
+                        <div class="input-field" style="width: 50%; display: inline-block;">
+                            <label style="margin-right: 10px;">Start:</label>
+                            <input type="date" formControlName="start"> 
+                        </div>
+                        <div class="input-field" style="width: 50%; display: inline-block;">
+                            <label style="margin-right: 10px;">Valid until:</label>
+                            <input type="date" formControlName="validUntil"> 
+                        </div>
+
+                        <div class="input-field" style="width: 50%; display: inline-block;">
+                            <input type="number" placeholder="Duration in days *" formControlName="durationInDays">
+                        </div>
+                        <div class="input-field" style="width: 50%; display: inline-block;">
+                            <input type="number" placeholder="Maximum people *" formControlName="maxPeople">
+                        </div>
+
+                        <div class="input-field">
+                            <input style="width: 100%; display: block;" type="number" placeholder="Price *" formControlName="price">
+                        </div>
+
+                        <div class="input-field">
+                            <input style="width: 100%; display: block;" type="text" placeholder="Street address *" formControlName="address">
+                        </div>
+
+                        <div class="input-field" style="width: 50%; display: inline-block;">
+                            <input type="text" placeholder="City *" formControlName="city">
+                        </div>
+                        <div class="input-field" style="width: 50%; display: inline-block;">
+                            <input type="text" placeholder="Country *" formControlName="country">
+                        </div>
+
+                        <div class="input-field" style="width: 50%; display: inline-block;">
+                            <input type="number" placeholder="Longitude" formControlName="longitude">
+                        </div>
+                        <div class="input-field" style="width: 50%; display: inline-block;">
+                            <input type="number" placeholder="Latitude" formControlName="latitude">
+                        </div>
+
+                        <mat-form-field style="margin-top: 20px; width:100%" appearance="fill">
+                            <mat-label>Fishing trip tags</mat-label>
+                            <mat-select formControlName="fishingTripTags" multiple>
+                                <mat-option *ngFor="let tag of fishingTripTags" [value]="tag">{{tag}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <p style="color: red; font-size: large;">{{errorMessage}}</p>
+                    </div>
+                    <div class="action">
+                        <button type="submit" [disabled]="!addActionForm.valid">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
