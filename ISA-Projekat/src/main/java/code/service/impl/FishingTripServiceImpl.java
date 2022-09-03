@@ -113,7 +113,7 @@ public class FishingTripServiceImpl implements FishingTripService {
         User user = (User) auth.getPrincipal();
         FishingInstructor fishingInstructor = (FishingInstructor) _userService.findById(user.getId());
         if (fishingInstructor.getId() != ft.getFishingInstructor().getId()) {
-            throw new EditAnotherInstructorFishingTripException("You can't edit another instructor's fishing trip!");
+            throw new EditAnotherInstructorFishingTripException("You can't edit or delete another instructor's fishing trip!");
         }
     }
 
@@ -121,7 +121,7 @@ public class FishingTripServiceImpl implements FishingTripService {
         List<FishingTripQuickReservation> fishingTripQuickReservations = _fishingTripQuickReservationRepository.findByFishingTripId(fishingTripId);
         for (FishingTripQuickReservation fishingTripQuickReservation : fishingTripQuickReservations) {
             if (fishingTripQuickReservation.getClient() != null && fishingTripQuickReservation.getStart().plusDays(fishingTripQuickReservation.getDurationInDays()).isAfter(LocalDate.now())) {
-                throw new FishingTripHasQuickReservationWithClientException("You can't edit fishing trip that is reserved!");
+                throw new FishingTripHasQuickReservationWithClientException("You can't edit or delete fishing trip that is reserved!");
             }
         }
     }
@@ -130,7 +130,7 @@ public class FishingTripServiceImpl implements FishingTripService {
         List<FishingTripReservation> fishingTripReservations = _fishingTripReservationRepository.findByFishingTripId(fishingTripId);
         for (FishingTripReservation fishingTripReservation : fishingTripReservations) {
             if (fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays()).isAfter(LocalDate.now())) {
-                throw new FishingTripHasReservationException("You can't edit fishing trip that is reserved!");
+                throw new FishingTripHasReservationException("You can't edit or delete fishing trip that is reserved!");
             }
         }
     }

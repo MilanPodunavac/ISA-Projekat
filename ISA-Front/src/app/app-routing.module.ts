@@ -39,6 +39,10 @@ import { NewBoatReservationComponent } from './components/boat-owner/new-boat-re
 import { BusinessReportComponent } from './components/business-report/business-report.component';
 import { BoatOwnerBoatComponent } from './components/boat-owner/boat-owner-boat/boat-owner-boat.component';
 import { EditFishingTripPicturesComponent } from './components/edit-fishing-trip-pictures/edit-fishing-trip-pictures.component';
+import { AddFishingTripComponent } from './components/add-fishing-trip/add-fishing-trip.component';
+import { EditFishingTripComponent } from './components/edit-fishing-trip/edit-fishing-trip.component';
+import { AddFishingReservationComponent } from './components/add-fishing-reservation/add-fishing-reservation.component';
+import { AddFishingActionComponent } from './components/add-fishing-action/add-fishing-action.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -82,7 +86,11 @@ const routes: Routes = [
   { path: 'business-report', component: BusinessReportComponent },
   { path: 'boat-owner/boat/:id', component: BoatOwnerBoatComponent },
   { path: 'business-report', component: BusinessReportComponent },
-  { path: 'edit-fishing-trip-pictures/:id', component: EditFishingTripPicturesComponent }
+  { path: 'edit-fishing-trip-pictures/:id', component: EditFishingTripPicturesComponent },
+  { path: 'add-fishing-trip', component: AddFishingTripComponent },
+  { path: 'edit-fishing-trip/:id', component: EditFishingTripComponent },
+  { path: ':id/add-fishing-reservation', component: AddFishingReservationComponent },
+  { path: ':id/add-fishing-action', component: AddFishingActionComponent }
 ];
 
 @NgModule({

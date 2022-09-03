@@ -18,11 +18,13 @@
                     <p>Cost per day:&ensp;{{fishingTrip.costPerDay}}</p>
                     <p>Cancelation fee:&ensp;{{fishingTrip.percentageInstructorKeepsIfReservationCancelled}}%</p>
                     <p>Address:&ensp;{{fishingTrip.location.streetName}}, {{fishingTrip.location.cityName}}, {{fishingTrip.location.countryName}}</p>
-                    <p>Fishing trip tags:&ensp;{{fishingTrip.fishingTripReservationTags.join(', ')}}</p>
+                    <p *ngIf="fishingTrip.fishingTripReservationTags.length !== 0">Fishing trip tags:&ensp;{{fishingTrip.fishingTripReservationTags.join(', ')}}</p>
+                    <p *ngIf="fishingTrip.fishingTripReservationTags.length === 0">Fishing trip tags:&ensp;-</p>
                     <p>Instructor's name:&ensp;{{fishingTrip.fishingInstructor.firstName}} {{fishingTrip.fishingInstructor.lastName}}</p>
                     <p>Instructor's eMail:&ensp;{{fishingTrip.fishingInstructor.email}}</p>
                     <p>Instructor's phone number:&ensp;{{fishingTrip.fishingInstructor.phoneNumber}}</p>
-                    <p>Instructor's biography:&ensp;{{fishingTrip.fishingInstructor.biography}}</p>
+                    <p *ngIf="fishingTrip.fishingInstructor.biography">Instructor's biography:&ensp;{{fishingTrip.fishingInstructor.biography}}</p>
+                    <p *ngIf="!fishingTrip.fishingInstructor.biography">Instructor's biography:&ensp;-</p>
                 </div>
             </div>
         </div>
@@ -66,7 +68,14 @@
 
                     <ng-container matColumnDef="action_tags">
                         <th class="text-center" mat-header-cell *matHeaderCellDef> Action tags </th>
-                        <td mat-cell *matCellDef="let element"> {{element.fishingTripReservationTags}} </td>
+                        <td mat-cell *matCellDef="let element">
+                            <div *ngIf="element.fishingTripReservationTags.length === 0">
+                                -
+                            </div>
+                            <div *ngIf="element.fishingTripReservationTags.length !== 0">
+                                {{element.fishingTripReservationTags.join(', ')}} 
+                            </div>
+                        </td>
                     </ng-container>
 
                     <tr mat-header-row *matHeaderRowDef="displayedColumnsFreeActions"></tr>

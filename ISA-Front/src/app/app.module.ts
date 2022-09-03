@@ -67,6 +67,10 @@ import { NewBoatReservationComponent } from './components/boat-owner/new-boat-re
 import { BusinessReportComponent } from './components/business-report/business-report.component';
 import { BoatOwnerBoatComponent } from './components/boat-owner/boat-owner-boat/boat-owner-boat.component';
 import { EditFishingTripPicturesComponent } from './components/edit-fishing-trip-pictures/edit-fishing-trip-pictures.component';
+import { AddFishingTripComponent } from './components/add-fishing-trip/add-fishing-trip.component';
+import { EditFishingTripComponent } from './components/edit-fishing-trip/edit-fishing-trip.component';
+import { AddFishingReservationComponent } from './components/add-fishing-reservation/add-fishing-reservation.component';
+import { AddFishingActionComponent } from './components/add-fishing-action/add-fishing-action.component';
 
 @NgModule({
   declarations: [
@@ -111,6 +115,10 @@ import { EditFishingTripPicturesComponent } from './components/edit-fishing-trip
     BusinessReportComponent,
     BoatOwnerBoatComponent,
     EditFishingTripPicturesComponent,
+    AddFishingTripComponent,
+    EditFishingTripComponent,
+    AddFishingReservationComponent,
+    AddFishingActionComponent,
   ],
   imports: [
     BrowserModule,
