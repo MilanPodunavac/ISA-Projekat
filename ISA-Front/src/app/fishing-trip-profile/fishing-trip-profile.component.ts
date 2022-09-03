@@ -5,6 +5,12 @@ import { FishingActionGet } from '../model/fishing-action-get.model';
 import { FishingTripGet } from '../model/fishing-trip-get';
 import { ReviewFishingTripGet } from '../model/review-fishing-trip-get.model';
 import { FishingTripService } from '../service/fishing-trip.service';
+import 'ol/ol.css';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import { OSM } from 'ol/source';
+import TileLayer from 'ol/layer/Tile';
+import * as olProj from 'ol/proj';
 
 @Component({
   selector: 'app-fishing-trip-profile',
@@ -17,6 +23,7 @@ export class FishingTripProfileComponent implements OnInit {
   displayedColumnsReviews: string[] = ['comment', 'grade', 'user'];
   dataSourceReviews: ReviewFishingTripGet[];
   fishingTrip: FishingTripGet;
+  map: Map;
 
   constructor(private _route: ActivatedRoute, private fishingTripService: FishingTripService, private sanitizer: DomSanitizer) {}
 
@@ -30,7 +37,6 @@ export class FishingTripProfileComponent implements OnInit {
             this.fishingTrip.reviews.splice(i, 1);
           }
       }
-
       this.fishingTrip.grade = 0;
       for (let i = 0; i < this.fishingTrip.reviews.length; i++) {
         this.fishingTrip.grade += this.fishingTrip.reviews[i].grade;
@@ -40,6 +46,20 @@ export class FishingTripProfileComponent implements OnInit {
       for(let i = 0; i < this.fishingTrip.pictures.length; i++){
         this.fishingTrip.pictures[i].data = this.sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + this.fishingTrip.pictures[i].data);
       }
+
+      this.map = new Map({
+        layers: [
+          new TileLayer({
+            source: new OSM(),
+          }),
+        ],
+        target: 'map',
+        view: new View({
+          center: olProj.fromLonLat([this.fishingTrip.location.longitude, this.fishingTrip.location.latitude]),
+          zoom: 14, maxZoom: 20,
+        }),
+      });
+
     });
 
     this.fishingTripService.getFishingTripFreeActions(id).subscribe(data => {
@@ -52,6 +72,7 @@ export class FishingTripProfileComponent implements OnInit {
         freeAction.end.setFullYear(new Date(freeAction.start).getFullYear());
         freeAction.end.setDate(freeAction.end.getDate() + freeAction.durationInDays - 1);
       }); 
+
     });
 
     this.fishingTripService.getFishingTripReviews(id).subscribe(data => {
