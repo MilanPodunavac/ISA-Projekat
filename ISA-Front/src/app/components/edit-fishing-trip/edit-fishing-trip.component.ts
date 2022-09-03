@@ -3,6 +3,12 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NewFishingTrip } from 'src/app/model/new-fishing-trip.model';
 import { FishingTripService } from 'src/app/service/fishing-trip.service';
+import 'ol/ol.css';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import { OSM } from 'ol/source';
+import TileLayer from 'ol/layer/Tile';
+import * as olProj from 'ol/proj';
 
 @Component({
     selector: 'app-edit-fishing-trip',
@@ -13,6 +19,7 @@ export class EditFishingTripComponent implements OnInit {
     editFishingTripForm: FormGroup;
     fishingTripTags: string[] = ['boat', 'equipment', 'lesson', 'adventure'];
     errorMessage: string;
+    map: Map
 
     constructor(formBuilder: FormBuilder, private fishingTripService: FishingTripService, private router: Router, private _route: ActivatedRoute) {
         let id = Number(this._route.snapshot.paramMap.get('id'));
@@ -32,6 +39,18 @@ export class EditFishingTripComponent implements OnInit {
                 country: [data.location.countryName, [Validators.required]],
                 fishingTripTags: [data.fishingTripReservationTags]
             });
+            this.map = new Map({
+                layers: [
+                  new TileLayer({
+                    source: new OSM(),
+                  }),
+                ],
+                target: 'map',
+                view: new View({
+                  center: olProj.fromLonLat([data.location.longitude, data.location.latitude]),
+                  zoom: 15, maxZoom: 20,
+                }),
+              });
         });
     }
 
@@ -71,5 +90,19 @@ export class EditFishingTripComponent implements OnInit {
                 this.errorMessage = error.error;
             }
         });
-    }   
+    }
+    getCoord(event: any){
+        var coordinate = this.map.getEventCoordinate(event);
+        var lonLatCoords = olProj.toLonLat(coordinate)
+        this.reverseGeocode(lonLatCoords)
+     }
+      reverseGeocode(coords) {
+        fetch('http://nominatim.openstreetmap.org/reverse?format=json&lon=' + coords[0] + '&lat=' + coords[1])
+        .then(function(response) {
+            return response.json();
+        }).then(json => {
+            console.log(json)
+            this.editFishingTripForm.patchValue({longitude: json.lon, latitude: json.lat, city: json.address.city, country: json.address.country, streetAddress: json.address.road + " " + json.address.house_number})
+        });
+      } 
 }
