@@ -1,1 +1,39 @@
-<p>boat-reservation-view works!</p>
+<div class="container mb-3">
+    <div class="form-group mb-3">
+        <label class="form-label">Start date:</label>
+        <p type="text" class="form-control mb-1">{{reservation.startDate | date:'dd.MM.yyyy.'}}</p>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">End date:</label>
+        <p type="text" class="form-control mb-1">{{reservation.endDate | date:'dd.MM.yyyy.'}}</p>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Client name:</label>
+        <p type="text" class="form-control mb-1"><a [routerLink]="['../../../']">{{reservation.clientFirstName}} {{reservation.clientLastName}}</a></p><!--izmeniti-->
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Reservation status:</label>
+        <p type="text" class="form-control mb-1">{{reservation.reservationStatus}}</p>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Number of people:</label>
+        <p type="text" class="form-control mb-1">{{reservation.numberOfPeople}}</p>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Additional services:</label>
+        <p type="text" class="form-control mb-1">{{reservation.boatReservationTag}}</p>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Price:</label>
+        <p type="text" class="form-control mb-1">{{reservation.price}}</p>
+    </div>
+    <div *ngIf="reservation.commentary" class="form-group mb-3">
+        <label class="form-label">Commentary:</label>
+        <p type="text" class="form-control mb-1">{{reservation.commentary}}</p>
+    </div>
+    <div *ngIf="reservation.ownerCommentable" class="form-group mb-3">
+        <button (click)="routeToOwnerCommentary()"  class="btn btn-primary" id="submitButton">
+            <strong>Add commentary</strong>
+        </button>
+    </div>
+</div>

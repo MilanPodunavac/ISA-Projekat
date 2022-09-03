@@ -32,22 +32,22 @@ export class BoatProfileComponent implements OnInit {
       for(let i = 0; i<this.boat.availabilityPeriods.length; i++){
         var tempStart = new Date(this.boat.availabilityPeriods[i].startDate)
         var tempEnd = new Date(this.boat.availabilityPeriods[i].endDate)
-        this.boat.availabilityPeriods[i].startDate = tempStart.getFullYear() + "-" + (tempStart.getMonth() + 1) + "-" + tempStart.getDate()// + ":" + tempStart.getHours()
-        this.boat.availabilityPeriods[i].endDate = tempEnd.getFullYear() + "-" + (tempEnd.getMonth() + 1) + "-" + tempEnd.getDate()// + ":" + tempEnd.getHours()
+        //this.boat.availabilityPeriods[i].startDate = tempStart.getFullYear() + "-" + (tempStart.getMonth() + 1) + "-" + tempStart.getDate()// + ":" + tempStart.getHours()
+        //this.boat.availabilityPeriods[i].endDate = tempEnd.getFullYear() + "-" + (tempEnd.getMonth() + 1) + "-" + tempEnd.getDate()// + ":" + tempEnd.getHours()
       }
       for(let i = 0; i<this.boat.boatReservations.length; i++){
         var tempStart = new Date(this.boat.boatReservations[i].startDate)
         var tempEnd = new Date(this.boat.boatReservations[i].endDate)
-        this.boat.boatReservations[i].startDate = tempStart.getFullYear() + "-" + (tempStart.getMonth() + 1) + "-" + tempStart.getDate()// + ":" + tempStart.getHours()
-        this.boat.boatReservations[i].endDate = tempEnd.getFullYear() + "-" + (tempEnd.getMonth() + 1) + "-" + tempEnd.getDate()// + ":" + tempEnd.getHours()
+        //this.boat.boatReservations[i].startDate = tempStart.getFullYear() + "-" + (tempStart.getMonth() + 1) + "-" + tempStart.getDate()// + ":" + tempStart.getHours()
+        //this.boat.boatReservations[i].endDate = tempEnd.getFullYear() + "-" + (tempEnd.getMonth() + 1) + "-" + tempEnd.getDate()// + ":" + tempEnd.getHours()
       }
       for(let i = 0; i<this.boat.boatActions.length; i++){
         var tempStart = new Date(this.boat.boatActions[i].startDate)
         var tempEnd = new Date(this.boat.boatActions[i].endDate)
         var tempValid = new Date(this.boat.boatActions[i].validUntilAndIncluding)
-        this.boat.boatActions[i].startDate = tempStart.getFullYear() + "-" + (tempStart.getMonth() + 1) + "-" + tempStart.getDate()// + ":" + tempStart.getHours()
-        this.boat.boatActions[i].endDate = tempEnd.getFullYear() + "-" + (tempEnd.getMonth() + 1) + "-" + tempEnd.getDate()// + ":" + tempEnd.getHours()
-        this.boat.boatActions[i].validUntilAndIncluding = tempValid.getFullYear() + "-" + (tempValid.getMonth() + 1)// + "-" + tempValid.getDate() + ":" + tempValid.getHours()
+        //this.boat.boatActions[i].startDate = tempStart.getFullYear() + "-" + (tempStart.getMonth() + 1) + "-" + tempStart.getDate()// + ":" + tempStart.getHours()
+        //this.boat.boatActions[i].endDate = tempEnd.getFullYear() + "-" + (tempEnd.getMonth() + 1) + "-" + tempEnd.getDate()// + ":" + tempEnd.getHours()
+        //this.boat.boatActions[i].validUntilAndIncluding = tempValid.getFullYear() + "-" + (tempValid.getMonth() + 1)// + "-" + tempValid.getDate() + ":" + tempValid.getHours()
       }
       this.map = new Map({
         layers: [

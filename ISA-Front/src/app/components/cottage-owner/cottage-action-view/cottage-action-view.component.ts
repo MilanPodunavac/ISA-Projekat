@@ -24,9 +24,9 @@ export class CottageActionViewComponent implements OnInit {
         var tempStart = new Date(this.action.startDate)
         var tempEnd = new Date(this.action.endDate)
         var tempValid = new Date(this.action.validUntilAndIncluding)
-        this.action.startDate = tempStart.getFullYear() + "-" + (tempStart.getMonth() + 1) + "-" + tempStart.getDate()// + ":" + tempStart.getHours()
-        this.action.endDate = tempEnd.getFullYear() + "-" + (tempEnd.getMonth() + 1) + "-" + tempEnd.getDate()// + ":" + tempEnd.getHours()
-        this.action.validUntilAndIncluding = tempValid.getFullYear() + "-" + (tempValid.getMonth() + 1) + "-" + tempValid.getDate()// + ":" + tempValid.getHours()
+        //this.action.startDate = tempStart.getFullYear() + "-" + (tempStart.getMonth() + 1) + "-" + tempStart.getDate()// + ":" + tempStart.getHours()
+        //this.action.endDate = tempEnd.getFullYear() + "-" + (tempEnd.getMonth() + 1) + "-" + tempEnd.getDate()// + ":" + tempEnd.getHours()
+        //this.action.validUntilAndIncluding = tempValid.getFullYear() + "-" + (tempValid.getMonth() + 1) + "-" + tempValid.getDate()// + ":" + tempValid.getHours()
         console.log(this.action)
       },
       error: data => {

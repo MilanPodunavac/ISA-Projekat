@@ -17,7 +17,7 @@ export class NewCottageReservationComponent implements OnInit {
   numberOfPeople: number
   numberOfDays: number
   start: Date
-  clientEmail: string
+  clientEmail: string = ""
   newReservationServices: string[] = [];
   additionalServicesTableMap: string[] = [];
   additionalServices: AdditionalServiceMap[] = [];

@@ -46,7 +46,7 @@ export class ProfileComponent implements OnInit {
                 this.clientData = data;
             });
         }
-        if(this.role === "ROLE_COTTAGE_OWNER"){
+        if(this.role === "ROLE_COTTAGE_OWNER" || this.role === "ROLE_BOAT_OWNER"){
             this._usersService.getLoggedInUser().subscribe(
                 {next: data => {
                   this.user = data;

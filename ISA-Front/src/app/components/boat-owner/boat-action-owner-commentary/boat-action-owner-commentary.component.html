@@ -1,1 +1,19 @@
-<p>boat-action-owner-commentary works!</p>
+<div class="container mb-3">
+    <div  class="form-group mb-3">
+        <label class="form-label">Client appeared:</label>
+        <input type="checkbox" [(ngModel)]="clientCame">
+    </div>
+    <div  class="form-group mb-3">
+        <label class="form-label">Sanction suggested:</label>
+        <input type="checkbox" [(ngModel)]="sanctionSuggested">
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Commentary:</label>
+        <textarea type="text" class="form-control" rows="5" [(ngModel)]="commentary"></textarea>
+    </div>
+    <div class="form-group mb-3">
+        <button (click)="submit()" class="btn btn-primary">
+            <strong>Submit commentary</strong>
+        </button>
+    </div>
+</div>

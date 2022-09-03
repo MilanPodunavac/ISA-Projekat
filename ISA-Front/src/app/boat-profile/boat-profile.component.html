@@ -84,8 +84,8 @@
                 </thead>
                 <tbody>
                     <tr *ngFor='let period of boat.availabilityPeriods'>
-                        <td>{{period.startDate}}</td>
-                        <td>{{period.endDate}}</td>
+                        <td>{{period.startDate | date:'dd.MM.yyyy.'}}</td>
+                        <td>{{period.endDate | date:'dd.MM.yyyy.'}}</td>
                     </tr>
                 </tbody>
             </table>
@@ -114,8 +114,8 @@
                 </thead>
                 <tbody>
                     <tr *ngFor='let res of boat.boatReservations' (dblclick)="doubleClickResFunction(res.id)">
-                        <td>{{res.startDate}}</td>
-                        <td>{{res.endDate}}</td>
+                        <td>{{res.startDate | date:'dd.MM.yyyy.'}}</td>
+                        <td>{{res.endDate | date:'dd.MM.yyyy.'}}</td>
 <!--izmeniti-->         <td *ngIf="role==='ROLE_BOAT_OWNER'"><a [routerLink]="['../../boat/',res.clientId,'new-boat-action']">{{res.clientFirstName}} {{res.clientLastName}}</a></td><!--izmeniti-->
                         <td *ngIf="role==='ROLE_BOAT_OWNER'">{{res.numberOfPeople}}</td>
                         <td *ngIf="role==='ROLE_BOAT_OWNER'">{{res.boatReservationTag}}</td>
@@ -151,9 +151,9 @@
                 </thead>
                 <tbody>
                     <tr *ngFor='let act of boat.boatActions' (dblclick)="doubleClickActFunction(act.id)">
-                        <td>{{act.startDate}}</td>
-                        <td>{{act.endDate}}</td>
-                        <td>{{act.validUntilAndIncluding}}</td>
+                        <td>{{act.startDate | date:'dd.MM.yyyy.'}}</td>
+                        <td>{{act.endDate | date:'dd.MM.yyyy.'}}</td>
+                        <td>{{act.validUntilAndIncluding | date:'dd.MM.yyyy.'}}</td>
                         <td>{{act.discount}}</td>
                         <td>{{act.price}}</td>
                         <td>{{act.reserved}}</td>

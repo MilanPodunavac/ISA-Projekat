@@ -4,12 +4,6 @@ import { Router } from '@angular/router';
 import { FishingInstructorGet } from 'src/app/model/fishing-instructor-get';
 import { PersonalData } from 'src/app/model/personal-data.model';
 import { FishingInstructorService } from 'src/app/service/fishing-instructor.service';
-import 'ol/ol.css';
-import Map from 'ol/Map';
-import View from 'ol/View';
-import { OSM } from 'ol/source';
-import TileLayer from 'ol/layer/Tile';
-import * as olProj from 'ol/proj';
 import { UserService } from 'src/app/service/user.service';
 
 @Component({
@@ -20,7 +14,6 @@ import { UserService } from 'src/app/service/user.service';
 export class ChangePersonalDataComponent implements OnInit {
   personalDataForm: FormGroup;
   loggedInFishingInstructor: FishingInstructorGet;
-  map: Map
   role: string
   userPersonalData: any;
 
@@ -35,12 +28,9 @@ export class ChangePersonalDataComponent implements OnInit {
           streetAddress: [this.loggedInFishingInstructor.location.streetName, [Validators.required]],
           city: [this.loggedInFishingInstructor.location.cityName, [Validators.required]],
           country: [this.loggedInFishingInstructor.location.countryName, [Validators.required]],
-          longitude: [this.loggedInFishingInstructor.location.longitude],
-          latitude: [this.loggedInFishingInstructor.location.latitude],
           phoneNumber: [this.loggedInFishingInstructor.phoneNumber, [Validators.required, Validators.pattern("[0-9]{6,12}")]],
           biography: [this.loggedInFishingInstructor.biography]
         });
-        this.initMap();
       });
     }
     if (this.role === "ROLE_COTTAGE_OWNER" || this.role === "ROLE_BOAT_OWNER") {
@@ -54,27 +44,10 @@ export class ChangePersonalDataComponent implements OnInit {
           city: [this.userPersonalData.location.cityName, [Validators.required]],
           country: [this.userPersonalData.location.countryName, [Validators.required]],
           phoneNumber: [this.userPersonalData.phoneNumber, [Validators.required, Validators.pattern("[0-9]{6,12}")]],
-          longitude: [this.userPersonalData.location.longitude],
-          latitude: [this.userPersonalData.location.latitude],
         });
-        this.initMap()
       });
     }
 
-  }
-  initMap() {
-    this.map = new Map({
-      layers: [
-        new TileLayer({
-          source: new OSM(),
-        }),
-      ],
-      target: 'map',
-      view: new View({
-        center: olProj.fromLonLat([19.8366829, 45.25282]),
-        zoom: 14, maxZoom: 20,
-      }),
-    });
   }
   ngOnInit(): void {
 
@@ -118,20 +91,5 @@ export class ChangePersonalDataComponent implements OnInit {
         alert(data);
       })
     }
-  }
-  getCoord(event: any) {
-    alert("sdads")
-    var coordinate = this.map.getEventCoordinate(event);
-    var lonLatCoords = olProj.toLonLat(coordinate)
-    this.reverseGeocode(lonLatCoords)
-  }
-  reverseGeocode(coords) {
-    fetch('http://nominatim.openstreetmap.org/reverse?format=json&lon=' + coords[0] + '&lat=' + coords[1])
-      .then(function (response) {
-        return response.json();
-      }).then(json => {
-        console.log(json)
-        alert(this.personalDataForm.get('city').value)
-      });
   }
 }
