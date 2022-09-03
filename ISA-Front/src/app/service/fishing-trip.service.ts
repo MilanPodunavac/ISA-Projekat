@@ -6,6 +6,7 @@ import { FishingReservationGet } from '../model/fishing-reservation-get.model';
 import { FishingTripGet } from '../model/fishing-trip-get';
 import { NewFishingAction } from '../model/new-fishing-action.model';
 import { NewFishingTrip } from '../model/new-fishing-trip.model';
+import { OwnerCommentary } from '../model/owner-commentary.model';
 import { ReviewFishingTripGet } from '../model/review-fishing-trip-get.model';
 
 @Injectable({
@@ -71,5 +72,13 @@ export class FishingTripService {
 
 	public addFishingTripAction(idFishingTrip: number, newAction: NewFishingAction): Observable<string> {
 		return this.http.post(this.apiUrl + '/' + idFishingTrip + '/addQuickReservation', newAction, { responseType: 'text'});
+	}
+
+	public addReservationCommentary(idReservation: number, ownerCommentary: OwnerCommentary): Observable<string> {
+		return this.http.post(this.apiUrl + '/reservation/' + idReservation + '/commentary', ownerCommentary, { responseType: 'text'});
+	}
+
+	public addActionCommentary(idAction: number, ownerCommentary: OwnerCommentary): Observable<string> {
+		return this.http.post(this.apiUrl + '/quickReservation/' + idAction + '/commentary', ownerCommentary, { responseType: 'text'});
 	}
 }

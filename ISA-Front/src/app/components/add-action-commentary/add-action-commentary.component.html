@@ -1,0 +1,31 @@
+<div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-6">
+            <div class="card shadow-1-strong" style="border-radius: 1rem;">
+                <form [formGroup]="commentaryForm" (submit)="onSubmit()">
+                    <h2>Add action report</h2>
+
+                    <div class="content">
+                        <div class="input-field">
+                            <input type="text" style="width: 100%;" placeholder="Comment *" formControlName="comment">
+                        </div>
+
+                        <div class="input-field" style="width: 50%; display: inline-block;">
+                            <label style="margin-right: 10px;">Client came:</label>
+                            <input type="checkbox" formControlName="clientCame">
+                        </div>
+                        <div class="input-field" style="width: 50%; display: inline-block;">
+                            <label style="margin-right: 10px;">Sanction suggested:</label>
+                            <input type="checkbox" formControlName="sanctionSuggested">
+                        </div>
+
+                        <p style="padding: 20px 0px 0px 0px; color: red; font-size: large;">{{errorMessage}}</p>
+                    </div>
+                    <div class="action">
+                        <button type="submit" [disabled]="!commentaryForm.valid">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
