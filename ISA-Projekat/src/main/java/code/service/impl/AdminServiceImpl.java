@@ -29,10 +29,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -901,6 +898,58 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public List<Client> getAllClients() {
         return _clientRepository.findAll();
+    }
+
+    @Override
+    public List<Reservation> getReservationsWithCommentariesForAdmin() {
+        List<Reservation> allReservations = _reservationRepository.findAll();
+        List<Reservation> response = new ArrayList<>();
+        for (Reservation reservation : allReservations) {
+            if (reservation.getOwnerCommentary() != null && reservation.getOwnerCommentary().isClientCame() && reservation.getOwnerCommentary().isSanctionSuggested() && !reservation.getOwnerCommentary().isAdminApproved()) {
+                response.add(reservation);
+            }
+        }
+
+        return response;
+    }
+
+    @Override
+    public List<Action> getQuickReservationsWithCommentariesForAdmin() {
+        List<Action> allActions = _actionRepository.findAll();
+        List<Action> response = new ArrayList<>();
+        for (Action action : allActions) {
+            if (action.getOwnerCommentary() != null && action.getOwnerCommentary().isClientCame() && action.getOwnerCommentary().isSanctionSuggested() && !action.getOwnerCommentary().isAdminApproved()) {
+                response.add(action);
+            }
+        }
+
+        return response;
+    }
+
+    @Override
+    public List<FishingTripReservation> getFishingReservationsWithCommentariesForAdmin() {
+        List<FishingTripReservation> allReservations = _fishingTripReservationRepository.findAll();
+        List<FishingTripReservation> response = new ArrayList<>();
+        for (FishingTripReservation reservation : allReservations) {
+            if (reservation.getOwnerCommentary() != null && reservation.getOwnerCommentary().isClientCame() && reservation.getOwnerCommentary().isSanctionSuggested() && !reservation.getOwnerCommentary().isAdminApproved()) {
+                response.add(reservation);
+            }
+        }
+
+        return response;
+    }
+
+    @Override
+    public List<FishingTripQuickReservation> getFishingQuickReservationsWithCommentariesForAdmin() {
+        List<FishingTripQuickReservation> allActions = _fishingTripQuickReservationRepository.findAll();
+        List<FishingTripQuickReservation> response = new ArrayList<>();
+        for (FishingTripQuickReservation action : allActions) {
+            if (action.getOwnerCommentary() != null && action.getOwnerCommentary().isClientCame() && action.getOwnerCommentary().isSanctionSuggested() && !action.getOwnerCommentary().isAdminApproved()) {
+                response.add(action);
+            }
+        }
+
+        return response;
     }
 
     @Scheduled(cron="0 0 0 1 1/1 *")

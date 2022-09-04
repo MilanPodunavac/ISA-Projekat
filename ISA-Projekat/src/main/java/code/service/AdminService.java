@@ -8,6 +8,8 @@ import code.exceptions.provider_registration.EmailTakenException;
 import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.*;
+import code.model.base.Action;
+import code.model.base.Reservation;
 import code.model.boat.Boat;
 import code.model.boat.BoatOwner;
 import code.model.cottage.Cottage;
@@ -59,4 +61,8 @@ public interface AdminService {
     List<Boat> getAllBoats();
     List<FishingInstructor> getAllFishingInstructors();
     List<Client> getAllClients();
+    List<Reservation> getReservationsWithCommentariesForAdmin();
+    List<Action> getQuickReservationsWithCommentariesForAdmin();
+    List<FishingTripReservation> getFishingReservationsWithCommentariesForAdmin();
+    List<FishingTripQuickReservation> getFishingQuickReservationsWithCommentariesForAdmin();
 }

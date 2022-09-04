@@ -1,1 +1,20 @@
-<p>provider-registration-decline works!</p>
+<div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-6">
+            <div class="card shadow-1-strong" style="border-radius: 1rem;">
+                <form [formGroup]="form" (submit)="onSubmit()">
+                    <h2>Decline provider registration request</h2>
+
+                    <div class="content">
+                        <div class="input-field">
+                            <input type="text" placeholder="Decline reason *" formControlName="declineReason">
+                        </div>
+                    </div>
+                    <div class="action">
+                        <button type="submit" [disabled]="!form.valid">Change</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

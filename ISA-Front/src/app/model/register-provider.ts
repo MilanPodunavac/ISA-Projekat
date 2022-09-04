@@ -1,4 +1,5 @@
 export class RegisterProvider {
+    id: number;
     email: string;
     password: string;
     firstName: string;

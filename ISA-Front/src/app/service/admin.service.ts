@@ -1,13 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { ActionGet } from '../model/action-get.model';
 import { AdminGet } from '../model/admin-get.model';
 import { BoatGet } from '../model/boat-get';
 import { BoatOwnerGet } from '../model/boat-owner-get.model';
 import { ClientGet } from '../model/client-get';
 import { CottageGet } from '../model/cottage-get';
 import { CottageOwnerGet } from '../model/cottage-owner-get.model';
+import { FishingActionGet } from '../model/fishing-action-get.model';
 import { FishingInstructorGet } from '../model/fishing-instructor-get';
+import { FishingReservationGet } from '../model/fishing-reservation-get.model';
 import { IncomeRecordGet } from '../model/income-record-get.model';
 import { LoyaltyPointsClientGets } from '../model/loyalty-points-client-gets.model';
 import { LoyaltyPointsProviderGets } from '../model/loyalty-points-provider-gets.model';
@@ -18,6 +21,7 @@ import { PersonalData } from '../model/personal-data.model';
 import { PointsNeeded } from '../model/points-needed.model';
 import { ProfitInInterval } from '../model/profit-in-interval.model';
 import { RegisterProvider } from '../model/register-provider';
+import { ReservationGet } from '../model/reservation-get.model';
 import { SystemTax } from '../model/system-tax.model';
 
 @Injectable({
@@ -140,5 +144,53 @@ export class AdminService {
 
     public deleteBoat(id: number): Observable<string> {
         return this.http.delete(this.apiUrl + '/deleteBoat/' + id, { responseType: 'text'});
+    }
+
+    public getReservationsWithCommentariesForAdmin(): Observable<ReservationGet[]> {
+        return this.http.get<ReservationGet[]>(this.apiUrl + '/getReservationsWithCommentariesForAdmin');
+    }
+
+    public getQuickReservationsWithCommentariesForAdmin(): Observable<ActionGet[]> {
+        return this.http.get<ActionGet[]>(this.apiUrl + '/getQuickReservationsWithCommentariesForAdmin');
+    }
+
+    public getFishingReservationsWithCommentariesForAdmin(): Observable<FishingReservationGet[]> {
+        return this.http.get<FishingReservationGet[]>(this.apiUrl + '/getFishingReservationsWithCommentariesForAdmin');
+    }
+
+    public getFishingQuickReservationsWithCommentariesForAdmin(): Observable<FishingActionGet[]> {
+        return this.http.get<FishingActionGet[]>(this.apiUrl + '/getFishingQuickReservationsWithCommentariesForAdmin');
+    }
+
+    public fishingReservationCommentaryAccept(id: number): Observable<string> {
+        return this.http.delete(this.apiUrl + '/fishingReservation/' + id + '/commentaryAccept', { responseType: 'text'});
+    }
+
+    public fishingReservationCommentaryDecline(id: number): Observable<string> {
+        return this.http.delete(this.apiUrl + '/fishingReservation/' + id + '/commentaryDecline', { responseType: 'text'});
+    }
+
+    public fishingQuickReservationCommentaryAccept(id: number): Observable<string> {
+        return this.http.delete(this.apiUrl + '/fishingQuickReservation/' + id + '/commentaryAccept', { responseType: 'text'});
+    }
+
+    public fishingQuickReservationCommentaryDecline(id: number): Observable<string> {
+        return this.http.delete(this.apiUrl + '/fishingQuickReservation/' + id + '/commentaryDecline', { responseType: 'text'});
+    }
+
+    public reservationCommentaryAccept(id: number): Observable<string> {
+        return this.http.delete(this.apiUrl + '/reservation/' + id + '/commentaryAccept', { responseType: 'text'});
+    }
+
+    public reservationCommentaryDecline(id: number): Observable<string> {
+        return this.http.delete(this.apiUrl + '/reservation/' + id + '/commentaryDecline', { responseType: 'text'});
+    }
+
+    public quickReservationCommentaryAccept(id: number): Observable<string> {
+        return this.http.delete(this.apiUrl + '/quickReservation/' + id + '/commentaryAccept', { responseType: 'text'});
+    }
+
+    public quickReservationCommentaryDecline(id: number): Observable<string> {
+        return this.http.delete(this.apiUrl + '/quickReservation/' + id + '/commentaryDecline', { responseType: 'text'});
     }
 }

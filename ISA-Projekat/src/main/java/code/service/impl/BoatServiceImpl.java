@@ -3,10 +3,7 @@ package code.service.impl;
 import code.exceptions.entities.*;
 import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
-import code.model.Client;
-import code.model.IncomeRecord;
-import code.model.LoyaltyProgramClient;
-import code.model.LoyaltyProgramProvider;
+import code.model.*;
 import code.model.base.*;
 import code.model.boat.Boat;
 import code.model.boat.BoatAction;
@@ -95,24 +92,40 @@ public class BoatServiceImpl  implements BoatService {
         }catch(Exception ex){
             throw new UnauthorizedAccessException("Unauthorized");
         }
-        BoatOwner owner;
-        try{
-            owner = (BoatOwner) auth.getPrincipal();
-        }
-        catch(ClassCastException ex){
-            throw new UnauthorizedAccessException("User is not a boat owner");
-        }
-        if(owner == null) throw new UserNotFoundException("Boat owner not found");
-        Optional<Boat> optionalBoat = _boatRepository.findById(id);
-        if(!optionalBoat.isPresent())throw new EntityNotFoundException("Boat not found");
-        Boat boat = optionalBoat.get();
-        if(boat.getBoatOwner().getId() != owner.getId())throw new EntityNotOwnedException("Boat not owned by given user");
 
-        checkIfBoatDeletable(id);
-        for(Picture pic : boat.getPictures()){
-            FileUploadUtil.deleteFile(BOAT_PICTURE_DIRECTORY, boat.getId() + "_" + pic.getName());
+        User user = (User) auth.getPrincipal();
+        if (user instanceof Admin) {
+            Optional<Boat> optionalBoat = _boatRepository.findById(id);
+            if(!optionalBoat.isPresent())throw new EntityNotFoundException("Boat not found");
+            Boat boat = optionalBoat.get();
+
+            checkIfBoatDeletable(id);
+            for(Picture pic : boat.getPictures()){
+                FileUploadUtil.deleteFile(BOAT_PICTURE_DIRECTORY, boat.getId() + "_" + pic.getName());
+            }
+            _boatRepository.delete(boat);
+        } else if (user instanceof BoatOwner) {
+            BoatOwner owner;
+            try {
+                owner = (BoatOwner) auth.getPrincipal();
+            } catch (ClassCastException ex) {
+                throw new UnauthorizedAccessException("User is not a boat owner");
+            }
+            if (owner == null) throw new UserNotFoundException("Boat owner not found");
+            Optional<Boat> optionalBoat = _boatRepository.findById(id);
+            if (!optionalBoat.isPresent()) throw new EntityNotFoundException("Boat not found");
+            Boat boat = optionalBoat.get();
+            if (boat.getBoatOwner().getId() != owner.getId())
+                throw new EntityNotOwnedException("Boat not owned by given user");
+
+            checkIfBoatDeletable(id);
+            for (Picture pic : boat.getPictures()) {
+                FileUploadUtil.deleteFile(BOAT_PICTURE_DIRECTORY, boat.getId() + "_" + pic.getName());
+            }
+            _boatRepository.delete(boat);
+        } else {
+            throw new UnauthorizedAccessException("Unauthorized");
         }
-        _boatRepository.delete(boat);
     }
 
     @Override
