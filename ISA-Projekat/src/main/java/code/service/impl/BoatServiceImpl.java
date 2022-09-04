@@ -186,6 +186,7 @@ public class BoatServiceImpl  implements BoatService {
             throw new UserNotFoundException("User is not a client");
         }
         if(client == null)throw new UserNotFoundException("Client not found");
+        if(reservation.isOwnerNeeded() && !owner.checkIfOwnerAvailable(reservation.getDateRange()))throw new EntityNotAvailableException("Boat owner is not available at the given time");
         reservation.setClient(client);
         reservation.setSystemCharge(_currentSystemTaxPercentageRepository.findById(1).get().getCurrentSystemTaxPercentage());
         if(!boat.addReservation(reservation))throw new EntityNotAvailableException("Boat is not available at the given time");
@@ -230,6 +231,7 @@ public class BoatServiceImpl  implements BoatService {
         if(!optionalBoat.isPresent())throw new EntityNotFoundException("Boat not found");
         Boat boat = optionalBoat.get();
         if(boat.getBoatOwner().getId() != owner.getId())throw new EntityNotOwnedException("Boat not owned by given user");
+        if(action.isOwnerNeeded() && !owner.checkIfOwnerAvailable(action.getRange()))throw new EntityNotAvailableException("Boat owner is not available at the given time");
         action.setSystemCharge(_currentSystemTaxPercentageRepository.findById(1).get().getCurrentSystemTaxPercentage());
         if(!boat.addAction(action))throw new EntityNotAvailableException("Boat is not available at the given time");
         _boatRepository.save(boat);

@@ -107,6 +107,7 @@
                     <tr>
                         <th>Start</th>
                         <th>End</th>
+                        <th>Is owner needed</th>
                         <th *ngIf="role==='ROLE_BOAT_OWNER'">Client name</th>
                         <th *ngIf="role==='ROLE_BOAT_OWNER'">Number of people</th>
                         <th *ngIf="role==='ROLE_BOAT_OWNER'">Additional services</th>
@@ -116,6 +117,7 @@
                     <tr *ngFor='let res of boat.boatReservations' (dblclick)="doubleClickResFunction(res.id)">
                         <td>{{res.startDate | date:'dd.MM.yyyy.'}}</td>
                         <td>{{res.endDate | date:'dd.MM.yyyy.'}}</td>
+                        <td>{{res.ownerNeeded}}</td>
 <!--izmeniti-->         <td *ngIf="role==='ROLE_BOAT_OWNER'"><a [routerLink]="['../../boat/',res.clientId,'new-boat-action']">{{res.clientFirstName}} {{res.clientLastName}}</a></td><!--izmeniti-->
                         <td *ngIf="role==='ROLE_BOAT_OWNER'">{{res.numberOfPeople}}</td>
                         <td *ngIf="role==='ROLE_BOAT_OWNER'">{{res.boatReservationTag}}</td>
@@ -141,6 +143,7 @@
                         <th>Start</th>
                         <th>End</th>
                         <th>Valid until and including</th>
+                        <td>Is owner needed</td>
                         <th>Discount</th>
                         <th>Price</th>
                         <th>Reserved?</th>
@@ -154,6 +157,7 @@
                         <td>{{act.startDate | date:'dd.MM.yyyy.'}}</td>
                         <td>{{act.endDate | date:'dd.MM.yyyy.'}}</td>
                         <td>{{act.validUntilAndIncluding | date:'dd.MM.yyyy.'}}</td>
+                        <td>{{act.ownerNeeded}}</td>
                         <td>{{act.discount}}</td>
                         <td>{{act.price}}</td>
                         <td>{{act.reserved}}</td>

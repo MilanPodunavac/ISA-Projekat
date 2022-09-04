@@ -23,6 +23,7 @@ export class NewBoatActionComponent implements OnInit {
   additionalServicesTableMap: string[] = [];
   additionalServices: AdditionalServiceMap[] = [];
   selectedNewService: string;
+  ownerNeeded: boolean = false;
 
   constructor(private _boatService: BoatService, private router: Router, private _route: ActivatedRoute) { }
 
@@ -90,7 +91,8 @@ export class NewBoatActionComponent implements OnInit {
       numberOfDays: this.numberOfDays,
       numberOfPeople: this.numberOfPeople,
       startDate: this.start.getFullYear() + "-" + startMonthString + "-" + startDayString + "T00:00:00+0" + (-this.start.getTimezoneOffset() / 60) + ":00",
-      validUntilAndIncluding: this.validUntil.getFullYear() + "-" + validUntilMonthString + "-" + validUntilDayString + "T00:00:00+0" + (-this.validUntil.getTimezoneOffset() / 60) + ":00"
+      validUntilAndIncluding: this.validUntil.getFullYear() + "-" + validUntilMonthString + "-" + validUntilDayString + "T00:00:00+0" + (-this.validUntil.getTimezoneOffset() / 60) + ":00",
+      ownerNeeded: this.ownerNeeded
     }
     this._boatService.addAction(id, body).subscribe({
       next: data => {

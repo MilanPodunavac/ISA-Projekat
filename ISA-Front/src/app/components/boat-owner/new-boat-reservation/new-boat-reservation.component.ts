@@ -22,6 +22,7 @@ export class NewBoatReservationComponent implements OnInit {
   additionalServicesTableMap: string[] = [];
   additionalServices: AdditionalServiceMap[] = [];
   selectedNewService: string;
+  ownerNeeded: boolean = false;
 
   constructor(private _boatService: BoatService, private router: Router, private _route: ActivatedRoute) { }
 
@@ -79,7 +80,8 @@ export class NewBoatReservationComponent implements OnInit {
       numberOfDays: this.numberOfDays,
       numberOfPeople: this.numberOfPeople,
       startDate: this.start.getFullYear() + "-" + startMonthString + "-" + startDayString + "T00:00:00+0" + (-this.start.getTimezoneOffset()/60) + ":00",
-      clientEmail: this.clientEmail
+      clientEmail: this.clientEmail,
+      ownerNeeded: this.ownerNeeded
     }
     this._boatService.addReservation(id, body).subscribe({
       next: data => {
