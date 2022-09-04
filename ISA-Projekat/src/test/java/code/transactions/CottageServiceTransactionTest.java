@@ -81,9 +81,9 @@ public class CottageServiceTransactionTest {
             }
         });
         try {
-            future1.get(); // podize ExecutionException za bilo koji izuzetak iz prvog child threada
+            future1.get();
         } catch (ExecutionException e) {
-            System.out.println("Exception from thread " + e.getCause().getClass()); // u pitanju je bas ObjectOptimisticLockingFailureException
+            System.out.println("Exception from thread " + e.getCause().getClass());
             throw e.getCause();
         } catch (InterruptedException e) {
             e.printStackTrace();
