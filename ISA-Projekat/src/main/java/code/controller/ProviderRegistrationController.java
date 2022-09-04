@@ -77,7 +77,7 @@ public class ProviderRegistrationController extends BaseController {
                 .collect(Collectors.toList()));
     }
 
-    @PutMapping("/accept-request/{id}")
+    @DeleteMapping("/accept-request/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> acceptRegistrationRequest(@PathVariable Integer id){
         try {
@@ -92,7 +92,7 @@ public class ProviderRegistrationController extends BaseController {
         }
     }
 
-    @DeleteMapping(value = "/decline-request/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/decline-request/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> declineRegistrationRequest(@PathVariable Integer id, @Valid @RequestBody DeclineRegistrationRequestDTO declineReason, BindingResult result){
         if(result.hasErrors()){
@@ -101,7 +101,7 @@ public class ProviderRegistrationController extends BaseController {
 
         try {
             _userService.declineRegistrationRequest(id, declineReason.getDeclineReason());
-            return ResponseEntity.ok("Registration request declined: " + declineReason.getDeclineReason());
+            return ResponseEntity.ok("Registration request declined!");
         } catch (UserNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (UserAccountActivatedException e) {

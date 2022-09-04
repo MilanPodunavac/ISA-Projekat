@@ -3,6 +3,8 @@ package code.controller;
 import code.controller.base.BaseController;
 import code.dto.admin.*;
 import code.dto.client.ClientGetDto;
+import code.dto.entities.QuickReservationGetDto;
+import code.dto.entities.ReservationGetDto;
 import code.dto.entities.boat.BoatGetDto;
 import code.dto.entities.boat.BoatOwnerGet;
 import code.dto.entities.cottage.CottageGetDto;
@@ -10,6 +12,8 @@ import code.dto.entities.cottage.CottageOwnerGet;
 import code.dto.fishing_instructor.FishingInstructorAvailablePeriodGetDto;
 import code.dto.fishing_instructor.FishingInstructorGetDto;
 import code.dto.fishing_instructor.ProfitInInterval;
+import code.dto.fishing_trip.FishingQuickReservationGetDto;
+import code.dto.fishing_trip.FishingReservationGetDto;
 import code.dto.loyalty_program.LoyaltyProgramClientGetDto;
 import code.dto.loyalty_program.LoyaltyProgramProviderGetDto;
 import code.exceptions.admin.*;
@@ -219,7 +223,7 @@ public class AdminController extends BaseController {
         return ResponseEntity.ok("deleted");
     }
 
-    @PutMapping(value = "/fishingReservation/{reservationId}/commentaryAccept", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/fishingReservation/{reservationId}/commentaryAccept")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> fishingReservationCommentaryAccept(@PathVariable Integer reservationId) {
         try {
@@ -234,7 +238,7 @@ public class AdminController extends BaseController {
         }
     }
 
-    @PutMapping(value = "/fishingReservation/{reservationId}/commentaryDecline", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/fishingReservation/{reservationId}/commentaryDecline")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> fishingReservationCommentaryDecline(@PathVariable Integer reservationId) {
         try {
@@ -249,12 +253,12 @@ public class AdminController extends BaseController {
         }
     }
 
-    @PutMapping(value = "/fishingQuickReservation/{quickReservationId}/commentaryAccept", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/fishingQuickReservation/{quickReservationId}/commentaryAccept")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> fishingQuickReservationCommentaryAccept(@PathVariable Integer quickReservationId) {
         try {
             _adminService.fishingQuickReservationCommentaryAccept(quickReservationId);
-            return ResponseEntity.ok("Fishing reservation commentary accepted!");
+            return ResponseEntity.ok("Fishing quick reservation commentary accepted!");
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (CommentaryNotApprovableException e) {
@@ -264,12 +268,12 @@ public class AdminController extends BaseController {
         }
     }
 
-    @PutMapping(value = "/fishingQuickReservation/{quickReservationId}/commentaryDecline", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/fishingQuickReservation/{quickReservationId}/commentaryDecline")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> fishingQuickReservationCommentaryDecline(@PathVariable Integer quickReservationId) {
         try {
             _adminService.fishingQuickReservationCommentaryDecline(quickReservationId);
-            return ResponseEntity.ok("Fishing reservation commentary declined!");
+            return ResponseEntity.ok("Fishing quick reservation commentary declined!");
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (CommentaryNotApprovableException e) {
@@ -279,12 +283,12 @@ public class AdminController extends BaseController {
         }
     }
 
-    @PutMapping(value = "/reservation/{reservationId}/commentaryAccept", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/reservation/{reservationId}/commentaryAccept")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> reservationCommentaryAccept(@PathVariable Integer reservationId) {
         try {
             _adminService.reservationCommentaryAccept(reservationId);
-            return ResponseEntity.ok("Fishing reservation commentary accepted!");
+            return ResponseEntity.ok("Reservation commentary accepted!");
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (CommentaryNotApprovableException e) {
@@ -294,12 +298,12 @@ public class AdminController extends BaseController {
         }
     }
 
-    @PutMapping(value = "/reservation/{reservationId}/commentaryDecline", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/reservation/{reservationId}/commentaryDecline")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> reservationCommentaryDecline(@PathVariable Integer reservationId) {
         try {
             _adminService.reservationCommentaryDecline(reservationId);
-            return ResponseEntity.ok("Fishing reservation commentary declined!");
+            return ResponseEntity.ok("Reservation commentary declined!");
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (CommentaryNotApprovableException e) {
@@ -309,12 +313,12 @@ public class AdminController extends BaseController {
         }
     }
 
-    @PutMapping(value = "/quickReservation/{quickReservationId}/commentaryAccept", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/quickReservation/{quickReservationId}/commentaryAccept")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> quickReservationCommentaryAccept(@PathVariable Integer quickReservationId) {
         try {
             _adminService.quickReservationCommentaryAccept(quickReservationId);
-            return ResponseEntity.ok("Fishing reservation commentary accepted!");
+            return ResponseEntity.ok("Quick reservation commentary accepted!");
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (CommentaryNotApprovableException e) {
@@ -324,12 +328,12 @@ public class AdminController extends BaseController {
         }
     }
 
-    @PutMapping(value = "/quickReservation/{quickReservationId}/commentaryDecline", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/quickReservation/{quickReservationId}/commentaryDecline")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> quickReservationCommentaryDecline(@PathVariable Integer quickReservationId) {
         try {
             _adminService.quickReservationCommentaryDecline(quickReservationId);
-            return ResponseEntity.ok("Fishing reservation commentary declined!");
+            return ResponseEntity.ok("Quick reservation commentary declined!");
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (CommentaryNotApprovableException e) {
@@ -546,6 +550,12 @@ public class AdminController extends BaseController {
         return ResponseEntity.ok(_adminService.getCurrentPointsProviderGetsAfterReservation());
     }
 
+    @GetMapping(value="/getCurrentPointsClientGetsAfterReservation")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> getCurrentPointsClientGetsAfterReservation() {
+        return ResponseEntity.ok(_adminService.getCurrentPointsClientGetsAfterReservation());
+    }
+
     @GetMapping(value="/getAllCottageOwners")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<CottageOwnerGet>> getAllCottageOwners() {
@@ -591,6 +601,38 @@ public class AdminController extends BaseController {
     public ResponseEntity<List<ClientGetDto>> getAllClients() {
         return ResponseEntity.ok(_adminService.getAllClients().stream()
                 .map(entity -> _mapper.map(entity, ClientGetDto.class))
+                .collect(Collectors.toList()));
+    }
+
+    @GetMapping(value="/getReservationsWithCommentariesForAdmin")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<ReservationGetDto>> getReservationsWithCommentariesForAdmin() {
+        return ResponseEntity.ok(_adminService.getReservationsWithCommentariesForAdmin().stream()
+                .map(entity -> _mapper.map(entity, ReservationGetDto.class))
+                .collect(Collectors.toList()));
+    }
+
+    @GetMapping(value="/getQuickReservationsWithCommentariesForAdmin")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<QuickReservationGetDto>> getQuickReservationsWithCommentariesForAdmin() {
+        return ResponseEntity.ok(_adminService.getQuickReservationsWithCommentariesForAdmin().stream()
+                .map(entity -> _mapper.map(entity, QuickReservationGetDto.class))
+                .collect(Collectors.toList()));
+    }
+
+    @GetMapping(value="/getFishingReservationsWithCommentariesForAdmin")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<FishingReservationGetDto>> getFishingReservationsWithCommentariesForAdmin() {
+        return ResponseEntity.ok(_adminService.getFishingReservationsWithCommentariesForAdmin().stream()
+                .map(entity -> _mapper.map(entity, FishingReservationGetDto.class))
+                .collect(Collectors.toList()));
+    }
+
+    @GetMapping(value="/getFishingQuickReservationsWithCommentariesForAdmin")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<FishingQuickReservationGetDto>> getFishingQuickReservationsWithCommentariesForAdmin() {
+        return ResponseEntity.ok(_adminService.getFishingQuickReservationsWithCommentariesForAdmin().stream()
+                .map(entity -> _mapper.map(entity, FishingQuickReservationGetDto.class))
                 .collect(Collectors.toList()));
     }
 }
