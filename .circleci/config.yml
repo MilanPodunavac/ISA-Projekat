@@ -1,8 +1,8 @@
 version: 2
 jobs:
- build:
-    docker:
-        — image: circleci/openjdk:8-jdk-stretch
-        steps:
-            — checkout
-            — run: ./mvnw clean install
+    build:
+        docker:
+            — image: circleci/openjdk:8-jdk-stretch
+            steps:
+                — checkout
+                — run: ./mvnw clean install
