@@ -12,8 +12,11 @@ export class FishingInstructorListComponent implements OnInit {
   fishingInstructors: any[] = [];
   unfilteredFishingInstructors: any[] = [];
   SearchString: string = "";
+  role: string;
 
-  constructor(private _fishingInstructorService: FishingInstructorService, private router: Router) {}
+  constructor(private _fishingInstructorService: FishingInstructorService, private router: Router) {
+    this.role = localStorage.getItem('role');
+  }
 
 
   ngOnInit(): void {
@@ -52,6 +55,10 @@ export class FishingInstructorListComponent implements OnInit {
 
   doubleClickFunction(id: any){
     this.router.navigate(['/fishing-instructor', id])
+  }
+
+  makeReservation() {
+    this.router.navigate(['/fishing-trip/reservation'])
   }
 
 }

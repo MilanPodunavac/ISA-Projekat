@@ -31,6 +31,7 @@ import { AccountDeletionRequestComponent } from './components/account-deletion-r
 import { AvailablePeriodComponent } from './components/available-period/available-period.component';
 import { VisitReportComponent } from './components/visit-report/visit-report.component';
 import { BoatReservationComponent } from './boat-reservation/boat-reservation.component';
+import { FishingTripReservationComponent } from './fishing-trip-reservation/fishing-trip-reservation.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -55,6 +56,7 @@ const routes: Routes = [
   { path: 'boat', component: BoatListComponent},
   { path: 'boat/:id', component: BoatProfileComponent },
   { path: 'fishing-instructor', component: FishingInstructorListComponent },
+  { path: 'fishing-trip/reservation', component: FishingTripReservationComponent },
   { path: 'fishing-instructor/:id', component: FishingInstructorProfileComponent },
   { path: 'fishing-trip/:id', component: FishingTripProfileComponent },
   { path: 'cottage/:id/reservation/:resId', component: CottageReservationViewComponent },

@@ -77,6 +77,11 @@ public class FishingTripServiceImpl implements FishingTripService {
     }
 
     @Override
+    public List<FishingTrip> getAllFishingTrips() {
+        return _fishingTripRepository.findAll();
+    }
+
+    @Override
     public FishingTrip getFishingTrip(Integer id) throws EntityNotFoundException {
         FishingTrip fishingTrip = _fishingTripRepository.findById(id).orElse(null);
         if(fishingTrip == null) {

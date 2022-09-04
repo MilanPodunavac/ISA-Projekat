@@ -21,6 +21,7 @@ import java.util.List;
 
 public interface FishingTripService {
     FishingTrip save(FishingTrip fishingTrip);
+    List<FishingTrip> getAllFishingTrips();
     FishingTrip getFishingTrip(Integer id) throws EntityNotFoundException;
     FishingTrip edit(FishingTrip fishingTrip) throws FishingTripNotFoundException, EditAnotherInstructorFishingTripException, FishingTripHasQuickReservationWithClientException, FishingTripHasReservationException;
     void editPictures(Integer id, MultipartFile[] pictures) throws FishingTripNotFoundException, EditAnotherInstructorFishingTripException, IOException, FishingTripHasQuickReservationWithClientException, FishingTripHasReservationException;

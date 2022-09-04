@@ -23,6 +23,7 @@ import code.model.base.OwnerCommentary;
 import code.service.*;
 import code.utils.TokenUtils;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +45,11 @@ public class FishingTripController extends BaseController {
     public FishingTripController(FishingTripService fishingTripService, ModelMapper mapper, TokenUtils tokenUtils) {
         super(mapper, tokenUtils);
         this._fishingTripService = fishingTripService;
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<Object>> get(){
+        return ResponseEntity.ok(_mapper.map(_fishingTripService.getAllFishingTrips(), new TypeToken<List<FishingTripGetDto>>() {}.getType()));
     }
 
     @GetMapping(value = "/{id}")

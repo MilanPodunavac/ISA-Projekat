@@ -15,6 +15,10 @@ export class FishingTripService {
         this.apiUrl = 'http://localhost:8080/ISA/api/fishing-trip';
     }
 
+    public getAllFishingTrips(): Observable<FishingTripGet[]> {
+		return this.http.get<FishingTripGet[]>(this.apiUrl);
+	}
+
     public getFishingTrip(id: number): Observable<FishingTripGet> {
 		return this.http.get<FishingTripGet>(this.apiUrl + '/' + id);
 	}

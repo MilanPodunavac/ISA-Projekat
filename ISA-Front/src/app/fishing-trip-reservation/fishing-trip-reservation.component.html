@@ -1,0 +1,27 @@
+<div class="panel panel-primary m-1">
+    <div class="panel-heading m-3">
+        <h2>New fishing trip reservation</h2>
+    </div>
+    <div class="form-control form-control-lg  m-1">
+        <div>
+            <p>Start date:</p>
+            <mat-form-field appearance="fill">
+                <mat-label>Start date</mat-label>
+                <input matInput [matDatepicker]="picker" [(ngModel)]="startDate">
+                <mat-hint>MM/DD/YYYY</mat-hint>
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+        </div>
+        <div>
+            <p>Number of days:</p>
+            <input type="text" class="form-control mb-1" id="numberOfDays" [(ngModel)]="numberOfDays" placeholder="0" required>
+        </div>
+        <div>
+            <p>Number of people:</p>
+            <input type="text" class="form-control mb-1" id="numberOfPeople" [(ngModel)]="numberOfPeople" placeholder="0" required>
+        </div>
+        <button mat-raised-button color="primary" (click)="filterBoat()">Filter boats</button>
+    </div>
+
+</div>

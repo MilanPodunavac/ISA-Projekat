@@ -4,6 +4,7 @@
     </div>
     <div class="form-control form-control-lg  m-1">
         <input class="m-1" [(ngModel)]="SearchString" (keyup)="FilterFn()" placeholder="Filter">
+        <button *ngIf="role === 'ROLE_CLIENT'" mat-raised-button color="primary" (click)="makeReservation()">Make reservation</button>
     </div>
     <div *ngIf="fishingInstructors?.length" class="table-responsive m-1">
         <table class="table table-bordered table-striped table-hover" id="cottagesTable">

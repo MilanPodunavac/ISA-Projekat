@@ -59,6 +59,7 @@ import { AccountDeletionRequestComponent } from './components/account-deletion-r
 import { AvailablePeriodComponent } from './components/available-period/available-period.component';
 import { VisitReportComponent } from './components/visit-report/visit-report.component';
 import { BoatReservationComponent } from './boat-reservation/boat-reservation.component';
+import { FishingTripReservationComponent } from './fishing-trip-reservation/fishing-trip-reservation.component';
 
 @NgModule({
   declarations: [
@@ -95,6 +96,7 @@ import { BoatReservationComponent } from './boat-reservation/boat-reservation.co
     AvailablePeriodComponent,
     VisitReportComponent,
     BoatReservationComponent,
+    FishingTripReservationComponent,
   ],
   imports: [
     BrowserModule,
