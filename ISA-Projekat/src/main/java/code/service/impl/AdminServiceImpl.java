@@ -1,6 +1,7 @@
 package code.service.impl;
 
 import code.dto.admin.ComplaintResponse;
+import code.dto.fishing_instructor.ProfitInInterval;
 import code.exceptions.admin.*;
 import code.exceptions.entities.*;
 import code.exceptions.provider_registration.EmailTakenException;
@@ -60,8 +61,11 @@ public class AdminServiceImpl implements AdminService {
     private final ReviewFishingTripRepository _reviewFishingTripRepository;
     private final ComplaintRepository _complaintRepository;
     private final ComplaintFishingInstructorRepository _complaintFishingInstructorRepository;
+    private final IncomeRecordRepository _incomeRecordRepository;
+    private final CottageRepository _cottageRepository;
+    private final BoatRepository _boatRepository;
 
-    public AdminServiceImpl(AdminRepository adminRepository, PasswordEncoder passwordEncoder, RoleService roleService, UserService userService, UserRepository userRepository, CottageService cottageService, BoatService boatService, ClientRepository clientRepository, FishingInstructorRepository fishingInstructorRepository, FishingTripReservationRepository fishingTripReservationRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, ReservationRepository reservationRepository, ActionRepository actionRepository, CurrentSystemTaxPercentageRepository currentSystemTaxPercentageRepository, CurrentPointsClientGetsAfterReservationRepository currentPointsClientGetsAfterReservationRepository, CurrentPointsProviderGetsAfterReservationRepository currentPointsProviderGetsAfterReservationRepository, LoyaltyProgramClientRepository loyaltyProgramClientRepository, LoyaltyProgramProviderRepository loyaltyProgramProviderRepository, JavaMailSender mailSender, CottageOwnerRepository cottageOwnerRepository, BoatOwnerRepository boatOwnerRepository, ReviewRepository reviewRepository, ReviewFishingTripRepository reviewFishingTripRepository, ComplaintRepository complaintRepository, ComplaintFishingInstructorRepository complaintFishingInstructorRepository) {
+    public AdminServiceImpl(AdminRepository adminRepository, PasswordEncoder passwordEncoder, RoleService roleService, UserService userService, UserRepository userRepository, CottageService cottageService, BoatService boatService, ClientRepository clientRepository, FishingInstructorRepository fishingInstructorRepository, FishingTripReservationRepository fishingTripReservationRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, ReservationRepository reservationRepository, ActionRepository actionRepository, CurrentSystemTaxPercentageRepository currentSystemTaxPercentageRepository, CurrentPointsClientGetsAfterReservationRepository currentPointsClientGetsAfterReservationRepository, CurrentPointsProviderGetsAfterReservationRepository currentPointsProviderGetsAfterReservationRepository, LoyaltyProgramClientRepository loyaltyProgramClientRepository, LoyaltyProgramProviderRepository loyaltyProgramProviderRepository, JavaMailSender mailSender, CottageOwnerRepository cottageOwnerRepository, BoatOwnerRepository boatOwnerRepository, ReviewRepository reviewRepository, ReviewFishingTripRepository reviewFishingTripRepository, ComplaintRepository complaintRepository, ComplaintFishingInstructorRepository complaintFishingInstructorRepository, IncomeRecordRepository incomeRecordRepository, CottageRepository cottageRepository, BoatRepository boatRepository) {
         this._adminRepository = adminRepository;
         this._passwordEncoder = passwordEncoder;
         this._roleService = roleService;
@@ -87,6 +91,9 @@ public class AdminServiceImpl implements AdminService {
         this._complaintRepository = complaintRepository;
         this._complaintFishingInstructorRepository = complaintFishingInstructorRepository;
         this._mailSender = mailSender;
+        this._incomeRecordRepository = incomeRecordRepository;
+        this._cottageRepository = cottageRepository;
+        this._boatRepository = boatRepository;
     }
 
     @Override
@@ -131,7 +138,8 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
-    private Admin getLoggedInAdmin() {
+    @Override
+    public Admin getLoggedInAdmin() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
         return (Admin) _userService.findById(user.getId());
@@ -813,6 +821,86 @@ public class AdminServiceImpl implements AdminService {
         throwExceptionIfReviewFishingTripDoesntExist(id);
 
         _reviewFishingTripRepository.delete(_reviewFishingTripRepository.getById(id));
+    }
+
+    @Override
+    public String getIncomeInTimeInterval(ProfitInInterval profitInInterval) throws EntityBadRequestException {
+        if (profitInInterval.getTo().isBefore(profitInInterval.getFrom())) {
+            throw new EntityBadRequestException("End date can't be before start date!");
+        }
+
+        List<IncomeRecord> incomeRecords = _incomeRecordRepository.findAll();
+        double totalProfit = 0;
+        for (IncomeRecord incomeRecord : incomeRecords) {
+            if ((incomeRecord.getDateOfEntry().isAfter(profitInInterval.getFrom()) || incomeRecord.getDateOfEntry().isEqual(profitInInterval.getFrom())) && (incomeRecord.getDateOfEntry().isBefore(profitInInterval.getTo()) || incomeRecord.getDateOfEntry().isEqual(profitInInterval.getTo()))) {
+                totalProfit += incomeRecord.getSystemIncome();
+            }
+        }
+
+        return totalProfit + "";
+    }
+
+    @Override
+    public List<IncomeRecord> getAllIncomeRecords() {
+        return _incomeRecordRepository.findAll();
+    }
+
+    @Transactional
+    @Override
+    public String getCurrentSystemTax() {
+        return _currentSystemTaxPercentageRepository.getById(1).getCurrentSystemTaxPercentage() + "";
+    }
+
+    @Transactional
+    @Override
+    public String getCurrentPointsProviderGetsAfterReservation() {
+        return _currentPointsProviderGetsAfterReservationRepository.getById(1).getCurrentPointsProviderGetsAfterReservation() + "";
+    }
+
+    @Transactional
+    @Override
+    public String getCurrentPointsClientGetsAfterReservation() {
+        return _currentPointsClientGetsAfterReservationRepository.getById(1).getCurrentPointsClientGetsAfterReservation() + "";
+    }
+
+    @Override
+    public List<LoyaltyProgramProvider> getAllLoyaltyProviderCategories() {
+        return _loyaltyProgramProviderRepository.findAll();
+    }
+
+    @Override
+    public List<LoyaltyProgramClient> getAllLoyaltyClientCategories() {
+        return _loyaltyProgramClientRepository.findAll();
+    }
+
+    @Override
+    public List<CottageOwner> getAllCottageOwners() {
+        return _cottageOwnerRepository.findAll();
+    }
+
+    @Override
+    public List<Cottage> getAllCottages() {
+        return _cottageRepository.findAll();
+    }
+
+    @Override
+    public List<BoatOwner> getAllBoatOwners() {
+        return _boatOwnerRepository.findAll();
+    }
+
+    @Override
+    public List<Boat> getAllBoats() {
+        return _boatRepository.findAll();
+    }
+
+    @Override
+    public List<FishingInstructor> getAllFishingInstructors() {
+        return _fishingInstructorRepository.findAll();
+    }
+
+    @Override
+    public List<Client> getAllClients() {
+        return _clientRepository.findAll();
     }
 
     @Scheduled(cron="0 0 0 1 1/1 *")

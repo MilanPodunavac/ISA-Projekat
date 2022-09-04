@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AdminGet } from 'src/app/model/admin-get.model';
 import { ClientGet } from 'src/app/model/client-get';
 import { FishingInstructorAvailablePeriodGet } from 'src/app/model/fishing-instructor-available-period-get.model';
 import { FishingInstructorGet } from 'src/app/model/fishing-instructor-get';
 import { LoyaltyProgramProvider } from 'src/app/model/loyalty-program-provider.model';
+import { AdminService } from 'src/app/service/admin.service';
 import { ClientService } from 'src/app/service/client.service';
 import { FishingInstructorService } from 'src/app/service/fishing-instructor.service';
 import { LoyaltyProgramService } from 'src/app/service/loyalty-program.service';
@@ -17,13 +19,14 @@ import { UserService } from 'src/app/service/user.service';
 export class ProfileComponent implements OnInit {
     role: string;
     fishingInstructorData: FishingInstructorGet;
+    adminData: AdminGet;
     clientData: ClientGet;
     loyaltyProgramCategoryAboveInstructor: LoyaltyProgramProvider;
     displayedColumnsFishingInstructorAvailablePeriods: string[] = ['available_from', 'available_to'];
     dataSourceFishingInstructorAvailablePeriods: FishingInstructorAvailablePeriodGet[];
     user: any;
     
-    constructor(private fishingInstructorService: FishingInstructorService, private clientService: ClientService, private loyaltyProgramService: LoyaltyProgramService, private _usersService: UserService, private router: Router,) {
+    constructor(private fishingInstructorService: FishingInstructorService, private clientService: ClientService, private loyaltyProgramService: LoyaltyProgramService, private _usersService: UserService, private router: Router, private adminService: AdminService) {
         
         this.role = localStorage.getItem('role');        
         
@@ -38,6 +41,11 @@ export class ProfileComponent implements OnInit {
 
             this.fishingInstructorService.getFishingInstructorAvailablePeriods().subscribe(data => {
                 this.dataSourceFishingInstructorAvailablePeriods = data;
+            });
+        }
+        if(this.role === 'ROLE_ADMIN'){
+            this.adminService.getLoggedInAdmin().subscribe(data => {
+                this.adminData = data;
             });
         }
         if(this.role === 'ROLE_CLIENT'){
@@ -90,8 +98,14 @@ export class ProfileComponent implements OnInit {
     }
 
     public goToBusinessReport(): void {
-        this.router.navigate(['business-report']).then(() => {
-            window.location.reload();
-        });
+        if (this.role === 'ROLE_ADMIN') {
+            this.router.navigate(['business-report-admin']).then(() => {
+                window.location.reload();
+            });
+        } else if (this.role === 'ROLE_FISHING_INSTRUCTOR') {
+            this.router.navigate(['business-report']).then(() => {
+                window.location.reload();
+            });
+        }
     }
 }

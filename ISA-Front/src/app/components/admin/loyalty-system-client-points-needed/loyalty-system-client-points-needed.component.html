@@ -1,0 +1,22 @@
+<div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-6">
+            <div class="card shadow-1-strong" style="border-radius: 1rem;">
+                <form [formGroup]="form" (submit)="onSubmit()">
+                    <h2>Change points needed</h2>
+
+                    <div class="content">
+                        <div class="input-field">
+                            <input type="number" placeholder="Points needed *" formControlName="pointsNeeded">
+                        </div>
+                    </div>
+                    
+                    <p style="padding: 20px 0px 0px 0px; color: red; font-size: large;">{{errorMessage}}</p>
+                    <div class="action">
+                        <button type="submit" [disabled]="!form.valid">Change</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

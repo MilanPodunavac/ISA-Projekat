@@ -1,12 +1,20 @@
 package code.service;
 
 import code.dto.admin.ComplaintResponse;
+import code.dto.fishing_instructor.ProfitInInterval;
 import code.exceptions.admin.*;
 import code.exceptions.entities.*;
 import code.exceptions.provider_registration.EmailTakenException;
 import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.*;
+import code.model.boat.Boat;
+import code.model.boat.BoatOwner;
+import code.model.cottage.Cottage;
+import code.model.cottage.CottageOwner;
+
+import java.util.Collection;
+import java.util.List;
 
 public interface AdminService {
     Admin save(Admin admin) throws NonMainAdminRegisterOtherAdminException, EmailTakenException;
@@ -37,4 +45,18 @@ public interface AdminService {
     void acceptReviewFishingTrip(Integer id) throws EntityNotFoundException, EntityNotUpdateableException;
     void declineReview(Integer id) throws EntityNotFoundException;
     void declineReviewFishingTrip(Integer id) throws EntityNotFoundException;
+    Admin getLoggedInAdmin();
+    String getIncomeInTimeInterval(ProfitInInterval profitInInterval) throws EntityBadRequestException;
+    List<IncomeRecord> getAllIncomeRecords();
+    String getCurrentSystemTax();
+    String getCurrentPointsProviderGetsAfterReservation();
+    String getCurrentPointsClientGetsAfterReservation();
+    List<LoyaltyProgramProvider> getAllLoyaltyProviderCategories();
+    List<LoyaltyProgramClient> getAllLoyaltyClientCategories();
+    List<CottageOwner> getAllCottageOwners();
+    List<Cottage> getAllCottages();
+    List<BoatOwner> getAllBoatOwners();
+    List<Boat> getAllBoats();
+    List<FishingInstructor> getAllFishingInstructors();
+    List<Client> getAllClients();
 }
