@@ -20,7 +20,7 @@ Set environment variables for username and password
 setx ISA_DB_USERNAME <postgre username>
 ```
 ```sh
-setx PASS <posgre password>
+setx PASS <postgre password>
 ```
 Starting backend:
 run with jdk
