@@ -28,4 +28,5 @@ public class BoatActionGetDto {
     private int numberOfPeople;
     private List<BoatReservationTag> additionalServices;
     private String commentary;
+    private boolean  ownerNeeded;
 }

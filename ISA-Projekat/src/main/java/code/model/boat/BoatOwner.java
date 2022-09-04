@@ -4,6 +4,7 @@ import code.model.LoyaltyProgramProvider;
 import code.model.User;
 import code.model.boat.Boat;
 import code.model.cottage.Cottage;
+import code.model.wrappers.DateRange;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,5 +34,11 @@ public class BoatOwner extends User {
    public void addBoat(Boat boat){
       boat.setBoatOwner(this);
       this.boat.add(boat);
+   }
+   public boolean checkIfOwnerAvailable(DateRange range){
+      for (Boat currBoat : boat){
+         if(!currBoat.checkIsOwnerAvailable(range))return false;
+      }
+      return true;
    }
 }

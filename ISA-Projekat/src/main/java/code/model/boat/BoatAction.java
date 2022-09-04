@@ -29,4 +29,6 @@ public class BoatAction extends Action {
     @Fetch(value = FetchMode.JOIN)
     private Set<BoatReservationTag> additionalServices;
     private int numberOfPeople;
+    @Column
+    private boolean  ownerNeeded;
 }

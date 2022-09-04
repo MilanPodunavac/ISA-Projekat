@@ -6,6 +6,7 @@ import code.model.Client;
 import code.model.Review;
 import code.model.base.*;
 import code.model.base.SaleEntity;
+import code.model.wrappers.DateRange;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -69,6 +70,20 @@ public class Boat extends SaleEntity {
       newAction.setBoat(this);
       newAction.setSystemCharge(newAction.getSystemCharge() - boatOwner.getCategory().getLesserSystemTaxPercentage());
       return super.addAction(newAction);
+   }
+
+   public boolean checkIsOwnerAvailable(DateRange range){
+      for(AvailabilityPeriod period : availabilityPeriods){
+         for(Reservation res : period.getReservations()){
+            BoatReservation temp = (BoatReservation)res;
+            if(temp.getDateRange().overlapsWith(range) && temp.getReservationStatus() != ReservationStatus.cancelled && temp.isOwnerNeeded())return false;
+         }
+         for(Action act : period.getActions()){
+            BoatAction temp = (BoatAction) act;
+            if(temp.getRange().overlapsWith(range) && temp.isOwnerNeeded())return false;
+         }
+      }
+      return true;
    }
 
    @PreRemove

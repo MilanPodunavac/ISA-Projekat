@@ -27,4 +27,5 @@ public class BoatReservationGetDto {
     private List<BoatReservationTag> boatReservationTag;
     private int price;
     private String commentary;
+    private boolean  ownerNeeded;
 }

@@ -45,4 +45,5 @@ public class BoatGetDto {
     private List<BoatActionGetDto> boatActions;
     private double grade;
     private boolean deletable;
+
 }
