@@ -59,6 +59,30 @@
     </div>
 </div>
 
+<div *ngIf="role === 'ROLE_ADMIN'" class="container">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-6">
+            <div class="card shadow-1-strong" style="border-radius: 1rem;">
+                <h2>Profile</h2>
+                <div class="profile">
+                    <p>Name:&ensp;{{adminData.firstName}} {{adminData.lastName}}</p>
+                    <p>Address:&ensp;{{adminData.location.streetName}}, {{adminData.location.cityName}}, {{adminData.location.countryName}}</p>
+                    <p>Email:&ensp;{{adminData.email}}</p>
+                    <p>Phone number:&ensp;{{adminData.phoneNumber}}</p>
+                    <p *ngIf="adminData.mainAdmin">Main admin:&ensp;yes</p>
+                    <p *ngIf="!adminData.mainAdmin">Main admin:&ensp;no</p>
+                </div>
+                <div class="profile-buttons">
+                    <button mat-raised-button color="primary" (click)="goToBusinessReport()">Generate business report</button>
+                </div>
+                <div class="profile-buttons">
+                    <button mat-raised-button color="primary" (click)="goToChangePersonalData()">Change personal data</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div *ngIf="role === 'ROLE_CLIENT'" class="container">
     <div class="row d-flex justify-content-center align-items-center h-100">
         <div class="col-6">

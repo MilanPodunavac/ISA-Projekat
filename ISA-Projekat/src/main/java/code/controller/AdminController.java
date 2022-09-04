@@ -2,6 +2,16 @@ package code.controller;
 
 import code.controller.base.BaseController;
 import code.dto.admin.*;
+import code.dto.client.ClientGetDto;
+import code.dto.entities.boat.BoatGetDto;
+import code.dto.entities.boat.BoatOwnerGet;
+import code.dto.entities.cottage.CottageGetDto;
+import code.dto.entities.cottage.CottageOwnerGet;
+import code.dto.fishing_instructor.FishingInstructorAvailablePeriodGetDto;
+import code.dto.fishing_instructor.FishingInstructorGetDto;
+import code.dto.fishing_instructor.ProfitInInterval;
+import code.dto.loyalty_program.LoyaltyProgramClientGetDto;
+import code.dto.loyalty_program.LoyaltyProgramProviderGetDto;
 import code.exceptions.admin.*;
 import code.exceptions.entities.*;
 import code.exceptions.provider_registration.EmailTakenException;
@@ -19,6 +29,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -28,6 +40,13 @@ public class AdminController extends BaseController {
     public AdminController(AdminService adminService, ModelMapper mapper, TokenUtils tokenUtils) {
         super(mapper, tokenUtils);
         this._adminService = adminService;
+    }
+
+    @GetMapping(value = "/loggedInAdmin", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<AdminGetDto> getLoggedInAdmin() {
+        Admin loggedInAdmin = _adminService.getLoggedInAdmin();
+        return ResponseEntity.ok(_mapper.map(loggedInAdmin, AdminGetDto.class));
     }
 
     @PutMapping(value = "/changePersonalData", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -475,5 +494,103 @@ public class AdminController extends BaseController {
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
+    }
+
+    @PostMapping(value="/incomeInTimeInterval")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> getIncomeInTimeInterval(@Valid @RequestBody ProfitInInterval profitInInterval, BindingResult result) {
+        if(result.hasErrors()){
+            return formatErrorResponse(result);
+        }
+
+        try {
+            return ResponseEntity.ok(_adminService.getIncomeInTimeInterval(profitInInterval));
+        } catch (EntityBadRequestException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping(value="/allIncomeRecords")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<IncomeRecordGetDto>> getAllIncomeRecords() {
+        return ResponseEntity.ok(_adminService.getAllIncomeRecords().stream()
+                .map(entity -> _mapper.map(entity, IncomeRecordGetDto.class))
+                .collect(Collectors.toList()));
+    }
+
+    @GetMapping(value="/allLoyaltyProviderCategories")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<LoyaltyProgramProviderGetDto>> getAllLoyaltyProviderCategories() {
+        return ResponseEntity.ok(_adminService.getAllLoyaltyProviderCategories().stream()
+                .map(entity -> _mapper.map(entity, LoyaltyProgramProviderGetDto.class))
+                .collect(Collectors.toList()));
+    }
+
+    @GetMapping(value="/allLoyaltyClientCategories")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<LoyaltyProgramClientGetDto>> getAllLoyaltyClientCategories() {
+        return ResponseEntity.ok(_adminService.getAllLoyaltyClientCategories().stream()
+                .map(entity -> _mapper.map(entity, LoyaltyProgramClientGetDto.class))
+                .collect(Collectors.toList()));
+    }
+
+    @GetMapping(value="/getCurrentSystemTax")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> getCurrentSystemTax() {
+        return ResponseEntity.ok(_adminService.getCurrentSystemTax());
+    }
+
+    @GetMapping(value="/getCurrentPointsProviderGetsAfterReservation")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> getCurrentPointsProviderGetsAfterReservation() {
+        return ResponseEntity.ok(_adminService.getCurrentPointsProviderGetsAfterReservation());
+    }
+
+    @GetMapping(value="/getAllCottageOwners")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<CottageOwnerGet>> getAllCottageOwners() {
+        return ResponseEntity.ok(_adminService.getAllCottageOwners().stream()
+                .map(entity -> _mapper.map(entity, CottageOwnerGet.class))
+                .collect(Collectors.toList()));
+    }
+
+    @GetMapping(value="/getAllCottages")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<CottageGetDto>> getAllCottages() {
+        return ResponseEntity.ok(_adminService.getAllCottages().stream()
+                .map(entity -> _mapper.map(entity, CottageGetDto.class))
+                .collect(Collectors.toList()));
+    }
+
+    @GetMapping(value="/getAllBoatOwners")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<BoatOwnerGet>> getAllBoatOwners() {
+        return ResponseEntity.ok(_adminService.getAllBoatOwners().stream()
+                .map(entity -> _mapper.map(entity, BoatOwnerGet.class))
+                .collect(Collectors.toList()));
+    }
+
+    @GetMapping(value="/getAllBoats")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<BoatGetDto>> getAllBoats() {
+        return ResponseEntity.ok(_adminService.getAllBoats().stream()
+                .map(entity -> _mapper.map(entity, BoatGetDto.class))
+                .collect(Collectors.toList()));
+    }
+
+    @GetMapping(value="/getAllFishingInstructors")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<FishingInstructorGetDto>> getAllFishingInstructors() {
+        return ResponseEntity.ok(_adminService.getAllFishingInstructors().stream()
+                .map(entity -> _mapper.map(entity, FishingInstructorGetDto.class))
+                .collect(Collectors.toList()));
+    }
+
+    @GetMapping(value="/getAllClients")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<ClientGetDto>> getAllClients() {
+        return ResponseEntity.ok(_adminService.getAllClients().stream()
+                .map(entity -> _mapper.map(entity, ClientGetDto.class))
+                .collect(Collectors.toList()));
     }
 }
