@@ -120,8 +120,6 @@ export class ChangePersonalDataComponent implements OnInit {
         streetName: this.personalDataForm.get('streetAddress').value,
         cityName: this.personalDataForm.get('city').value,
         countryName: this.personalDataForm.get('country').value,
-        longitude: this.personalDataForm.get('longitude').value,
-        latitude: this.personalDataForm.get('latitude').value,
       }
       this._userService.updatePersonalInfo(body).subscribe(data => {
         this.router.navigate(['profile']).then(() => {

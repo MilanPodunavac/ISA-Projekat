@@ -86,6 +86,11 @@ public class YearlyProfitReport {
     }
 
     public void addIncome(IncomeRecord rec){
+        Date now = new Date(System.currentTimeMillis());
+        now.setDate(1);
+        now.setHours(0);
+        now.setMinutes(0);
+        now.setSeconds(0);
         if(first.getStart().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().compareTo(rec.getDateOfEntry()) < 0
                 && second.getStart().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().compareTo(rec.getDateOfEntry()) > 0){
             first.setIncome(first.getIncome() + rec.getProviderIncome());
@@ -130,7 +135,8 @@ public class YearlyProfitReport {
                 && twelfth.getStart().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().compareTo(rec.getDateOfEntry()) > 0){
             eleventh.setIncome(eleventh.getIncome() + rec.getProviderIncome());
         }
-        if(twelfth.getStart().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().compareTo(rec.getDateOfEntry()) < 0){
+        if(twelfth.getStart().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().compareTo(rec.getDateOfEntry()) < 0 &&
+                now.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().compareTo(rec.getDateOfEntry()) > 0){
             twelfth.setIncome(twelfth.getIncome() + rec.getProviderIncome());
         }
     }

@@ -21,9 +21,9 @@ INSERT INTO LOCATION (city_name, country_name, street_name, longitude, latitude)
 INSERT INTO LOCATION (city_name, country_name, street_name, longitude, latitude) VALUES ('Novi Sad', 'Srbija', 'Vojvode Stepe 11', 0, 0);
 INSERT INTO LOCATION (city_name, country_name, street_name, longitude, latitude) VALUES ('Novi Sad', 'Srbija', 'Vojvode Stepe 12', 0, 0);
 INSERT INTO LOCATION (city_name, country_name, street_name, longitude, latitude) VALUES ('Novi Sad', 'Srbija', 'Vojvode Stepe 13', 0, 0);
-INSERT INTO LOCATION (city_name, country_name, street_name, longitude, latitude) VALUES ('Novi Sad', 'Srbija', 'Vojvode Stepe 14', 0, 0);
-INSERT INTO LOCATION (city_name, country_name, street_name, longitude, latitude) VALUES ('Novi Sad', 'Srbija', 'Vojvode Stepe 17', 0, 0);
-INSERT INTO LOCATION (city_name, country_name, street_name, longitude, latitude) VALUES ('Novi Sad', 'Srbija', 'Vojvode Stepe 18', 0, 0);
+INSERT INTO LOCATION (city_name, country_name, street_name, longitude, latitude) VALUES ('Novi Sad City', 'Serbia', 'Save Kovacevica 31', 19.7630549, 45.2518669);
+INSERT INTO LOCATION (city_name, country_name, street_name, longitude, latitude) VALUES ('Novi Sad City', 'Serbia', 'Kamenjar 3 26', 19.781933, 45.2281945);
+INSERT INTO LOCATION (city_name, country_name, street_name, longitude, latitude) VALUES ('Novi Sad City', 'Serbia', 'Vojvode Stepe 18', 19.7866482, 45.2268483);
 INSERT INTO LOCATION (city_name, country_name, street_name, longitude, latitude) VALUES ('Novi Sad', 'Srbija', 'Vojvode Stepe 19', 0, 0);
 
 INSERT INTO LOYALTY_PROGRAM_CLIENT (points_needed, discount_percentage, category) VALUES (0, 0, 'regular');
@@ -55,6 +55,12 @@ INSERT INTO INCOME_RECORD (date_of_entry, provider_income, percentage_provider_k
 
 INSERT INTO INCOME_RECORD (date_of_entry, provider_income, percentage_provider_keeps_if_reservation_cancelled, reservation_end, reservation_price, reservation_start, reserved, system_income, system_tax_percentage, reservation_provider_id) VALUES ('2022-03-31', 80, 10, '2022-04-10', 100, '2022-04-1', true, 20, 20, 7);
 INSERT INTO INCOME_RECORD (date_of_entry, provider_income, percentage_provider_keeps_if_reservation_cancelled, reservation_end, reservation_price, reservation_start, reserved, system_income, system_tax_percentage, reservation_provider_id) VALUES ('2022-04-09', 160, 10, '2022-04-14', 200, '2022-04-12', true, 40, 20, 7);
+INSERT INTO INCOME_RECORD (date_of_entry, provider_income, percentage_provider_keeps_if_reservation_cancelled, reservation_end, reservation_price, reservation_start, reserved, system_income, system_tax_percentage, reservation_provider_id) VALUES ('2022-08-09', 160, 10, '2023-01-10', 200, '2023-01-08', true, 40, 20, 7);
+INSERT INTO INCOME_RECORD (date_of_entry, provider_income, percentage_provider_keeps_if_reservation_cancelled, reservation_end, reservation_price, reservation_start, reserved, system_income, system_tax_percentage, reservation_provider_id) VALUES ('2022-07-09', 160, 10, '2023-01-08', 200, '2023-01-06', true, 40, 20, 7);
+INSERT INTO INCOME_RECORD (date_of_entry, provider_income, percentage_provider_keeps_if_reservation_cancelled, reservation_end, reservation_price, reservation_start, reserved, system_income, system_tax_percentage, reservation_provider_id) VALUES ('2022-08-09', 160, 10, '2022-12-08', 200, '2022-12-06', true, 40, 20, 7);
+
+INSERT INTO INCOME_RECORD (date_of_entry, provider_income, percentage_provider_keeps_if_reservation_cancelled, reservation_end, reservation_price, reservation_start, reserved, system_income, system_tax_percentage, reservation_provider_id) VALUES ('2022-03-31', 160, 10, '2022-04-12', 200, '2022-04-10', true, 40, 20, 4);
+INSERT INTO INCOME_RECORD (date_of_entry, provider_income, percentage_provider_keeps_if_reservation_cancelled, reservation_end, reservation_price, reservation_start, reserved, system_income, system_tax_percentage, reservation_provider_id) VALUES ('2022-04-20', 160, 10, '2022-04-29', 200, '2022-04-27', true, 40, 20, 4);
 
 INSERT INTO COTTAGE (id, description, name, rules, location_id, bed_number, room_number, cottage_owner_id, price_per_day, reservation_refund, version, schedule_changed) VALUES (1, 'cottage', 'cottage', 'rules', 16, 2, 2, 7, 100, 10, 0, 0);
 INSERT INTO COTTAGE (id, description, name, rules, location_id, bed_number, room_number, cottage_owner_id, price_per_day, reservation_refund, version, schedule_changed) VALUES (2, 'cottage', 'vikendica', 'rules', 17, 2, 2, 7, 100, 10, 0, 0);
@@ -66,9 +72,16 @@ INSERT INTO COTTAGE_ADDITIONAL_SERVICES (cottage_id, tags) VALUES (1, 1);
 
 INSERT INTO AVAILABILITY_PERIOD (id, end_date, start_date, sale_entity_id) VALUES(1, '2022-04-30 00:00:00', '2022-04-1 00:00:00', 1);
 INSERT INTO AVAILABILITY_PERIOD (id, end_date, start_date, sale_entity_id) VALUES(2, '2022-10-30 00:00:00', '2022-10-1 00:00:00', 1);
+INSERT INTO AVAILABILITY_PERIOD (id, end_date, start_date, sale_entity_id) VALUES(5, '2023-01-01 00:00:00', '2023-07-31 00:00:00', 1);
 
-INSERT INTO COTTAGE_RESERVATION (id, end_date, start_date, number_of_people, price, reservation_refund, reservation_status, system_charge, availability_period_id, client_id, cottage_id, loyalty_points_given) VALUES (1, '2022-04-10 00:00:00', '2022-04-1 00:00:00', 4, 100, 10, 1, 20, 1, 2, 1, false);
-INSERT INTO COTTAGE_RESERVATION (id, end_date, start_date, number_of_people, price, reservation_refund, reservation_status, system_charge, availability_period_id, client_id, cottage_id, loyalty_points_given) VALUES (2, '2022-09-01 00:00:00', '2022-08-30 00:00:00', 4, 100, 10, 1, 20, 1, 2, 1, false);
+INSERT INTO AVAILABILITY_PERIOD (id, end_date, start_date, sale_entity_id) VALUES(6, '2023-07-31 00:00:00', '2022-01-01 00:00:00', 2);
+
+INSERT INTO COTTAGE_RESERVATION (id, end_date, start_date, number_of_people, price, reservation_refund, reservation_status, system_charge, availability_period_id, client_id, cottage_id, loyalty_points_given) VALUES (1, '2022-04-10 00:00:00', '2022-04-1 00:00:00', 4, 200, 10, 1, 20, 1, 2, 1, false);
+INSERT INTO COTTAGE_RESERVATION (id, end_date, start_date, number_of_people, price, reservation_refund, reservation_status, system_charge, availability_period_id, client_id, cottage_id, loyalty_points_given) VALUES (2, '2022-09-01 00:00:00', '2022-08-30 00:00:00', 4, 200, 10, 1, 20, 1, 2, 1, false);
+INSERT INTO COTTAGE_RESERVATION (id, end_date, start_date, number_of_people, price, reservation_refund, reservation_status, system_charge, availability_period_id, client_id, cottage_id, loyalty_points_given) VALUES (3, '2023-01-10 00:00:00', '2023-01-08 00:00:00', 4, 200, 10, 1, 20, 5, 8, 1, false);
+INSERT INTO COTTAGE_RESERVATION (id, end_date, start_date, number_of_people, price, reservation_refund, reservation_status, system_charge, availability_period_id, client_id, cottage_id, loyalty_points_given) VALUES (4, '2023-01-08 00:00:00', '2023-01-06 00:00:00', 4, 200, 10, 1, 20, 5, 2, 1, false);
+
+INSERT INTO COTTAGE_RESERVATION (id, end_date, start_date, number_of_people, price, reservation_refund, reservation_status, system_charge, availability_period_id, client_id, cottage_id, loyalty_points_given) VALUES (5, '2022-12-08 00:00:00', '2022-12-06 00:00:00', 4, 100, 10, 1, 20, 6, 2, 2, false);
 
 INSERT INTO COTTAGE_ACTION (id, end_date, start_date, action_refund, discount, price, client_id, reserved, system_charge, valid_until_and_including, availability_period_id, number_of_people, cottage_id, loyalty_points_given) VALUES (1, '2022-04-12 00:00:00', '2022-04-10 00:00:00', 10, 10, 100, null, false, 20, '2022-04-09 00:00:00', 1, 4, 1, false);
 INSERT INTO COTTAGE_ACTION (id, end_date, start_date, action_refund, discount, price, client_id, reserved, system_charge, valid_until_and_including, availability_period_id, number_of_people, cottage_id, loyalty_points_given) VALUES (2, '2022-04-14 00:00:00', '2022-04-12 00:00:00', 10, 10, 100, 8, true, 20, '2022-04-10 00:00:00', 1, 4, 1, false);
@@ -123,7 +136,8 @@ INSERT INTO BOAT_ADDITIONAL_SERVICES (boat_id, tags) VALUES (10, 1);
 INSERT INTO AVAILABILITY_PERIOD (id, end_date, start_date, sale_entity_id) VALUES(3, '2022-04-30 00:00:00', '2022-04-1 00:00:00', 10);
 INSERT INTO AVAILABILITY_PERIOD (id, end_date, start_date, sale_entity_id) VALUES(4, '2022-10-30 00:00:00', '2022-10-1 00:00:00', 10);
 
-INSERT INTO BOAT_RESERVATION (id, end_date, start_date, number_of_people, price, reservation_refund, reservation_status, system_charge, availability_period_id, client_id, boat_id, loyalty_points_given, owner_needed) VALUES (14, '2022-04-12 00:00:00', '2022-04-11 00:00:00', 2, 6, 2, 1, 3, 3, 10, 10, false, false);
+INSERT INTO BOAT_RESERVATION (id, end_date, start_date, number_of_people, price, reservation_refund, reservation_status, system_charge, availability_period_id, client_id, boat_id, loyalty_points_given, owner_needed) VALUES (14, '2022-04-12 00:00:00', '2022-04-10 00:00:00', 2, 200, 10, 1, 20, 3, 10, 10, false, false);
+INSERT INTO BOAT_RESERVATION (id, end_date, start_date, number_of_people, price, reservation_refund, reservation_status, system_charge, availability_period_id, client_id, boat_id, loyalty_points_given, owner_needed) VALUES (15, '2022-04-29 00:00:00', '2022-04-27 00:00:00', 2, 200, 10, 1, 20, 3, 10, 10, false, true);
 
 INSERT INTO BOAT_RESERVATION_TAGS (boat_reservation_id, tags) VALUES (14, 1);
 
