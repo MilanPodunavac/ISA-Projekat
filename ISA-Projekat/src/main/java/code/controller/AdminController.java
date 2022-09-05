@@ -3,15 +3,15 @@ package code.controller;
 import code.controller.base.BaseController;
 import code.dto.admin.*;
 import code.dto.client.ClientGetDto;
+import code.dto.entities.ComplaintGet;
 import code.dto.entities.QuickReservationGetDto;
 import code.dto.entities.ReservationGetDto;
+import code.dto.entities.ReviewGet;
 import code.dto.entities.boat.BoatGetDto;
 import code.dto.entities.boat.BoatOwnerGet;
 import code.dto.entities.cottage.CottageGetDto;
 import code.dto.entities.cottage.CottageOwnerGet;
-import code.dto.fishing_instructor.FishingInstructorAvailablePeriodGetDto;
-import code.dto.fishing_instructor.FishingInstructorGetDto;
-import code.dto.fishing_instructor.ProfitInInterval;
+import code.dto.fishing_instructor.*;
 import code.dto.fishing_trip.FishingQuickReservationGetDto;
 import code.dto.fishing_trip.FishingReservationGetDto;
 import code.dto.loyalty_program.LoyaltyProgramClientGetDto;
@@ -422,7 +422,7 @@ public class AdminController extends BaseController {
         }
     }
 
-    @DeleteMapping(value = "/respondToComplaint/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/respondToComplaint/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> respondToComplaint(@PathVariable Integer id, @Valid @RequestBody ComplaintResponse complaintResponse, BindingResult result) {
         if(result.hasErrors()){
@@ -437,7 +437,7 @@ public class AdminController extends BaseController {
         }
     }
 
-    @DeleteMapping(value = "/respondToComplaintFishingInstructor/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/respondToComplaintFishingInstructor/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> respondToComplaintFishingInstructor(@PathVariable Integer id, @Valid @RequestBody ComplaintResponse complaintResponse, BindingResult result) {
         if(result.hasErrors()){
@@ -452,7 +452,7 @@ public class AdminController extends BaseController {
         }
     }
 
-    @PutMapping(value = "/acceptReview/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/acceptReview/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> acceptReview(@PathVariable Integer id) {
         try {
@@ -465,7 +465,7 @@ public class AdminController extends BaseController {
         }
     }
 
-    @PutMapping(value = "/acceptReviewFishingTrip/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/acceptReviewFishingTrip/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> acceptReviewFishingTrip(@PathVariable Integer id) {
         try {
@@ -478,7 +478,7 @@ public class AdminController extends BaseController {
         }
     }
 
-    @DeleteMapping(value = "/declineReview/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/declineReview/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> declineReview(@PathVariable Integer id) {
         try {
@@ -489,7 +489,7 @@ public class AdminController extends BaseController {
         }
     }
 
-    @DeleteMapping(value = "/declineReviewFishingTrip/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/declineReviewFishingTrip/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> declineReviewFishingTrip(@PathVariable Integer id) {
         try {
@@ -633,6 +633,38 @@ public class AdminController extends BaseController {
     public ResponseEntity<List<FishingQuickReservationGetDto>> getFishingQuickReservationsWithCommentariesForAdmin() {
         return ResponseEntity.ok(_adminService.getFishingQuickReservationsWithCommentariesForAdmin().stream()
                 .map(entity -> _mapper.map(entity, FishingQuickReservationGetDto.class))
+                .collect(Collectors.toList()));
+    }
+
+    @GetMapping(value="/getAllComplaints")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<ComplaintGet>> getAllComplaints() {
+        return ResponseEntity.ok(_adminService.getAllComplaints().stream()
+                .map(entity -> _mapper.map(entity, ComplaintGet.class))
+                .collect(Collectors.toList()));
+    }
+
+    @GetMapping(value="/getAllFishingInstructorComplaints")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<ComplaintFishingInstructorGet>> getAllFishingInstructorComplaints() {
+        return ResponseEntity.ok(_adminService.getAllFishingInstructorComplaints().stream()
+                .map(entity -> _mapper.map(entity, ComplaintFishingInstructorGet.class))
+                .collect(Collectors.toList()));
+    }
+
+    @GetMapping(value="/getAllUnapprovedReviews")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<ReviewGet>> getAllUnapprovedReviews() {
+        return ResponseEntity.ok(_adminService.getAllUnapprovedReviews().stream()
+                .map(entity -> _mapper.map(entity, ReviewGet.class))
+                .collect(Collectors.toList()));
+    }
+
+    @GetMapping(value="/getAllUnapprovedFishingTripReviews")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<ReviewFishingTripGet>> getAllUnapprovedFishingTripReviews() {
+        return ResponseEntity.ok(_adminService.getAllUnapprovedFishingTripReviews().stream()
+                .map(entity -> _mapper.map(entity, ReviewFishingTripGet.class))
                 .collect(Collectors.toList()));
     }
 }

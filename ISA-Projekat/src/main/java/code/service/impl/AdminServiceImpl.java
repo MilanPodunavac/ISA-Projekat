@@ -952,6 +952,26 @@ public class AdminServiceImpl implements AdminService {
         return response;
     }
 
+    @Override
+    public List<Complaint> getAllComplaints() {
+        return _complaintRepository.findAll();
+    }
+
+    @Override
+    public List<ComplaintFishingInstructor> getAllFishingInstructorComplaints() {
+        return _complaintFishingInstructorRepository.findAll();
+    }
+
+    @Override
+    public List<Review> getAllUnapprovedReviews() {
+        return _reviewRepository.findByApproved(false);
+    }
+
+    @Override
+    public List<ReviewFishingTrip> getAllUnapprovedFishingTripReviews() {
+        return _reviewFishingTripRepository.findByApproved(false);
+    }
+
     @Scheduled(cron="0 0 0 1 1/1 *")
     public void unbanAllClientsAndResetTheirPenaltyPoints() {
         List<Client> allClients = _clientRepository.findAll();

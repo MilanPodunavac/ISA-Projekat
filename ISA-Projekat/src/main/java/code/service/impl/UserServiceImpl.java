@@ -583,4 +583,9 @@ public class UserServiceImpl implements UserService {
     public List<Client> findAllClients() {
         return new ArrayList<>(_clientRepository.findAll());
     }
+
+    @Override
+    public List<AccountDeletionRequest> getAllAccountDeletionRequests() {
+        return _accountDeletionRequestRepository.findAll();
+    }
 }

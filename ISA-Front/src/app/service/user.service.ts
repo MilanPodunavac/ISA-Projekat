@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AccountDeletionRequestGet } from '../model/account-deletion-request-get.model';
+import { AccountDeletionResponse } from '../model/account-deletion-response.model';
 
 @Injectable({
  	providedIn: 'root'
@@ -29,5 +30,17 @@ export class UserService {
 	}
 	updatePassword(body: any): Observable<string> {
 		return this.http.put(this.apiUrl+`/password`, body, { responseType: 'text'});
+	}
+
+	public getAllAccountDeletionRequests(): Observable<AccountDeletionRequestGet[]> {
+		return this.http.get<AccountDeletionRequestGet[]>(this.apiUrl + '/getAllAccountDeletionRequests');
+	}
+
+	public acceptAccountDeletionRequest(id: number, accountDeletionResponse: AccountDeletionResponse): Observable<string> {
+		return this.http.put(this.apiUrl + '/acceptAccountDeletionRequest/' + id, accountDeletionResponse, { responseType: 'text'});
+	}
+
+	public declineAccountDeletionRequest(id: number, accountDeletionResponse: AccountDeletionResponse): Observable<string> {
+		return this.http.put(this.apiUrl + '/declineAccountDeletionRequest/' + id, accountDeletionResponse, { responseType: 'text'});
 	}
 }

@@ -1,10 +1,8 @@
 package code.controller;
 
 import code.controller.base.BaseController;
-import code.dto.user.AccountDeletionRequestDto;
-import code.dto.user.AccountDeletionResponse;
-import code.dto.user.UpdatePasswordDto;
-import code.dto.user.UpdateUserPersonalInfoDto;
+import code.dto.entities.boat.BoatOwnerGet;
+import code.dto.user.*;
 import code.exceptions.admin.NotChangedPasswordException;
 import code.exceptions.entities.AccountDeletionRequestDontExistException;
 import code.exceptions.entities.EntityNotDeletableException;
@@ -30,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -95,7 +94,7 @@ public class UsersController extends BaseController {
         }
     }
 
-    @DeleteMapping(value = "/declineAccountDeletionRequest/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/declineAccountDeletionRequest/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> declineAccountDeletionRequest(@PathVariable Integer id, @Valid @RequestBody AccountDeletionResponse dto, BindingResult result){
         if(result.hasErrors()){
@@ -112,7 +111,7 @@ public class UsersController extends BaseController {
         }
     }
 
-    @DeleteMapping(value = "/acceptAccountDeletionRequest/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/acceptAccountDeletionRequest/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> acceptAccountDeletionRequest(@PathVariable Integer id, @Valid @RequestBody AccountDeletionResponse dto, BindingResult result){
         if(result.hasErrors()){
@@ -149,6 +148,14 @@ public class UsersController extends BaseController {
         }catch (Exception ex){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Oops, something went wrong");
         }
+    }
+
+    @GetMapping(value="/getAllAccountDeletionRequests")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<AccountDeletionRequestDtoGet>> getAllAccountDeletionRequests() {
+        return ResponseEntity.ok(_userService.getAllAccountDeletionRequests().stream()
+                .map(entity -> _mapper.map(entity, AccountDeletionRequestDtoGet.class))
+                .collect(Collectors.toList()));
     }
 
     @GetMapping()

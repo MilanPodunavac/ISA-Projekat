@@ -65,4 +65,8 @@ public interface AdminService {
     List<Action> getQuickReservationsWithCommentariesForAdmin();
     List<FishingTripReservation> getFishingReservationsWithCommentariesForAdmin();
     List<FishingTripQuickReservation> getFishingQuickReservationsWithCommentariesForAdmin();
+    List<Complaint> getAllComplaints();
+    List<ComplaintFishingInstructor> getAllFishingInstructorComplaints();
+    List<Review> getAllUnapprovedReviews();
+    List<ReviewFishingTrip> getAllUnapprovedFishingTripReviews();
 }

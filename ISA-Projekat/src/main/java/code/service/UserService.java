@@ -14,6 +14,7 @@ import code.model.*;
 import code.model.boat.BoatOwner;
 import code.model.cottage.CottageOwner;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface UserService {
@@ -40,4 +41,5 @@ public interface UserService {
     void throwExceptionIfEnabledClientDoesntExist(Integer clientId) throws EnabledClientDoesntExistException;
     String getLoggedInUserRole();
     List<Client> findAllClients();
+    List<AccountDeletionRequest> getAllAccountDeletionRequests();
 }

@@ -6,6 +6,9 @@ import { AdminGet } from '../model/admin-get.model';
 import { BoatGet } from '../model/boat-get';
 import { BoatOwnerGet } from '../model/boat-owner-get.model';
 import { ClientGet } from '../model/client-get';
+import { ComplaintFishingInstructorGet } from '../model/complaint-fishing-instructor-get.model';
+import { ComplaintGet } from '../model/complaint-get.model';
+import { ComplaintResponse } from '../model/complaint-response.model';
 import { CottageGet } from '../model/cottage-get';
 import { CottageOwnerGet } from '../model/cottage-owner-get.model';
 import { FishingActionGet } from '../model/fishing-action-get.model';
@@ -22,6 +25,8 @@ import { PointsNeeded } from '../model/points-needed.model';
 import { ProfitInInterval } from '../model/profit-in-interval.model';
 import { RegisterProvider } from '../model/register-provider';
 import { ReservationGet } from '../model/reservation-get.model';
+import { ReviewFishingTripGet } from '../model/review-fishing-trip-get.model';
+import { ReviewGet } from '../model/review-get.model';
 import { SystemTax } from '../model/system-tax.model';
 
 @Injectable({
@@ -192,5 +197,45 @@ export class AdminService {
 
     public quickReservationCommentaryDecline(id: number): Observable<string> {
         return this.http.delete(this.apiUrl + '/quickReservation/' + id + '/commentaryDecline', { responseType: 'text'});
+    }
+
+    public getAllComplaints(): Observable<ComplaintGet[]> {
+        return this.http.get<ComplaintGet[]>(this.apiUrl + '/getAllComplaints');
+    }
+
+    public getAllFishingInstructorComplaints(): Observable<ComplaintFishingInstructorGet[]> {
+        return this.http.get<ComplaintFishingInstructorGet[]>(this.apiUrl + '/getAllFishingInstructorComplaints');
+    }
+
+    public respondToComplaint(id: number, complaintResponse: ComplaintResponse): Observable<string> {
+        return this.http.put(this.apiUrl + '/respondToComplaint/' + id, complaintResponse, { responseType: 'text'});
+    }
+
+    public respondToComplaintFishingInstructor(id: number, complaintResponse: ComplaintResponse): Observable<string> {
+        return this.http.put(this.apiUrl + '/respondToComplaintFishingInstructor/' + id, complaintResponse, { responseType: 'text'});
+    }
+
+    public getAllUnapprovedReviews(): Observable<ReviewGet[]> {
+        return this.http.get<ReviewGet[]>(this.apiUrl + '/getAllUnapprovedReviews');
+    }
+
+    public getAllUnapprovedFishingTripReviews(): Observable<ReviewFishingTripGet[]> {
+        return this.http.get<ReviewFishingTripGet[]>(this.apiUrl + '/getAllUnapprovedFishingTripReviews');
+    }
+
+    public acceptReview(id: number): Observable<string> {
+        return this.http.delete(this.apiUrl + '/acceptReview/' + id, { responseType: 'text'});
+    }
+
+    public acceptReviewFishingTrip(id: number): Observable<string> {
+        return this.http.delete(this.apiUrl + '/acceptReviewFishingTrip/' + id, { responseType: 'text'});
+    }
+
+    public declineReview(id: number): Observable<string> {
+        return this.http.delete(this.apiUrl + '/declineReview/' + id, { responseType: 'text'});
+    }
+
+    public declineReviewFishingTrip(id: number): Observable<string> {
+        return this.http.delete(this.apiUrl + '/declineReviewFishingTrip/' + id, { responseType: 'text'});
     }
 }
