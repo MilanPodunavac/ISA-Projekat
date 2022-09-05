@@ -60,6 +60,43 @@ import { AvailablePeriodComponent } from './components/available-period/availabl
 import { VisitReportComponent } from './components/visit-report/visit-report.component';
 import { BoatReservationComponent } from './boat-reservation/boat-reservation.component';
 import { FishingTripReservationComponent } from './fishing-trip-reservation/fishing-trip-reservation.component';
+import { BoatActionOwnerCommentaryComponent } from './components/boat-owner/boat-action-owner-commentary/boat-action-owner-commentary.component';
+import { BoatActionViewComponent } from './components/boat-owner/boat-action-view/boat-action-view.component';
+import { BoatReservationOwnerCommentaryComponent } from './components/boat-owner/boat-reservation-owner-commentary/boat-reservation-owner-commentary.component';
+import { BoatReservationViewComponent } from './components/boat-owner/boat-reservation-view/boat-reservation-view.component';
+import { NewBoatComponent } from './components/boat-owner/new-boat/new-boat.component';
+import { NewBoatActionComponent } from './components/boat-owner/new-boat-action/new-boat-action.component';
+import { NewBoatAvailabilityPeriodComponent } from './components/boat-owner/new-boat-availability-period/new-boat-availability-period.component';
+import { NewBoatReservationComponent } from './components/boat-owner/new-boat-reservation/new-boat-reservation.component';
+import { BusinessReportComponent } from './components/business-report/business-report.component';
+import { BoatOwnerBoatComponent } from './components/boat-owner/boat-owner-boat/boat-owner-boat.component';
+import { EditFishingTripPicturesComponent } from './components/edit-fishing-trip-pictures/edit-fishing-trip-pictures.component';
+import { AddFishingTripComponent } from './components/add-fishing-trip/add-fishing-trip.component';
+import { EditFishingTripComponent } from './components/edit-fishing-trip/edit-fishing-trip.component';
+import { AddFishingReservationComponent } from './components/add-fishing-reservation/add-fishing-reservation.component';
+import { AddFishingActionComponent } from './components/add-fishing-action/add-fishing-action.component';
+import { AddReservationCommentaryComponent } from './components/add-reservation-commentary/add-reservation-commentary.component';
+import { AddActionCommentaryComponent } from './components/add-action-commentary/add-action-commentary.component';
+import { IncomeRecordsComponent } from './components/admin/income-records/income-records.component';
+import { SystemEntitiesComponent } from './components/admin/system-entities/system-entities.component';
+import { ProviderRegistrationComponent } from './components/admin/provider-registration/provider-registration.component';
+import { ReservationsCommentaryComponent } from './components/admin/reservations-commentary/reservations-commentary.component';
+import { ReviewsComponent } from './components/admin/reviews/reviews.component';
+import { ComplaintsComponent } from './components/admin/complaints/complaints.component';
+import { AccountDeletionRequestsComponent } from './components/admin/account-deletion-requests/account-deletion-requests.component';
+import { RegisterAdminComponent } from './components/admin/register-admin/register-admin.component';
+import { BusinessReportAdminComponent } from './components/admin/business-report-admin/business-report-admin.component';
+import { LoyaltySystemComponent } from './components/admin/loyalty-system/loyalty-system.component';
+import { ProviderRegistrationDeclineComponent } from './components/admin/provider-registration-decline/provider-registration-decline.component';
+import { LoyaltySystemClientPointsComponent } from './components/admin/loyalty-system-client-points/loyalty-system-client-points.component';
+import { LoyaltySystemProviderPointsComponent } from './components/admin/loyalty-system-provider-points/loyalty-system-provider-points.component';
+import { LoyaltySystemClientPointsNeededComponent } from './components/admin/loyalty-system-client-points-needed/loyalty-system-client-points-needed.component';
+import { LoyaltySystemProviderPointsNeededComponent } from './components/admin/loyalty-system-provider-points-needed/loyalty-system-provider-points-needed.component';
+import { AccountDeletionRequestAcceptComponent } from './components/admin/account-deletion-request-accept/account-deletion-request-accept.component';
+import { AccountDeletionRequestDeclineComponent } from './components/admin/account-deletion-request-decline/account-deletion-request-decline.component';
+import { ComplaintResponseComponent } from './components/admin/complaint-response/complaint-response.component';
+import { ComplaintResponseFishingInstructorComponent } from './components/admin/complaint-response-fishing-instructor/complaint-response-fishing-instructor.component';
+import { SystemTaxComponent } from './components/admin/system-tax/system-tax.component';
 
 @NgModule({
   declarations: [
@@ -97,6 +134,43 @@ import { FishingTripReservationComponent } from './fishing-trip-reservation/fish
     VisitReportComponent,
     BoatReservationComponent,
     FishingTripReservationComponent,
+    BoatActionOwnerCommentaryComponent,
+    BoatActionViewComponent,
+    BoatReservationOwnerCommentaryComponent,
+    BoatReservationViewComponent,
+    NewBoatComponent,
+    NewBoatActionComponent,
+    NewBoatAvailabilityPeriodComponent,
+    NewBoatReservationComponent,
+    BusinessReportComponent,
+    BoatOwnerBoatComponent,
+    EditFishingTripPicturesComponent,
+    AddFishingTripComponent,
+    EditFishingTripComponent,
+    AddFishingReservationComponent,
+    AddFishingActionComponent,
+    AddReservationCommentaryComponent,
+    AddActionCommentaryComponent,
+    IncomeRecordsComponent,
+    SystemEntitiesComponent,
+    ProviderRegistrationComponent,
+    ReservationsCommentaryComponent,
+    ReviewsComponent,
+    ComplaintsComponent,
+    AccountDeletionRequestsComponent,
+    RegisterAdminComponent,
+    BusinessReportAdminComponent,
+    LoyaltySystemComponent,
+    ProviderRegistrationDeclineComponent,
+    LoyaltySystemClientPointsComponent,
+    LoyaltySystemProviderPointsComponent,
+    LoyaltySystemClientPointsNeededComponent,
+    LoyaltySystemProviderPointsNeededComponent,
+    AccountDeletionRequestAcceptComponent,
+    AccountDeletionRequestDeclineComponent,
+    ComplaintResponseComponent,
+    ComplaintResponseFishingInstructorComponent,
+    SystemTaxComponent,
   ],
   imports: [
     BrowserModule,

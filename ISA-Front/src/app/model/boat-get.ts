@@ -18,5 +18,10 @@ export class BoatGet {
     additionalServices : any[];
     boatOwner : any;
     pictures : any[];
-    availabilityPeriods : any[];
+    availabilityPeriods: any[];
+    boatReservations: any[];
+    boatActions: any[];
+    reservationRefund: number;
+    grade: any;
+    deletable: boolean;
 }

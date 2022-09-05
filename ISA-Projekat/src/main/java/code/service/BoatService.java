@@ -5,11 +5,14 @@ import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.base.AvailabilityPeriod;
 import code.model.base.OwnerCommentary;
+import code.model.base.PictureBase64;
 import code.model.boat.Boat;
 import code.model.boat.BoatAction;
 import code.model.boat.BoatReservation;
 import code.model.cottage.Cottage;
 import code.model.cottage.CottageAction;
+import code.model.cottage.CottageReservation;
+import code.model.report.VisitReport;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -31,4 +34,9 @@ public interface BoatService {
     void addActionCommentary(int id, int actId, OwnerCommentary commentary) throws EntityNotFoundException, EntityNotOwnedException, ReservationOrActionNotFinishedException, ReservationOrActionAlreadyCommented, UnauthorizedAccessException, UserNotFoundException;
     List<Boat> getAllBoats();
     Boat getBoat(Integer id) throws EntityNotFoundException;
+    List<PictureBase64> getBoatImagesAsBase64(int id) throws EntityNotFoundException, IOException;
+    BoatReservation getBoatReservation(int boatId, int resId) throws EntityNotFoundException;
+
+    BoatAction getBoatAction(Integer id, Integer actId) throws EntityNotFoundException;
+    VisitReport generateVisitReport(int id) throws EntityNotOwnedException, EntityNotFoundException, UnauthorizedAccessException, UserNotFoundException;
 }

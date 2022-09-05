@@ -17,7 +17,7 @@ export class NewCottageReservationComponent implements OnInit {
   numberOfPeople: number
   numberOfDays: number
   start: Date
-  clientEmail: string
+  clientEmail: string = ""
   newReservationServices: string[] = [];
   additionalServicesTableMap: string[] = [];
   additionalServices: AdditionalServiceMap[] = [];
@@ -86,7 +86,7 @@ export class NewCottageReservationComponent implements OnInit {
     this._cottageService.addReservation(body).subscribe({
       next: data => {
         if(data.status === 200){
-          alert("Action added")
+          alert("Reservation added")
         }
         this.router.navigate(['cottage/' + id]).then(() => {
           window.location.reload();

@@ -204,24 +204,40 @@ public class CottageServiceImpl implements CottageService {
         }catch(Exception ex){
             throw new UnauthorizedAccessException("Unauthorized");
         }
-        CottageOwner owner;
-        try{
-            owner = (CottageOwner) auth.getPrincipal();
-        }
-        catch(ClassCastException ex){
-            throw new UnauthorizedAccessException("User is not a cottage owner");
-        }
-        if(owner == null) throw new UserNotFoundException("Cottage owner not found");
-        Optional<Cottage> optionalCottage = _cottageRepository.findById(id);
-        if(!optionalCottage.isPresent())throw new EntityNotFoundException("Cottage not found");
-        Cottage cottage = optionalCottage.get();
-        if(cottage.getCottageOwner().getId() != owner.getId())throw new EntityNotOwnedException("Cottage not owned by given user");
 
-        checkIfCottageDeletable(id);
-        for(Picture pic : cottage.getPictures()){
-            FileUploadUtil.deleteFile(COTTAGE_PICTURE_DIRECTORY, cottage.getId() + "_" + pic.getName());
+        User user = (User) auth.getPrincipal();
+        if (user instanceof Admin) {
+            Optional<Cottage> optionalCottage = _cottageRepository.findById(id);
+            if(!optionalCottage.isPresent())throw new EntityNotFoundException("Cottage not found");
+            Cottage cottage = optionalCottage.get();
+
+            checkIfCottageDeletable(id);
+            for(Picture pic : cottage.getPictures()){
+                FileUploadUtil.deleteFile(COTTAGE_PICTURE_DIRECTORY, cottage.getId() + "_" + pic.getName());
+            }
+            _cottageRepository.delete(cottage);
+        } else if (user instanceof CottageOwner) {
+            CottageOwner owner;
+            try{
+                owner = (CottageOwner) auth.getPrincipal();
+            }
+            catch(ClassCastException ex){
+                throw new UnauthorizedAccessException("User is not a cottage owner");
+            }
+            if(owner == null) throw new UserNotFoundException("Cottage owner not found");
+            Optional<Cottage> optionalCottage = _cottageRepository.findById(id);
+            if(!optionalCottage.isPresent())throw new EntityNotFoundException("Cottage not found");
+            Cottage cottage = optionalCottage.get();
+            if(cottage.getCottageOwner().getId() != owner.getId())throw new EntityNotOwnedException("Cottage not owned by given user");
+
+            checkIfCottageDeletable(id);
+            for(Picture pic : cottage.getPictures()){
+                FileUploadUtil.deleteFile(COTTAGE_PICTURE_DIRECTORY, cottage.getId() + "_" + pic.getName());
+            }
+            _cottageRepository.delete(cottage);
+        } else {
+            throw new UnauthorizedAccessException("Unauthorized");
         }
-        _cottageRepository.delete(cottage);
     }
     @Override
     @Transactional()

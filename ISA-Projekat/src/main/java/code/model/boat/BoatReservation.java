@@ -28,4 +28,6 @@ public class BoatReservation extends Reservation {
    @JoinColumn(name = "boat_id")
    @JsonBackReference
    private Boat boat;
+   @Column
+   private boolean  ownerNeeded;
 }

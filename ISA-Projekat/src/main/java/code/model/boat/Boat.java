@@ -72,6 +72,20 @@ public class Boat extends SaleEntity {
       return super.addAction(newAction);
    }
 
+   public boolean checkIsOwnerAvailable(DateRange range){
+      for(AvailabilityPeriod period : availabilityPeriods){
+         for(Reservation res : period.getReservations()){
+            BoatReservation temp = (BoatReservation)res;
+            if(temp.getDateRange().overlapsWith(range) && temp.getReservationStatus() != ReservationStatus.cancelled && temp.isOwnerNeeded())return false;
+         }
+         for(Action act : period.getActions()){
+            BoatAction temp = (BoatAction) act;
+            if(temp.getRange().overlapsWith(range) && temp.isOwnerNeeded())return false;
+         }
+      }
+      return true;
+   }
+
    @PreRemove
    private void removeReferences(){
       for(AvailabilityPeriod period:availabilityPeriods){

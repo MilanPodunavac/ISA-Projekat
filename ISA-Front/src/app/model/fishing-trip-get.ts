@@ -1,6 +1,7 @@
 import { FishingActionGet } from "./fishing-action-get.model";
 import { FishingInstructorGet } from "./fishing-instructor-get";
 import { LocationGet } from "./location-get";
+import { ReviewFishingTripGet } from "./review-fishing-trip-get.model";
 
 export class FishingTripGet {
     id: number;
@@ -16,5 +17,6 @@ export class FishingTripGet {
     pictures: any[];
     fishingTripQuickReservations: FishingActionGet[];
     fishingTripReservationTags: string[];
-    fishingTripReviews: any[];
+    reviews: ReviewFishingTripGet[];
+    grade: number;
 }

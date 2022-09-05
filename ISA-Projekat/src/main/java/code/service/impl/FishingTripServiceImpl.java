@@ -48,9 +48,10 @@ public class FishingTripServiceImpl implements FishingTripService {
     private final CurrentPointsProviderGetsAfterReservationRepository _currentPointsProviderGetsAfterReservationRepository;
     private final LoyaltyProgramClientRepository _loyaltyProgramClientRepository;
     private final LoyaltyProgramProviderRepository _loyaltyProgramProviderRepository;
+    private final ReviewFishingTripRepository _reviewFishingTripRepository;
     private final JavaMailSender _mailSender;
 
-    public FishingTripServiceImpl(FishingInstructorRepository fishingInstructorRepository, FishingTripPictureRepository fishingTripPictureRepository, FishingTripRepository fishingTripRepository, FishingInstructorAvailablePeriodRepository fishingInstructorAvailablePeriodRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, FishingTripReservationRepository fishingTripReservationRepository, ClientRepository clientRepository, UserService userService, ReservationRepository reservationRepository, ActionRepository actionRepository, CurrentSystemTaxPercentageRepository currentSystemTaxPercentageRepository, IncomeRecordRepository incomeRecordRepository, CurrentPointsClientGetsAfterReservationRepository currentPointsClientGetsAfterReservationRepository, CurrentPointsProviderGetsAfterReservationRepository currentPointsProviderGetsAfterReservationRepository, LoyaltyProgramClientRepository loyaltyProgramClientRepository, LoyaltyProgramProviderRepository loyaltyProgramProviderRepository, JavaMailSender mailSender) {
+    public FishingTripServiceImpl(FishingInstructorRepository fishingInstructorRepository, FishingTripPictureRepository fishingTripPictureRepository, FishingTripRepository fishingTripRepository, FishingInstructorAvailablePeriodRepository fishingInstructorAvailablePeriodRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, FishingTripReservationRepository fishingTripReservationRepository, ClientRepository clientRepository, UserService userService, ReservationRepository reservationRepository, ActionRepository actionRepository, CurrentSystemTaxPercentageRepository currentSystemTaxPercentageRepository, IncomeRecordRepository incomeRecordRepository, CurrentPointsClientGetsAfterReservationRepository currentPointsClientGetsAfterReservationRepository, CurrentPointsProviderGetsAfterReservationRepository currentPointsProviderGetsAfterReservationRepository, LoyaltyProgramClientRepository loyaltyProgramClientRepository, LoyaltyProgramProviderRepository loyaltyProgramProviderRepository, ReviewFishingTripRepository reviewFishingTripRepository, JavaMailSender mailSender) {
         this._fishingInstructorRepository = fishingInstructorRepository;
         this._fishingTripPictureRepository = fishingTripPictureRepository;
         this._fishingTripRepository = fishingTripRepository;
@@ -67,6 +68,7 @@ public class FishingTripServiceImpl implements FishingTripService {
         this._currentPointsProviderGetsAfterReservationRepository = currentPointsProviderGetsAfterReservationRepository;
         this._loyaltyProgramClientRepository = loyaltyProgramClientRepository;
         this._loyaltyProgramProviderRepository = loyaltyProgramProviderRepository;
+        this._reviewFishingTripRepository = reviewFishingTripRepository;
         this._mailSender = mailSender;
     }
 
@@ -116,7 +118,7 @@ public class FishingTripServiceImpl implements FishingTripService {
         User user = (User) auth.getPrincipal();
         FishingInstructor fishingInstructor = (FishingInstructor) _userService.findById(user.getId());
         if (fishingInstructor.getId() != ft.getFishingInstructor().getId()) {
-            throw new EditAnotherInstructorFishingTripException("You can't edit another instructor's fishing trip!");
+            throw new EditAnotherInstructorFishingTripException("You can't edit or delete another instructor's fishing trip!");
         }
     }
 
@@ -124,7 +126,7 @@ public class FishingTripServiceImpl implements FishingTripService {
         List<FishingTripQuickReservation> fishingTripQuickReservations = _fishingTripQuickReservationRepository.findByFishingTripId(fishingTripId);
         for (FishingTripQuickReservation fishingTripQuickReservation : fishingTripQuickReservations) {
             if (fishingTripQuickReservation.getClient() != null && fishingTripQuickReservation.getStart().plusDays(fishingTripQuickReservation.getDurationInDays()).isAfter(LocalDate.now())) {
-                throw new FishingTripHasQuickReservationWithClientException("You can't edit fishing trip that is reserved!");
+                throw new FishingTripHasQuickReservationWithClientException("You can't edit or delete fishing trip that is reserved!");
             }
         }
     }
@@ -133,7 +135,7 @@ public class FishingTripServiceImpl implements FishingTripService {
         List<FishingTripReservation> fishingTripReservations = _fishingTripReservationRepository.findByFishingTripId(fishingTripId);
         for (FishingTripReservation fishingTripReservation : fishingTripReservations) {
             if (fishingTripReservation.getStart().plusDays(fishingTripReservation.getDurationInDays()).isAfter(LocalDate.now())) {
-                throw new FishingTripHasReservationException("You can't edit fishing trip that is reserved!");
+                throw new FishingTripHasReservationException("You can't edit or delete fishing trip that is reserved!");
             }
         }
     }
@@ -670,6 +672,16 @@ public class FishingTripServiceImpl implements FishingTripService {
         }
 
         return fishingTripFreeQuickReservations;
+    }
+
+    @Override
+    public List<ReviewFishingTrip> getFishingTripApprovedReviews(Integer id) throws EntityNotFoundException {
+        Optional<FishingTrip> fishingTrip = _fishingTripRepository.findById(id);
+        if(!fishingTrip.isPresent()) {
+            throw new EntityNotFoundException("Fishing trip doesn't exist!");
+        }
+
+        return _reviewFishingTripRepository.findByFishingTripIdAndApproved(id, true);
     }
 
     @Scheduled(cron="0 0 1 * * *")

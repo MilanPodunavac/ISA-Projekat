@@ -1,0 +1,25 @@
+<div class="container mb-3">
+    <div class="panel-heading m-3">
+        <h2>New cottage availability period</h2>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Boat name:</label>
+        <input type="text" class="form-control mb-1" [(ngModel)]="name" readonly>
+    </div>
+    <mat-form-field appearance="fill">
+        <mat-label>Enter a date range</mat-label>
+        <mat-date-range-input [rangePicker]="picker">
+          <input matStartDate placeholder="Start date" [(ngModel)]="start">
+          <input matEndDate placeholder="End date" [(ngModel)]="end">
+        </mat-date-range-input>
+        <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field>
+    <div>
+        <button (click)="submit()"  class="btn btn-primary" id="submitButton">
+            <strong>Submit</strong>
+        </button>
+    </div>
+</div>
+

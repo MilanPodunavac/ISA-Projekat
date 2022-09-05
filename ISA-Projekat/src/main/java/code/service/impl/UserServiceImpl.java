@@ -439,8 +439,10 @@ public class UserServiceImpl implements UserService {
 
     private void unlinkAccountDeletionRequest(Integer id) {
         AccountDeletionRequest accountDeletionRequest = _accountDeletionRequestRepository.findByUserId(id);
-        accountDeletionRequest.setUser(null);
-        _accountDeletionRequestRepository.delete(accountDeletionRequest);
+        if (accountDeletionRequest != null) {
+            accountDeletionRequest.setUser(null);
+            _accountDeletionRequestRepository.delete(accountDeletionRequest);
+        }
     }
 
     private void deleteFishingTripPictures(FishingInstructor fishingInstructor) {

@@ -42,7 +42,26 @@
 
                     <ng-container matColumnDef="reservation_tags">
                         <th class="text-center" mat-header-cell *matHeaderCellDef> Fishing trip tags </th>
-                        <td mat-cell *matCellDef="let element"> {{element.fishingTripReservationTags.join(', ')}} </td>
+                        <td mat-cell *matCellDef="let element">
+                            <div *ngIf="element.fishingTripReservationTags.length === 0">
+                                -
+                            </div>
+                            <div *ngIf="element.fishingTripReservationTags.length !== 0">
+                                {{element.fishingTripReservationTags.join(', ')}} 
+                            </div>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="grade">
+                        <th class="text-center" mat-header-cell *matHeaderCellDef> Grade </th>
+                        <td mat-cell *matCellDef="let element"> 
+                            <div *ngIf="element.reviews.length === 0">
+                                -
+                            </div>
+                            <div *ngIf="element.reviews.length !== 0">
+                                {{element.grade}}
+                            </div>
+                        </td>
                     </ng-container>
                 
                     <tr mat-header-row *matHeaderRowDef="displayedColumnsFishingTrips"></tr>
@@ -55,16 +74,16 @@
                     ></tr>
                 </table>
                 <div class="fishing-trip-buttons">
-                    <button style="margin-right: 20px;" mat-raised-button color="primary">Add fishing trip</button>
-                    <button style="margin-right: 20px;" mat-raised-button color="primary" [disabled]="clickedRowFishingTrips.id === undefined">Edit fishing trip info</button>
-                    <button mat-raised-button color="primary" [disabled]="clickedRowFishingTrips.id === undefined">Delete fishing trip</button>
+                    <button style="margin-right: 20px;" mat-raised-button color="primary" (click)="goToAddFishingTrip()">Add fishing trip</button>
+                    <button style="margin-right: 20px;" mat-raised-button color="primary" [disabled]="clickedRowFishingTrips.id === undefined" (click)="goToEditFishingTrip()">Edit fishing trip info</button>
+                    <button mat-raised-button color="primary" [disabled]="clickedRowFishingTrips.id === undefined" (click)="deleteFishingTrip()">Delete fishing trip</button>
                 </div>
                 <div class="fishing-trip-buttons">
-                    <button mat-raised-button color="primary" [disabled]="clickedRowFishingTrips.id === undefined">Edit fishing trip pictures</button>
+                    <button mat-raised-button color="primary" [disabled]="clickedRowFishingTrips.id === undefined" (click)="goToEditFishingTripPictures()">Edit fishing trip pictures</button>
                 </div>
                 <div class="fishing-trip-buttons">
-                    <button style="margin-right: 20px;" mat-raised-button color="primary" [disabled]="clickedRowFishingTrips.id === undefined">Add reservation</button>
-                    <button mat-raised-button color="primary" [disabled]="clickedRowFishingTrips.id === undefined">Add action</button>
+                    <button style="margin-right: 20px;" mat-raised-button color="primary" [disabled]="clickedRowFishingTrips.id === undefined" (click)="goToAddReservation()">Add reservation</button>
+                    <button mat-raised-button color="primary" [disabled]="clickedRowFishingTrips.id === undefined" (click)="goToAddAction()">Add action</button>
                 </div>
             </div>
         </div>
@@ -103,7 +122,14 @@
 
                     <ng-container matColumnDef="reservation_tags">
                         <th class="text-center" mat-header-cell *matHeaderCellDef> Reservation tags </th>
-                        <td mat-cell *matCellDef="let element"> {{element.fishingTripReservationTags}} </td>
+                        <td mat-cell *matCellDef="let element">
+                            <div *ngIf="element.fishingTripReservationTags.length === 0">
+                                -
+                            </div>
+                            <div *ngIf="element.fishingTripReservationTags.length !== 0">
+                                {{element.fishingTripReservationTags.join(', ')}} 
+                            </div>
+                        </td>
                     </ng-container>
 
                     <ng-container matColumnDef="fishing_trip">
@@ -128,7 +154,7 @@
                             <div *ngIf="element.ownerCommentary !== null && element.ownerCommentary.clientCame === false">
                                 no
                             </div>
-                         </td>
+                        </td>
                     </ng-container>
 
                     <tr mat-header-row *matHeaderRowDef="displayedColumnsReservations"></tr>
@@ -140,8 +166,8 @@
                     ></tr>
                 </table>
                 <div class="fishing-trip-buttons">
-                    <button style="margin-right: 20px;" mat-raised-button color="primary" [disabled]="clickedRowReservations.id === undefined">Add reservation report</button>
-                    <button mat-raised-button color="primary" [disabled]="clickedRowReservations.id === undefined">Go to client profile</button>
+                    <button style="margin-right: 20px;" mat-raised-button color="primary" [disabled]="clickedRowReservations.id === undefined || clickedRowReservations.ownerCommentary !== null" (click)="goToAddReservationCommentary()">Add reservation report</button>
+                    <button mat-raised-button color="primary" [disabled]="clickedRowReservations.id === undefined" (click)="goToClientProfileFromReservations()">Go to client profile</button>
                 </div>
             </div>
         </div>
@@ -190,7 +216,14 @@
 
                     <ng-container matColumnDef="action_tags">
                         <th class="text-center" mat-header-cell *matHeaderCellDef> Action tags </th>
-                        <td mat-cell *matCellDef="let element"> {{element.fishingTripReservationTags}} </td>
+                        <td mat-cell *matCellDef="let element">
+                            <div *ngIf="element.fishingTripReservationTags.length === 0">
+                                -
+                            </div>
+                            <div *ngIf="element.fishingTripReservationTags.length !== 0">
+                                {{element.fishingTripReservationTags.join(', ')}} 
+                            </div>
+                        </td>
                     </ng-container>
 
                     <ng-container matColumnDef="fishing_trip">
@@ -234,8 +267,8 @@
                     ></tr>
                 </table>
                 <div class="fishing-trip-buttons">
-                    <button style="margin-right: 20px;" mat-raised-button color="primary" [disabled]="clickedRowActions.id === undefined">Add action report</button>
-                    <button mat-raised-button color="primary" [disabled]="clickedRowActions.id === undefined">Go to client profile</button>
+                    <button style="margin-right: 20px;" mat-raised-button color="primary" [disabled]="clickedRowActions.id === undefined || clickedRowActions.ownerCommentary !== null" (click)="goToAddActionCommentary()">Add action report</button>
+                    <button mat-raised-button color="primary" [disabled]="clickedRowActions.id === undefined || clickedRowActions.client === null" (click)="goToClientProfileFromActions()">Go to client profile</button>
                 </div>
             </div>
         </div>

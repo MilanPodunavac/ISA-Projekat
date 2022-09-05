@@ -20,7 +20,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -30,16 +29,16 @@ public class CottageOwnerServiceImpl implements CottageOwnerService {
     private final RoleService roleService;
     private final UserService userService;
     private final LoyaltyProgramProviderRepository loyaltyProgramProviderRepository;
-    private final IncomeRecordRepository _incomeRepordRepository;
+    private final IncomeRecordRepository _incomeRecordRepository;
 
     @Autowired
-    public CottageOwnerServiceImpl(UserService userService, CottageOwnerRepository cottageOwnerRepository, PasswordEncoder passwordEncoder, RoleService roleService, LoyaltyProgramProviderRepository loyaltyProgramProviderRepository, IncomeRecordRepository incomeRepordRepository) {
+    public CottageOwnerServiceImpl(UserService userService, CottageOwnerRepository cottageOwnerRepository, PasswordEncoder passwordEncoder, RoleService roleService, LoyaltyProgramProviderRepository loyaltyProgramProviderRepository, IncomeRecordRepository incomeRecordRepository) {
         this.userService = userService;
         this.cottageOwnerRepository = cottageOwnerRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleService = roleService;
         this.loyaltyProgramProviderRepository = loyaltyProgramProviderRepository;
-        _incomeRepordRepository = incomeRepordRepository;
+        _incomeRecordRepository = incomeRecordRepository;
     }
 
     @Override
@@ -80,7 +79,7 @@ public class CottageOwnerServiceImpl implements CottageOwnerService {
         if(owner == null) throw new UserNotFoundException("Cottage owner not found");
         YearlyProfitReport report = new YearlyProfitReport();
         report.initiate();
-        List<IncomeRecord> records = _incomeRepordRepository.findByReservationProviderId(owner.getId());
+        List<IncomeRecord> records = _incomeRecordRepository.findByReservationProviderId(owner.getId());
         for(IncomeRecord record : records){
             report.addIncome(record);
         }

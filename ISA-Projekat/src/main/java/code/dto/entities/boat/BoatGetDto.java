@@ -30,6 +30,7 @@ public class BoatGetDto {
     private String rules;
     private Location location;
     private int pricePerDay;
+    private double reservationRefund;
     private double length;
     private String type;
     private int engineNumber;
@@ -42,4 +43,8 @@ public class BoatGetDto {
     private BoatOwner boatOwner;
     private List<PictureBase64> pictures;
     private List<AvailabilityPeriodGetDto> availabilityPeriods;
+    private List<BoatReservationGetDto> boatReservations;
+    private List<BoatActionGetDto> boatActions;
+    private double grade;
+    private boolean deletable;
 }

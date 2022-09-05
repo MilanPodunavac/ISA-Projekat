@@ -15,7 +15,7 @@ import { LoyaltyProgramService } from 'src/app/service/loyalty-program.service';
   styleUrls: ['./fishing-instructor.component.scss']
 })
 export class FishingInstructorComponent implements OnInit {
-    displayedColumnsFishingTrips: string[] = ['name', 'equipment', 'max_people', 'cost_per_day', 'price_kept_if_reservation_cancelled', 'location', 'reservation_tags'];
+    displayedColumnsFishingTrips: string[] = ['name', 'equipment', 'max_people', 'cost_per_day', 'price_kept_if_reservation_cancelled', 'location', 'reservation_tags', 'grade'];
     allInstructorFishingTrips: FishingTripGet[];
     dataSourceFishingTrips: FishingTripGet[];
     clickedRowFishingTrips: FishingTripGet;
@@ -30,7 +30,21 @@ export class FishingInstructorComponent implements OnInit {
     constructor(private router: Router, private fishingTripService: FishingTripService) {
         this.fishingTripService.getFishingInstructorFishingTrips().subscribe(data => {
             this.allInstructorFishingTrips = data;
-            this.dataSourceFishingTrips = data;
+            this.allInstructorFishingTrips.forEach(function (fishingTrip) {
+                for (let i = 0; i < fishingTrip.reviews.length; i++) {
+                    if (!fishingTrip.reviews[i].approved) {
+                        fishingTrip.reviews.splice(i, 1);
+                    }
+                }
+
+                fishingTrip.grade = 0;
+                for (let i = 0; i < fishingTrip.reviews.length; i++) {
+                    fishingTrip.grade += fishingTrip.reviews[i].grade;
+                }
+                fishingTrip.grade /= fishingTrip.reviews.length;
+            });
+
+            this.dataSourceFishingTrips = this.allInstructorFishingTrips;
         });
 
         this.clickedRowFishingTrips = new FishingTripGet();
@@ -103,6 +117,72 @@ export class FishingInstructorComponent implements OnInit {
 
     public goToFishingTrip(row: FishingTripGet): void {
         this.router.navigate(['fishing-trip/' + row.id]).then(() => {
+            window.location.reload();
+        });
+    }
+
+    public goToEditFishingTripPictures(): void {
+        this.router.navigate(['edit-fishing-trip-pictures/' + this.clickedRowFishingTrips.id]).then(() => {
+            window.location.reload();
+        });
+    }
+
+    public goToAddFishingTrip(): void {
+        this.router.navigate(['add-fishing-trip']).then(() => {
+            window.location.reload();
+        });
+    }
+
+    public goToEditFishingTrip(): void {
+        this.router.navigate(['edit-fishing-trip/' + this.clickedRowFishingTrips.id]).then(() => {
+            window.location.reload();
+        });
+    }
+
+    public deleteFishingTrip(): void {
+        this.fishingTripService.deleteFishingTrip(this.clickedRowFishingTrips.id).subscribe({
+            next: data => {
+                window.location.reload();
+                alert(data);
+            },
+            error: error => {
+                alert(error.error);
+            }
+        });
+    }
+
+    public goToAddReservation(): void {
+        this.router.navigate([this.clickedRowFishingTrips.id + '/add-fishing-reservation']).then(() => {
+            window.location.reload();
+        });
+    }
+
+    public goToClientProfileFromReservations(): void {
+        this.router.navigate(['client/' + this.clickedRowReservations.client.id]).then(() => {
+            window.location.reload();
+        });
+    }
+
+    public goToClientProfileFromActions(): void {
+        this.router.navigate(['client/' + this.clickedRowActions.client.id]).then(() => {
+            window.location.reload();
+        });
+    }
+
+    public goToAddAction(): void {
+        this.router.navigate([this.clickedRowFishingTrips.id + '/add-fishing-action']).then(() => {
+            window.location.reload();
+        });
+    }
+
+    public goToAddReservationCommentary(): void {
+        this.router.navigate(['reservation/' + this.clickedRowReservations.id + '/add-commentary']).then(() => {
+            window.location.reload();
+        });
+    }
+
+    public goToAddActionCommentary(): void {
+        this.router.navigate(['action/' + this.clickedRowActions.id + '/add-commentary']).then(() => {
             window.location.reload();
         });
     }

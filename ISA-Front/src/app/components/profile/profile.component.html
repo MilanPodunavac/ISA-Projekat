@@ -8,7 +8,8 @@
                     <p>Address:&ensp;{{fishingInstructorData.location.streetName}}, {{fishingInstructorData.location.cityName}}, {{fishingInstructorData.location.countryName}}</p>
                     <p>Email:&ensp;{{fishingInstructorData.email}}</p>
                     <p>Phone number:&ensp;{{fishingInstructorData.phoneNumber}}</p>
-                    <p>Biography:&ensp;{{fishingInstructorData.biography}}</p>
+                    <p *ngIf="fishingInstructorData.biography">Biography:&ensp;{{fishingInstructorData.biography}}</p>
+                    <p *ngIf="!fishingInstructorData.biography">Biography:&ensp;-</p>
                     <p>Number of fishing trips:&ensp;{{fishingInstructorData.fishingTrips.length}}</p>
                     <p>Number of subscribers:&ensp;{{fishingInstructorData.subscribers.length}}</p>
                     <p>Loyalty points:&ensp;{{fishingInstructorData.loyaltyPoints}}/{{loyaltyProgramCategoryAboveInstructor.pointsNeeded}}</p>
@@ -16,7 +17,7 @@
                     <p>System tax lesser by:&ensp;{{fishingInstructorData.category.lesserSystemTaxPercentage}}%</p>
                 </div>
                 <div class="profile-buttons">
-                    <button mat-raised-button color="primary">Generate business report</button>
+                    <button mat-raised-button color="primary" (click)="goToBusinessReport()">Generate business report</button>
                 </div>
                 <div class="profile-buttons">
                     <button mat-raised-button color="primary" (click)="goToChangePersonalData()">Change personal data</button>
@@ -52,6 +53,30 @@
                 </table>
                 <div class="profile-buttons">
                     <button style="margin-right: 20px;" mat-raised-button color="primary" (click)="goToAddAvailabilityPeriod()">Add availability period</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="role === 'ROLE_ADMIN'" class="container">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-6">
+            <div class="card shadow-1-strong" style="border-radius: 1rem;">
+                <h2>Profile</h2>
+                <div class="profile">
+                    <p>Name:&ensp;{{adminData.firstName}} {{adminData.lastName}}</p>
+                    <p>Address:&ensp;{{adminData.location.streetName}}, {{adminData.location.cityName}}, {{adminData.location.countryName}}</p>
+                    <p>Email:&ensp;{{adminData.email}}</p>
+                    <p>Phone number:&ensp;{{adminData.phoneNumber}}</p>
+                    <p *ngIf="adminData.mainAdmin">Main admin:&ensp;yes</p>
+                    <p *ngIf="!adminData.mainAdmin">Main admin:&ensp;no</p>
+                </div>
+                <div class="profile-buttons">
+                    <button mat-raised-button color="primary" (click)="goToBusinessReport()">Generate business report</button>
+                </div>
+                <div class="profile-buttons">
+                    <button mat-raised-button color="primary" (click)="goToChangePersonalData()">Change personal data</button>
                 </div>
             </div>
         </div>

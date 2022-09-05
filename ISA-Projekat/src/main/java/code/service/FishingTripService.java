@@ -11,6 +11,7 @@ import code.exceptions.fishing_trip.reservation.*;
 import code.model.FishingTrip;
 import code.model.FishingTripQuickReservation;
 import code.model.FishingTripReservation;
+import code.model.ReviewFishingTrip;
 import code.model.base.OwnerCommentary;
 import code.model.base.PictureBase64;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,4 +37,5 @@ public interface FishingTripService {
     List<PictureBase64> getFishingTripImagesAsBase64(int id) throws EntityNotFoundException, IOException;
     List<FishingTripQuickReservation> getFishingInstructorQuickReservations();
     List<FishingTripQuickReservation> getFishingTripFreeQuickReservations(Integer id) throws EntityNotFoundException;
+    List<ReviewFishingTrip> getFishingTripApprovedReviews(Integer id) throws EntityNotFoundException;
 }

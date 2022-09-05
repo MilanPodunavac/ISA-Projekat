@@ -67,8 +67,8 @@
                 </thead>
                 <tbody>
                     <tr *ngFor='let period of cottage.availabilityPeriods'>
-                        <td>{{period.startDate}}</td>
-                        <td>{{period.endDate}}</td>
+                        <td>{{period.startDate | date:'dd.MM.yyyy.'}}</td>
+                        <td>{{period.endDate | date:'dd.MM.yyyy.'}}</td>
                     </tr>
                 </tbody>
             </table>
@@ -97,8 +97,8 @@
                 </thead>
                 <tbody>
                     <tr *ngFor='let res of cottage.cottageReservations' (dblclick)="doubleClickResFunction(res.id)">
-                        <td>{{res.startDate}}</td>
-                        <td>{{res.endDate}}</td>
+                        <td>{{res.startDate | date:'dd.MM.yyyy.'}}</td>
+                        <td>{{res.endDate | date:'dd.MM.yyyy.'}}</td>
                         <td *ngIf="role==='ROLE_COTTAGE_OWNER'"><a [routerLink]="['../../cottage/',res.clientId,'new-cottage-action']">{{res.clientFullName}}</a></td><!--izmeniti-->
                         <td *ngIf="role==='ROLE_COTTAGE_OWNER'">{{res.numberOfPeople}}</td>
                         <td *ngIf="role==='ROLE_COTTAGE_OWNER'">{{res.cottageReservationTag}}</td>
@@ -134,9 +134,9 @@
                 </thead>
                 <tbody>
                     <tr *ngFor='let act of cottage.cottageActions' (dblclick)="doubleClickActFunction(act.id)">
-                        <td>{{act.startDate}}</td>
-                        <td>{{act.endDate}}</td>
-                        <td>{{act.validUntilAndIncluding}}</td>
+                        <td>{{act.startDate | date:'dd.MM.yyyy.'}}</td>
+                        <td>{{act.endDate | date:'dd.MM.yyyy.'}}</td>
+                        <td>{{act.validUntilAndIncluding | date:'dd.MM.yyyy.'}}</td>
                         <td>{{act.discount}}</td>
                         <td>{{act.price}}</td>
                         <td>{{act.reserved}}</td>
@@ -148,7 +148,7 @@
                 </tbody>
             </table>
         </div>
-        <h3 *ngIf="!cottage.cottageReservations?.length">
+        <h3 *ngIf="!cottage.cottageActions?.length">
             This cottage has no actions
         </h3>
         <button *ngIf="role==='ROLE_COTTAGE_OWNER'" class="btn btn-primary" (click)="addAction()">

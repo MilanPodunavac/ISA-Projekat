@@ -23,8 +23,8 @@ export class CottageReservationViewComponent implements OnInit {
         this.reservation = data
         var tempStart = new Date(this.reservation.startDate)
         var tempEnd = new Date(this.reservation.endDate)
-        this.reservation.startDate = tempStart.getFullYear() + "-" + (tempStart.getMonth() + 1) + "-" + tempStart.getDate()// + ":" + tempStart.getHours()
-        this.reservation.endDate = tempEnd.getFullYear() + "-" + (tempEnd.getMonth() + 1) + "-" + tempEnd.getDate()// + ":" + tempEnd.getHours()
+        //this.reservation.startDate = tempStart.getFullYear() + "-" + (tempStart.getMonth() + 1) + "-" + tempStart.getDate()// + ":" + tempStart.getHours()
+        //this.reservation.endDate = tempEnd.getFullYear() + "-" + (tempEnd.getMonth() + 1) + "-" + tempEnd.getDate()// + ":" + tempEnd.getHours()
         console.log(this.reservation)
       },
       error: data => {

@@ -246,4 +246,16 @@ public class FishingTripController extends BaseController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping(value = "/{id}/approvedReviews")
+    @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
+    public ResponseEntity<List<ReviewFishingTripGetDto>> getFishingTripApprovedReviews(@PathVariable Integer id) {
+        try {
+            return ResponseEntity.ok(_fishingTripService.getFishingTripApprovedReviews(id).stream()
+                    .map(entity -> _mapper.map(entity, ReviewFishingTripGetDto.class))
+                    .collect(Collectors.toList()));
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
 }

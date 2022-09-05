@@ -1,0 +1,118 @@
+<div class="panel panel-primary">
+    <div class="panel-heading m-3">
+        <h2>New boat</h2>
+    </div>
+</div>
+<div class="container mb-3">
+    <div class="form-group mb-3">
+        <label class="form-label">Boat Name:</label>
+        <input type="text" class="form-control mb-1" [(ngModel)]="name" id="name">
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Description:</label>
+        <textarea type="text" class="form-control" id="description" [(ngModel)]="description" rows="5"></textarea>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Type:</label>
+        <input type="text" class="form-control" id="description" [(ngModel)]="type">
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Length:</label>
+        <input type="text" class="form-control" id="description" [(ngModel)]="length">
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Engine number:</label>
+        <input type="text" class="form-control" id="description" [(ngModel)]="engineNumber">
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Engine power:</label>
+        <input type="text" class="form-control" id="description" [(ngModel)]="enginePower">
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Maximum speed:</label>
+        <input type="text" class="form-control" id="description" [(ngModel)]="maxSpeed">
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Maximum people:</label>
+        <input type="text" class="form-control" id="description" [(ngModel)]="maxPeople">
+    </div>
+    <div class="form-group mb-3">
+        <label>Select navigational equipment</label>
+        <mat-form-field appearance="fill" class="form-control mb-2">
+            <mat-select [(value)] = "selectedNavigationalEquipment">
+              <mat-option *ngFor="let equipment of navigationalEquipment" [value]="equipment.value">
+                {{equipment.viewValue}}
+              </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Fishing equipment:</label>
+        <input type="text" class="form-control" id="description" [(ngModel)]="fishingEquipment">
+    </div>
+
+    <div class="form-group mb-3">
+        <label class="form-label">Rules:</label>
+        <textarea type="text" class="form-control" id="description" [(ngModel)]="rules" rows="5"></textarea>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Price per day:</label>
+        <input type="text" class="form-control mb-1" [(ngModel)]="pricePerDay" id="price">
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Reservation refund:</label>
+        <input type="text" class="form-control mb-1" id="reservationRef" [(ngModel)]="reservationRefund">
+    </div>
+    <div *ngIf="newBoatServices?.length" class="table-responsive m-1">
+        <div class="panel-heading m-3">
+            <h2>Additional Services List</h2>
+        </div>
+        <table class="table table-bordered table-striped table-hover" id="additionalServicesTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor='let service of additionalServicesTableMap'>
+                    <td>{{service}}</td>
+                    <td><button (click)="RemoveService(service)" id="removeServiceBtn" class="btn btn-primary"><strong>remove</strong></button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="form-group mb-3">
+        <label>Add additional service</label>
+        <mat-form-field appearance="fill" class="form-control mb-2">
+            <mat-select [(value)] = "selectedNewService">
+              <mat-option *ngFor="let service of additionalServices" [value]="service.value">
+                {{service.viewValue}}
+              </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <button (click)="AddService()" class="btn btn-primary">Add</button>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Longitude:</label>
+        <input type="text" class="form-control mb-1" [(ngModel)]="longitude" id="long">
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Latitude:</label>
+        <input type="text" class="form-control mb-1" [(ngModel)]="latitude" id="lat">
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">City:</label>
+        <input type="text" class="form-control mb-1" [(ngModel)]="cityName" id="city">
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">Country:</label>
+        <input type="text" class="form-control mb-1" [(ngModel)]="countryName" id="country">
+    </div>
+</div>
+<div id="map" name="map" class="map" (click)="getCoord($event)"></div>
+<div class="container mb-3">
+    <button (click)="AddBoat()" id="addButton" class="btn btn-primary">
+        <strong>Create new boat</strong>
+    </button>
+</div>

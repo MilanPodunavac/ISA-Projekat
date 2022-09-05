@@ -183,9 +183,9 @@ export class NewCottageComponent implements OnInit {
     this._cottageService.addCottage(body).subscribe({
       next: data => {
         if(data.status === 200){
-          alert("Cottage added")
+          alert("Cottage added successfully")
         }
-        this.router.navigate(['cottage-owner']).then(() => {
+        this.router.navigate(['']).then(() => {
           window.location.reload();
         });
       },
@@ -193,7 +193,7 @@ export class NewCottageComponent implements OnInit {
         console.log(data)
         if(data.status === 200){
           alert(data.error.text)
-          this.router.navigate(['cottage-owner']).then(() => {
+          this.router.navigate(['cottage']).then(() => {
             window.location.reload();
           });
         }

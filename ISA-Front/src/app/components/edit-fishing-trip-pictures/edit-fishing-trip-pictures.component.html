@@ -1,0 +1,23 @@
+<div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-6">
+            <div class="card shadow-1-strong" style="border-radius: 1rem;">
+                <form [formGroup]="editPicturesForm" (ngSubmit)="onSubmit()">
+                    <h2>Edit fishing trip pictures</h2>
+
+                    <div class="content">
+                        <div style="text-align: center;">
+                            <label style="margin-right: 10px;">Pictures:</label>
+                            <input type="file" multiple (change)="onFileSelected($event)" accept="image/png, image/jpeg" formControlName="file"/> 
+                        </div>
+
+                        <p style="padding: 20px 0px 0px 0px; color: red; font-size: large;">{{errorMessage}}</p>
+                    </div>
+                    <div class="action">
+                        <button type="submit">Edit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

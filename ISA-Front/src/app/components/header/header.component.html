@@ -20,16 +20,40 @@
         <button mat-button id="base" [routerLink]="['profit']">My profit</button>
     </div>
 
+    <div *ngIf="role === 'ROLE_BOAT_OWNER'">
+        <button mat-button id="base" [routerLink]="['']">Home</button>
+        <button mat-button id="base" [routerLink]="['boat']">My Boats</button>
+        <button mat-button id="base" [routerLink]="['profit']">My profit</button>
+    </div>
+
     <div *ngIf="role === 'ROLE_FISHING_INSTRUCTOR'">
         <button mat-button [routerLink]="['fishing-instructor-home']">Home</button>
-        <button mat-button>Add fishing trip</button>
+        <button mat-button [routerLink]="['add-fishing-trip']">Add fishing trip</button>
         <button mat-button [routerLink]="['add-availability-period']">Add available period</button>
+        <button mat-button [routerLink]="['business-report']">Generate business report</button>
+    </div>
+
+    <div *ngIf="role === 'ROLE_ADMIN' && loggedInAdmin !== undefined && loggedInAdmin.passwordChanged">
+        <button mat-button [routerLink]="['income-records']">Income records</button>
+        <button mat-button [routerLink]="['system-entities']">System entities</button>
+        <button mat-button id="requests" [matMenuTriggerFor]="requests">Requests</button>
+        <mat-menu #requests="matMenu">
+            <button mat-menu-item [routerLink]="['provider-registration']">Provider registration</button>
+            <button mat-menu-item [routerLink]="['reservations-commentary']">Reservations commentary</button>
+            <button mat-menu-item [routerLink]="['reviews']">Reviews</button>
+            <button mat-menu-item [routerLink]="['complaints']">Complaints</button>
+            <button mat-menu-item [routerLink]="['account-deletion-requests']">Account deletion requests</button>
+        </mat-menu>
+        <button *ngIf="loggedInAdmin.mainAdmin" mat-button [routerLink]="['register-admin']">Register admin</button>
+        <button mat-button [routerLink]="['business-report-admin']">Generate business report</button>
+        <button mat-button [routerLink]="['loyalty-system']">Loyalty system</button>
     </div>
 
     <span class="example-spacer-notification"></span>
 
     <button *ngIf="role === null" mat-button [routerLink]="['login']">Log in</button>
     <button *ngIf="role === null" mat-button [routerLink]="['register-provider']">Register</button>
-    <button *ngIf="role !== null" mat-button [routerLink]="['profile']">My profile</button>
+    <button *ngIf="role !== null && role !== 'ROLE_ADMIN'" mat-button [routerLink]="['profile']">My profile</button>
+    <button *ngIf="role === 'ROLE_ADMIN' && loggedInAdmin !== undefined && loggedInAdmin.passwordChanged" mat-button [routerLink]="['profile']">My profile</button>
     <button *ngIf="role !== null" mat-button (click)="logout()">Log out</button>
 </mat-toolbar>

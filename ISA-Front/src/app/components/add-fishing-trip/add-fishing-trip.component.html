@@ -1,0 +1,70 @@
+<div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-6">
+            <div class="card shadow-1-strong" style="border-radius: 1rem;">
+                <form [formGroup]="addFishingTripForm" (submit)="onSubmit()">
+                    <h2>Add fishing trip</h2>
+
+                    <div class="content">
+                        <div class="input-field" style="width: 50%; display: inline-block;">
+                            <input type="text" placeholder="Name *" formControlName="name">
+                        </div>
+                        <div class="input-field" style="width: 50%; display: inline-block;">
+                            <input type="number" placeholder="Maximum people *" formControlName="maxPeople">
+                        </div>
+
+                        <div class="input-field" style="width: 50%; display: inline-block;">
+                            <input type="number" placeholder="Cost per day *" formControlName="costPerDay">
+                        </div>
+                        <div class="input-field" style="width: 50%; display: inline-block;">
+                            <input type="number" placeholder="Cancellation fee *" formControlName="cancellationFee">
+                        </div>
+
+                        <div class="input-field">
+                            <input type="text" placeholder="Description *" formControlName="description">
+                        </div>
+
+                        <div class="input-field">
+                            <input type="text" placeholder="Rules *" formControlName="rules">
+                        </div>
+
+                        <div class="input-field">
+                            <input type="text" placeholder="Equipment *" formControlName="equipment">
+                        </div>
+
+                        <div class="input-field">
+                            <input type="text" placeholder="Street address *" formControlName="streetAddress">
+                        </div>
+
+                        <div class="input-field" style="width: 50%; display: inline-block;">
+                            <input type="text" placeholder="City *" formControlName="city">
+                        </div>
+                        <div class="input-field" style="width: 50%; display: inline-block;">
+                            <input type="text" placeholder="Country *" formControlName="country">
+                        </div>
+
+                        <div class="input-field" style="width: 50%; display: inline-block;">
+                            <input type="number" placeholder="Longitude" formControlName="longitude">
+                        </div>
+                        <div class="input-field" style="width: 50%; display: inline-block;">
+                            <input type="number" placeholder="Latitude" formControlName="latitude">
+                        </div>
+
+                        <mat-form-field style="margin-top: 20px; width:100%" appearance="fill">
+                            <mat-label>Fishing trip tags</mat-label>
+                            <mat-select formControlName="fishingTripTags" multiple>
+                                <mat-option *ngFor="let tag of fishingTripTags" [value]="tag">{{tag}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="action">
+                        <button type="submit" [disabled]="!addFishingTripForm.valid">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+</div>
+<p style="text-align: center;">LOCATION ON MAP</p>
+<div id="map" name="map" class="map" (click)="getCoord($event)"></div>

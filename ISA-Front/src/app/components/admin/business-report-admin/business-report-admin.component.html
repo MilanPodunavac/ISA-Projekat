@@ -1,0 +1,19 @@
+<div class="container">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12">
+            <div class="shadow-1-strong" style="border-radius: 1rem;">
+               <form [formGroup]="profitForm" (submit)="onSubmit()">
+                    <h2>Profit in interval</h2>
+                    <div style="text-align: center;">
+                        <label style="margin-right: 10px;">From:</label>
+                        <input type="date" style="margin-right: 20px;" formControlName="from"/> 
+                        <label style="margin-right: 10px;">To:</label>
+                        <input type="date" style="margin-right: 40px;" formControlName="to"/> 
+                        <button type="submit" mat-raised-button color="primary" [disabled]="!profitForm.valid || profitForm.get('from').value > profitForm.get('to').value">Get total profit</button>
+                    </div>
+                    <p style="text-align: center; padding-bottom: 15px; font-weight: bold;">Total profit in selected interval:&ensp;{{profitInInterval}}</p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -3,17 +3,17 @@ package code.service.impl;
 import code.exceptions.entities.*;
 import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
-import code.model.Client;
-import code.model.IncomeRecord;
-import code.model.LoyaltyProgramClient;
-import code.model.LoyaltyProgramProvider;
+import code.model.*;
 import code.model.base.*;
 import code.model.boat.Boat;
 import code.model.boat.BoatAction;
 import code.model.boat.BoatOwner;
 import code.model.boat.BoatReservation;
 import code.model.cottage.Cottage;
+import code.model.cottage.CottageAction;
 import code.model.cottage.CottageOwner;
+import code.model.cottage.CottageReservation;
+import code.model.report.VisitReport;
 import code.repository.*;
 import code.service.BoatService;
 import code.utils.FileUploadUtil;
@@ -30,10 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class BoatServiceImpl  implements BoatService {
@@ -95,24 +92,40 @@ public class BoatServiceImpl  implements BoatService {
         }catch(Exception ex){
             throw new UnauthorizedAccessException("Unauthorized");
         }
-        CottageOwner owner;
-        try{
-            owner = (CottageOwner) auth.getPrincipal();
-        }
-        catch(ClassCastException ex){
-            throw new UnauthorizedAccessException("User is not a boat owner");
-        }
-        if(owner == null) throw new UserNotFoundException("Boat owner not found");
-        Optional<Boat> optionalBoat = _boatRepository.findById(id);
-        if(!optionalBoat.isPresent())throw new EntityNotFoundException("Boat not found");
-        Boat boat = optionalBoat.get();
-        if(boat.getBoatOwner().getId() != owner.getId())throw new EntityNotOwnedException("Boat not owned by given user");
 
-        checkIfBoatDeletable(id);
-        for(Picture pic : boat.getPictures()){
-            FileUploadUtil.deleteFile(BOAT_PICTURE_DIRECTORY, boat.getId() + "_" + pic.getName());
+        User user = (User) auth.getPrincipal();
+        if (user instanceof Admin) {
+            Optional<Boat> optionalBoat = _boatRepository.findById(id);
+            if(!optionalBoat.isPresent())throw new EntityNotFoundException("Boat not found");
+            Boat boat = optionalBoat.get();
+
+            checkIfBoatDeletable(id);
+            for(Picture pic : boat.getPictures()){
+                FileUploadUtil.deleteFile(BOAT_PICTURE_DIRECTORY, boat.getId() + "_" + pic.getName());
+            }
+            _boatRepository.delete(boat);
+        } else if (user instanceof BoatOwner) {
+            BoatOwner owner;
+            try {
+                owner = (BoatOwner) auth.getPrincipal();
+            } catch (ClassCastException ex) {
+                throw new UnauthorizedAccessException("User is not a boat owner");
+            }
+            if (owner == null) throw new UserNotFoundException("Boat owner not found");
+            Optional<Boat> optionalBoat = _boatRepository.findById(id);
+            if (!optionalBoat.isPresent()) throw new EntityNotFoundException("Boat not found");
+            Boat boat = optionalBoat.get();
+            if (boat.getBoatOwner().getId() != owner.getId())
+                throw new EntityNotOwnedException("Boat not owned by given user");
+
+            checkIfBoatDeletable(id);
+            for (Picture pic : boat.getPictures()) {
+                FileUploadUtil.deleteFile(BOAT_PICTURE_DIRECTORY, boat.getId() + "_" + pic.getName());
+            }
+            _boatRepository.delete(boat);
+        } else {
+            throw new UnauthorizedAccessException("Unauthorized");
         }
-        _boatRepository.delete(boat);
     }
 
     @Override
@@ -178,6 +191,7 @@ public class BoatServiceImpl  implements BoatService {
         else{
             owner = boat.getBoatOwner();
         }
+        if(reservation.isOwnerNeeded() && !owner.checkIfOwnerAvailable(reservation.getDateRange()))throw new EntityNotAvailableException("Boat owner is not available at the given time");
         reservation.setClient(client);
         reservation.setSystemCharge(_currentSystemTaxPercentageRepository.findById(1).get().getCurrentSystemTaxPercentage());
         if(!boat.addReservation(reservation))throw new EntityNotAvailableException("Boat is not available at the given time");
@@ -222,6 +236,7 @@ public class BoatServiceImpl  implements BoatService {
         if(!optionalBoat.isPresent())throw new EntityNotFoundException("Boat not found");
         Boat boat = optionalBoat.get();
         if(boat.getBoatOwner().getId() != owner.getId())throw new EntityNotOwnedException("Boat not owned by given user");
+        if(action.isOwnerNeeded() && !owner.checkIfOwnerAvailable(action.getRange()))throw new EntityNotAvailableException("Boat owner is not available at the given time");
         action.setSystemCharge(_currentSystemTaxPercentageRepository.findById(1).get().getCurrentSystemTaxPercentage());
         if(!boat.addAction(action))throw new EntityNotAvailableException("Boat is not available at the given time");
         _boatRepository.save(boat);
@@ -461,5 +476,72 @@ public class BoatServiceImpl  implements BoatService {
             throw new EntityNotFoundException("Boat doesn't exist!");
         }
         return boat;
+    }
+
+    @Override
+    public List<PictureBase64> getBoatImagesAsBase64(int id) throws EntityNotFoundException, IOException {
+        Boat boat = _boatRepository.findById(id).orElse(null);
+        if(boat == null) {
+            throw new EntityNotFoundException("Cottage doesn't exist!");
+        }
+        List<PictureBase64> pictures = new ArrayList<>();
+        for(Picture pic:boat.getPictures()){
+            pictures.add(new PictureBase64(FileUploadUtil.convertToBase64(BOAT_PICTURE_DIRECTORY, boat.getId() + "_" + pic.getName()), pic.getId()));
+        }
+        return pictures;
+    }
+
+    @Override
+    public BoatReservation getBoatReservation(int boatId, int resId) throws EntityNotFoundException {
+        Optional<Boat> optionalBoat = _boatRepository.findById(boatId);
+        if(!optionalBoat.isPresent())throw new EntityNotFoundException("Boat not found");
+        Boat boat = optionalBoat.get();
+        for(AvailabilityPeriod period:boat.getAvailabilityPeriods()){
+            for(Reservation res:period.getReservations()){
+                if(res.getId() == resId)return (BoatReservation) res;
+            }
+        }
+        throw new EntityNotFoundException("Reservation not found");
+    }
+
+    @Override
+    public BoatAction getBoatAction(Integer id, Integer actId) throws EntityNotFoundException {
+        Optional<Boat> optionalBoat = _boatRepository.findById(id);
+        if(!optionalBoat.isPresent())throw new EntityNotFoundException("Boat not found");
+        Boat boat = optionalBoat.get();
+        for(AvailabilityPeriod period:boat.getAvailabilityPeriods()){
+            for(Action act:period.getActions()){
+                if(act.getId() == actId)return (BoatAction) act;
+            }
+        }
+        throw new EntityNotFoundException("Action not found");
+    }
+
+    @Override
+    public VisitReport generateVisitReport(int id) throws EntityNotOwnedException, EntityNotFoundException, UnauthorizedAccessException, UserNotFoundException {
+        Authentication auth;
+        try{
+            auth = SecurityContextHolder.getContext().getAuthentication();
+        }catch(Exception ex){
+            throw new UnauthorizedAccessException("Unauthorized");
+        }
+        BoatOwner owner;
+        try{
+            owner = (BoatOwner) auth.getPrincipal();
+        }
+        catch(ClassCastException ex){
+            throw new UnauthorizedAccessException("User is not a boat owner");
+        }
+        if(owner == null) throw new UserNotFoundException("Boat owner not found");
+        Optional<Boat> optionalBoat = _boatRepository.findById(id);
+        if(!optionalBoat.isPresent())throw new EntityNotFoundException("Boat not found");
+        Boat boat = optionalBoat.get();
+        if(boat.getBoatOwner().getId() != owner.getId())throw new EntityNotOwnedException("Boat not owned by given user");
+        VisitReport retVal = new VisitReport();
+        for(AvailabilityPeriod period : boat.getAvailabilityPeriods()){
+            for(Reservation res : period.getReservations())retVal.addVisit(res);
+            for(Action act : period.getActions())retVal.addVisit(act);
+        }
+        return retVal;
     }
 }

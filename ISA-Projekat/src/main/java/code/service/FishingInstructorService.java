@@ -1,5 +1,8 @@
 package code.service;
 
+import code.dto.fishing_instructor.PeriodicalReservations;
+import code.dto.fishing_instructor.ProfitInInterval;
+import code.exceptions.entities.EntityBadRequestException;
 import code.exceptions.entities.EntityNotFoundException;
 import code.exceptions.fishing_instructor.AddAvailablePeriodInPastException;
 import code.exceptions.fishing_instructor.AvailablePeriodOverlappingException;
@@ -20,4 +23,8 @@ public interface FishingInstructorService {
     FishingInstructor getFishingInstructor(Integer id) throws EntityNotFoundException;
     FishingInstructor getLoggedInInstructor();
     List<FishingInstructorAvailablePeriod> getFishingInstructorAvailablePeriods();
+    String getIncomeInTimeInterval(ProfitInInterval profitInInterval) throws EntityBadRequestException;
+    List<PeriodicalReservations> weeklyReservations();
+    List<PeriodicalReservations> monthlyReservations();
+    List<PeriodicalReservations> yearlyReservations();
 }
