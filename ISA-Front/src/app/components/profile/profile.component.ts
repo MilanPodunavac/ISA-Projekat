@@ -93,7 +93,8 @@ export class ProfileComponent implements OnInit {
                     end.setDate(end.getDate() + 1);
                     availablePeriodCalendar.start = this.datePipe.transform(this.dataSourceFishingInstructorAvailablePeriods[i].availableFrom, "yyyy-MM-dd");
                     availablePeriodCalendar.end = this.datePipe.transform(end, "yyyy-MM-dd");
-                    availablePeriodCalendar.color = 'green';
+                    availablePeriodCalendar.display = 'background';
+                    availablePeriodCalendar.overlap = false;
                     availablePeriodsCalendar.push(availablePeriodCalendar);
                 }
 
@@ -109,6 +110,7 @@ export class ProfileComponent implements OnInit {
                         availablePeriodCalendar.start = this.datePipe.transform(data[i].start, "yyyy-MM-dd");
                         availablePeriodCalendar.end = this.datePipe.transform(end, "yyyy-MM-dd");
                         availablePeriodCalendar.color = 'blue';
+                        availablePeriodCalendar.overlap = false;
                         availablePeriodsCalendar.push(availablePeriodCalendar);
                     }
 
@@ -126,6 +128,7 @@ export class ProfileComponent implements OnInit {
                             availablePeriodCalendar.start = this.datePipe.transform(data[i].start, "yyyy-MM-dd");
                             availablePeriodCalendar.end = this.datePipe.transform(end, "yyyy-MM-dd");
                             availablePeriodCalendar.color = 'red';
+                            availablePeriodCalendar.overlap = false;
                             availablePeriodsCalendar.push(availablePeriodCalendar);
                         }
 
