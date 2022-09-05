@@ -9,6 +9,9 @@ import { OSM } from 'ol/source';
 import TileLayer from 'ol/layer/Tile';
 import * as olProj from 'ol/proj';
 import { DomSanitizer } from '@angular/platform-browser';
+import { CalendarOptions, DateSelectArg } from '@fullcalendar/angular';
+import { DatePipe } from '@angular/common';
+import { CalendarEvent } from '../model/calendar-event.model';
 
 @Component({
   selector: 'app-boat-profile',
@@ -19,13 +22,53 @@ export class BoatProfileComponent implements OnInit {
   role: string;
   boat: BoatGet;
   map: Map;
+  calendarOptions: CalendarOptions = {
+    headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek'
+    },
+    initialView: 'dayGridMonth',
+    selectable: true,
+    select: this.handleDateSelect.bind(this)
+  };
 
-  constructor(private _route: ActivatedRoute, private boatService: BoatService, private sanitizer: DomSanitizer, private router: Router) {this.role = localStorage.getItem('role')}
+  handleDateSelect(selectInfo: DateSelectArg) {
+    const calendarApi = selectInfo.view.calendar;
+
+    calendarApi.unselect(); 
+
+    let period: any = new Object();
+    period.startDate = new Date(selectInfo.startStr);
+    let end = new Date();
+    end.setDate(new Date(new Date(selectInfo.endStr)).getDate());
+    end.setMonth(new Date(new Date(selectInfo.endStr)).getMonth());
+    end.setFullYear(new Date(new Date(selectInfo.endStr)).getFullYear());
+    end.setDate(end.getDate());
+    period.endDate = end;
+    let id = Number(this._route.snapshot.paramMap.get('id'));
+    period.saleEntityId = id;
+
+    this.boatService.addAvailabilityPeriod(period).subscribe({
+        next: data => {
+            
+        },
+        error: error => {
+            this.router.navigate(['boat/' + id]).then(() => {
+              window.location.reload();
+            });
+            alert(error.error);
+        }
+    });
+  }
+
+  constructor(private datePipe: DatePipe, private _route: ActivatedRoute, private boatService: BoatService, private sanitizer: DomSanitizer, private router: Router) {this.role = localStorage.getItem('role')}
 
   ngOnInit(): void {
     let id = Number(this._route.snapshot.paramMap.get('id'));
     this.boatService.getBoat(id).subscribe(data => {
       this.boat = data;
+      let availablePeriodsCalendar : CalendarEvent[] = []
       for(let i = 0; i<this.boat.pictures.length; i++){
         this.boat.pictures[i].data = this.sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + this.boat.pictures[i].data);
       }
@@ -34,12 +77,35 @@ export class BoatProfileComponent implements OnInit {
         var tempEnd = new Date(this.boat.availabilityPeriods[i].endDate)
         //this.boat.availabilityPeriods[i].startDate = tempStart.getFullYear() + "-" + (tempStart.getMonth() + 1) + "-" + tempStart.getDate()// + ":" + tempStart.getHours()
         //this.boat.availabilityPeriods[i].endDate = tempEnd.getFullYear() + "-" + (tempEnd.getMonth() + 1) + "-" + tempEnd.getDate()// + ":" + tempEnd.getHours()
+        let availablePeriodCalendar = new CalendarEvent();
+        let end = new Date();
+        end.setDate(new Date(tempEnd).getDate());
+        end.setMonth(new Date(tempEnd).getMonth());
+        end.setFullYear(new Date(tempEnd).getFullYear());
+        end.setDate(end.getDate());
+        availablePeriodCalendar.start = this.datePipe.transform(tempStart, "yyyy-MM-dd");
+        availablePeriodCalendar.end = this.datePipe.transform(end, "yyyy-MM-dd");
+        availablePeriodCalendar.display = 'background';
+        availablePeriodCalendar.overlap = false;
+        availablePeriodsCalendar.push(availablePeriodCalendar);
       }
       for(let i = 0; i<this.boat.boatReservations.length; i++){
         var tempStart = new Date(this.boat.boatReservations[i].startDate)
         var tempEnd = new Date(this.boat.boatReservations[i].endDate)
         //this.boat.boatReservations[i].startDate = tempStart.getFullYear() + "-" + (tempStart.getMonth() + 1) + "-" + tempStart.getDate()// + ":" + tempStart.getHours()
         //this.boat.boatReservations[i].endDate = tempEnd.getFullYear() + "-" + (tempEnd.getMonth() + 1) + "-" + tempEnd.getDate()// + ":" + tempEnd.getHours()
+        let availablePeriodCalendar = new CalendarEvent();
+        let end = new Date();
+        end.setDate(new Date(tempEnd).getDate());
+        end.setMonth(new Date(tempEnd).getMonth());
+        end.setFullYear(new Date(tempEnd).getFullYear());
+        end.setDate(end.getDate());
+        availablePeriodCalendar.title = this.boat.boatReservations[i].clientFirstName + " " + this.boat.boatReservations[i].clientLastName;
+        availablePeriodCalendar.start = this.datePipe.transform(tempStart, "yyyy-MM-dd");
+        availablePeriodCalendar.end = this.datePipe.transform(end, "yyyy-MM-dd");
+        availablePeriodCalendar.color = 'blue';
+        availablePeriodCalendar.overlap = false;
+        availablePeriodsCalendar.push(availablePeriodCalendar);
       }
       for(let i = 0; i<this.boat.boatActions.length; i++){
         var tempStart = new Date(this.boat.boatActions[i].startDate)
@@ -48,7 +114,22 @@ export class BoatProfileComponent implements OnInit {
         //this.boat.boatActions[i].startDate = tempStart.getFullYear() + "-" + (tempStart.getMonth() + 1) + "-" + tempStart.getDate()// + ":" + tempStart.getHours()
         //this.boat.boatActions[i].endDate = tempEnd.getFullYear() + "-" + (tempEnd.getMonth() + 1) + "-" + tempEnd.getDate()// + ":" + tempEnd.getHours()
         //this.boat.boatActions[i].validUntilAndIncluding = tempValid.getFullYear() + "-" + (tempValid.getMonth() + 1)// + "-" + tempValid.getDate() + ":" + tempValid.getHours()
+        let availablePeriodCalendar = new CalendarEvent();
+        let end = new Date();
+        end.setDate(new Date(tempEnd).getDate());
+        end.setMonth(new Date(tempEnd).getMonth());
+        end.setFullYear(new Date(tempEnd).getFullYear());
+        end.setDate(end.getDate());
+        if (this.boat.boatActions[i].clientFirstName) {
+          availablePeriodCalendar.title = this.boat.boatActions[i].clientFirstName + " " + this.boat.boatActions[i].clientLastName;
+        }
+        availablePeriodCalendar.start = this.datePipe.transform(tempStart, "yyyy-MM-dd");
+        availablePeriodCalendar.end = this.datePipe.transform(end, "yyyy-MM-dd");
+        availablePeriodCalendar.color = 'red';
+        availablePeriodCalendar.overlap = false;
+        availablePeriodsCalendar.push(availablePeriodCalendar);
       }
+      this.calendarOptions.events = availablePeriodsCalendar;
       this.map = new Map({
         layers: [
           new TileLayer({

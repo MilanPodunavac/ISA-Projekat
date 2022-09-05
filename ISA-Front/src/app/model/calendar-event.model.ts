@@ -3,4 +3,6 @@ export class CalendarEvent {
     start: string;
     end: string;
     color: string;
+    display: string;
+    overlap: boolean;
 }
