@@ -107,7 +107,7 @@ INSERT INTO FISHING_TRIP_PICTURE (name, fishing_trip_id) VALUES ('fishing_trip_1
 INSERT INTO FISHING_INSTRUCTOR_AVAILABLE_PERIOD (available_from, available_to, fishing_instructor_id) VALUES('2023-09-05', '2023-12-05', 5);
 INSERT INTO FISHING_INSTRUCTOR_AVAILABLE_PERIOD (available_from, available_to, fishing_instructor_id) VALUES('2023-09-05', '2023-12-05', 9);
 
-INSERT INTO FISHING_TRIP_QUICK_RESERVATION (duration_in_days, max_people, price, system_tax_percentage, start, valid_until_and_including, loyalty_points_given, fishing_trip_id, location_id) VALUES(3, 5, 200, 10, '2023-09-10', '2023-09-08', false, 1, 13);
+INSERT INTO FISHING_TRIP_QUICK_RESERVATION (duration_in_days, max_people, price, system_tax_percentage, start, valid_until_and_including, loyalty_points_given, fishing_trip_id, location_id, client_id) VALUES(3, 5, 200, 10, '2023-09-10', '2023-09-08', false, 1, 13, 2);
 INSERT INTO FISHING_TRIP_QUICK_RESERVATION (duration_in_days, max_people, price, system_tax_percentage, start, valid_until_and_including, loyalty_points_given, fishing_trip_id, location_id) VALUES(3, 8, 300, 20, '2023-09-20', '2023-09-08', false, 2, 14);
 INSERT INTO FISHING_TRIP_QUICK_RESERVATION (duration_in_days, max_people, price, system_tax_percentage, start, valid_until_and_including, loyalty_points_given, fishing_trip_id, location_id) VALUES(3, 2, 400, 15, '2023-09-10', '2023-09-08', false, 3, 15);
 

@@ -1,13 +1,18 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { CalendarOptions, DateSelectArg } from '@fullcalendar/angular';
 import { AdminGet } from 'src/app/model/admin-get.model';
+import { CalendarEvent } from 'src/app/model/calendar-event.model';
 import { ClientGet } from 'src/app/model/client-get';
 import { FishingInstructorAvailablePeriodGet } from 'src/app/model/fishing-instructor-available-period-get.model';
 import { FishingInstructorGet } from 'src/app/model/fishing-instructor-get';
+import { FishingTripGet } from 'src/app/model/fishing-trip-get';
 import { LoyaltyProgramProvider } from 'src/app/model/loyalty-program-provider.model';
 import { AdminService } from 'src/app/service/admin.service';
 import { ClientService } from 'src/app/service/client.service';
 import { FishingInstructorService } from 'src/app/service/fishing-instructor.service';
+import { FishingTripService } from 'src/app/service/fishing-trip.service';
 import { LoyaltyProgramService } from 'src/app/service/loyalty-program.service';
 import { UserService } from 'src/app/service/user.service';
 
@@ -25,8 +30,45 @@ export class ProfileComponent implements OnInit {
     displayedColumnsFishingInstructorAvailablePeriods: string[] = ['available_from', 'available_to'];
     dataSourceFishingInstructorAvailablePeriods: FishingInstructorAvailablePeriodGet[];
     user: any;
+    calendarOptions: CalendarOptions = {
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek'
+        },
+        initialView: 'dayGridMonth',
+        selectable: true,
+        select: this.handleDateSelect.bind(this)
+    };
+
+    handleDateSelect(selectInfo: DateSelectArg) {
+        const calendarApi = selectInfo.view.calendar;
     
-    constructor(private fishingInstructorService: FishingInstructorService, private clientService: ClientService, private loyaltyProgramService: LoyaltyProgramService, private _usersService: UserService, private router: Router, private adminService: AdminService) {
+        calendarApi.unselect(); 
+    
+        let availabilityPeriod = new FishingInstructorAvailablePeriodGet();
+        availabilityPeriod.availableFrom = new Date(selectInfo.startStr);
+        let end = new Date();
+        end.setDate(new Date(new Date(selectInfo.endStr)).getDate());
+        end.setMonth(new Date(new Date(selectInfo.endStr)).getMonth());
+        end.setFullYear(new Date(new Date(selectInfo.endStr)).getFullYear());
+        end.setDate(end.getDate() - 1);
+        availabilityPeriod.availableTo = end;
+
+        this.fishingInstructorService.addAvailabilityPeriod(availabilityPeriod).subscribe({
+            next: data => {
+                this.router.navigate(['profile']).then(() => {
+                    window.location.reload();
+                });
+                alert(data);
+            },
+            error: error => {
+                alert(error.error);
+            }
+        });
+    }
+
+    constructor(private fishingInstructorService: FishingInstructorService, private clientService: ClientService, private loyaltyProgramService: LoyaltyProgramService, private _usersService: UserService, private router: Router, private adminService: AdminService, private fishingTripService: FishingTripService, private datePipe: DatePipe) {
         
         this.role = localStorage.getItem('role');        
         
@@ -41,6 +83,55 @@ export class ProfileComponent implements OnInit {
 
             this.fishingInstructorService.getFishingInstructorAvailablePeriods().subscribe(data => {
                 this.dataSourceFishingInstructorAvailablePeriods = data;
+                let availablePeriodsCalendar : CalendarEvent[] = []
+                for (let i = 0; i < this.dataSourceFishingInstructorAvailablePeriods.length; i++) {
+                    let availablePeriodCalendar = new CalendarEvent();
+                    let end = new Date();
+                    end.setDate(new Date(this.dataSourceFishingInstructorAvailablePeriods[i].availableTo).getDate());
+                    end.setMonth(new Date(this.dataSourceFishingInstructorAvailablePeriods[i].availableTo).getMonth());
+                    end.setFullYear(new Date(this.dataSourceFishingInstructorAvailablePeriods[i].availableTo).getFullYear());
+                    end.setDate(end.getDate() + 1);
+                    availablePeriodCalendar.start = this.datePipe.transform(this.dataSourceFishingInstructorAvailablePeriods[i].availableFrom, "yyyy-MM-dd");
+                    availablePeriodCalendar.end = this.datePipe.transform(end, "yyyy-MM-dd");
+                    availablePeriodCalendar.color = 'green';
+                    availablePeriodsCalendar.push(availablePeriodCalendar);
+                }
+
+                this.fishingTripService.getFishingInstructorReservations().subscribe(data => {
+                    for (let i = 0; i < data.length; i++) {
+                        let availablePeriodCalendar = new CalendarEvent();
+                        let end = new Date();
+                        end.setDate(new Date(data[i].start).getDate());
+                        end.setMonth(new Date(data[i].start).getMonth());
+                        end.setFullYear(new Date(data[i].start).getFullYear());
+                        end.setDate(end.getDate() + data[i].durationInDays);
+                        availablePeriodCalendar.title = data[i].client.firstName + " " + data[i].client.lastName;
+                        availablePeriodCalendar.start = this.datePipe.transform(data[i].start, "yyyy-MM-dd");
+                        availablePeriodCalendar.end = this.datePipe.transform(end, "yyyy-MM-dd");
+                        availablePeriodCalendar.color = 'blue';
+                        availablePeriodsCalendar.push(availablePeriodCalendar);
+                    }
+
+                    this.fishingTripService.getFishingInstructorActions().subscribe(data => {
+                        for (let i = 0; i < data.length; i++) {
+                            let availablePeriodCalendar = new CalendarEvent();
+                            let end = new Date();
+                            end.setDate(new Date(data[i].start).getDate());
+                            end.setMonth(new Date(data[i].start).getMonth());
+                            end.setFullYear(new Date(data[i].start).getFullYear());
+                            end.setDate(end.getDate() + data[i].durationInDays);
+                            if (data[i].client) {
+                                availablePeriodCalendar.title = data[i].client.firstName + " " + data[i].client.lastName;
+                            }
+                            availablePeriodCalendar.start = this.datePipe.transform(data[i].start, "yyyy-MM-dd");
+                            availablePeriodCalendar.end = this.datePipe.transform(end, "yyyy-MM-dd");
+                            availablePeriodCalendar.color = 'red';
+                            availablePeriodsCalendar.push(availablePeriodCalendar);
+                        }
+
+                        this.calendarOptions.events = availablePeriodsCalendar;
+                    });
+                });
             });
         }
         if(this.role === 'ROLE_ADMIN'){
