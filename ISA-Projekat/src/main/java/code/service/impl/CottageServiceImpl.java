@@ -138,6 +138,30 @@ public class CottageServiceImpl implements CottageService {
         _mailSender.send(message);
     }
 
+    @Override
+    @Transactional()
+    public void cancelReservation(Integer id, String email) throws EntityNotFoundException, UserNotFoundException, InvalidReservationException, EntityNotOwnedException, EntityNotAvailableException, UnauthorizedAccessException, ClientCancelledThisPeriodException {
+        Optional<Reservation> reservation = _reservationRepository.findById(id);
+        if(reservation == null)throw new EntityNotOwnedException("Reservation not found");
+        User user;
+        try{
+            user = (User) _userRepository.findByEmail(email);
+            if(user.getClass() == Client.class){
+                if(reservation.get().getClient() != user) throw new UnauthorizedAccessException("User is not the client on the reservation");
+            }
+            else if(user.getClass() == CottageOwner.class){
+                if(((CottageReservation)reservation.get()).getCottage().getCottageOwner() != (CottageOwner)user) throw new UnauthorizedAccessException("User is not the client on the reservation");
+            }
+            else{
+                throw new UserNotFoundException("User is not a client nor a cottage owner");
+            }
+        }catch(ClassCastException ex){
+            throw new UserNotFoundException("User not found");
+        }
+        reservation.get().setReservationStatus(ReservationStatus.cancelled);
+        _reservationRepository.save(reservation.get());
+    }
+
     private void makeIncomeRecord(Reservation reservation, CottageOwner owner) {
         IncomeRecord incRec = new IncomeRecord();
         incRec.setReservationStart(reservation.getDateRange().getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());

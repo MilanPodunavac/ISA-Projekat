@@ -18,7 +18,7 @@
             </thead>
             <tbody>
                 <ng-container *ngFor='let res of client.reservation'>
-                    <tr *ngIf="res.cottage" (dblclick)="doubleClickFunction(res.cottage.id, res.id)">
+                    <tr *ngIf="res.cottage" (dblclick)="doubleClickFunctionCottage(res.cottage.id, res.id)">
                         <td>{{res.dateRange.startDate | date}}</td>
                         <td>{{res.dateRange.endDate | date}}</td>
                         <td>{{res.price}}</td>
@@ -26,6 +26,7 @@
                         <td>{{res.loyaltyPointsGiven}}</td>
                         <td>{{res.cottage.name}}</td>
                         <td>{{res.cottageReservationTag}}</td>
+                        <td><button *ngIf="res.reservationStatus === 'reserved' && res.dateRange.startDate > now.getTime()" mat-raised-button color="primary" (click)="cancelReservationCottage(res.id)">Cancel reservation</button></td>
                     </tr>
                 </ng-container>
             </tbody>
@@ -51,7 +52,7 @@
             </thead>
             <tbody>
                 <ng-container *ngFor='let res of client.reservation'>
-                    <tr *ngIf="res.boat" (dblclick)="doubleClickFunction(res.boat.id, res.id)">
+                    <tr *ngIf="res.boat" (dblclick)="doubleClickFunctionBoat(res.boat.id, res.id)">
                         <td>{{res.dateRange.startDate | date}}</td>
                         <td>{{res.dateRange.endDate | date}}</td>
                         <td>{{res.price}}</td>

@@ -44,6 +44,10 @@ export class CottageService {
   getReservation(cottageId: number, resId: number): Observable<any>{
     return this._httpClient.get<any>(this._APIUrl+`/${cottageId}/reservation/${resId}`);
   }
+  cancelReservation(resId: number): Observable<any>{
+    console.log(resId)
+    return this._httpClient.post<any>(this._APIUrl+`/reservation/${resId}/cancel`, resId);
+  }
   addReservationCommentary(id: number, resId: number, body: any): Observable<any>{
     return this._httpClient.post<any>(this._APIUrl+`/${id}/reservation/${resId}/commentary`, body);
   }

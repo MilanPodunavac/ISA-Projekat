@@ -199,6 +199,21 @@ public class CottageController extends BaseController {
         return ResponseEntity.ok("Reservation added");
     }
 
+    @PostMapping(value = "/reservation/{id}/cancel")
+    @PreAuthorize("hasAnyRole('ROLE_COTTAGE_OWNER', 'CLIENT')")
+    public ResponseEntity<String> cancelReservation(@PathVariable Integer id, @RequestHeader(HttpHeaders.AUTHORIZATION) String auth){
+        try{
+            String email = _tokenUtils.getEmailFromToken(auth.substring(7));
+            _cottageService.cancelReservation(id, email);
+        }catch(Exception ex){
+            if(ex instanceof EntityNotOwnedException || ex instanceof UnauthorizedAccessException)return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+            if(ex instanceof EntityNotFoundException || ex instanceof UserNotFoundException)return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+            if(ex instanceof EntityNotAvailableException || ex instanceof InvalidReservationException || ex instanceof ClientCancelledThisPeriodException)return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+            return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
+        }
+        return ResponseEntity.ok("Reservation cancelled");
+    }
+
     @PostMapping(value="/action")
     @PreAuthorize("hasRole('ROLE_COTTAGE_OWNER')")
     public ResponseEntity<String> addAction(@Valid @RequestBody NewCottageActionDto dto, BindingResult result, @RequestHeader(HttpHeaders.AUTHORIZATION) String auth){
