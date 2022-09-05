@@ -1,7 +1,11 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
+import { FullCalendarModule } from '@fullcalendar/angular';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin from '@fullcalendar/interaction';
+import timeGridPlugin from '@fullcalendar/timegrid';
 import { AppComponent } from './app.component';
+import {DatePipe} from '@angular/common';
 
 // MDB Modules
 import { MdbAccordionModule } from 'mdb-angular-ui-kit/accordion';
@@ -93,6 +97,12 @@ import { AccountDeletionRequestDeclineComponent } from './components/admin/accou
 import { ComplaintResponseComponent } from './components/admin/complaint-response/complaint-response.component';
 import { ComplaintResponseFishingInstructorComponent } from './components/admin/complaint-response-fishing-instructor/complaint-response-fishing-instructor.component';
 import { SystemTaxComponent } from './components/admin/system-tax/system-tax.component';
+
+FullCalendarModule.registerPlugins([
+  dayGridPlugin,
+  interactionPlugin,
+  timeGridPlugin
+]);
 
 @NgModule({
   declarations: [
@@ -186,7 +196,8 @@ import { SystemTaxComponent } from './components/admin/system-tax/system-tax.com
     MaterialModule,
     FormsModule,
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FullCalendarModule
   ],
   providers: [
     {
@@ -195,6 +206,7 @@ import { SystemTaxComponent } from './components/admin/system-tax/system-tax.com
       multi: true
     },
     AuthService,
+    DatePipe
   ],
   bootstrap: [AppComponent]
 })

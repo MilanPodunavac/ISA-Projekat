@@ -20,12 +20,10 @@ import java.time.LocalDate;
 public class NewAvailablePeriod {
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @NotNull(message = "Available from is required")
     private LocalDate availableFrom;
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @NotNull(message = "Available to is required")
     private LocalDate availableTo;
 }

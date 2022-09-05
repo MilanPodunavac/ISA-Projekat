@@ -62,7 +62,7 @@ public class ProviderRegistrationControllerTest {
     @WithMockUser(roles="ADMIN")
     @Test
     public void acceptRegistrationRequest() throws Exception {
-        this.mockMvc.perform(put(URL_PREFIX + "/accept-request/" + DB_USER_ID_ACCEPT)).andExpect(status().isOk());
+        this.mockMvc.perform(delete(URL_PREFIX + "/accept-request/" + DB_USER_ID_ACCEPT)).andExpect(status().isOk());
     }
 
     @WithMockUser(roles="ADMIN")
@@ -72,6 +72,6 @@ public class ProviderRegistrationControllerTest {
         declineRegistrationRequestDTO.setDeclineReason("ne može");
 
         String json = TestUtil.json(declineRegistrationRequestDTO);
-        this.mockMvc.perform(delete(URL_PREFIX + "/decline-request/" + DB_USER_ID_DECLINE).contentType(contentType).content(json)).andExpect(status().isOk());
+        this.mockMvc.perform(put(URL_PREFIX + "/decline-request/" + DB_USER_ID_DECLINE).contentType(contentType).content(json)).andExpect(status().isOk());
     }
 }
