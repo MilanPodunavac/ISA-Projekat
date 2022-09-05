@@ -26,6 +26,7 @@ public interface BoatService {
     void addBoat(Boat boat) throws UnauthorizedAccessException, UserNotFoundException;
     void addAvailabilityPeriod(int boatId, AvailabilityPeriod period) throws AvailabilityPeriodBadRangeException, UserNotFoundException, EntityNotFoundException, EntityNotOwnedException, UnauthorizedAccessException;
     void addReservation(String clientEmail, int boatId, BoatReservation reservation) throws EntityNotFoundException, UserNotFoundException, InvalidReservationException, EntityNotOwnedException, EntityNotAvailableException, UnauthorizedAccessException, ClientCancelledThisPeriodException;
+    void cancelReservation(Integer id, String email) throws EntityNotFoundException, UserNotFoundException, InvalidReservationException, EntityNotOwnedException, EntityNotAvailableException, UnauthorizedAccessException, ClientCancelledThisPeriodException;
     void addAction(int boatId, BoatAction action) throws UnauthorizedAccessException, EntityNotFoundException, EntityNotOwnedException, EntityNotAvailableException, InvalidReservationException, UserNotFoundException;
     void addPicture(int id, MultipartFile picture) throws EntityNotFoundException, EntityNotOwnedException, IOException, UnauthorizedAccessException, UserNotFoundException;
     void deletePicture(int id, int pic) throws EntityNotOwnedException, EntityNotFoundException, UnauthorizedAccessException, UserNotFoundException;

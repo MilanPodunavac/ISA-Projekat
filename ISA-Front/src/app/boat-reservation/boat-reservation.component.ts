@@ -21,6 +21,7 @@ export class BoatReservationComponent implements OnInit {
   setNumberOfDays: number;
   setNumberOfPeople: number;
   setEndDate : Date;
+  ownerNeeded : boolean = false;
 
   constructor(private _boatService: BoatService, private router: Router) {
     this.role = localStorage.getItem('role');
@@ -60,7 +61,7 @@ export class BoatReservationComponent implements OnInit {
     }
   }
 
-  makeReservation(cottageId: number, additionalServices: string[]){
+  makeReservation(boatId: number, additionalServices: string[]){
     var startMonth =  this.setStartDate.getMonth() + 1
     var startMonthString: String;
     if(startMonth < 10)startMonthString = "0" + startMonth 
@@ -76,10 +77,11 @@ export class BoatReservationComponent implements OnInit {
       numberOfDays: this.setNumberOfDays,
       numberOfPeople: this.setNumberOfPeople,
       startDate: this.setStartDate.getFullYear() + "-" + startMonthString + "-" + startDayString + "T00:00:00+0" + (-this.setStartDate.getTimezoneOffset()/60) + ":00",
-      clientEmail: localStorage.getItem("email")
+      clientEmail: localStorage.getItem("email"),
+      ownerNeeded: this.ownerNeeded
     }
     console.log(body)
-    this._boatService.addReservation(body, cottageId).subscribe({
+    this._boatService.addReservation(boatId, body).subscribe({
       next: data => {
         if(data.status === 200){
           alert("Action added")

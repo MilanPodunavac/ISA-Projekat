@@ -150,7 +150,7 @@ public class CottageServiceImpl implements CottageService {
                 if(reservation.get().getClient() != user) throw new UnauthorizedAccessException("User is not the client on the reservation");
             }
             else if(user.getClass() == CottageOwner.class){
-                if(((CottageReservation)reservation.get()).getCottage().getCottageOwner() != (CottageOwner)user) throw new UnauthorizedAccessException("User is not the client on the reservation");
+                if(((CottageReservation)reservation.get()).getCottage().getCottageOwner() != (CottageOwner)user) throw new UnauthorizedAccessException("User is not the cottage owner");
             }
             else{
                 throw new UserNotFoundException("User is not a client nor a cottage owner");

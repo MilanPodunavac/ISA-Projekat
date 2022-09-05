@@ -31,6 +31,7 @@ import code.service.BoatService;
 import code.utils.TokenUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -120,6 +121,21 @@ public class BoatController extends BaseController {
             if(ex instanceof EntityNotFoundException) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
             return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
         }
+    }
+
+    @PostMapping(value = "/reservation/{id}/cancel")
+    @PreAuthorize("hasAnyRole('ROLE_BOAT_OWNER', 'CLIENT')")
+    public ResponseEntity<String> cancelReservation(@PathVariable Integer id, @RequestHeader(HttpHeaders.AUTHORIZATION) String auth){
+        try{
+            String email = _tokenUtils.getEmailFromToken(auth.substring(7));
+            _boatService.cancelReservation(id, email);
+        }catch(Exception ex){
+            if(ex instanceof EntityNotOwnedException || ex instanceof UnauthorizedAccessException)return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+            if(ex instanceof EntityNotFoundException || ex instanceof UserNotFoundException)return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+            if(ex instanceof EntityNotAvailableException || ex instanceof InvalidReservationException || ex instanceof ClientCancelledThisPeriodException)return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+            return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
+        }
+        return ResponseEntity.ok("Reservation cancelled");
     }
 
     @GetMapping(value = "/{id}/action/{actId}")

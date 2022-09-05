@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ClientGet } from '../model/client-get';
+import { BoatService } from '../service/boat.service';
 import { ClientService } from '../service/client.service';
 import { CottageService } from '../service/cottage.service';
 
@@ -15,7 +16,7 @@ export class ReservationListComponent implements OnInit {
   role: string;
   now: Date;
 
-  constructor(private router: Router, private _clientService: ClientService, private _cottageService: CottageService) {
+  constructor(private router: Router, private _clientService: ClientService, private _cottageService: CottageService, private _boatService: BoatService) {
     this.now = new Date()
     this.role = localStorage.getItem('role');
   }
@@ -44,6 +45,21 @@ export class ReservationListComponent implements OnInit {
 
   cancelReservationCottage(reservationId: any){
     this._cottageService.cancelReservation(reservationId).subscribe(
+      {next: data => {
+        console.log(data)
+        window.location.reload();
+      },
+      error: data => {
+        if(data.status === 200){
+          console.log(data)
+          window.location.reload();
+        }
+      }
+    });
+  }
+
+  cancelReservationBoat(reservationId: any){
+    this._boatService.cancelReservation(reservationId).subscribe(
       {next: data => {
         console.log(data)
         window.location.reload();

@@ -48,6 +48,7 @@
                     <th>Loyalty points</th>
                     <th>Boat</th>
                     <th>Tags</th>
+                    <th>Owner needed</th>
                 </tr>
             </thead>
             <tbody>
@@ -60,6 +61,8 @@
                         <td>{{res.loyaltyPointsGiven}}</td>
                         <td>{{res.boat.name}}</td>
                         <td>{{res.boatReservationTag}}</td>
+                        <td>{{res.ownerNeeded}}</td>
+                        <td><button *ngIf="res.reservationStatus === 'reserved' && res.dateRange.startDate > now.getTime()" mat-raised-button color="primary" (click)="cancelReservationBoat(res.id)">Cancel reservation</button></td>
                     </tr>
                 </ng-container>
             </tbody>

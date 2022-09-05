@@ -47,4 +47,5 @@ public class ReservationGetDto {
     private Cottage cottage;
     private Set<BoatReservationTag> boatReservationTag;
     private Boat boat;
+    private boolean ownerNeeded;
 }

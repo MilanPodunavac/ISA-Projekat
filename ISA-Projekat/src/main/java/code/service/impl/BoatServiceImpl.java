@@ -205,6 +205,29 @@ public class BoatServiceImpl  implements BoatService {
         _mailSender.send(message);
     }
 
+    @Transactional()
+    public void cancelReservation(Integer id, String email) throws EntityNotFoundException, UserNotFoundException, InvalidReservationException, EntityNotOwnedException, EntityNotAvailableException, UnauthorizedAccessException, ClientCancelledThisPeriodException {
+        Optional<Reservation> reservation = _reservationRepository.findById(id);
+        if(reservation == null)throw new EntityNotOwnedException("Reservation not found");
+        User user;
+        try{
+            user = (User) _userRepository.findByEmail(email);
+            if(user.getClass() == Client.class){
+                if(reservation.get().getClient() != user) throw new UnauthorizedAccessException("User is not the client on the reservation");
+            }
+            else if(user.getClass() == BoatOwner.class){
+                if(((BoatReservation)reservation.get()).getBoat().getBoatOwner() != (BoatOwner) user) throw new UnauthorizedAccessException("User is not the owner of the boat");
+            }
+            else{
+                throw new UserNotFoundException("User is not a client nor a boat owner");
+            }
+        }catch(ClassCastException ex){
+            throw new UserNotFoundException("User not found");
+        }
+        reservation.get().setReservationStatus(ReservationStatus.cancelled);
+        _reservationRepository.save(reservation.get());
+    }
+
     private void makeIncomeRecord(Reservation reservation, BoatOwner owner) {
         IncomeRecord incRec = new IncomeRecord();
         incRec.setReservationStart(reservation.getDateRange().getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
