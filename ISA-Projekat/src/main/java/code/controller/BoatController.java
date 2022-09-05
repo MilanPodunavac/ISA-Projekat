@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.*;
 
 @RestController
@@ -58,9 +59,13 @@ public class BoatController extends BaseController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<Object>> get(){
+    public ResponseEntity<List<Object>> get() throws EntityNotFoundException, IOException {
         List<Boat> boats = _boatService.getAllBoats();
         boats.sort(Comparator.comparing(Boat::getId));
+        List<BoatGetDto> dtos = new ArrayList<>();
+        for(Boat boat : boats){
+            dtos.add(createBoatDto(boat));
+        }
         return ResponseEntity.ok(_mapper.map(boats, new TypeToken<List<BoatGetDto>>() {}.getType()));
     }
 
@@ -68,43 +73,48 @@ public class BoatController extends BaseController {
     public ResponseEntity<Object> get(@PathVariable Integer id){
         try{
             Boat boat = _boatService.getBoat(id);
-            BoatGetDto boatDto = _mapper.map(boat, BoatGetDto.class);
-            boatDto.setDeletable(!boat.hasFutureReservationsOrActions());
-            boatDto.setAvailabilityPeriods(new ArrayList<>());
-            boatDto.setBoatReservations(new ArrayList<>());
-            boatDto.setBoatActions(new ArrayList<>());
-            for (AvailabilityPeriod period: boat.getAvailabilityPeriods()) {
-                boatDto.getAvailabilityPeriods().add(new AvailabilityPeriodGetDto(period.getRange().getStartDate(), period.getRange().getEndDate()));
-                for(Reservation res: period.getReservations()){
-                    BoatReservationGetDto dto = _mapper.map(res, BoatReservationGetDto.class);
-                    if(res.getOwnerCommentary() != null){
-                        dto.setCommentary(res.getOwnerCommentary().getCommentary());
-                    }
-                    //dto.setClientFullName(res.getClient().getFirstName() + " " + res.getClient().getLastName());
-                    boatDto.getBoatReservations().add(dto);
-                }
-                for(Action act: period.getActions()){
-                    BoatActionGetDto dto = _mapper.map(act, BoatActionGetDto.class);
-                    if(act.getOwnerCommentary() != null){
-                        dto.setCommentary(act.getOwnerCommentary().getCommentary());
-                    }
-                    if(act.getClient() != null){
-                        //dto.setClientFullName(act.getClient().getFirstName() + " " + act.getClient().getLastName());
-                        dto.setClientFirstName(act.getClient().getFirstName());
-                        dto.setClientLastName(act.getClient().getLastName());
-                    }
-                    boatDto.getBoatActions().add(dto);
-                }
-            }
-            boatDto.getAvailabilityPeriods().sort(Comparator.comparing(AvailabilityPeriodGetDto::getStartDate));
-            boatDto.getBoatReservations().sort(Comparator.comparing(BoatReservationGetDto::getStartDate));
-            boatDto.getBoatActions().sort(Comparator.comparing(BoatActionGetDto::getStartDate));
-            boatDto.setPictures(_boatService.getBoatImagesAsBase64(boat.getId()));
+            BoatGetDto boatDto = createBoatDto(boat);
             return ResponseEntity.ok(boatDto);
         }catch(Exception ex){
             if(ex instanceof EntityNotFoundException) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Boat not found");
             return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
         }
+    }
+
+    private BoatGetDto createBoatDto(Boat boat) throws EntityNotFoundException, IOException {
+        BoatGetDto boatDto = _mapper.map(boat, BoatGetDto.class);
+        boatDto.setDeletable(!boat.hasFutureReservationsOrActions());
+        boatDto.setAvailabilityPeriods(new ArrayList<>());
+        boatDto.setBoatReservations(new ArrayList<>());
+        boatDto.setBoatActions(new ArrayList<>());
+        for (AvailabilityPeriod period: boat.getAvailabilityPeriods()) {
+            boatDto.getAvailabilityPeriods().add(new AvailabilityPeriodGetDto(period.getRange().getStartDate(), period.getRange().getEndDate()));
+            for(Reservation res: period.getReservations()){
+                BoatReservationGetDto dto = _mapper.map(res, BoatReservationGetDto.class);
+                if(res.getOwnerCommentary() != null){
+                    dto.setCommentary(res.getOwnerCommentary().getCommentary());
+                }
+                //dto.setClientFullName(res.getClient().getFirstName() + " " + res.getClient().getLastName());
+                boatDto.getBoatReservations().add(dto);
+            }
+            for(Action act: period.getActions()){
+                BoatActionGetDto dto = _mapper.map(act, BoatActionGetDto.class);
+                if(act.getOwnerCommentary() != null){
+                    dto.setCommentary(act.getOwnerCommentary().getCommentary());
+                }
+                if(act.getClient() != null){
+                    //dto.setClientFullName(act.getClient().getFirstName() + " " + act.getClient().getLastName());
+                    dto.setClientFirstName(act.getClient().getFirstName());
+                    dto.setClientLastName(act.getClient().getLastName());
+                }
+                boatDto.getBoatActions().add(dto);
+            }
+        }
+        boatDto.getAvailabilityPeriods().sort(Comparator.comparing(AvailabilityPeriodGetDto::getStartDate));
+        boatDto.getBoatReservations().sort(Comparator.comparing(BoatReservationGetDto::getStartDate));
+        boatDto.getBoatActions().sort(Comparator.comparing(BoatActionGetDto::getStartDate));
+        boatDto.setPictures(_boatService.getBoatImagesAsBase64(boat.getId()));
+        return boatDto;
     }
 
     @GetMapping(value = "/{id}/reservation/{resId}")

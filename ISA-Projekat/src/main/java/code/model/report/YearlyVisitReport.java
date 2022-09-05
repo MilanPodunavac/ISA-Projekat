@@ -87,6 +87,11 @@ public class YearlyVisitReport {
     }
 
     public void addVisit(Reservation res){
+        Date now = new Date(System.currentTimeMillis());
+        now.setDate(1);
+        now.setHours(0);
+        now.setMinutes(0);
+        now.setSeconds(0);
         if(res.getReservationStatus() == ReservationStatus.cancelled)return;
         Date copy = (Date) res.getDateRange().getStartDate().clone();
         copy.setSeconds(copy.getSeconds() + 1);
@@ -145,12 +150,17 @@ public class YearlyVisitReport {
             eleventh.setVisitNumber(eleventh.getVisitNumber() + 1);
             return;
         }
-        if(twelfth.getStart().before(copy)){
+        if(twelfth.getStart().before(copy) && now.after(copy)){
             twelfth.setVisitNumber(twelfth.getVisitNumber() + 1);
         }
     }
 
     public void addVisit(Action act){
+        Date now = new Date(System.currentTimeMillis());
+        now.setDate(1);
+        now.setHours(0);
+        now.setMinutes(0);
+        now.setSeconds(0);
         if(!act.isReserved())return;
         Date copy = (Date) act.getRange().getStartDate().clone();
         copy.setSeconds(copy.getSeconds() + 1);
@@ -209,7 +219,7 @@ public class YearlyVisitReport {
             eleventh.setVisitNumber(eleventh.getVisitNumber() + 1);
             return;
         }
-        if(twelfth.getStart().before(copy)){
+        if(twelfth.getStart().before(copy) && now.after(copy)){
             twelfth.setVisitNumber(twelfth.getVisitNumber() + 1);
         }
     }

@@ -59,6 +59,11 @@ public class WeeklyVisitReport {
     }
 
     public void addVisit(Reservation res){
+        Date now = new Date(System.currentTimeMillis());
+        now.setDate(1);
+        now.setHours(0);
+        now.setMinutes(0);
+        now.setSeconds(0);
         if(res.getReservationStatus() == ReservationStatus.cancelled)return;
         Date copy = (Date) res.getDateRange().getStartDate().clone();
         copy.setSeconds(copy.getSeconds() + 1);
@@ -92,12 +97,17 @@ public class WeeklyVisitReport {
             sixth.setVisitNumber(sixth.getVisitNumber() + 1);
             return;
         }
-        if(seventh.getStart().before(copy)){
+        if(seventh.getStart().before(copy) && now.after(copy)){
             seventh.setVisitNumber(seventh.getVisitNumber() + 1);
         }
     }
 
     public void addVisit(Action act){
+        Date now = new Date(System.currentTimeMillis());
+        now.setDate(1);
+        now.setHours(0);
+        now.setMinutes(0);
+        now.setSeconds(0);
         if(!act.isReserved())return;
         Date copy = (Date) act.getRange().getStartDate().clone();
         copy.setSeconds(copy.getSeconds() + 1);
@@ -131,7 +141,7 @@ public class WeeklyVisitReport {
             sixth.setVisitNumber(sixth.getVisitNumber() + 1);
             return;
         }
-        if(seventh.getStart().before(copy)){
+        if(seventh.getStart().before(copy) && now.after(copy)){
             seventh.setVisitNumber(seventh.getVisitNumber() + 1);
         }
     }

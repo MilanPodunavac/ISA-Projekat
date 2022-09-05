@@ -35,6 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.print.attribute.standard.Media;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.*;
 
 @RestController
@@ -54,9 +55,13 @@ public class CottageController extends BaseController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<Object>> get(){
+    public ResponseEntity<List<Object>> get() throws EntityNotFoundException, IOException {
         List<Cottage> cottages = _cottageService.getAllCottages();
         cottages.sort(Comparator.comparing(Cottage::getId));
+        List<CottageGetDto> dtos = new ArrayList<>();
+        for(Cottage cottage : cottages){
+            dtos.add(createCottageGetDto(cottage));
+        }
         return ResponseEntity.ok(_mapper.map(cottages, new TypeToken<List<CottageGetDto>>() {}.getType()));
     }
 
@@ -64,41 +69,46 @@ public class CottageController extends BaseController {
     public ResponseEntity<Object> get(@PathVariable Integer id){
         try{
             Cottage cottage = _cottageService.getCottage(id);
-            CottageGetDto cottageDto = _mapper.map(cottage, CottageGetDto.class);
-            cottageDto.setDeletable(!cottage.hasFutureReservationsOrActions());
-            cottageDto.setAvailabilityPeriods(new ArrayList<>());
-            cottageDto.setCottageReservations(new ArrayList<>());
-            cottageDto.setCottageActions(new ArrayList<>());
-            for (AvailabilityPeriod period: cottage.getAvailabilityPeriods()) {
-                cottageDto.getAvailabilityPeriods().add(new AvailabilityPeriodGetDto(period.getRange().getStartDate(), period.getRange().getEndDate()));
-                for(Reservation res: period.getReservations()){
-                    CottageReservationGetDto dto = _mapper.map(res, CottageReservationGetDto.class);
-                    if(res.getOwnerCommentary() != null){
-                        dto.setCommentary(res.getOwnerCommentary().getCommentary());
-                    }
-                    dto.setClientFullName(res.getClient().getFirstName() + " " + res.getClient().getLastName());
-                    cottageDto.getCottageReservations().add(dto);
-                }
-                for(Action act: period.getActions()){
-                    CottageActionGetDto dto = _mapper.map(act, CottageActionGetDto.class);
-                    if(act.getOwnerCommentary() != null){
-                        dto.setCommentary(act.getOwnerCommentary().getCommentary());
-                    }
-                    if(act.getClient() != null){
-                        dto.setClientFullName(act.getClient().getFirstName() + " " + act.getClient().getLastName());
-                    }
-                    cottageDto.getCottageActions().add(dto);
-                }
-            }
-            cottageDto.getAvailabilityPeriods().sort(Comparator.comparing(AvailabilityPeriodGetDto::getStartDate));
-            cottageDto.getCottageReservations().sort(Comparator.comparing(CottageReservationGetDto::getStartDate));
-            cottageDto.getCottageActions().sort(Comparator.comparing(CottageActionGetDto::getStartDate));
-            cottageDto.setPictures(_cottageService.getCottageImagesAsBase64(cottage.getId()));
+            CottageGetDto cottageDto = createCottageGetDto(cottage);
             return ResponseEntity.ok(cottageDto);
         }catch(Exception ex){
             if(ex instanceof EntityNotFoundException) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cottage not found");
             return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
         }
+    }
+
+    private CottageGetDto createCottageGetDto(Cottage cottage) throws EntityNotFoundException, IOException {
+        CottageGetDto cottageDto = _mapper.map(cottage, CottageGetDto.class);
+        cottageDto.setDeletable(!cottage.hasFutureReservationsOrActions());
+        cottageDto.setAvailabilityPeriods(new ArrayList<>());
+        cottageDto.setCottageReservations(new ArrayList<>());
+        cottageDto.setCottageActions(new ArrayList<>());
+        for (AvailabilityPeriod period: cottage.getAvailabilityPeriods()) {
+            cottageDto.getAvailabilityPeriods().add(new AvailabilityPeriodGetDto(period.getRange().getStartDate(), period.getRange().getEndDate()));
+            for(Reservation res: period.getReservations()){
+                CottageReservationGetDto dto = _mapper.map(res, CottageReservationGetDto.class);
+                if(res.getOwnerCommentary() != null){
+                    dto.setCommentary(res.getOwnerCommentary().getCommentary());
+                }
+                dto.setClientFullName(res.getClient().getFirstName() + " " + res.getClient().getLastName());
+                cottageDto.getCottageReservations().add(dto);
+            }
+            for(Action act: period.getActions()){
+                CottageActionGetDto dto = _mapper.map(act, CottageActionGetDto.class);
+                if(act.getOwnerCommentary() != null){
+                    dto.setCommentary(act.getOwnerCommentary().getCommentary());
+                }
+                if(act.getClient() != null){
+                    dto.setClientFullName(act.getClient().getFirstName() + " " + act.getClient().getLastName());
+                }
+                cottageDto.getCottageActions().add(dto);
+            }
+        }
+        cottageDto.getAvailabilityPeriods().sort(Comparator.comparing(AvailabilityPeriodGetDto::getStartDate));
+        cottageDto.getCottageReservations().sort(Comparator.comparing(CottageReservationGetDto::getStartDate));
+        cottageDto.getCottageActions().sort(Comparator.comparing(CottageActionGetDto::getStartDate));
+        cottageDto.setPictures(_cottageService.getCottageImagesAsBase64(cottage.getId()));
+        return cottageDto;
     }
 
     @GetMapping(value = "/{id}/reservation/{resId}")
