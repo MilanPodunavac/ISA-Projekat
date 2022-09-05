@@ -44,22 +44,59 @@ export class BoatProfileComponent implements OnInit {
     end.setDate(new Date(new Date(selectInfo.endStr)).getDate());
     end.setMonth(new Date(new Date(selectInfo.endStr)).getMonth());
     end.setFullYear(new Date(new Date(selectInfo.endStr)).getFullYear());
-    end.setDate(end.getDate());
+    end.setDate(end.getDate() - 1);
     period.endDate = end;
     let id = Number(this._route.snapshot.paramMap.get('id'));
     period.saleEntityId = id;
 
-    this.boatService.addAvailabilityPeriod(period).subscribe({
-        next: data => {
-            
-        },
-        error: error => {
-            this.router.navigate(['boat/' + id]).then(() => {
-              window.location.reload();
-            });
-            alert(error.error);
+    var startMonth =  period.startDate.getMonth() + 1
+    var startMonthString: String;
+    if(startMonth < 10)startMonthString = "0" + startMonth 
+    else startMonthString = startMonth.toString()
+
+    var startDay =  period.startDate.getDate()
+    var startDayString: String;
+    if(startDay < 10)startDayString = "0" + startDay 
+    else startDayString = startDay.toString()
+
+    var endMonth =  period.endDate.getMonth() + 1
+    var endMonthString: String;
+    if(endMonth < 10)endMonthString = "0" + endMonth 
+    else endMonthString = endMonth.toString()
+
+    var endDay =  period.endDate.getDate()
+    var endDayString: String;
+    if(endDay < 10)endDayString = "0" + endDay 
+    else endDayString = endDay.toString()
+
+    var body = {
+      endDate : period.endDate.getFullYear() + "-" + endMonthString + "-" + endDayString + "T00:00:00+0" + (-period.endDate.getTimezoneOffset()/60) + ":00",
+      saleEntityId: period.saleEntityId,
+      startDate: period.startDate.getFullYear() + "-" + startMonthString + "-" + startDayString + "T00:00:00+0" + (-period.startDate.getTimezoneOffset()/60) + ":00"
+    }
+
+    this.boatService.addAvailabilityPeriod(body).subscribe({
+      next: data => {
+        if(data.status === 200){
+          alert("Availability period added")
         }
-    });
+        this.router.navigate(['boat', id]).then(() => {
+          window.location.reload();
+        });
+      },
+      error: data => {
+        console.log(data)
+        if(data.status === 200){
+          alert(data.error.text)
+          this.router.navigate(['boat', id]).then(() => {
+            window.location.reload();
+          });
+        }
+        else{
+          alert(data.error)
+        }     
+      }
+    })
   }
 
   constructor(private datePipe: DatePipe, private _route: ActivatedRoute, private boatService: BoatService, private sanitizer: DomSanitizer, private router: Router) {this.role = localStorage.getItem('role')}
@@ -83,6 +120,7 @@ export class BoatProfileComponent implements OnInit {
         end.setMonth(new Date(tempEnd).getMonth());
         end.setFullYear(new Date(tempEnd).getFullYear());
         end.setDate(end.getDate());
+        end.setDate(end.getDate() + 1);
         availablePeriodCalendar.start = this.datePipe.transform(tempStart, "yyyy-MM-dd");
         availablePeriodCalendar.end = this.datePipe.transform(end, "yyyy-MM-dd");
         availablePeriodCalendar.display = 'background';
