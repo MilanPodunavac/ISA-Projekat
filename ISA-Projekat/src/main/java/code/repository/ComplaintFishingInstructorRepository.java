@@ -9,4 +9,5 @@ import java.util.List;
 
 public interface ComplaintFishingInstructorRepository extends JpaRepository<ComplaintFishingInstructor, Integer> {
     List<ComplaintFishingInstructor> findByFishingInstructorId(Integer id);
+    List<ComplaintFishingInstructor> findByResponded(Boolean responded);
 }

@@ -28,4 +28,8 @@ public class ComplaintFishingInstructor {
     @JoinColumn(name = "fishingInstructor_id")
     @JsonBackReference
     private FishingInstructor fishingInstructor;
+    @Version
+    private int version;
+    @Column
+    private boolean responded;
 }

@@ -28,5 +28,8 @@ public class Complaint {
    @JoinColumn(name = "saleEntity_id")
    @JsonBackReference
    private SaleEntity saleEntity;
-
+   @Version
+   private int version;
+   @Column
+   private boolean responded;
 }

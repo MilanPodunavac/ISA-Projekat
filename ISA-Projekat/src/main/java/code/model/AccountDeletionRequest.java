@@ -23,4 +23,10 @@ public class AccountDeletionRequest {
     @JoinColumn(name="user_id")
     @JsonBackReference
     private User user;
+    @Version
+    private int version;
+    @Column
+    private boolean processed;
+    @Column
+    private boolean accepted;
 }

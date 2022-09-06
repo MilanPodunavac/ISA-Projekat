@@ -158,13 +158,13 @@ export class FishingInstructorComponent implements OnInit {
     }
 
     public goToClientProfileFromReservations(): void {
-        this.router.navigate(['client/' + this.clickedRowReservations.client.id]).then(() => {
+        this.router.navigate(['user-public-info/' + this.clickedRowReservations.client.id]).then(() => {
             window.location.reload();
         });
     }
 
     public goToClientProfileFromActions(): void {
-        this.router.navigate(['client/' + this.clickedRowActions.client.id]).then(() => {
+        this.router.navigate(['user-public-info/' + this.clickedRowActions.client.id]).then(() => {
             window.location.reload();
         });
     }

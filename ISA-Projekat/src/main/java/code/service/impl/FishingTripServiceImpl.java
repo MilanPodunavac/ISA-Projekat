@@ -102,6 +102,7 @@ public class FishingTripServiceImpl implements FishingTripService {
         setInstructor(fishingTrip);
         setLocationId(fishingTrip);
         fishingTrip.setPictures(new HashSet<>(_fishingTripPictureRepository.findByFishingTrip(fishingTrip.getId())));
+        fishingTrip.setScheduleChanged(fishingTrip.getScheduleChanged() + 1);
         return _fishingTripRepository.save(fishingTrip);
     }
 
@@ -266,7 +267,9 @@ public class FishingTripServiceImpl implements FishingTripService {
         fishingTripQuickReservation.setFishingTrip(fishingTrip);
         fishingTripQuickReservation.setSystemTaxPercentage(_currentSystemTaxPercentageRepository.getById(1).getCurrentSystemTaxPercentage() - loggedInInstructor.getCategory().getLesserSystemTaxPercentage());
         fishingTripQuickReservation.setLoyaltyPointsGiven(false);
-        _fishingTripQuickReservationRepository.save(fishingTripQuickReservation);
+        fishingTrip.getFishingTripQuickReservations().add(fishingTripQuickReservation);
+        fishingTrip.setScheduleChanged(fishingTrip.getScheduleChanged() + 1);
+        _fishingTripRepository.save(fishingTrip);
         sendQuickReservationCreatedMailToSubscribers(loggedInInstructor);
     }
 
@@ -371,7 +374,9 @@ public class FishingTripServiceImpl implements FishingTripService {
         fishingTripReservation.setPrice(fishingTrip.getCostPerDay() * fishingTripReservation.getDurationInDays() * (100 - fishingTripReservation.getClient().getCategory().getDiscountPercentage()) / 100);
         fishingTripReservation.setSystemTaxPercentage(_currentSystemTaxPercentageRepository.getById(1).getCurrentSystemTaxPercentage() - fishingInstructor.getCategory().getLesserSystemTaxPercentage());
         fishingTripReservation.setLoyaltyPointsGiven(false);
-        _fishingTripReservationRepository.save(fishingTripReservation);
+        fishingTrip.getFishingTripReservations().add(fishingTripReservation);
+        fishingTrip.setScheduleChanged(fishingTrip.getScheduleChanged() + 1);
+        _fishingTripRepository.save(fishingTrip);
         sendReservationCreatedMailToClient(clientId, fishingInstructor);
         createIncomeRecord(fishingTripReservation, fishingTrip, fishingInstructor);
     }

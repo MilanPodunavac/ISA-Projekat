@@ -41,8 +41,8 @@ public interface AdminService {
     void currentPointsProviderGetsAfterReservation(CurrentPointsProviderGetsAfterReservation currentPointsProviderGetsAfterReservation) throws NotChangedPasswordException;
     void changeClientPointsNeededForLoyaltyProgramCategory(Integer id, LoyaltyProgramClient loyaltyProgramClient) throws NotChangedPasswordException, EntityNotUpdateableException;
     void changeProviderPointsNeededForLoyaltyProgramCategory(Integer id, LoyaltyProgramProvider loyaltyProgramProvider) throws NotChangedPasswordException, EntityNotUpdateableException;
-    void respondToComplaint(Integer id, ComplaintResponse complaintResponse) throws EntityNotFoundException;
-    void respondToComplaintFishingInstructor(Integer id, ComplaintResponse complaintResponse) throws EntityNotFoundException;
+    void respondToComplaint(Integer id, ComplaintResponse complaintResponse) throws EntityNotFoundException, EntityNotUpdateableException;
+    void respondToComplaintFishingInstructor(Integer id, ComplaintResponse complaintResponse) throws EntityNotFoundException, EntityNotUpdateableException;
     void acceptReview(Integer id) throws EntityNotFoundException, EntityNotUpdateableException;
     void acceptReviewFishingTrip(Integer id) throws EntityNotFoundException, EntityNotUpdateableException;
     void declineReview(Integer id) throws EntityNotFoundException;
