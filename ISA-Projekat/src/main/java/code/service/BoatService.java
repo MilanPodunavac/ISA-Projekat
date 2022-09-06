@@ -32,6 +32,8 @@ public interface BoatService {
     void deletePicture(int id, int pic) throws EntityNotOwnedException, EntityNotFoundException, UnauthorizedAccessException, UserNotFoundException;
     void updateBoat(int id, Boat updateBoat) throws EntityNotFoundException, EntityNotOwnedException, EntityNotUpdateableException, UnauthorizedAccessException, UserNotFoundException;
     void addReservationCommentary(int id, int resId, OwnerCommentary commentary) throws EntityNotFoundException, EntityNotOwnedException, ReservationOrActionNotFinishedException, ReservationOrActionAlreadyCommented, UnauthorizedAccessException, UserNotFoundException;
+    void addReview(int boatId, int clientId, int grade, String description) throws EntityNotFoundException, EntityNotOwnedException, ReservationOrActionNotFinishedException, ReservationOrActionAlreadyCommented;
+    void addComplaint(int boatId, int clientId, String description) throws EntityNotFoundException, EntityNotOwnedException, ReservationOrActionNotFinishedException, ReservationOrActionAlreadyCommented;
     void addActionCommentary(int id, int actId, OwnerCommentary commentary) throws EntityNotFoundException, EntityNotOwnedException, ReservationOrActionNotFinishedException, ReservationOrActionAlreadyCommented, UnauthorizedAccessException, UserNotFoundException;
     List<Boat> getAllBoats();
     Boat getBoat(Integer id) throws EntityNotFoundException;

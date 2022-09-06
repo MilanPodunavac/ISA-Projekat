@@ -104,6 +104,8 @@ import { SystemTaxComponent } from './components/admin/system-tax/system-tax.com
 import { UserPublicInfoComponent } from './components/user-public-info/user-public-info.component';
 import { NewCottageReviewComponent } from './new-cottage-review/new-cottage-review.component';
 import { NewCottageComplaintComponent } from './new-cottage-complaint/new-cottage-complaint.component';
+import { NewBoatComplaintComponent } from './new-boat-complaint/new-boat-complaint.component';
+import { NewBoatReviewComponent } from './new-boat-review/new-boat-review.component';
 
 FullCalendarModule.registerPlugins([
   dayGridPlugin,
@@ -187,6 +189,8 @@ FullCalendarModule.registerPlugins([
     UserPublicInfoComponent,
     NewCottageReviewComponent,
     NewCottageComplaintComponent,
+    NewBoatComplaintComponent,
+    NewBoatReviewComponent,
   ],
   imports: [
     BrowserModule,

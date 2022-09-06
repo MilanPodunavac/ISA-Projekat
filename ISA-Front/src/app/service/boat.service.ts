@@ -42,6 +42,12 @@ export class BoatService {
   addReservation(id: number, body: any): Observable<any>{
     return this._httpClient.post<any>(this._APIUrl+`/${id}/reservation`, body);
   }
+  addReview(id: number, body: any): Observable<any>{
+    return this._httpClient.post<any>(this._APIUrl+`/${id}/review`, body);
+  }
+  addComplaint(id: number, body: any): Observable<any>{
+    return this._httpClient.post<any>(this._APIUrl+`/${id}/complaint`, body);
+  }
   getReservation(boatId: number, resId: number): Observable<any>{
     return this._httpClient.get<any>(this._APIUrl+`/${boatId}/reservation/${resId}`);
   }
