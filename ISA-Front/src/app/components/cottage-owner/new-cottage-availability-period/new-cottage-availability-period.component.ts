@@ -15,6 +15,11 @@ export class NewCottageAvailabilityPeriodComponent implements OnInit {
   constructor(private _cottageService: CottageService, private router: Router, private _route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    if(localStorage.getItem("role") != "ROLE_COTTAGE_OWNER"){
+      this.router.navigate(['login']).then(() => {
+        window.location.reload();
+      });
+    }
     this._cottageService.getCottage(Number(this._route.snapshot.paramMap.get('id'))).subscribe({
       next: data => {
         this.name = data.name;

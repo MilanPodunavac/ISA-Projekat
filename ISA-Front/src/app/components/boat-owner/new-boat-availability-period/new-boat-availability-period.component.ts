@@ -14,6 +14,11 @@ export class NewBoatAvailabilityPeriodComponent implements OnInit {
   constructor(private _boatService: BoatService, private router: Router, private _route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    if(localStorage.getItem("role") != "ROLE_BOAT_OWNER"){
+      this.router.navigate(['login']).then(() => {
+        window.location.reload();
+      });
+    }
     this._boatService.getBoat(Number(this._route.snapshot.paramMap.get('id'))).subscribe({
       next: data => {
         this.name = data.name;

@@ -39,6 +39,11 @@ export class NewCottageComponent implements OnInit {
   constructor(private _cottageService: CottageService, private router: Router, private _route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    if(localStorage.getItem("role") != "ROLE_COTTAGE_OWNER"){
+      this.router.navigate(['login']).then(() => {
+        window.location.reload();
+      });
+    }
     this.additionalServices.push({value:"wiFi", viewValue:"Wi-Fi"});
     this.additionalServices.push({value:"petFriendly", viewValue:"Pet friendly"});
     this.additionalServices.push({value:"minibar", viewValue:"Minibar"});
