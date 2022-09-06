@@ -36,21 +36,6 @@
             </div>
         </div>
     </div>
-    <div class="container mb-3">
-        <div *ngIf="boat.pictures?.length" class="table-responsive m-1">
-            <div class="panel-heading m-3">
-                <h2>Pictures</h2>
-            </div>
-            <table class="table table-bordered table-striped table-hover" id="additionalServicesTable">
-                <tbody>
-                    <tr *ngFor='let picture of boat.pictures'>
-                        <td><img [src]="picture.data" class="text-center mb-3" style="max-width: 700px;max-height: 700px;" alt="..."></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <h3 *ngIf="!boat.pictures?.length">No pictures recorded</h3>
-    </div>
 </div>
 <p>Location on map</p>
 <div id="map" name="map" class="map"></div>
