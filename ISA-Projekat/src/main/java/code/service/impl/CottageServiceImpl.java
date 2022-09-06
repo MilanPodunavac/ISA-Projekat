@@ -229,8 +229,8 @@ public class CottageServiceImpl implements CottageService {
         _cottageRepository.save(cottage);
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("marko76589@gmail.com");
-        message.setSubject("Cottage reserved");
-        message.setText("New action: " + cottage.getName() + " " + action.getRange().durationInDays() + " days for a price of " + action.getPrice() + ". Available until " + action.getValidUntilAndIncluding());
+        message.setSubject("New cottage action!");
+        message.setText("New action: " + cottage.getName() + ". " + action.getRange().durationInDays() + " days for a price of " + action.getPrice() + ". Available until " + action.getValidUntilAndIncluding());
         for (Client client: cottage.getClient()) {
             message.setTo(client.getEmail());
             _mailSender.send(message);
