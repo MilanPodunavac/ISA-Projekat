@@ -4,9 +4,7 @@ import code.controller.base.BaseController;
 import code.dto.entities.boat.BoatOwnerGet;
 import code.dto.user.*;
 import code.exceptions.admin.NotChangedPasswordException;
-import code.exceptions.entities.AccountDeletionRequestDontExistException;
-import code.exceptions.entities.EntityNotDeletableException;
-import code.exceptions.entities.LoggedInUserAlreadySubmittedAccountDeletionRequestException;
+import code.exceptions.entities.*;
 import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.AccountDeletionRequest;
 import code.model.Client;
@@ -104,10 +102,14 @@ public class UsersController extends BaseController {
         try {
             _userService.declineAccountDeletionRequest(id, dto.getResponseText());
             return ResponseEntity.ok("Account deletion request declined: " + dto.getResponseText());
-        } catch (AccountDeletionRequestDontExistException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (NotChangedPasswordException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            if(e instanceof AccountDeletionRequestDontExistException) {
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+            } else if (e instanceof NotChangedPasswordException) {
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+            } else {
+                return ResponseEntity.internalServerError().body("Account deletion request already processed!");
+            }
         }
     }
 
@@ -121,12 +123,16 @@ public class UsersController extends BaseController {
         try {
             _userService.acceptAccountDeletionRequest(id, dto.getResponseText());
             return ResponseEntity.ok("Account deletion request accepted: " + dto.getResponseText());
-        } catch (AccountDeletionRequestDontExistException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (NotChangedPasswordException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
-        } catch (EntityNotDeletableException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        } catch (Exception e) {
+            if(e instanceof AccountDeletionRequestDontExistException) {
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+            } else if (e instanceof NotChangedPasswordException) {
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+            } else if (e instanceof EntityNotDeletableException) {
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+            } else {
+                return ResponseEntity.internalServerError().body("Account deletion request already processed!");
+            }
         }
     }
 

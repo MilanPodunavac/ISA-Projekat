@@ -221,9 +221,13 @@ public class UserServiceImpl implements UserService {
     }
 
     private void throwExceptionIfLoggedInUserAlreadySubmittedAccountDeletionRequest(User loggedInUser) throws LoggedInUserAlreadySubmittedAccountDeletionRequestException {
-        AccountDeletionRequest accountDeletionRequest = _accountDeletionRequestRepository.findByUserId(loggedInUser.getId());
-        if (accountDeletionRequest != null) {
-            throw new LoggedInUserAlreadySubmittedAccountDeletionRequestException("You already submitted account deletion request!");
+        List<AccountDeletionRequest> accountDeletionRequests = _accountDeletionRequestRepository.findByUserId(loggedInUser.getId());
+        if (accountDeletionRequests != null) {
+            for (AccountDeletionRequest accountDeletionRequest : accountDeletionRequests) {
+                if (!accountDeletionRequest.isProcessed()) {
+                    throw new LoggedInUserAlreadySubmittedAccountDeletionRequestException("You already submitted account deletion request!");
+                }
+            }
         }
     }
 
@@ -321,7 +325,8 @@ public class UserServiceImpl implements UserService {
         throwExceptionIfAccountDeletionRequestDontExist(id);
         throwExceptionIfAdminDidntChangePassword();
         AccountDeletionRequest accountDeletionRequest = _accountDeletionRequestRepository.getById(id);
-        _accountDeletionRequestRepository.delete(accountDeletionRequest);
+        accountDeletionRequest.setProcessed(true);
+        _accountDeletionRequestRepository.save(accountDeletionRequest);
         sendDeclineAccountDeletionRequestEmail(accountDeletionRequest.getUser().getEmail(), responseText);
     }
 
@@ -357,23 +362,28 @@ public class UserServiceImpl implements UserService {
         throwExceptionIfAdminDidntChangePassword();
         AccountDeletionRequest accountDeletionRequest = _accountDeletionRequestRepository.getById(id);
         checkIfUserDeletable(accountDeletionRequest.getUser());
-        _accountDeletionRequestRepository.delete(accountDeletionRequest);
-        deleteUserLogic(accountDeletionRequest);
-        sendAcceptAccountDeletionRequestEmail(accountDeletionRequest.getUser().getEmail(), responseText);
+        accountDeletionRequest.setProcessed(true);
+        accountDeletionRequest.setAccepted(true);
+        User user = accountDeletionRequest.getUser();
+        accountDeletionRequest.setUser(null);
+        _accountDeletionRequestRepository.save(accountDeletionRequest);
+        deleteUserLogic(user);
+        sendAcceptAccountDeletionRequestEmail(user.getEmail(), responseText);
     }
 
-    private void deleteUserLogic(AccountDeletionRequest accountDeletionRequest) throws EntityNotDeletableException {
-        if (accountDeletionRequest.getUser().getRole().getName().equals("ROLE_FISHING_INSTRUCTOR")) {
-            unlinkReferencesFishingInstructor((FishingInstructor) accountDeletionRequest.getUser());
-        } else if (accountDeletionRequest.getUser().getRole().getName().equals("ROLE_COTTAGE_OWNER")) {
-            unlinkReferencesCottageOwner((CottageOwner) accountDeletionRequest.getUser());
-        } else if (accountDeletionRequest.getUser().getRole().getName().equals("ROLE_BOAT_OWNER")) {
-            unlinkReferencesBoatOwner((BoatOwner) accountDeletionRequest.getUser());
-        } else if (accountDeletionRequest.getUser().getRole().getName().equals("ROLE_CLIENT")) {
-            unlinkReferencesClient((Client) accountDeletionRequest.getUser());
+    private void deleteUserLogic(User user) throws EntityNotDeletableException {
+        User u = user;
+        if (user.getRole().getName().equals("ROLE_FISHING_INSTRUCTOR")) {
+            unlinkReferencesFishingInstructor((FishingInstructor) user);
+        } else if (user.getRole().getName().equals("ROLE_COTTAGE_OWNER")) {
+            unlinkReferencesCottageOwner((CottageOwner) user);
+        } else if (user.getRole().getName().equals("ROLE_BOAT_OWNER")) {
+            unlinkReferencesBoatOwner((BoatOwner) user);
+        } else if (user.getRole().getName().equals("ROLE_CLIENT")) {
+            unlinkReferencesClient((Client) user);
         }
 
-        _userRepository.delete(accountDeletionRequest.getUser());
+        _userRepository.delete(u);
     }
 
     @Override
@@ -438,10 +448,12 @@ public class UserServiceImpl implements UserService {
     }
 
     private void unlinkAccountDeletionRequest(Integer id) {
-        AccountDeletionRequest accountDeletionRequest = _accountDeletionRequestRepository.findByUserId(id);
-        if (accountDeletionRequest != null) {
-            accountDeletionRequest.setUser(null);
-            _accountDeletionRequestRepository.delete(accountDeletionRequest);
+        List<AccountDeletionRequest> accountDeletionRequests = _accountDeletionRequestRepository.findByUserId(id);
+        if (accountDeletionRequests != null) {
+            for (AccountDeletionRequest accountDeletionRequest : accountDeletionRequests) {
+                accountDeletionRequest.setUser(null);
+                _accountDeletionRequestRepository.save(accountDeletionRequest);
+            }
         }
     }
 
@@ -586,6 +598,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<AccountDeletionRequest> getAllAccountDeletionRequests() {
-        return _accountDeletionRequestRepository.findAll();
+        return _accountDeletionRequestRepository.findByProcessed(false);
     }
 }

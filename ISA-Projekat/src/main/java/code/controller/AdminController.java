@@ -432,8 +432,14 @@ public class AdminController extends BaseController {
         try {
             _adminService.respondToComplaint(id, complaintResponse);
             return ResponseEntity.ok("Responded to the complaint!");
-        } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            if(e instanceof EntityNotFoundException) {
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+            } else if (e instanceof EntityNotUpdateableException) {
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+            } else {
+                return ResponseEntity.internalServerError().body("Complaint already responded!");
+            }
         }
     }
 
@@ -447,8 +453,14 @@ public class AdminController extends BaseController {
         try {
             _adminService.respondToComplaintFishingInstructor(id, complaintResponse);
             return ResponseEntity.ok("Responded to the complaint!");
-        } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            if(e instanceof EntityNotFoundException) {
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+            } else if (e instanceof EntityNotUpdateableException) {
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+            } else {
+                return ResponseEntity.internalServerError().body("Complaint already responded!");
+            }
         }
     }
 

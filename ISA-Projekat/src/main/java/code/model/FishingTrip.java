@@ -49,6 +49,9 @@ public class FishingTrip {
    @OneToMany(mappedBy = "fishingTrip", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    @JsonManagedReference
    private Set<FishingTripQuickReservation> fishingTripQuickReservations;
+   @OneToMany(mappedBy = "fishingTrip", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+   @JsonManagedReference
+   private Set<FishingTripReservation> fishingTripReservations;
    @ElementCollection(targetClass= FishingTripReservationTag.class)
    @Enumerated(EnumType.ORDINAL)
    @CollectionTable(name="fishingTrip_tags")
@@ -58,4 +61,8 @@ public class FishingTrip {
    @OneToMany(mappedBy = "fishingTrip", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    @JsonManagedReference
    private Set<ReviewFishingTrip> reviews;
+   @Column
+   private int scheduleChanged;
+   @Version
+   private int version;
 }
