@@ -127,7 +127,8 @@ INSERT INTO SUBSCRIBER_FISHING_INSTRUCTOR (client_id, instructor_id) VALUES (2, 
 INSERT INTO SUBSCRIBER_FISHING_INSTRUCTOR (client_id, instructor_id) VALUES (2, 9);
 INSERT INTO SUBSCRIBER_FISHING_INSTRUCTOR (client_id, instructor_id) VALUES (8, 5);
 
-INSERT INTO BOAT (id, description, name, price_per_day, rules, location_id, engine_number, engine_power, fishing_equipment, length, max_people, max_speed, navigational_equipment, type, user_id, reservation_refund, version, schedule_changed) VALUES (10, 'Ovo je camac', 'Camac', 100, 'pravila pravila da bi me udavila ili kicmu savila il skroz osasavila', 18, 2, 100, 'Stap za pecanje', 5, 4, 150, 0, 'camac', 4, 10, 0, 0);
+INSERT INTO BOAT (id, description, name, price_per_day, rules, location_id, engine_number, engine_power, fishing_equipment, length, max_people, max_speed, navigational_equipment, type, user_id, reservation_refund, version, schedule_changed) VALUES (10, 'Camac jako fensi', 'Camac', 100, 'pravila pravila da bi me udavila ili kicmu savila il skroz osasavila', 18, 2, 100, 'Sva oprema potrebna za pecanje', 5, 4, 150, 0, 'camac', 4, 10, 0, 0);
+INSERT INTO BOAT (id, description, name, price_per_day, rules, location_id, engine_number, engine_power, fishing_equipment, length, max_people, max_speed, navigational_equipment, type, user_id, reservation_refund, version, schedule_changed) VALUES (11, 'Ovo je brodic', 'Brod', 100, 'Ne smete lomiti nista', 18, 2, 100, 'Stap za pecanje', 5, 4, 150, 0, 'Bela ladja', 4, 10, 0, 0);
 
 INSERT INTO BOAT_ADDITIONAL_SERVICES (boat_id, tags) VALUES (10, 0);
 INSERT INTO BOAT_ADDITIONAL_SERVICES (boat_id, tags) VALUES (10, 2);
