@@ -103,6 +103,7 @@ import { ComplaintResponseFishingInstructorComponent } from './components/admin/
 import { SystemTaxComponent } from './components/admin/system-tax/system-tax.component';
 import { UserPublicInfoComponent } from './components/user-public-info/user-public-info.component';
 import { NewCottageReviewComponent } from './new-cottage-review/new-cottage-review.component';
+import { NewCottageComplaintComponent } from './new-cottage-complaint/new-cottage-complaint.component';
 
 FullCalendarModule.registerPlugins([
   dayGridPlugin,
@@ -185,6 +186,7 @@ FullCalendarModule.registerPlugins([
     SystemTaxComponent,
     UserPublicInfoComponent,
     NewCottageReviewComponent,
+    NewCottageComplaintComponent,
   ],
   imports: [
     BrowserModule,

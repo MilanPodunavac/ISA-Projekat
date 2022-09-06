@@ -5,19 +5,18 @@ import { ClientService } from '../service/client.service';
 import { CottageService } from '../service/cottage.service';
 
 @Component({
-  selector: 'app-new-cottage-review',
-  templateUrl: './new-cottage-review.component.html',
-  styleUrls: ['./new-cottage-review.component.scss']
+  selector: 'app-new-cottage-complaint',
+  templateUrl: './new-cottage-complaint.component.html',
+  styleUrls: ['./new-cottage-complaint.component.scss']
 })
-export class NewCottageReviewComponent implements OnInit {
+export class NewCottageComplaintComponent implements OnInit {
 
-  addReviewForm: FormGroup;
+  addComplaintForm: FormGroup;
   errorMessage: string;
 
   constructor(private formBuilder: FormBuilder, private clientService: ClientService, private cottageService: CottageService, private router: Router, private _route: ActivatedRoute) { 
-    this.addReviewForm = formBuilder.group({
+    this.addComplaintForm = formBuilder.group({
       description: ['', [Validators.required]],
-      grade: ['', [Validators.required, Validators.min(1), Validators.max(5)]],
   });
   }
 
@@ -29,13 +28,12 @@ export class NewCottageReviewComponent implements OnInit {
     this.clientService.getLoggedInClient().subscribe({
       next: data =>{
         var body = {
-          grade: this.addReviewForm.get('grade').value,
-          description: this.addReviewForm.get('description').value,
+          description: this.addComplaintForm.get('description').value,
           clientId: data.id,
           saleEntityId: Number(this._route.snapshot.paramMap.get('id'))
         }
     
-        this.cottageService.addReview(body.saleEntityId, body).subscribe({
+        this.cottageService.addComplaint(body.saleEntityId, body).subscribe({
             next: data => {
                 this.router.navigate(['cottage/'+body.saleEntityId]).then(() => {
                     window.location.reload();

@@ -31,6 +31,9 @@
                             <button *ngIf="role==='ROLE_CLIENT'" [disabled]="!canAddReview" id="reviewButton" class="btn btn-primary" (click)="addReview()">
                                 <strong>Add new review</strong>
                             </button>
+                            <button *ngIf="role==='ROLE_CLIENT'" [disabled]="!canAddComplaint" id="complaintButton" class="btn btn-primary" (click)="addComplaint()">
+                                <strong>Add new complaint</strong>
+                            </button>
                         </div>
                     </div>
                 </div>

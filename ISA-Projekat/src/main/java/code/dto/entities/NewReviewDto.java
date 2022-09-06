@@ -1,4 +1,4 @@
-package code.dto.entities.cottage;
+package code.dto.entities;
 
 import code.model.cottage.CottageReservationTag;
 import lombok.AllArgsConstructor;
@@ -17,11 +17,11 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class NewCottageReviewDto {
+public class NewReviewDto {
     @NotNull
     public int clientId;
     @NotNull
-    public int cottageId;
+    public int saleEntityId;
     @Min(value = 1, message = "Grade must be greater or equal to 1")
     @Max(value = 5, message = "Grade must be lesser or equal to 5")
     public int grade;

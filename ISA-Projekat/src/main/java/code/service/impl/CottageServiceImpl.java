@@ -48,10 +48,11 @@ public class CottageServiceImpl implements CottageService {
     private final ClientRepository _clientRepository;
     private final CottageOwnerRepository _cottageOwnerRepository;
     private final ReviewRepository _reviewRepository;
+    private final ComplaintRepository _complaintRepository;
 
     private final JavaMailSender _mailSender;
 
-    public CottageServiceImpl(UserRepository userRepository, CottageRepository cottageRepository, ReservationRepository reservationRepository, PictureRepository pictureRepository, ActionRepository actionRepository, CurrentSystemTaxPercentageRepository currentSystemTaxPercentageRepository, LoyaltyProgramProviderRepository loyaltyProgramProviderRepository, LoyaltyProgramClientRepository loyaltyProgramClientRepository, CurrentPointsClientGetsAfterReservationRepository currentPointsClientGetsAfterReservationRepository, CurrentPointsProviderGetsAfterReservationRepository currentPointsProviderGetsAfterReservationRepository, IncomeRecordRepository incomeRecordRepository, ClientRepository clientRepository, CottageOwnerRepository cottageOwnerRepository, ReviewRepository reviewRepository, JavaMailSender mailSender){
+    public CottageServiceImpl(UserRepository userRepository, CottageRepository cottageRepository, ReservationRepository reservationRepository, PictureRepository pictureRepository, ActionRepository actionRepository, CurrentSystemTaxPercentageRepository currentSystemTaxPercentageRepository, LoyaltyProgramProviderRepository loyaltyProgramProviderRepository, LoyaltyProgramClientRepository loyaltyProgramClientRepository, CurrentPointsClientGetsAfterReservationRepository currentPointsClientGetsAfterReservationRepository, CurrentPointsProviderGetsAfterReservationRepository currentPointsProviderGetsAfterReservationRepository, IncomeRecordRepository incomeRecordRepository, ClientRepository clientRepository, CottageOwnerRepository cottageOwnerRepository, ReviewRepository reviewRepository, ComplaintRepository complaintRepository, JavaMailSender mailSender){
         _cottageRepository = cottageRepository;
         _userRepository = userRepository;
         _reservationRepository = reservationRepository;
@@ -66,6 +67,7 @@ public class CottageServiceImpl implements CottageService {
         _clientRepository = clientRepository;
         _cottageOwnerRepository = cottageOwnerRepository;
         _reviewRepository = reviewRepository;
+        _complaintRepository = complaintRepository;
         _mailSender = mailSender;
     }
 
@@ -309,6 +311,17 @@ public class CottageServiceImpl implements CottageService {
         review.setClient(client);
         review.setSaleEntity(cottage);
         _reviewRepository.save(review);
+    }
+
+    @Override
+    public void addComplaint(int cottageId, int clientId, String description) throws EntityNotFoundException, EntityNotOwnedException {
+        Client client = _clientRepository.findById(clientId).get();
+        Cottage cottage = _cottageRepository.findById(cottageId).get();
+        Complaint complaint = new Complaint();
+        complaint.setDescription(description);
+        complaint.setClient(client);
+        complaint.setSaleEntity(cottage);
+        _complaintRepository.save(complaint);
     }
 
     @Override

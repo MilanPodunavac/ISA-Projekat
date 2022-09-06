@@ -24,6 +24,7 @@ export class CottageProfileComponent implements OnInit {
   cottage: CottageGet;
   map: Map;
   canAddReview: boolean;
+  canAddComplaint: boolean;
   calendarOptions: CalendarOptions = {
     headerToolbar: {
         left: 'prev,next today',
@@ -185,8 +186,11 @@ export class CottageProfileComponent implements OnInit {
       if(this.role ==='ROLE_CLIENT'){
         this._clientService.getLoggedInClient().subscribe({
           next: data => {
-            if(this.cottage.cottageReservations.filter(e => e.clientId === data.id).length > 0){
+            if(this.cottage.cottageReservations.filter(e => e.clientId === data.id && e.endDate < new Date()).length > 0){
               this.canAddReview = true
+            }
+            if(this.cottage.cottageReservations.filter(e => e.clientId === data.id && e.endDate < new Date()).length > 0){
+              this.canAddComplaint = true
             }
           }
         })
@@ -253,5 +257,8 @@ export class CottageProfileComponent implements OnInit {
   }
   addReview(){
     this.router.navigate(['cottage/'+this.cottage.id+'/new-cottage-review'])
+  }
+  addComplaint(){
+    this.router.navigate(['cottage/'+this.cottage.id+'/new-cottage-complaint'])
   }
 }

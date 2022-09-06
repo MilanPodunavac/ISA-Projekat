@@ -71,6 +71,7 @@ import { ComplaintResponseFishingInstructorComponent } from './components/admin/
 import { SystemTaxComponent } from './components/admin/system-tax/system-tax.component';
 import { UserPublicInfoComponent } from './components/user-public-info/user-public-info.component';
 import { NewCottageReviewComponent } from './new-cottage-review/new-cottage-review.component';
+import { NewCottageComplaintComponent } from './new-cottage-complaint/new-cottage-complaint.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -88,6 +89,7 @@ const routes: Routes = [
   { path: 'cottage/:id/new-cottage-action', component: NewCottageActionComponent },
   { path: 'cottage/:id/new-cottage-reservation', component: NewCottageReservationComponent },
   { path: 'cottage/:id/new-cottage-review', component: NewCottageReviewComponent},
+  { path: 'cottage/:id/new-cottage-complaint', component: NewCottageComplaintComponent},
   { path: 'profile', component: ProfileComponent },
   { path: 'cottage-owner', component: CottageOwnerComponent },
   { path: 'cottage-owner/cottage/:id', component: CottageOwnerCottageComponent },
