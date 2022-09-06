@@ -106,6 +106,8 @@ import { NewCottageReviewComponent } from './new-cottage-review/new-cottage-revi
 import { NewCottageComplaintComponent } from './new-cottage-complaint/new-cottage-complaint.component';
 import { NewBoatComplaintComponent } from './new-boat-complaint/new-boat-complaint.component';
 import { NewBoatReviewComponent } from './new-boat-review/new-boat-review.component';
+import { NewFishingInstructorComplaintComponent } from './new-fishing-instructor-complaint/new-fishing-instructor-complaint.component';
+import { NewFishingInstructorReviewComponent } from './new-fishing-instructor-review/new-fishing-instructor-review.component';
 
 FullCalendarModule.registerPlugins([
   dayGridPlugin,
@@ -191,6 +193,8 @@ FullCalendarModule.registerPlugins([
     NewCottageComplaintComponent,
     NewBoatComplaintComponent,
     NewBoatReviewComponent,
+    NewFishingInstructorComplaintComponent,
+    NewFishingInstructorReviewComponent,
   ],
   imports: [
     BrowserModule,

@@ -42,6 +42,14 @@ export class FishingInstructorService {
 		  return this._httpClient.put(this.apiUrl + '/fishing-instructor/changePassword', password, { responseType: 'text'});
     }
 
+    public addReview(id: number, body: any): Observable<any>{
+        return this._httpClient.post<any>(this.apiUrl+`/fishing-instructor/${id}/review`, body);
+    }
+
+    public addComplaint(id: number, body: any): Observable<any>{
+        return this._httpClient.post<any>(this.apiUrl+`/fishing-instructor/${id}/complaint`, body);
+    }
+
     public addAvailabilityPeriod(availabilityPeriod: FishingInstructorAvailablePeriodGet): Observable<string> {
 		  return this._httpClient.post(this.apiUrl + '/fishing-instructor/addAvailablePeriod', availabilityPeriod, { responseType: 'text'});
     }

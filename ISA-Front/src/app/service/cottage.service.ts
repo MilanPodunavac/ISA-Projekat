@@ -57,7 +57,6 @@ export class CottageService {
     return this._httpClient.post<any>(this._APIUrl+`/${id}/review`, body);
   }
   addComplaint(id: number, body: any): Observable<any>{
-    console.log(id)
     return this._httpClient.post<any>(this._APIUrl+`/${id}/complaint`, body);
   }
   getAction(cottageId: number, actId: number): Observable<any>{

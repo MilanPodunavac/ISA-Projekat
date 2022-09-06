@@ -72,6 +72,10 @@ import { SystemTaxComponent } from './components/admin/system-tax/system-tax.com
 import { UserPublicInfoComponent } from './components/user-public-info/user-public-info.component';
 import { NewCottageReviewComponent } from './new-cottage-review/new-cottage-review.component';
 import { NewCottageComplaintComponent } from './new-cottage-complaint/new-cottage-complaint.component';
+import { NewBoatReviewComponent } from './new-boat-review/new-boat-review.component';
+import { NewBoatComplaintComponent } from './new-boat-complaint/new-boat-complaint.component';
+import { NewFishingInstructorReviewComponent } from './new-fishing-instructor-review/new-fishing-instructor-review.component';
+import { NewFishingInstructorComplaintComponent } from './new-fishing-instructor-complaint/new-fishing-instructor-complaint.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -101,6 +105,8 @@ const routes: Routes = [
   { path: 'fishing-trip/reservation', component: FishingTripReservationComponent },
   { path: 'fishing-instructor/:id', component: FishingInstructorProfileComponent },
   { path: 'fishing-trip/:id', component: FishingTripProfileComponent },
+  { path: 'fishing-instructor/:id/new-fishing-instructor-review', component: NewFishingInstructorReviewComponent},
+  { path: 'fishing-instructor/:id/new-fishing-instructor-complaint', component: NewFishingInstructorComplaintComponent},
   { path: 'cottage/:id/reservation/:resId', component: CottageReservationViewComponent },
   { path: 'cottage/:id/reservation/:resId/new-commentary', component: CottageReservationOwnerCommentaryComponent },
   { path: 'cottage/:id/action/:actId/new-commentary', component: CottageActionOwnerCommentaryComponent },
@@ -119,6 +125,8 @@ const routes: Routes = [
   { path: 'boat/:id/new-availability-period', component: NewBoatAvailabilityPeriodComponent },
   { path: 'boat/:id/new-boat-reservation', component: NewBoatReservationComponent },
   { path: 'boat/:id/new-boat-action', component: NewBoatActionComponent },
+  { path: 'boat/:id/new-boat-review', component: NewBoatReviewComponent},
+  { path: 'boat/:id/new-boat-complaint', component: NewBoatComplaintComponent},
   { path: 'new-boat', component: NewBoatComponent },
   { path: 'business-report', component: BusinessReportComponent },
   { path: 'boat-owner/boat/:id', component: BoatOwnerBoatComponent },
