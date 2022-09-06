@@ -25,8 +25,11 @@
                             <button *ngIf="role==='ROLE_COTTAGE_OWNER'" id="viewVisitReportButton" class="btn btn-primary" [routerLink]="['../../visit-report/', cottage.id]" style="margin-left: 50px;">
                                 <strong>View visit report</strong>
                             </button>
-                            <button *ngIf="role==='ROLE_COTTAGE_OWNER'" [disabled]="!cottage.deletable" id="viewVisitReportButton" class="btn btn-primary" (click)="deleteCottage()" style="margin-left: 50px;">
+                            <button *ngIf="role==='ROLE_COTTAGE_OWNER'" ="!cottage.deletable" id="viewVisitReportButton" class="btn btn-primary" (click)="deleteCottage()" style="margin-left: 50px;">
                                 <strong>Delete cottage</strong>
+                            </button>
+                            <button *ngIf="role==='ROLE_CLIENT'" [disabled]="!canAddReview" id="reviewButton" class="btn btn-primary" (click)="addReview()">
+                                <strong>Add new review</strong>
                             </button>
                         </div>
                     </div>

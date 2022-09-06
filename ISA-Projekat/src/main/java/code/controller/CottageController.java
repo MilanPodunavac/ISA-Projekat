@@ -3,14 +3,17 @@ package code.controller;
 import code.controller.base.BaseController;
 import code.dto.entities.*;
 import code.dto.entities.boat.BoatGetDto;
+import code.dto.entities.boat.NewBoatActionDto;
 import code.dto.entities.cottage.*;
 import code.exceptions.entities.*;
 import code.exceptions.provider_registration.UnauthorizedAccessException;
 import code.exceptions.provider_registration.UserNotFoundException;
+import code.model.Review;
 import code.model.base.Action;
 import code.model.base.AvailabilityPeriod;
 import code.model.base.OwnerCommentary;
 import code.model.base.Reservation;
+import code.model.boat.BoatAction;
 import code.model.cottage.Cottage;
 import code.model.cottage.CottageAction;
 import code.model.cottage.CottageReservation;
@@ -335,6 +338,24 @@ public class CottageController extends BaseController {
             return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
         }
         return ResponseEntity.ok("Commentary added");
+    }
+
+    @PostMapping(value = "{id}/review")
+    @PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<String> addReview(@Valid @RequestBody NewCottageReviewDto dto, @PathVariable Integer id, BindingResult result){
+        if(result.hasErrors()){
+            return formatErrorResponse(result);//400
+        }
+        try{
+            _cottageService.addReview(dto.cottageId, dto.clientId, dto.grade, dto.description);
+        }
+        catch (Exception ex) {
+            if(ex instanceof EntityNotOwnedException || ex instanceof UnauthorizedAccessException)return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+            if(ex instanceof EntityNotFoundException || ex instanceof UserNotFoundException)return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+            if(ex instanceof EntityNotAvailableException || ex instanceof InvalidReservationException || ex instanceof ClientCancelledThisPeriodException)return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+            return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
+        }
+        return ResponseEntity.ok("Action added");
     }
 
     @GetMapping("/{id}/visit-report")
