@@ -54,6 +54,11 @@ export class NewBoatComponent implements OnInit {
   constructor(private _boatService: BoatService, private router: Router, private _route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    if(localStorage.getItem("role") != "ROLE_BOAT_OWNER"){
+      this.router.navigate(['login']).then(() => {
+        window.location.reload();
+      });
+    }
     this.navigationalEquipment.push({value: "Gps", viewValue: "Gps"})
     this.navigationalEquipment.push({value: "radar", viewValue: "Radar"})
     this.navigationalEquipment.push({value: "Vhf_radio", viewValue: "VHF radio"})

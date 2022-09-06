@@ -17,6 +17,11 @@ export class BoatReservationOwnerCommentaryComponent implements OnInit {
   constructor(private _boatService: BoatService, private router: Router, private _route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    if(localStorage.getItem("role") != "ROLE_BOAT_OWNER"){
+      this.router.navigate(['login']).then(() => {
+        window.location.reload();
+      });
+    }
     this.boatId = Number(this._route.snapshot.paramMap.get('id'));
     this.resId = Number(this._route.snapshot.paramMap.get('resId'))
   }

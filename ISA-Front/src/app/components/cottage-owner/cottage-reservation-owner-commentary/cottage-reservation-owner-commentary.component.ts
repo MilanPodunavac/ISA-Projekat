@@ -17,6 +17,11 @@ export class CottageReservationOwnerCommentaryComponent implements OnInit {
   constructor(private _cottageService: CottageService, private router: Router, private _route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    if(localStorage.getItem("role") != "ROLE_COTTAGE_OWNER"){
+      this.router.navigate(['login']).then(() => {
+        window.location.reload();
+      });
+    }
     this.cottageId = Number(this._route.snapshot.paramMap.get('id'));
     this.resId = Number(this._route.snapshot.paramMap.get('resId'))
   }
