@@ -40,7 +40,7 @@ INSERT INTO COTTAGE (id, description, name, rules, location_id, bed_number, room
 INSERT INTO AVAILABILITY_PERIOD (id, end_date, start_date, sale_entity_id) VALUES(1, '2022-05-30 00:00:00 +4:00', '2022-05-1 00:00:00 +4:00', 1);
 INSERT INTO AVAILABILITY_PERIOD (id, end_date, start_date, sale_entity_id) VALUES(2, '2022-06-30 00:00:00 +4:00', '2022-06-1 00:00:00 +4:00', 1);
 
-INSERT INTO FISHING_TRIP (cost_per_day, description, equipment, max_people, name, percentage_instructor_keeps_if_reservation_cancelled, rules, fishing_instructor_id, location_id) VALUES (100, 'opis', 'oprema', 5, 'naziv', 0, 'pravila', 1, 11);
+INSERT INTO FISHING_TRIP (cost_per_day, description, equipment, max_people, name, percentage_instructor_keeps_if_reservation_cancelled, rules, fishing_instructor_id, location_id, schedule_changed, version) VALUES (100, 'opis', 'oprema', 5, 'naziv', 0, 'pravila', 1, 11, 0, 0);
 
 INSERT INTO FISHING_INSTRUCTOR_AVAILABLE_PERIOD (available_from, available_to, fishing_instructor_id) VALUES('2023-09-05', '2023-10-05', 1);
 
