@@ -678,6 +678,9 @@ public class AdminServiceImpl implements AdminService {
 
         Complaint complaint = _complaintRepository.getById(id);
 
+        complaint.setResponded(true);
+        _complaintRepository.save(complaint);
+
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("marko76589@gmail.com");
         message.setTo(complaint.getClient().getEmail());
@@ -695,9 +698,6 @@ public class AdminServiceImpl implements AdminService {
         message2.setSubject("Complaint response");
         message2.setText(complaintResponse.getResponseToProvider());
         _mailSender.send(message2);
-
-        complaint.setResponded(true);
-        _complaintRepository.save(complaint);
     }
 
     private void throwExceptionIfComplaintDoesntExist(Integer id) throws EntityNotFoundException {
@@ -722,6 +722,9 @@ public class AdminServiceImpl implements AdminService {
 
         ComplaintFishingInstructor complaint = _complaintFishingInstructorRepository.getById(id);
 
+        complaint.setResponded(true);
+        _complaintFishingInstructorRepository.save(complaint);
+
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("marko76589@gmail.com");
         message.setTo(complaint.getClient().getEmail());
@@ -735,9 +738,6 @@ public class AdminServiceImpl implements AdminService {
         message2.setSubject("Complaint response");
         message2.setText(complaintResponse.getResponseToProvider());
         _mailSender.send(message2);
-
-        complaint.setResponded(true);
-        _complaintFishingInstructorRepository.save(complaint);
     }
 
     private void throwExceptionIfComplaintFishingInstructorDoesntExist(Integer id) throws EntityNotFoundException {
