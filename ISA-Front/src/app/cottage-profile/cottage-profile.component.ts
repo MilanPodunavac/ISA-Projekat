@@ -34,6 +34,7 @@ export class CottageProfileComponent implements OnInit {
   };
 
   handleDateSelect(selectInfo: DateSelectArg) {
+    if(this.role != "ROLE_COTTAGE_OWNER") return;
     const calendarApi = selectInfo.view.calendar;
 
     calendarApi.unselect(); 
