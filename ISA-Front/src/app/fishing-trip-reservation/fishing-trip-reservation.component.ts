@@ -1,6 +1,9 @@
+import { DatePipe, formatDate } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { FishingReservationGet } from '../model/fishing-reservation-get.model';
 import { FishingTripGet } from '../model/fishing-trip-get';
+import { ClientService } from '../service/client.service';
 import { FishingTripService } from '../service/fishing-trip.service';
 
 @Component({
@@ -21,9 +24,15 @@ export class FishingTripReservationComponent implements OnInit {
   setNumberOfDays: number;
   setNumberOfPeople: number;
   setEndDate : Date;
+  loggedInId : number;
 
-  constructor(private _fishingTripService: FishingTripService, private router: Router) {
+  constructor(private _fishingTripService: FishingTripService, private router: Router, private _clientService: ClientService) {
     this.role = localStorage.getItem('role');
+    this._clientService.getLoggedInClient().subscribe(
+      {next: data => {
+        this.loggedInId = data.id;
+      }
+    });
   }
 
 
@@ -35,7 +44,7 @@ export class FishingTripReservationComponent implements OnInit {
     });
   }
 
-  filterBoat(){
+  filterTrips(){
     this.setStartDate = this.startDate;
     this.setNumberOfDays = this.numberOfDays;
     this.setNumberOfPeople = this.numberOfPeople;
@@ -50,40 +59,28 @@ export class FishingTripReservationComponent implements OnInit {
     }
 
     this.fishingTrips = [];
-    /*for(var i = 0; i < this.unfilteredFishingTrips.length; i++){
+    for(var i = 0; i < this.unfilteredFishingTrips.length; i++){
       console.log(this.unfilteredFishingTrips[i])
       //console.log(new Date(this.unFilteredCottages[i].availabilityPeriods[1].startDate))
         if(this.unfilteredFishingTrips[i].maxPeople >= this.numberOfPeople
-          && this.unfilteredFishingTrips[i].startDate.filter(e => new Date(e.startDate) <= this.setStartDate && new Date(e.endDate) > this.setEndDate).length > 0){
+          && this.unfilteredFishingTrips[i].fishingInstructor.fishingInstructorAvailablePeriods.filter(e => new Date(e.availableFrom) <= this.setStartDate && new Date(e.availableTo) > this.setEndDate).length > 0){
           this.fishingTrips.push(this.unfilteredFishingTrips[i]);
         }
-    }*/
+    }
   }
 
-  makeReservation(cottageId: number, additionalServices: string[]){
-    /*var startMonth =  this.setStartDate.getMonth() + 1
-    var startMonthString: String;
-    if(startMonth < 10)startMonthString = "0" + startMonth 
-    else startMonthString = startMonth.toString()
-
-    var startDay =  this.setStartDate.getDate()
-    var startDayString: String;
-    if(startDay < 10)startDayString = "0" + startDay 
-    else startDayString = startDay.toString()
-
-    var body = {
-      cottageReservationTag: additionalServices,
-      cottageId: cottageId,
-      numberOfDays: this.setNumberOfDays,
-      numberOfPeople: this.setNumberOfBeds,
-      startDate: this.setStartDate.getFullYear() + "-" + startMonthString + "-" + startDayString + "T00:00:00+0" + (-this.setStartDate.getTimezoneOffset()/60) + ":00",
-      clientEmail: localStorage.getItem("email")
-    }
+  makeReservation(fishingTripId: number, additionalServices: string[]){
+    
+    var body = new FishingReservationGet()
+    body.start = formatDate(this.setStartDate, "yyyy-MM-dd", "en-GB");
+    body.durationInDays = this.setNumberOfDays;
+    body.numberOfPeople = this.setNumberOfPeople;
+    body.fishingTripReservationTags = additionalServices;
     console.log(body)
-    this._cottageService.addReservation(body).subscribe({
+    this._fishingTripService.addFishingTripReservation(fishingTripId, this.loggedInId, body).subscribe({
       next: data => {
         if(data.status === 200){
-          alert("Action added")
+          alert("Reservation added")
         }
         this.router.navigate(['reservations']).then(() => {
           window.location.reload();
@@ -101,7 +98,7 @@ export class FishingTripReservationComponent implements OnInit {
           alert(data.error)
         }     
       }
-    })*/
+    })
   }
 
   

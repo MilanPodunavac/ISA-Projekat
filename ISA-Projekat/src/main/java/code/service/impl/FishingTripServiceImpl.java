@@ -354,27 +354,26 @@ public class FishingTripServiceImpl implements FishingTripService {
 
     @Transactional
     @Override
-    public void addReservation(Integer fishingTripId, Integer clientId, FishingTripReservation fishingTripReservation) throws FishingTripNotFoundException, AddReservationToAnotherInstructorFishingTripException, EnabledClientDoesntExistException, ReservationStartDateInPastException, FishingTripReservationNumberOfPeopleHigherThanFishingTripMaxPeopleException, FishingTripReservationTagsDontContainReservationTagException, NoAvailablePeriodForReservationException, ClientBannedException, ClientBusyDuringReservationException, InstructorBusyDuringReservationException {
-        FishingInstructor loggedInInstructor = getLoggedInFishingInstructor();
+    public void addReservation(Integer fishingTripId, Integer clientId, FishingTripReservation fishingTripReservation, FishingInstructor fishingInstructor) throws FishingTripNotFoundException, AddReservationToAnotherInstructorFishingTripException, EnabledClientDoesntExistException, ReservationStartDateInPastException, FishingTripReservationNumberOfPeopleHigherThanFishingTripMaxPeopleException, FishingTripReservationTagsDontContainReservationTagException, NoAvailablePeriodForReservationException, ClientBannedException, ClientBusyDuringReservationException, InstructorBusyDuringReservationException {
         throwExceptionIfFishingTripNotFound(fishingTripId);
         FishingTrip fishingTrip = _fishingTripRepository.getById(fishingTripId);
-        throwExceptionIfAddReservationToAnotherInstructorFishingTrip(loggedInInstructor, fishingTrip);
+        throwExceptionIfAddReservationToAnotherInstructorFishingTrip(fishingInstructor, fishingTrip);
         _userService.throwExceptionIfEnabledClientDoesntExist(clientId);
         throwExceptionIfFishingTripReservationNumberOfPeopleHigherThanFishingTripMaxPeople(fishingTripReservation, fishingTrip);
         throwExceptionIfReservationStartDateInPast(fishingTripReservation);
         throwExceptionIfFishingTripReservationTagsDontContainQuickReservationTag(fishingTripReservation, fishingTrip);
-        throwExceptionIfNoAvailablePeriodForReservation(loggedInInstructor, fishingTripReservation);
-        throwExceptionIfInstructorBusyDuringReservation(loggedInInstructor, fishingTripReservation);
+        throwExceptionIfNoAvailablePeriodForReservation(fishingInstructor, fishingTripReservation);
+        throwExceptionIfInstructorBusyDuringReservation(fishingInstructor, fishingTripReservation);
         throwExceptionIfClientBanned(clientId);
         throwExceptionIfClientBusyDuringReservation(clientId, fishingTripReservation);
         fishingTripReservation.setFishingTrip(fishingTrip);
         fishingTripReservation.setClient((Client) _userService.findById(clientId));
         fishingTripReservation.setPrice(fishingTrip.getCostPerDay() * fishingTripReservation.getDurationInDays() * (100 - fishingTripReservation.getClient().getCategory().getDiscountPercentage()) / 100);
-        fishingTripReservation.setSystemTaxPercentage(_currentSystemTaxPercentageRepository.getById(1).getCurrentSystemTaxPercentage() - loggedInInstructor.getCategory().getLesserSystemTaxPercentage());
+        fishingTripReservation.setSystemTaxPercentage(_currentSystemTaxPercentageRepository.getById(1).getCurrentSystemTaxPercentage() - fishingInstructor.getCategory().getLesserSystemTaxPercentage());
         fishingTripReservation.setLoyaltyPointsGiven(false);
         _fishingTripReservationRepository.save(fishingTripReservation);
-        sendReservationCreatedMailToClient(clientId, loggedInInstructor);
-        createIncomeRecord(fishingTripReservation, fishingTrip, loggedInInstructor);
+        sendReservationCreatedMailToClient(clientId, fishingInstructor);
+        createIncomeRecord(fishingTripReservation, fishingTrip, fishingInstructor);
     }
 
     private void throwExceptionIfAddReservationToAnotherInstructorFishingTrip(FishingInstructor loggedInInstructor, FishingTrip fishingTrip) throws AddReservationToAnotherInstructorFishingTripException {

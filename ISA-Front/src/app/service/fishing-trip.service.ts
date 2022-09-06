@@ -70,7 +70,7 @@ export class FishingTripService {
 		return this.http.delete(this.apiUrl + '/delete/' + id, { responseType: 'text'});
 	}
 
-	public addFishingTripReservation(idFishingTrip: number, idClient: number, newReservation: FishingReservationGet): Observable<string> {
+	public addFishingTripReservation(idFishingTrip: number, idClient: number, newReservation: FishingReservationGet): Observable<any> {
 		return this.http.post(this.apiUrl + '/' + idFishingTrip + '/addReservation/' + idClient, newReservation, { responseType: 'text'});
 	}
 

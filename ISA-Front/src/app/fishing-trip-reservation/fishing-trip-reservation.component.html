@@ -21,7 +21,37 @@
             <p>Number of people:</p>
             <input type="text" class="form-control mb-1" id="numberOfPeople" [(ngModel)]="numberOfPeople" placeholder="0" required>
         </div>
-        <button mat-raised-button color="primary" (click)="filterBoat()">Filter boats</button>
+        <button mat-raised-button color="primary" (click)="filterTrips()">Filter trips</button>
     </div>
 
+    <div *ngIf="fishingTrips?.length" class="table-responsive m-1">
+        <table class="table table-bordered table-striped table-hover" id="fishingTripsTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Max people</th>
+                    <th>Price per day</th>
+                    <th>Owner</th>
+                    <th>Grade</th>
+                    <th>Additional services</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor='let fishingTrip of fishingTrips' (dblclick)="doubleClickFunction(fishingTrip.id)">
+                    <td>{{fishingTrip.name}}</td>
+                    <td>{{fishingTrip.location.streetName}}, {{fishingTrip.location.cityName}}, {{fishingTrip.location.countryName}}</td>
+                    <td>{{fishingTrip.maxPeople}}</td>
+                    <td>{{fishingTrip.costPerDay}}</td>
+                    <td>{{fishingTrip.fishingInstructor.firstName}} {{fishingTrip.fishingInstructor.lastName}}</td>
+                    <td>{{fishingTrip.grade}}</td>
+                    <td>{{fishingTrip.fishingTripReservationTags}}</td>
+                    <button mat-raised-button color="primary" (click)="makeReservation(fishingTrip.id, fishingTrip.fishingTripReservationTags)">Make reservation</button>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="!fishingTrips?.length">
+        No fishing trips registered
+    </div>
 </div>
