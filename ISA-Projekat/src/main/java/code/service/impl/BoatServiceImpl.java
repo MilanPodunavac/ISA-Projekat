@@ -48,9 +48,11 @@ public class BoatServiceImpl  implements BoatService {
     private final CurrentPointsProviderGetsAfterReservationRepository _currentPointsProviderGetsAfterReservationRepository;
     private final LoyaltyProgramProviderRepository _loyaltyProgramProviderRepository;
     private final LoyaltyProgramClientRepository _loyaltyProgramClientRepository;
+    private final ReviewRepository _reviewRepository;
+    private final ComplaintRepository _complaintRepository;
     private final JavaMailSender _mailSender;
 
-    public BoatServiceImpl(BoatRepository boatRepository, UserRepository userRepository, ReservationRepository reservationRepository, ActionRepository actionRepository, CurrentSystemTaxPercentageRepository currentSystemTaxPercentageRepository, IncomeRecordRepository incomeRecordRepository, BoatOwnerRepository boatOwnerRepository, ClientRepository clientRepository, CurrentPointsClientGetsAfterReservationRepository currentPointsClientGetsAfterReservationRepository, CurrentPointsProviderGetsAfterReservationRepository currentPointsProviderGetsAfterReservationRepository, LoyaltyProgramProviderRepository loyaltyProgramProviderRepository, LoyaltyProgramClientRepository loyaltyProgramClientRepository, JavaMailSender mailSender){
+    public BoatServiceImpl(BoatRepository boatRepository, UserRepository userRepository, ReservationRepository reservationRepository, ActionRepository actionRepository, CurrentSystemTaxPercentageRepository currentSystemTaxPercentageRepository, IncomeRecordRepository incomeRecordRepository, BoatOwnerRepository boatOwnerRepository, ClientRepository clientRepository, CurrentPointsClientGetsAfterReservationRepository currentPointsClientGetsAfterReservationRepository, CurrentPointsProviderGetsAfterReservationRepository currentPointsProviderGetsAfterReservationRepository, LoyaltyProgramProviderRepository loyaltyProgramProviderRepository, LoyaltyProgramClientRepository loyaltyProgramClientRepository, ReviewRepository reviewRepository, ComplaintRepository complaintRepository, JavaMailSender mailSender){
         _boatRepository = boatRepository;
         _userRepository = userRepository;
         _reservationRepository = reservationRepository;
@@ -63,6 +65,8 @@ public class BoatServiceImpl  implements BoatService {
         _currentPointsProviderGetsAfterReservationRepository = currentPointsProviderGetsAfterReservationRepository;
         _loyaltyProgramProviderRepository = loyaltyProgramProviderRepository;
         _loyaltyProgramClientRepository = loyaltyProgramClientRepository;
+        _reviewRepository = reviewRepository;
+        _complaintRepository = complaintRepository;
         _mailSender = mailSender;
     }
 
@@ -294,6 +298,29 @@ public class BoatServiceImpl  implements BoatService {
         boat.addPicture(pic);
         _boatRepository.save(boat);
         FileUploadUtil.saveFile(BOAT_PICTURE_DIRECTORY, boat.getId() + "_" + pic.getName(), picture);
+    }
+
+    @Override
+    public void addReview(int boatId, int clientId, int grade, String description) throws EntityNotFoundException, EntityNotOwnedException {
+        Client client = _clientRepository.findById(clientId).get();
+        Boat boat = _boatRepository.findById(boatId).get();
+        Review review = new Review();
+        review.setDescription(description);
+        review.setGrade(grade);
+        review.setClient(client);
+        review.setSaleEntity(boat);
+        _reviewRepository.save(review);
+    }
+
+    @Override
+    public void addComplaint(int boatId, int clientId, String description) throws EntityNotFoundException, EntityNotOwnedException {
+        Client client = _clientRepository.findById(clientId).get();
+        Boat boat = _boatRepository.findById(boatId).get();
+        Complaint complaint = new Complaint();
+        complaint.setDescription(description);
+        complaint.setClient(client);
+        complaint.setSaleEntity(boat);
+        _complaintRepository.save(complaint);
     }
 
     @Override

@@ -102,6 +102,12 @@ import { ComplaintResponseComponent } from './components/admin/complaint-respons
 import { ComplaintResponseFishingInstructorComponent } from './components/admin/complaint-response-fishing-instructor/complaint-response-fishing-instructor.component';
 import { SystemTaxComponent } from './components/admin/system-tax/system-tax.component';
 import { UserPublicInfoComponent } from './components/user-public-info/user-public-info.component';
+import { NewCottageReviewComponent } from './new-cottage-review/new-cottage-review.component';
+import { NewCottageComplaintComponent } from './new-cottage-complaint/new-cottage-complaint.component';
+import { NewBoatComplaintComponent } from './new-boat-complaint/new-boat-complaint.component';
+import { NewBoatReviewComponent } from './new-boat-review/new-boat-review.component';
+import { NewFishingInstructorComplaintComponent } from './new-fishing-instructor-complaint/new-fishing-instructor-complaint.component';
+import { NewFishingInstructorReviewComponent } from './new-fishing-instructor-review/new-fishing-instructor-review.component';
 
 FullCalendarModule.registerPlugins([
   dayGridPlugin,
@@ -183,6 +189,12 @@ FullCalendarModule.registerPlugins([
     ComplaintResponseFishingInstructorComponent,
     SystemTaxComponent,
     UserPublicInfoComponent,
+    NewCottageReviewComponent,
+    NewCottageComplaintComponent,
+    NewBoatComplaintComponent,
+    NewBoatReviewComponent,
+    NewFishingInstructorComplaintComponent,
+    NewFishingInstructorReviewComponent,
   ],
   imports: [
     BrowserModule,

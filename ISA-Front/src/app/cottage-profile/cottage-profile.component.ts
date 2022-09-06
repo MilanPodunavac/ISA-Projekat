@@ -12,6 +12,7 @@ import * as olProj from 'ol/proj';
 import { CalendarOptions, DateSelectArg } from '@fullcalendar/angular';
 import { CalendarEvent } from '../model/calendar-event.model';
 import { DatePipe } from '@angular/common';
+import { ClientService } from '../service/client.service';
 
 @Component({
   selector: 'app-cottage-profile',
@@ -22,6 +23,8 @@ export class CottageProfileComponent implements OnInit {
   role: string;
   cottage: CottageGet;
   map: Map;
+  canAddReview: boolean;
+  canAddComplaint: boolean;
   calendarOptions: CalendarOptions = {
     headerToolbar: {
         left: 'prev,next today',
@@ -100,7 +103,7 @@ export class CottageProfileComponent implements OnInit {
     })
   }
 
-  constructor(private datePipe: DatePipe, private _route: ActivatedRoute, private cottageService: CottageService, private sanitizer: DomSanitizer, private router: Router) {this.role = localStorage.getItem('role');}
+  constructor(private datePipe: DatePipe, private _route: ActivatedRoute, private cottageService: CottageService, private sanitizer: DomSanitizer, private router: Router, private _clientService: ClientService) {this.role = localStorage.getItem('role');}
 
   ngOnInit(): void {
     let id = Number(this._route.snapshot.paramMap.get('id'));
@@ -181,6 +184,18 @@ export class CottageProfileComponent implements OnInit {
         }),
       });
       console.log(this.cottage)
+      if(this.role ==='ROLE_CLIENT'){
+        this._clientService.getLoggedInClient().subscribe({
+          next: data => {
+            if(this.cottage.cottageReservations.filter(e => e.clientId === data.id && e.endDate < new Date()).length > 0){
+              this.canAddReview = true
+            }
+            if(this.cottage.cottageReservations.filter(e => e.clientId === data.id && e.endDate < new Date()).length > 0){
+              this.canAddComplaint = true
+            }
+          }
+        })
+      }
     });
   }
   updateCottage(){
@@ -240,5 +255,11 @@ export class CottageProfileComponent implements OnInit {
         }
       })
     }
+  }
+  addReview(){
+    this.router.navigate(['cottage/'+this.cottage.id+'/new-cottage-review'])
+  }
+  addComplaint(){
+    this.router.navigate(['cottage/'+this.cottage.id+'/new-cottage-complaint'])
   }
 }

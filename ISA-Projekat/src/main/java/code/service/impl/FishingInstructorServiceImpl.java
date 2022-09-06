@@ -4,11 +4,13 @@ import code.dto.fishing_instructor.PeriodicalReservations;
 import code.dto.fishing_instructor.ProfitInInterval;
 import code.exceptions.entities.EntityBadRequestException;
 import code.exceptions.entities.EntityNotFoundException;
+import code.exceptions.entities.EntityNotOwnedException;
 import code.exceptions.fishing_instructor.AddAvailablePeriodInPastException;
 import code.exceptions.fishing_instructor.AvailablePeriodOverlappingException;
 import code.exceptions.fishing_instructor.AvailablePeriodStartAfterEndDateException;
 import code.exceptions.provider_registration.EmailTakenException;
 import code.model.*;
+import code.model.boat.Boat;
 import code.repository.*;
 import code.service.FishingInstructorService;
 import code.service.RoleService;
@@ -34,8 +36,11 @@ public class FishingInstructorServiceImpl implements FishingInstructorService {
     private final FishingTripReservationRepository _fishingTripReservationRepository;
     private final FishingTripQuickReservationRepository _fishingTripQuickReservationRepository;
     private final FishingTripRepository _fishingTripRepository;
+    private final ClientRepository _clientRepository;
+    private final ReviewFishingTripRepository _reviewRepository;
+    private final ComplaintFishingInstructorRepository _complaintRepository;
 
-    public FishingInstructorServiceImpl(UserService userService, FishingInstructorRepository fishingInstructorRepository, FishingInstructorAvailablePeriodRepository fishingInstructorAvailablePeriodRepository, PasswordEncoder passwordEncoder, RoleService roleService, LoyaltyProgramProviderRepository loyaltyProgramProviderRepository, IncomeRecordRepository incomeRecordRepository, FishingTripReservationRepository fishingTripReservationRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, FishingTripRepository fishingTripRepository) {
+    public FishingInstructorServiceImpl(UserService userService, FishingInstructorRepository fishingInstructorRepository, FishingInstructorAvailablePeriodRepository fishingInstructorAvailablePeriodRepository, PasswordEncoder passwordEncoder, RoleService roleService, LoyaltyProgramProviderRepository loyaltyProgramProviderRepository, IncomeRecordRepository incomeRecordRepository, FishingTripReservationRepository fishingTripReservationRepository, FishingTripQuickReservationRepository fishingTripQuickReservationRepository, FishingTripRepository fishingTripRepository, ClientRepository clientRepository, ReviewFishingTripRepository reviewFishingTripRepository, ComplaintFishingInstructorRepository complaintFishingInstructorRepository) {
         this._userService = userService;
         this._fishingInstructorRepository = fishingInstructorRepository;
         this._fishingInstructorAvailablePeriodRepository = fishingInstructorAvailablePeriodRepository;
@@ -46,6 +51,9 @@ public class FishingInstructorServiceImpl implements FishingInstructorService {
         this._fishingTripQuickReservationRepository = fishingTripQuickReservationRepository;
         this._fishingTripReservationRepository = fishingTripReservationRepository;
         this._fishingTripRepository = fishingTripRepository;
+        this._clientRepository = clientRepository;
+        this._complaintRepository = complaintFishingInstructorRepository;
+        this._reviewRepository = reviewFishingTripRepository;
     }
 
     @Override
@@ -258,5 +266,27 @@ public class FishingInstructorServiceImpl implements FishingInstructorService {
         }
 
         return periodicalReservationsList;
+    }
+
+    public void addReview(int instructorId, int clientId, int grade, String description) throws EntityNotFoundException, EntityNotOwnedException {
+        Client client = _clientRepository.findById(clientId).get();
+        FishingInstructor fishingInstructor = _fishingInstructorRepository.findById(instructorId).get();
+        ReviewFishingTrip review = new ReviewFishingTrip();
+        review.setDescription(description);
+        review.setGrade(grade);
+        review.setClient(client);
+        review.setFishingTrip(fishingInstructor.getFishingTrips().stream().findFirst().get());
+        _reviewRepository.save(review);
+    }
+
+    @Override
+    public void addComplaint(int instructorId, int clientId, String description) throws EntityNotFoundException, EntityNotOwnedException {
+        Client client = _clientRepository.findById(clientId).get();
+        FishingInstructor fishingInstructor = _fishingInstructorRepository.findById(instructorId).get();
+        ComplaintFishingInstructor complaint = new ComplaintFishingInstructor();
+        complaint.setDescription(description);
+        complaint.setClient(client);
+        complaint.setFishingInstructor(fishingInstructor);
+        _complaintRepository.save(complaint);
     }
 }

@@ -30,6 +30,8 @@ public interface CottageService {
     void updateCottage(int id, Cottage updateCottage, String email) throws EntityNotFoundException, EntityNotOwnedException, EntityNotUpdateableException;
     void addReservationCommentary(int id, int resId, String email, OwnerCommentary commentary) throws EntityNotFoundException, EntityNotOwnedException, ReservationOrActionNotFinishedException, ReservationOrActionAlreadyCommented;
     void addActionCommentary(int id, int actId, String email, OwnerCommentary commentary) throws EntityNotFoundException, EntityNotOwnedException, ReservationOrActionNotFinishedException, ReservationOrActionAlreadyCommented;
+    void addReview(int cottageId, int clientId, int grade, String description) throws EntityNotFoundException, EntityNotOwnedException, ReservationOrActionNotFinishedException, ReservationOrActionAlreadyCommented;
+    void addComplaint(int cottageId, int clientId, String description) throws EntityNotFoundException, EntityNotOwnedException, ReservationOrActionNotFinishedException, ReservationOrActionAlreadyCommented;
     List<Cottage> getAllCottages();
     Cottage getCottage(Integer id) throws EntityNotFoundException;
     List<PictureBase64> getCottageImagesAsBase64(int id) throws EntityNotFoundException, IOException;

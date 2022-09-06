@@ -53,6 +53,12 @@ export class CottageService {
   addActionCommentary(id: number, actId: number, body: any): Observable<any>{
     return this._httpClient.post<any>(this._APIUrl+`/${id}/action/${actId}/commentary`, body);
   }
+  addReview(id: number, body: any): Observable<any>{
+    return this._httpClient.post<any>(this._APIUrl+`/${id}/review`, body);
+  }
+  addComplaint(id: number, body: any): Observable<any>{
+    return this._httpClient.post<any>(this._APIUrl+`/${id}/complaint`, body);
+  }
   getAction(cottageId: number, actId: number): Observable<any>{
     return this._httpClient.get<any>(this._APIUrl+`/${cottageId}/action/${actId}`);
   }

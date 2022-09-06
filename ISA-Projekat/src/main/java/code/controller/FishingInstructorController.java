@@ -3,14 +3,17 @@ package code.controller;
 import code.controller.base.BaseController;
 import code.dto.admin.PasswordDTO;
 import code.dto.admin.PersonalData;
+import code.dto.entities.NewComplaintDto;
+import code.dto.entities.NewReviewDto;
 import code.dto.fishing_instructor.*;
 import code.dto.fishing_trip.FishingQuickReservationGetDto;
 import code.dto.loyalty_program.LoyaltyProgramProviderGetDto;
-import code.exceptions.entities.EntityBadRequestException;
-import code.exceptions.entities.EntityNotFoundException;
+import code.exceptions.entities.*;
 import code.exceptions.fishing_instructor.AddAvailablePeriodInPastException;
 import code.exceptions.fishing_instructor.AvailablePeriodOverlappingException;
 import code.exceptions.fishing_instructor.AvailablePeriodStartAfterEndDateException;
+import code.exceptions.provider_registration.UnauthorizedAccessException;
+import code.exceptions.provider_registration.UserNotFoundException;
 import code.model.FishingInstructor;
 import code.model.FishingInstructorAvailablePeriod;
 import code.service.FishingInstructorService;
@@ -137,5 +140,41 @@ public class FishingInstructorController extends BaseController {
     @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
     public ResponseEntity<List<PeriodicalReservations>> yearlyReservations() {
         return ResponseEntity.ok(_fishingInstructorService.yearlyReservations());
+    }
+
+    @PostMapping(value = "{id}/review")
+    @PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<String> addReview(@Valid @RequestBody NewReviewDto dto, @PathVariable Integer id, BindingResult result){
+        if(result.hasErrors()){
+            return formatErrorResponse(result);//400
+        }
+        try{
+            _fishingInstructorService.addReview(dto.saleEntityId, dto.clientId, dto.grade, dto.description);
+        }
+        catch (Exception ex) {
+            if(ex instanceof EntityNotOwnedException || ex instanceof UnauthorizedAccessException)return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+            if(ex instanceof EntityNotFoundException || ex instanceof UserNotFoundException)return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+            if(ex instanceof EntityNotAvailableException || ex instanceof InvalidReservationException || ex instanceof ClientCancelledThisPeriodException)return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+            return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
+        }
+        return ResponseEntity.ok("Action added");
+    }
+
+    @PostMapping(value = "{id}/complaint")
+    @PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<String> addComplaint(@Valid @RequestBody NewComplaintDto dto, @PathVariable Integer id, BindingResult result){
+        if(result.hasErrors()){
+            return formatErrorResponse(result);//400
+        }
+        try{
+            _fishingInstructorService.addComplaint(dto.saleEntityId, dto.clientId, dto.description);
+        }
+        catch (Exception ex) {
+            if(ex instanceof EntityNotOwnedException || ex instanceof UnauthorizedAccessException)return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+            if(ex instanceof EntityNotFoundException || ex instanceof UserNotFoundException)return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+            if(ex instanceof EntityNotAvailableException || ex instanceof InvalidReservationException || ex instanceof ClientCancelledThisPeriodException)return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+            return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
+        }
+        return ResponseEntity.ok("Action added");
     }
 }

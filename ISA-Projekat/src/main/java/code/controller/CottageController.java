@@ -2,7 +2,6 @@ package code.controller;
 
 import code.controller.base.BaseController;
 import code.dto.entities.*;
-import code.dto.entities.boat.BoatGetDto;
 import code.dto.entities.cottage.*;
 import code.exceptions.entities.*;
 import code.exceptions.provider_registration.UnauthorizedAccessException;
@@ -20,7 +19,6 @@ import code.repository.CottageRepository;
 import code.repository.UserRepository;
 import code.service.CottageService;
 import code.utils.TokenUtils;
-import io.swagger.models.Response;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.http.HttpHeaders;
@@ -28,12 +26,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.parameters.P;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.print.attribute.standard.Media;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.*;
@@ -335,6 +331,42 @@ public class CottageController extends BaseController {
             return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
         }
         return ResponseEntity.ok("Commentary added");
+    }
+
+    @PostMapping(value = "{id}/review")
+    @PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<String> addReview(@Valid @RequestBody NewReviewDto dto, @PathVariable Integer id, BindingResult result){
+        if(result.hasErrors()){
+            return formatErrorResponse(result);//400
+        }
+        try{
+            _cottageService.addReview(dto.saleEntityId, dto.clientId, dto.grade, dto.description);
+        }
+        catch (Exception ex) {
+            if(ex instanceof EntityNotOwnedException || ex instanceof UnauthorizedAccessException)return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+            if(ex instanceof EntityNotFoundException || ex instanceof UserNotFoundException)return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+            if(ex instanceof EntityNotAvailableException || ex instanceof InvalidReservationException || ex instanceof ClientCancelledThisPeriodException)return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+            return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
+        }
+        return ResponseEntity.ok("Action added");
+    }
+
+    @PostMapping(value = "{id}/complaint")
+    @PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<String> addComplaint(@Valid @RequestBody NewComplaintDto dto, @PathVariable Integer id, BindingResult result){
+        if(result.hasErrors()){
+            return formatErrorResponse(result);//400
+        }
+        try{
+            _cottageService.addComplaint(dto.saleEntityId, dto.clientId, dto.description);
+        }
+        catch (Exception ex) {
+            if(ex instanceof EntityNotOwnedException || ex instanceof UnauthorizedAccessException)return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+            if(ex instanceof EntityNotFoundException || ex instanceof UserNotFoundException)return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+            if(ex instanceof EntityNotAvailableException || ex instanceof InvalidReservationException || ex instanceof ClientCancelledThisPeriodException)return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+            return ResponseEntity.internalServerError().body("Oops, something went wrong, try again later!");
+        }
+        return ResponseEntity.ok("Action added");
     }
 
     @GetMapping("/{id}/visit-report")

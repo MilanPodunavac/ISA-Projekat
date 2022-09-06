@@ -98,13 +98,12 @@
                 </ng-container>
                 <ng-container *ngFor='let res of client.fishingTripQuickReservations'>
                     <tr (dblclick)="doubleClickFunction(res.id)">
-                        <td>{{res.dateRange.startDate}}</td>
-                        <td>{{res.dateRange.endDate}}</td>
+                        <td>{{res.start | date:'medium'}}</td>
+                        <td>{{res.durationInDays}}</td>
                         <td>{{res.price}}</td>
-                        <td>{{res.reservationStatus}}</td>
+                        <td>{{res.numberOfPeople}}</td>
                         <td>{{res.loyaltyPointsGiven}}</td>
-                        <td>{{res.cottage.name}}</td>
-                        <td>{{res.cottageReservationTag}}</td>
+                        <td>{{res.fishingTripReservationTags}}</td>
                     </tr>
                 </ng-container>
             </tbody>
