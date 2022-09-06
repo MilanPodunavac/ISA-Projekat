@@ -672,8 +672,9 @@ public class AdminServiceImpl implements AdminService {
 
     @Transactional
     @Override
-    public void respondToComplaint(Integer id, ComplaintResponse complaintResponse) throws EntityNotFoundException {
+    public void respondToComplaint(Integer id, ComplaintResponse complaintResponse) throws EntityNotFoundException, EntityNotUpdateableException {
         throwExceptionIfComplaintDoesntExist(id);
+        throwExceptionIfComplaintResponded(id);
 
         Complaint complaint = _complaintRepository.getById(id);
 
@@ -695,7 +696,8 @@ public class AdminServiceImpl implements AdminService {
         message2.setText(complaintResponse.getResponseToProvider());
         _mailSender.send(message2);
 
-        _complaintRepository.delete(complaint);
+        complaint.setResponded(true);
+        _complaintRepository.save(complaint);
     }
 
     private void throwExceptionIfComplaintDoesntExist(Integer id) throws EntityNotFoundException {
@@ -705,10 +707,18 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
+    private void throwExceptionIfComplaintResponded(Integer id) throws EntityNotUpdateableException {
+        Complaint complaint = _complaintRepository.getById(id);
+        if (complaint.isResponded()) {
+            throw new EntityNotUpdateableException("Complaint already responded!");
+        }
+    }
+
     @Transactional
     @Override
-    public void respondToComplaintFishingInstructor(Integer id, ComplaintResponse complaintResponse) throws EntityNotFoundException {
+    public void respondToComplaintFishingInstructor(Integer id, ComplaintResponse complaintResponse) throws EntityNotFoundException, EntityNotUpdateableException {
         throwExceptionIfComplaintFishingInstructorDoesntExist(id);
+        throwExceptionIfComplaintFishingInstructorResponded(id);
 
         ComplaintFishingInstructor complaint = _complaintFishingInstructorRepository.getById(id);
 
@@ -726,13 +736,21 @@ public class AdminServiceImpl implements AdminService {
         message2.setText(complaintResponse.getResponseToProvider());
         _mailSender.send(message2);
 
-        _complaintFishingInstructorRepository.delete(complaint);
+        complaint.setResponded(true);
+        _complaintFishingInstructorRepository.save(complaint);
     }
 
     private void throwExceptionIfComplaintFishingInstructorDoesntExist(Integer id) throws EntityNotFoundException {
         Optional<ComplaintFishingInstructor> complaint = _complaintFishingInstructorRepository.findById(id);
         if (!complaint.isPresent()) {
             throw new EntityNotFoundException("Complaint doesn't exist!");
+        }
+    }
+
+    private void throwExceptionIfComplaintFishingInstructorResponded(Integer id) throws EntityNotUpdateableException {
+        ComplaintFishingInstructor complaint = _complaintFishingInstructorRepository.getById(id);
+        if (complaint.isResponded()) {
+            throw new EntityNotUpdateableException("Complaint already responded!");
         }
     }
 
@@ -954,12 +972,12 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public List<Complaint> getAllComplaints() {
-        return _complaintRepository.findAll();
+        return _complaintRepository.findByResponded(false);
     }
 
     @Override
     public List<ComplaintFishingInstructor> getAllFishingInstructorComplaints() {
-        return _complaintFishingInstructorRepository.findAll();
+        return _complaintFishingInstructorRepository.findByResponded(false);
     }
 
     @Override

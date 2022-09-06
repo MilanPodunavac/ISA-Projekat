@@ -11,6 +11,7 @@ import { AdminService } from 'src/app/service/admin.service';
 })
 export class ComplaintResponseFishingInstructorComponent implements OnInit {
     form: FormGroup;
+    errorMessage: string;
     
     constructor(formBuilder: FormBuilder, private _route: ActivatedRoute, private router: Router, private adminService: AdminService) { 
         this.form = formBuilder.group({
@@ -23,16 +24,22 @@ export class ComplaintResponseFishingInstructorComponent implements OnInit {
     }
 
     public onSubmit(): void {
+        this.errorMessage = "";
         let request = new ComplaintResponse();
         request.responseToClient = this.form.get('responseToClient').value;
         request.responseToProvider = this.form.get('responseToProvider').value;
 
         let id = Number(this._route.snapshot.paramMap.get('id'));
-        this.adminService.respondToComplaintFishingInstructor(id, request).subscribe(data => {
-            this.router.navigate(['complaints']).then(() => {
-                window.location.reload();
-            });
-            alert(data);
+        this.adminService.respondToComplaintFishingInstructor(id, request).subscribe({
+            next: data => {
+                this.router.navigate(['complaints']).then(() => {
+                    window.location.reload();
+                });
+                alert(data);
+            },
+            error: error => {
+                this.errorMessage = error.error;
+            }
         });
     }   
 }
