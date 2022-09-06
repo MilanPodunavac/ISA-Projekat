@@ -34,6 +34,7 @@ export class BoatProfileComponent implements OnInit {
   };
 
   handleDateSelect(selectInfo: DateSelectArg) {
+    if(this.role != "ROLE_BOAT_OWNER") return;
     const calendarApi = selectInfo.view.calendar;
 
     calendarApi.unselect(); 
