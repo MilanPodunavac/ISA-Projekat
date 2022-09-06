@@ -141,7 +141,7 @@ INSERT INTO BOAT_RESERVATION (id, end_date, start_date, number_of_people, price,
 
 INSERT INTO BOAT_RESERVATION_TAGS (boat_reservation_id, tags) VALUES (14, 1);
 
-INSERT INTO BOAT_ACTION (id, end_date, start_date, action_refund, discount, price, client_id, reserved, system_charge, valid_until_and_including, availability_period_id, number_of_people, boat_id, loyalty_points_given, owner_needed) VALUES (25, '2022-04-12 00:00:00', '2022-04-10 00:00:00', 10, 10, 100, null, false, 20, '2022-04-09 00:00:00', 3, 4, 10, false, false);
+INSERT INTO BOAT_ACTION (id, end_date, start_date, action_refund, discount, price, client_id, reserved, system_charge, valid_until_and_including, availability_period_id, number_of_people, boat_id, loyalty_points_given, owner_needed) VALUES (25, '2022-04-14 00:00:00', '2022-04-12 00:00:00', 10, 10, 100, null, false, 20, '2022-04-09 00:00:00', 3, 4, 10, false, false);
 
 INSERT INTO CURRENT_POINTS_CLIENT_GETS_AFTER_RESERVATION (current_points_client_gets_after_reservation) VALUES (200);
 

@@ -43,4 +43,7 @@ export class UserService {
 	public declineAccountDeletionRequest(id: number, accountDeletionResponse: AccountDeletionResponse): Observable<string> {
 		return this.http.put(this.apiUrl + '/declineAccountDeletionRequest/' + id, accountDeletionResponse, { responseType: 'text'});
 	}
+	getPublicInfo(id: number): Observable<any>{
+		return this.http.get(this.apiUrl + `/${id}`)
+	}
 }

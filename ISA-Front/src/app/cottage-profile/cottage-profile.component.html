@@ -99,7 +99,7 @@
                     <tr *ngFor='let res of cottage.cottageReservations' (dblclick)="doubleClickResFunction(res.id)">
                         <td>{{res.startDate | date:'dd.MM.yyyy.'}}</td>
                         <td>{{res.endDate | date:'dd.MM.yyyy.'}}</td>
-                        <td *ngIf="role==='ROLE_COTTAGE_OWNER'"><a [routerLink]="['../../cottage/',res.clientId,'new-cottage-action']">{{res.clientFullName}}</a></td><!--izmeniti-->
+                        <td *ngIf="role==='ROLE_COTTAGE_OWNER'"><a [routerLink]="['../../user-public-info/',res.clientId]">{{res.clientFullName}}</a></td><!--izmeniti-->
                         <td *ngIf="role==='ROLE_COTTAGE_OWNER'">{{res.numberOfPeople}}</td>
                         <td *ngIf="role==='ROLE_COTTAGE_OWNER'">{{res.cottageReservationTag}}</td>
                     </tr>
@@ -140,7 +140,7 @@
                         <td>{{act.discount}}</td>
                         <td>{{act.price}}</td>
                         <td>{{act.reserved}}</td>
-                        <td *ngIf="role==='ROLE_COTTAGE_OWNER'&&act.reserved"><a [routerLink]="['../../cottage/',act.clientId,'new-cottage-action']">{{act.clientFullName}}</a></td><!--izmeniti-->
+                        <td *ngIf="role==='ROLE_COTTAGE_OWNER'&&act.reserved"><a [routerLink]="['../../user-public-info/',act.clientId]">{{act.clientFullName}}</a></td><!--izmeniti-->
                         <td *ngIf="role==='ROLE_COTTAGE_OWNER'&&!act.reserved">No client</td>
                         <td *ngIf="role==='ROLE_COTTAGE_OWNER'">{{act.numberOfPeople}}</td>
                         <td *ngIf="role==='ROLE_COTTAGE_OWNER'">{{act.additionalServices}}</td>

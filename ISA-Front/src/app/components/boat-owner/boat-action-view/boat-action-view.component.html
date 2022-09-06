@@ -13,7 +13,7 @@
     </div>
     <div class="form-group mb-3">
         <label class="form-label">Client name:</label>
-        <p type="text" class="form-control mb-1" *ngIf="action.reserved"><a [routerLink]="['../../../']">{{action.clientFirstName}} {{action.clientLastName}}</a></p><!--izmeniti-->
+        <p type="text" class="form-control mb-1" *ngIf="action.reserved"><a [routerLink]="['../../../../user-public-info/',action.clientId]">{{action.clientFirstName}} {{action.clientLastName}}</a></p><!--izmeniti-->
         <p type="text" class="form-control mb-1" *ngIf="!action.reserved">No client</p>
     </div>
     <div class="form-group mb-3">

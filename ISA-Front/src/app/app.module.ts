@@ -97,6 +97,7 @@ import { AccountDeletionRequestDeclineComponent } from './components/admin/accou
 import { ComplaintResponseComponent } from './components/admin/complaint-response/complaint-response.component';
 import { ComplaintResponseFishingInstructorComponent } from './components/admin/complaint-response-fishing-instructor/complaint-response-fishing-instructor.component';
 import { SystemTaxComponent } from './components/admin/system-tax/system-tax.component';
+import { UserPublicInfoComponent } from './components/user-public-info/user-public-info.component';
 
 FullCalendarModule.registerPlugins([
   dayGridPlugin,
@@ -173,6 +174,7 @@ FullCalendarModule.registerPlugins([
     ComplaintResponseComponent,
     ComplaintResponseFishingInstructorComponent,
     SystemTaxComponent,
+    UserPublicInfoComponent,
   ],
   imports: [
     BrowserModule,

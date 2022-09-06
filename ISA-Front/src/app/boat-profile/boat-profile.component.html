@@ -119,7 +119,7 @@
                         <td>{{res.endDate | date:'dd.MM.yyyy.'}}</td>
                         <td *ngIf="res.ownerNeeded">Yes</td>
                         <td *ngIf="!res.ownerNeeded">No</td>
-<!--izmeniti-->         <td *ngIf="role==='ROLE_BOAT_OWNER'"><a [routerLink]="['../../boat/',res.clientId,'new-boat-action']">{{res.clientFirstName}} {{res.clientLastName}}</a></td><!--izmeniti-->
+<!--izmeniti-->         <td *ngIf="role==='ROLE_BOAT_OWNER'"><a [routerLink]="['../../user-public-info/',res.clientId]">{{res.clientFirstName}} {{res.clientLastName}}</a></td><!--izmeniti-->
                         <td *ngIf="role==='ROLE_BOAT_OWNER'">{{res.numberOfPeople}}</td>
                         <td *ngIf="role==='ROLE_BOAT_OWNER'">{{res.boatReservationTag}}</td>
                     </tr>
@@ -163,7 +163,7 @@
                         <td>{{act.discount}}</td>
                         <td>{{act.price}}</td>
                         <td>{{act.reserved}}</td>
-<!--izmeniti-->         <td *ngIf="role==='ROLE_BOAT_OWNER'&&act.reserved"><a [routerLink]="['../../boat/',act.clientId,'new-boat-action']">{{act.clientFirstName}} {{act.clientLastName}}</a></td><!--izmeniti-->
+<!--izmeniti-->         <td *ngIf="role==='ROLE_BOAT_OWNER'&&act.reserved"><a [routerLink]="['../../user-public-info/',act.clientId]">{{act.clientFirstName}} {{act.clientLastName}}</a></td><!--izmeniti-->
                         <td *ngIf="role==='ROLE_BOAT_OWNER'&&!act.reserved">No client</td>
                         <td *ngIf="role==='ROLE_BOAT_OWNER'">{{act.numberOfPeople}}</td>
                         <td *ngIf="role==='ROLE_BOAT_OWNER'">{{act.additionalServices}}</td>

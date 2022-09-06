@@ -167,4 +167,10 @@ public class UsersController extends BaseController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Log in please");
         }
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getPublicInfo(@PathVariable Integer id){
+        User user = _userService.findById(id);
+        return ResponseEntity.ok(_mapper.map(user, PublicInfo.class));
+    }
 }

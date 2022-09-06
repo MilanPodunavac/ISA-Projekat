@@ -65,6 +65,7 @@ import { AccountDeletionRequestDeclineComponent } from './components/admin/accou
 import { ComplaintResponseComponent } from './components/admin/complaint-response/complaint-response.component';
 import { ComplaintResponseFishingInstructorComponent } from './components/admin/complaint-response-fishing-instructor/complaint-response-fishing-instructor.component';
 import { SystemTaxComponent } from './components/admin/system-tax/system-tax.component';
+import { UserPublicInfoComponent } from './components/user-public-info/user-public-info.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -134,7 +135,8 @@ const routes: Routes = [
   { path: 'account-deletion-request/:id/decline', component: AccountDeletionRequestDeclineComponent },
   { path: 'complaint-response/:id', component: ComplaintResponseComponent },
   { path: 'complaint-response-fishing-instructor/:id', component: ComplaintResponseFishingInstructorComponent },
-  { path: 'system-tax', component: SystemTaxComponent }
+  { path: 'system-tax', component: SystemTaxComponent },
+  { path: 'user-public-info/:id', component: UserPublicInfoComponent },
 ];
 
 @NgModule({
