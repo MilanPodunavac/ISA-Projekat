@@ -1,9 +1,10 @@
+import { AnyForUntypedForms } from "@angular/forms";
 import { ClientGet } from "./client-get";
 import { FishingTripGet } from "./fishing-trip-get";
 
 export class FishingReservationGet {
     id: number;
-    start: Date;
+    start: any;
     end: Date;
     durationInDays: number;
     numberOfPeople: number;

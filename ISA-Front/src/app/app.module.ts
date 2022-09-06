@@ -54,12 +54,16 @@ import { CottageReservationViewComponent } from './components/cottage-owner/cott
 import { CottageReservationOwnerCommentaryComponent } from './components/cottage-owner/cottage-reservation-owner-commentary/cottage-reservation-owner-commentary.component';
 import { CottageActionOwnerCommentaryComponent } from './components/cottage-owner/cottage-action-owner-commentary/cottage-action-owner-commentary.component';
 import { CottageActionViewComponent } from './components/cottage-owner/cottage-action-view/cottage-action-view.component';
+import { CottageReservationComponent } from './cottage-reservation/cottage-reservation.component';
+import { ReservationListComponent } from './reservation-list/reservation-list.component';
 import { ProfitGraphComponent } from './components/profit-graph/profit-graph.component';
 import { ChangePersonalDataComponent } from './components/change-personal-data/change-personal-data.component';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
 import { AccountDeletionRequestComponent } from './components/account-deletion-request/account-deletion-request.component';
 import { AvailablePeriodComponent } from './components/available-period/available-period.component';
 import { VisitReportComponent } from './components/visit-report/visit-report.component';
+import { BoatReservationComponent } from './boat-reservation/boat-reservation.component';
+import { FishingTripReservationComponent } from './fishing-trip-reservation/fishing-trip-reservation.component';
 import { BoatActionOwnerCommentaryComponent } from './components/boat-owner/boat-action-owner-commentary/boat-action-owner-commentary.component';
 import { BoatActionViewComponent } from './components/boat-owner/boat-action-view/boat-action-view.component';
 import { BoatReservationOwnerCommentaryComponent } from './components/boat-owner/boat-reservation-owner-commentary/boat-reservation-owner-commentary.component';
@@ -131,12 +135,16 @@ FullCalendarModule.registerPlugins([
     CottageReservationOwnerCommentaryComponent,
     CottageActionOwnerCommentaryComponent,
     CottageActionViewComponent,
+    CottageReservationComponent,
+    ReservationListComponent,
     ProfitGraphComponent,
     ChangePersonalDataComponent,
     ChangePasswordComponent,
     AccountDeletionRequestComponent,
     AvailablePeriodComponent,
     VisitReportComponent,
+    BoatReservationComponent,
+    FishingTripReservationComponent,
     BoatActionOwnerCommentaryComponent,
     BoatActionViewComponent,
     BoatReservationOwnerCommentaryComponent,

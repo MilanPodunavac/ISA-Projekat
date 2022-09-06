@@ -14,7 +14,9 @@ export class CottageListComponent implements OnInit {
   SearchString: string = "";
   role: string;
 
-  constructor(private _cottageService: CottageService, private router: Router, private _cottageOwnerService: CottageOwnerService) {this.role = localStorage.getItem('role');}
+  constructor(private _cottageService: CottageService, private router: Router, private _cottageOwnerService: CottageOwnerService) {
+    this.role = localStorage.getItem('role');
+  }
 
 
   ngOnInit(): void {
@@ -71,6 +73,10 @@ export class CottageListComponent implements OnInit {
 
   doubleClickFunction(id: any){
     this.router.navigate(['/cottage', id])
+  }
+
+  makeReservation() {
+    this.router.navigate(['/cottage/reservation'])
   }
 
 }

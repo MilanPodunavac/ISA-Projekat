@@ -1,10 +1,27 @@
 <div class="panel panel-primary m-1">
     <div class="panel-heading m-3">
-        <h2>Cottage list</h2>
+        <h2>New cottage reservation</h2>
     </div>
     <div class="form-control form-control-lg  m-1">
-        <input class="m-1" [(ngModel)]="SearchString" (keyup)="FilterFn()" placeholder="Filter">
-        <button *ngIf="role === 'ROLE_CLIENT'" mat-raised-button color="primary" (click)="makeReservation()">Make reservation</button>
+        <div>
+            <p>Start date:</p>
+            <mat-form-field appearance="fill">
+                <mat-label>Start date</mat-label>
+                <input matInput [matDatepicker]="picker" [(ngModel)]="startDate">
+                <mat-hint>MM/DD/YYYY</mat-hint>
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+        </div>
+        <div>
+            <p>Number of days:</p>
+            <input type="text" class="form-control mb-1" id="numberOfDays" [(ngModel)]="numberOfDays" placeholder="0" required>
+        </div>
+        <div>
+            <p>Number of beds:</p>
+            <input type="text" class="form-control mb-1" id="numberOfBeds" [(ngModel)]="numberOfBeds" placeholder="0" required>
+        </div>
+        <button mat-raised-button color="primary" (click)="filterCottages()">Filter cottages</button>
     </div>
     <div *ngIf="cottages?.length" class="table-responsive m-1">
         <table class="table table-bordered table-striped table-hover" id="cottagesTable">
@@ -12,26 +29,25 @@
                 <tr>
                     <th>Name</th>
                     <th>Address</th>
-                    <th>Average grade</th>
                     <th>Room number</th>
                     <th>Bed number</th>
                     <th>Price per day</th>
                     <th>Owner</th>
                     <th>Description</th>
+                    <th>Additional services</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor='let cottage of cottages' (dblclick)="doubleClickFunction(cottage.id)">
                     <td>{{cottage.name}}</td>
                     <td>{{cottage.location.streetName}}, {{cottage.location.cityName}}, {{cottage.location.countryName}}</td>
-                    <td *ngIf="cottage.grade !== -1">{{cottage.grade}}</td>
-                    <td *ngIf="cottage.grade === -1">No reviews</td>
                     <td>{{cottage.roomNumber}}</td>
                     <td>{{cottage.bedNumber}}</td>
                     <td>{{cottage.pricePerDay}}</td>
                     <td>{{cottage.cottageOwner.firstName}} {{cottage.cottageOwner.lastName}}</td>
                     <td>{{cottage.description}}</td>
                     <td>{{cottage.additionalServices}}</td>
+                    <button mat-raised-button color="primary" (click)="makeReservation(cottage.id, cottage.additionalServices)">Make reservation</button>
                 </tr>
             </tbody>
         </table>
@@ -39,8 +55,5 @@
     <div *ngIf="!cottages?.length">
         No cottages registered
     </div>
-    <button *ngIf="role==='ROLE_COTTAGE_OWNER'" class="btn btn-primary" [routerLink]="['../','new-cottage']">
-        <strong>Create new cottage</strong>
-    </button>
 
 </div>

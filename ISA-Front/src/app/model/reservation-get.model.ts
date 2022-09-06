@@ -13,4 +13,5 @@ export class ReservationGet {
     ownerCommentary: any;
     availabilityPeriod: any;
     loyaltyPointsGiven: boolean;
+    ownerNeeded: boolean
 }

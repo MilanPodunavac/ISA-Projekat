@@ -19,6 +19,10 @@ export class FishingTripService {
         this.apiUrl = 'http://localhost:8080/ISA/api/fishing-trip';
     }
 
+    public getAllFishingTrips(): Observable<FishingTripGet[]> {
+		return this.http.get<FishingTripGet[]>(this.apiUrl);
+	}
+
     public getFishingTrip(id: number): Observable<FishingTripGet> {
 		return this.http.get<FishingTripGet>(this.apiUrl + '/' + id);
 	}
@@ -66,7 +70,7 @@ export class FishingTripService {
 		return this.http.delete(this.apiUrl + '/delete/' + id, { responseType: 'text'});
 	}
 
-	public addFishingTripReservation(idFishingTrip: number, idClient: number, newReservation: FishingReservationGet): Observable<string> {
+	public addFishingTripReservation(idFishingTrip: number, idClient: number, newReservation: FishingReservationGet): Observable<any> {
 		return this.http.post(this.apiUrl + '/' + idFishingTrip + '/addReservation/' + idClient, newReservation, { responseType: 'text'});
 	}
 

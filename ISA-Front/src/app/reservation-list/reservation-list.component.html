@@ -1,0 +1,117 @@
+<div class="panel panel-primary m-1">
+    <div class="panel-heading m-3">
+        <h2>Reservation list</h2>
+    </div>
+    <h3>Cottage reservations</h3>
+    <div *ngIf="client.reservation?.length" class="table-responsive m-1">
+        <table class="table table-bordered table-striped table-hover" id="reservationsTable">
+            <thead>
+                <tr>
+                    <th>Start date</th>
+                    <th>End date</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>Loyalty points</th>
+                    <th>Cottage</th>
+                    <th>Tags</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor='let res of client.reservation'>
+                    <tr *ngIf="res.cottage" (dblclick)="doubleClickFunctionCottage(res.cottage.id, res.id)">
+                        <td>{{res.dateRange.startDate | date}}</td>
+                        <td>{{res.dateRange.endDate | date}}</td>
+                        <td>{{res.price}}</td>
+                        <td>{{res.reservationStatus}}</td>
+                        <td>{{res.loyaltyPointsGiven}}</td>
+                        <td>{{res.cottage.name}}</td>
+                        <td>{{res.cottageReservationTag}}</td>
+                        <td><button *ngIf="res.reservationStatus === 'reserved' && res.dateRange.startDate > now.getTime()" mat-raised-button color="primary" (click)="cancelReservationCottage(res.id)">Cancel reservation</button></td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="!client.reservation?.length">
+        No cottage reservations
+    </div>
+
+    <h3>Boat reservations</h3>
+    <div *ngIf="client.reservation?.length" class="table-responsive m-1">
+        <table class="table table-bordered table-striped table-hover" id="reservationsTable">
+            <thead>
+                <tr>
+                    <th>Start date</th>
+                    <th>End date</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>Loyalty points</th>
+                    <th>Boat</th>
+                    <th>Tags</th>
+                    <th>Owner needed</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor='let res of client.reservation'>
+                    <tr *ngIf="res.boat" (dblclick)="doubleClickFunctionBoat(res.boat.id, res.id)">
+                        <td>{{res.dateRange.startDate | date}}</td>
+                        <td>{{res.dateRange.endDate | date}}</td>
+                        <td>{{res.price}}</td>
+                        <td>{{res.reservationStatus}}</td>
+                        <td>{{res.loyaltyPointsGiven}}</td>
+                        <td>{{res.boat.name}}</td>
+                        <td>{{res.boatReservationTag}}</td>
+                        <td>{{res.ownerNeeded}}</td>
+                        <td><button *ngIf="res.reservationStatus === 'reserved' && res.dateRange.startDate > now.getTime()" mat-raised-button color="primary" (click)="cancelReservationBoat(res.id)">Cancel reservation</button></td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="!client.reservation?.length">
+        No boat reservations
+    </div>
+
+    <h3>Fishing trip reservations</h3>
+    <div *ngIf="client.fishingTripReservations?.length || client.fishingTripQuickReservations?.length" class="table-responsive m-1">
+        <table class="table table-bordered table-striped table-hover" id="reservationsTable">
+            <thead>
+                <tr>
+                    <th>Start date</th>
+                    <th>Duration</th>
+                    <th>Price</th>
+                    <th>Number of people</th>
+                    <th>Loyalty points</th>
+                    <th>Tags</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor='let res of client.fishingTripReservations'>
+                    <tr (dblclick)="doubleClickFunction(res.id)">
+                        <td>{{res.start | date:'medium'}}</td>
+                        <td>{{res.durationInDays}}</td>
+                        <td>{{res.price}}</td>
+                        <td>{{res.numberOfPeople}}</td>
+                        <td>{{res.loyaltyPointsGiven}}</td>
+                        <td>{{res.fishingTripReservationTags}}</td>
+                    </tr>
+                </ng-container>
+                <ng-container *ngFor='let res of client.fishingTripQuickReservations'>
+                    <tr (dblclick)="doubleClickFunction(res.id)">
+                        <td>{{res.dateRange.startDate}}</td>
+                        <td>{{res.dateRange.endDate}}</td>
+                        <td>{{res.price}}</td>
+                        <td>{{res.reservationStatus}}</td>
+                        <td>{{res.loyaltyPointsGiven}}</td>
+                        <td>{{res.cottage.name}}</td>
+                        <td>{{res.cottageReservationTag}}</td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="!client.fishingTripReservations?.length && !client.fishingTripQuickReservations?.length">
+        No fishing trip reservations
+    </div>
+
+</div>

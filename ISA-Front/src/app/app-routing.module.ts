@@ -22,12 +22,16 @@ import { CottageReservationViewComponent } from './components/cottage-owner/cott
 import { CottageReservationOwnerCommentaryComponent } from './components/cottage-owner/cottage-reservation-owner-commentary/cottage-reservation-owner-commentary.component';
 import { CottageActionOwnerCommentaryComponent } from './components/cottage-owner/cottage-action-owner-commentary/cottage-action-owner-commentary.component';
 import { CottageActionViewComponent } from './components/cottage-owner/cottage-action-view/cottage-action-view.component';
+import { CottageReservationComponent } from './cottage-reservation/cottage-reservation.component';
+import { ReservationListComponent } from './reservation-list/reservation-list.component';
 import { ProfitGraphComponent } from './components/profit-graph/profit-graph.component';
 import { ChangePersonalDataComponent } from './components/change-personal-data/change-personal-data.component';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
 import { AccountDeletionRequestComponent } from './components/account-deletion-request/account-deletion-request.component';
 import { AvailablePeriodComponent } from './components/available-period/available-period.component';
 import { VisitReportComponent } from './components/visit-report/visit-report.component';
+import { BoatReservationComponent } from './boat-reservation/boat-reservation.component';
+import { FishingTripReservationComponent } from './fishing-trip-reservation/fishing-trip-reservation.component';
 import { BoatActionOwnerCommentaryComponent } from './components/boat-owner/boat-action-owner-commentary/boat-action-owner-commentary.component';
 import { BoatActionViewComponent } from './components/boat-owner/boat-action-view/boat-action-view.component';
 import { BoatReservationOwnerCommentaryComponent } from './components/boat-owner/boat-reservation-owner-commentary/boat-reservation-owner-commentary.component';
@@ -72,6 +76,10 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register-provider', component: RegisterProviderComponent },
   { path: 'fishing-instructor-home', component: FishingInstructorComponent },
+  { path: 'cottage/reservation', component: CottageReservationComponent},
+  { path: 'boat/reservation', component: BoatReservationComponent},
+  { path:'cottage-owner', component: CottageOwnerComponent },
+  { path:'cottage-owner/cottage/:id', component: CottageOwnerCottageComponent },
   { path: 'cottage-owner', component: CottageOwnerComponent },
   { path: 'cottage-owner/cottage/:id', component: CottageOwnerCottageComponent },
   { path: 'new-cottage', component: NewCottageComponent },
@@ -86,12 +94,14 @@ const routes: Routes = [
   { path: 'boat', component: BoatListComponent},
   { path: 'boat/:id', component: BoatProfileComponent },
   { path: 'fishing-instructor', component: FishingInstructorListComponent },
+  { path: 'fishing-trip/reservation', component: FishingTripReservationComponent },
   { path: 'fishing-instructor/:id', component: FishingInstructorProfileComponent },
   { path: 'fishing-trip/:id', component: FishingTripProfileComponent },
   { path: 'cottage/:id/reservation/:resId', component: CottageReservationViewComponent },
   { path: 'cottage/:id/reservation/:resId/new-commentary', component: CottageReservationOwnerCommentaryComponent },
   { path: 'cottage/:id/action/:actId/new-commentary', component: CottageActionOwnerCommentaryComponent },
   { path: 'cottage/:id/action/:actId', component: CottageActionViewComponent },
+  { path: 'reservations', component: ReservationListComponent },
   { path: 'profit', component: ProfitGraphComponent },
   { path: 'change-personal-data', component: ChangePersonalDataComponent },
   { path: 'change-password', component: ChangePasswordComponent },

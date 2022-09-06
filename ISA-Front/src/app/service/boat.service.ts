@@ -18,6 +18,7 @@ export class BoatService {
   getBoat(id: number): Observable<any>{
     return this._httpClient.get<any[]>(this._APIUrl+`/${id}`);
   }
+
   updateBoat(id: number, val): Observable<any>{
     return this._httpClient.put<any>(this._APIUrl+`/${id}`, val);
   }
@@ -43,6 +44,9 @@ export class BoatService {
   }
   getReservation(boatId: number, resId: number): Observable<any>{
     return this._httpClient.get<any>(this._APIUrl+`/${boatId}/reservation/${resId}`);
+  }
+  cancelReservation(resId: number): Observable<any>{
+    return this._httpClient.post<any>(this._APIUrl+`/reservation/${resId}/cancel`, resId);
   }
   addReservationCommentary(id: number, resId: number, body: any): Observable<any>{
     return this._httpClient.post<any>(this._APIUrl+`/${id}/reservation/${resId}/commentary`, body);

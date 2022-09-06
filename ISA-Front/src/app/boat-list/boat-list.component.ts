@@ -15,6 +15,7 @@ export class BoatListComponent implements OnInit {
   SearchString: string = "";
   role: string;
 
+
   constructor(private _boatOwnerService: BoatOwnerService, private _boatService: BoatService, private router: Router) { this.role = localStorage.getItem('role'); }
 
 
@@ -77,5 +78,9 @@ export class BoatListComponent implements OnInit {
 
   doubleClickFunction(id: any) {
     this.router.navigate(['/boat', id])
+  }
+
+  makeReservation() {
+    this.router.navigate(['/boat/reservation'])
   }
 }

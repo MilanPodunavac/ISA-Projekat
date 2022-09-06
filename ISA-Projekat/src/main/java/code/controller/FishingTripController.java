@@ -15,18 +15,18 @@ import code.exceptions.fishing_trip.FishingTripHasReservationException;
 import code.exceptions.fishing_trip.FishingTripNotFoundException;
 import code.exceptions.fishing_trip.quick_reservation.*;
 import code.exceptions.fishing_trip.reservation.*;
-import code.model.FishingInstructor;
-import code.model.FishingTrip;
-import code.model.FishingTripQuickReservation;
-import code.model.FishingTripReservation;
+import code.model.*;
 import code.model.base.OwnerCommentary;
 import code.service.*;
 import code.utils.TokenUtils;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,6 +44,11 @@ public class FishingTripController extends BaseController {
     public FishingTripController(FishingTripService fishingTripService, ModelMapper mapper, TokenUtils tokenUtils) {
         super(mapper, tokenUtils);
         this._fishingTripService = fishingTripService;
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<Object>> get(){
+        return ResponseEntity.ok(_mapper.map(_fishingTripService.getAllFishingTrips(), new TypeToken<List<FishingTripGetDto>>() {}.getType()));
     }
 
     @GetMapping(value = "/{id}")
@@ -147,20 +152,29 @@ public class FishingTripController extends BaseController {
     }
 
     @PostMapping(value = "/{fishingTripId}/addReservation/{clientId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
+    @PreAuthorize("hasAnyRole('FISHING_INSTRUCTOR', 'CLIENT')")
     public ResponseEntity<String> addReservation(@PathVariable Integer fishingTripId, @PathVariable Integer clientId, @Valid @RequestBody NewReservation dto, BindingResult result) {
         if(result.hasErrors()){
             return formatErrorResponse(result);
         }
 
         try {
-            _fishingTripService.addReservation(fishingTripId, clientId, _mapper.map(dto, FishingTripReservation.class));
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            User user = (User) auth.getPrincipal();
+            FishingInstructor fishingInstructor;
+            if(user.getClass() == FishingInstructor.class){
+                fishingInstructor = (FishingInstructor) user;
+            }
+            else{
+                fishingInstructor = _fishingTripService.getFishingTrip(fishingTripId).getFishingInstructor();
+            }
+            _fishingTripService.addReservation(fishingTripId, clientId, _mapper.map(dto, FishingTripReservation.class), fishingInstructor);
             return ResponseEntity.ok("Fishing trip reservation added!");
         } catch (ReservationStartDateInPastException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (AddReservationToAnotherInstructorFishingTripException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
-        } catch (FishingTripNotFoundException | EnabledClientDoesntExistException e) {
+        } catch (FishingTripNotFoundException | EnabledClientDoesntExistException | EntityNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (FishingTripReservationTagsDontContainReservationTagException | NoAvailablePeriodForReservationException | InstructorBusyDuringReservationException | FishingTripReservationNumberOfPeopleHigherThanFishingTripMaxPeopleException | ClientBannedException | ClientBusyDuringReservationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);

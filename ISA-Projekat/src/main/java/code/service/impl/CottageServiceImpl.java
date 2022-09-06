@@ -101,13 +101,6 @@ public class CottageServiceImpl implements CottageService {
     @Override
     @Transactional()
     public void addReservation(String clientEmail, int cottageId, CottageReservation reservation, String email) throws EntityNotFoundException, UserNotFoundException, InvalidReservationException, EntityNotOwnedException, EntityNotAvailableException, UnauthorizedAccessException, ClientCancelledThisPeriodException {
-        CottageOwner owner;
-        try{
-             owner = (CottageOwner) _userRepository.findByEmail(email);
-        }catch(ClassCastException ex){
-            throw new UnauthorizedAccessException("User is not a cottage owner");
-        }
-        if(owner == null)throw new UnauthorizedAccessException("Cottage owner not found");
         Client client;
         try{
             client = (Client) _userRepository.findByEmail(clientEmail);
@@ -118,6 +111,18 @@ public class CottageServiceImpl implements CottageService {
         Optional<Cottage> optionalCottage = _cottageRepository.findById(cottageId);
         if(!optionalCottage.isPresent())throw new EntityNotFoundException("Cottage not found");
         Cottage cottage = optionalCottage.get();
+        CottageOwner owner;
+        if(!client.getEmail().equals(email)) {
+            try {
+                owner = (CottageOwner) _userRepository.findByEmail(email);
+            } catch (ClassCastException ex) {
+                throw new UnauthorizedAccessException("User is not a cottage owner");
+            }
+            if (owner == null) throw new UnauthorizedAccessException("Cottage owner not found");
+        }
+        else{
+            owner = cottage.getCottageOwner();
+        }
         if(cottage.getCottageOwner().getId() != owner.getId())throw new EntityNotOwnedException("Cottage not owned by given user");
         if(!client.isAvailable(reservation.getDateRange()))throw new EntityNotAvailableException("Client already has reservation at the given time");
         reservation.setClient(client);
@@ -131,6 +136,30 @@ public class CottageServiceImpl implements CottageService {
         message.setSubject("Cottage reserved");
         message.setText("Cottage " + cottage.getName() + " has been successfully reserved" );
         _mailSender.send(message);
+    }
+
+    @Override
+    @Transactional()
+    public void cancelReservation(Integer id, String email) throws EntityNotFoundException, UserNotFoundException, InvalidReservationException, EntityNotOwnedException, EntityNotAvailableException, UnauthorizedAccessException, ClientCancelledThisPeriodException {
+        Optional<Reservation> reservation = _reservationRepository.findById(id);
+        if(reservation == null)throw new EntityNotOwnedException("Reservation not found");
+        User user;
+        try{
+            user = (User) _userRepository.findByEmail(email);
+            if(user.getClass() == Client.class){
+                if(reservation.get().getClient() != user) throw new UnauthorizedAccessException("User is not the client on the reservation");
+            }
+            else if(user.getClass() == CottageOwner.class){
+                if(((CottageReservation)reservation.get()).getCottage().getCottageOwner() != (CottageOwner)user) throw new UnauthorizedAccessException("User is not the cottage owner");
+            }
+            else{
+                throw new UserNotFoundException("User is not a client nor a cottage owner");
+            }
+        }catch(ClassCastException ex){
+            throw new UserNotFoundException("User not found");
+        }
+        reservation.get().setReservationStatus(ReservationStatus.cancelled);
+        _reservationRepository.save(reservation.get());
     }
 
     private void makeIncomeRecord(Reservation reservation, CottageOwner owner) {

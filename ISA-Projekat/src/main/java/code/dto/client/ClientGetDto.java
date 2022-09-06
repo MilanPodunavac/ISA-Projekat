@@ -1,5 +1,6 @@
 package code.dto.client;
 
+import code.dto.entities.ReservationGetDto;
 import code.model.*;
 import code.model.base.Action;
 import code.model.base.Reservation;
@@ -29,7 +30,7 @@ public class ClientGetDto {
     private Role role;
     private int penaltyPoints;
     private boolean banned;
-    private Set<Reservation> reservation;
+    private Set<ReservationGetDto> reservation;
     private Set<FishingTripQuickReservation> fishingTripQuickReservations;
     private Set<FishingTripReservation> fishingTripReservations;
     private Set<Action> actions;

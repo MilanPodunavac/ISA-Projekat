@@ -167,18 +167,6 @@ public class BoatServiceImpl  implements BoatService {
     @Transactional()
     public void addReservation(String clientEmail, int boatId, BoatReservation reservation) throws EntityNotFoundException, UserNotFoundException, InvalidReservationException, EntityNotOwnedException, EntityNotAvailableException, UnauthorizedAccessException, ClientCancelledThisPeriodException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        BoatOwner owner;
-        try{
-            owner = (BoatOwner) auth.getPrincipal();
-        }
-        catch(ClassCastException ex){
-            throw new UnauthorizedAccessException("User is not a boat owner");
-        }
-        if(owner == null) throw new UserNotFoundException("Boat owner not found");
-        Optional<Boat> optionalBoat = _boatRepository.findById(boatId);
-        if(!optionalBoat.isPresent())throw new EntityNotFoundException("Boat not found");
-        Boat boat = optionalBoat.get();
-        if(boat.getBoatOwner().getId() != owner.getId()) throw new EntityNotOwnedException("Boat not owned by given user");
         Client client;
         try{
             client = (Client) _userRepository.findByEmail(clientEmail);
@@ -186,6 +174,23 @@ public class BoatServiceImpl  implements BoatService {
             throw new UserNotFoundException("User is not a client");
         }
         if(client == null)throw new UserNotFoundException("Client not found");
+        Optional<Boat> optionalBoat = _boatRepository.findById(boatId);
+        if(!optionalBoat.isPresent())throw new EntityNotFoundException("Boat not found");
+        Boat boat = optionalBoat.get();
+        BoatOwner owner;
+        if(auth.getPrincipal().getClass() == BoatOwner.class){
+            try{
+                owner = (BoatOwner)auth.getPrincipal();
+                if(owner == null) throw new UserNotFoundException("Boat owner not found");
+                if(boat.getBoatOwner().getId() != owner.getId()) throw new EntityNotOwnedException("Boat not owned by given user");
+            }
+            catch(ClassCastException ex){
+                throw new UnauthorizedAccessException("User is not a boat owner");
+            }
+        }
+        else{
+            owner = boat.getBoatOwner();
+        }
         if(reservation.isOwnerNeeded() && !owner.checkIfOwnerAvailable(reservation.getDateRange()))throw new EntityNotAvailableException("Boat owner is not available at the given time");
         reservation.setClient(client);
         reservation.setSystemCharge(_currentSystemTaxPercentageRepository.findById(1).get().getCurrentSystemTaxPercentage());
@@ -198,6 +203,29 @@ public class BoatServiceImpl  implements BoatService {
         message.setSubject("Boat reserved");
         message.setText("Boat " + boat.getName() + " has been successfully reserved" );
         _mailSender.send(message);
+    }
+
+    @Transactional()
+    public void cancelReservation(Integer id, String email) throws EntityNotFoundException, UserNotFoundException, InvalidReservationException, EntityNotOwnedException, EntityNotAvailableException, UnauthorizedAccessException, ClientCancelledThisPeriodException {
+        Optional<Reservation> reservation = _reservationRepository.findById(id);
+        if(reservation == null)throw new EntityNotOwnedException("Reservation not found");
+        User user;
+        try{
+            user = (User) _userRepository.findByEmail(email);
+            if(user.getClass() == Client.class){
+                if(reservation.get().getClient() != user) throw new UnauthorizedAccessException("User is not the client on the reservation");
+            }
+            else if(user.getClass() == BoatOwner.class){
+                if(((BoatReservation)reservation.get()).getBoat().getBoatOwner() != (BoatOwner) user) throw new UnauthorizedAccessException("User is not the owner of the boat");
+            }
+            else{
+                throw new UserNotFoundException("User is not a client nor a boat owner");
+            }
+        }catch(ClassCastException ex){
+            throw new UserNotFoundException("User not found");
+        }
+        reservation.get().setReservationStatus(ReservationStatus.cancelled);
+        _reservationRepository.save(reservation.get());
     }
 
     private void makeIncomeRecord(Reservation reservation, BoatOwner owner) {

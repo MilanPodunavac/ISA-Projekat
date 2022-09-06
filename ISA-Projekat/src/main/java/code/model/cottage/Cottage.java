@@ -5,6 +5,7 @@ import code.exceptions.entities.InvalidReservationException;
 import code.model.Client;
 import code.model.Review;
 import code.model.base.*;
+import code.model.wrappers.DateRange;
 import code.utils.FileUploadUtil;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;

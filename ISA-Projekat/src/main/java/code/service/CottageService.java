@@ -20,6 +20,7 @@ public interface CottageService {
     void addCottage(String email, Cottage cottage) throws UserNotFoundException, UnauthorizedAccessException;
     void addAvailabilityPeriod(int cottageId, AvailabilityPeriod period, String email) throws AvailabilityPeriodBadRangeException, UserNotFoundException, EntityNotFoundException, EntityNotOwnedException, UnauthorizedAccessException;
     void addReservation(String clientEmail, int cottageId, CottageReservation reservation, String email) throws EntityNotFoundException, UserNotFoundException, InvalidReservationException, EntityNotOwnedException, EntityNotAvailableException, UnauthorizedAccessException, ClientCancelledThisPeriodException;
+    void cancelReservation(Integer id, String email) throws EntityNotFoundException, UserNotFoundException, InvalidReservationException, EntityNotOwnedException, EntityNotAvailableException, UnauthorizedAccessException, ClientCancelledThisPeriodException;
     void throwExceptionIfCottageDontExist(Integer id) throws EntityNotFoundException;
     void checkIfCottageDeletable(Integer id) throws EntityNotDeletableException, EntityNotFoundException;
     void unlinkReferencesAndDeleteCottage(Integer id) throws EntityNotFoundException, EntityNotDeletableException, UnauthorizedAccessException, UserNotFoundException, EntityNotOwnedException;
